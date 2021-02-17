@@ -1,0 +1,83 @@
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+
+# Source Prezto.
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
+
+# add local PATH
+export PATH=$PATH:~/.bin
+
+# CUDA
+export PATH=$HOME/cuda/18.04/cuda_10.2/bin:$PATH
+export LD_LIBRARY_PATH=$HOME/cuda/18.04/cuda_10.2/lib64:$LD_LIBRARY_PATH
+export CUDA_HOME=$HOME/cuda/18.04/cuda_10.2:$CUDA_HOME
+
+# shokaku_ldisk CUDA
+export PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda_10.2/bin:$PATH
+export LD_LIBRARY_PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda_10.2/lib64:$LD_LIBRARY_PATH
+export CUDA_HOME=$HOME/ldisk_shokaku/cuda/18.04/cuda_10.2:$CUDA_HOME
+
+# zuikaku_ldisk CUDA
+export PATH=$HOME/ldisk_zuikaku/cuda/20.04/cuda-11.0/bin:$PATH
+export LD_LIBRARY_PATH=$HOME/ldisk_zuikaku/cuda/20.04/cuda-11.0/lib64:$LD_LIBRARY_PATH
+export CUDA_HOME=$HOME/ldisk_zuikaku/cuda/20.04/cuda_11.0:$CUDA_HOME
+
+# pyenv
+if [[ -e "$HOME/ldisk_shokaku/.pyenv" ]]; then
+    export PYENV_ROOT="$HOME/ldisk_shokaku/.pyenv"
+    export PATH="$HOME/ldisk_shokaku/.pyenv/bin:$PATH"
+elif [[ -e "$HOME/ldisk_zuikaku/.pyenv" ]]; then
+    export PYENV_ROOT="$HOME/ldisk_zuikaku/.pyenv"
+    export PATH="$HOME/ldisk_zuikaku/.pyenv/bin:$PATH"
+else
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+fi
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+# pip zsh completion
+function _pip_completion {
+    local words cword
+    read -Ac words
+    read -cn cword
+    reply=( $( COMP_WORDS="$words[*]" \
+            COMP_CWORD=$(( cword-1 )) \
+    PIP_AUTO_COMPLETE=1 $words[1] ) )
+}
+compctl -K _pip_completion pip
+
+# nodenv
+export PATH="$HOME/.nodenv/bin:$PATH"
+eval "$(nodenv init -)"
+
+# rbenv
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+# alias
+alias emacs='emacs -nw'
+alias iplab='ssh -fN iplab'
+alias lab='ssh -t lab "cd ldisk_shokaku/workspace && /bin/zsh"'
+alias zuikaku='ssh -t mjun_zuikaku "cd ldisk_zuikaku/workspace && /bin/zsh"'
+alias vim='nvim'
+if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
+    alias ls='gls --group-directories-first --color=auto'
+fi
+alias pip-upgrade-all="pip list -o | tail -n +3 | awk '{ print \$1 }' | xargs pip install -U"
+alias tm="~/.dotfiles/bin/tmux.sh"
+alias sync-lab="~/workspace/lab/rsync_to_remote.sh"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# powerlevel10k
+(( ! ${+functions[p10k]} )) || p10k finalize

@@ -1,0 +1,73 @@
+#!/bin/zsh
+
+# create synbolic link
+DOTPATH=~/.dotfiles
+GITHUB=https://github.com/jackjasonb/dotfiles.git
+
+# is_exists returns true if executable $1 exists in $PATH
+is_exists() {
+    which "$1" >/dev/null 2>&1
+    return $?
+}
+
+# download dotfiles using git from github
+if is_exists "git"; then
+    if [ ! -d "$DOTPATH" ]; then
+        # first clone
+        git clone --recursive "$GITHUB" "$DOTPATH"
+    else
+        # if exist .dotfiles, update dotfiles
+        cd "$DOTPATH"
+        git pull
+        git submodule update --init --recursive
+    fi
+else
+    echo "please install git"
+    exit 1
+fi
+
+cd "$DOTPATH"
+
+# update submodule
+git submodule update --init --recursive
+
+if [ ! -d ".backup" ]; then
+    echo "backup old dotfiles..."
+    mkdir -p "$DOTPATH/.backup"
+    for f in .??*; do
+        [ "$f" = ".git" ] && continue
+        [ "$f" = ".DS_Store" ] && continue
+        [ "$f" = ".gitignore" ] && continue
+        [ "$f" = ".backup" ] && continue
+        mv -v "$HOME"/"$f" "$DOTPATH/.backup"
+    done
+fi
+
+for f in .??*; do
+    # exclude dotfile
+    [ "$f" = ".git" ] && continue
+    [ "$f" = ".DS_Store" ] && continue
+    [ "$f" = ".gitignore" ] && continue
+    [ "$f" = ".gitmodule" ] && continue
+    [ "$f" = ".backup" ] && continue
+    # do symbolic link
+    ln -snfv "$DOTPATH/$f" "$HOME"/"$f"
+done
+
+# set neovim settings
+mkdir -p "$HOME"/.config
+ln -snfv "$DOTPATH/nvim" "$HOME"/.config/
+
+# Coc init
+mkdir -p ~/.config/coc/extensions
+ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
+
+source ~/.zshrc
+./bin/pyenv.sh
+./bin/rbenv.sh
+./bin/dein.vim.sh
+./bin/nodenv.sh
+source ~/.zshrc
+
+cd ~/.config/coc/extensions
+npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod

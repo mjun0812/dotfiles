@@ -1,0 +1,34 @@
+### all ignore ###
+/*
+/.**
+
+### not ignore ###
+!/install.sh
+!/.gitignore
+!/.gitmodules
+!/README.md
+
+!/.zshrc
+!/.zshenv
+!/.zprofile
+!/.zlogin
+!/.zpreztorc
+!/.zprezto
+!/.zprezto/**
+!/.zprezto/**/
+!/.p10k.zsh
+!/modules
+!/modules/**
+!/.vim
+!/.vim/**
+!/.emacs
+!/.emacs.d
+!/.emacs.d/**
+!/.vimrc
+!/bin
+!/bin/**
+!/fonts
+!/fonts/**
+!/nvim
+!/nvim/init.vim
+!/.tmux.conf
