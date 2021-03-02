@@ -19,6 +19,6 @@ install_nodenv() {
 
 install_nodenv
 source ~/.zshrc
-nodenv install 12.18.4
-nodenv global 12.18.4
+nodenv install 14.15.3
+nodenv global 14.15.3
 npm install -g yarn neovim
