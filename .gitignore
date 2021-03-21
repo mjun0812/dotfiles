@@ -32,3 +32,6 @@
 !/nvim
 !/nvim/init.vim
 !/.tmux.conf
+!/github
+!/github-markdown.css
+
