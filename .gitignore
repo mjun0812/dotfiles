@@ -15,7 +15,6 @@
 !/.zpreztorc
 !/.zprezto
 !/.zprezto/**
-!/.zprezto/**/
 !/.p10k.zsh
 !/modules
 !/modules/**
@@ -33,5 +32,5 @@
 !/nvim/init.vim
 !/.tmux.conf
 !/github
-!/github-markdown.css
-
+!/styles
+!/styles/**
