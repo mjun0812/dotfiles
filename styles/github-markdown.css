@@ -60,7 +60,7 @@ body h6:hover .anchor .octicon-link:before {
   -webkit-text-size-adjust: 100%;
   line-height: 1.5;
   color: #24292e;
-  font-family: -apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI,Segoe UI Emoji;
+  font-family: Helvetica,Arial,"Osaka",-apple-system,BlinkMacSystemFont,sans-serif,Apple Color Emoji,Segoe UI,Segoe UI Emoji;
   font-size: 16px;
   line-height: 1.5;
   word-wrap: break-word;
@@ -276,7 +276,7 @@ body dd {
 
 body code,
 body pre {
-  font-family: "Roboto Mono",SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+  font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace,"Osaka" !important;
   font-size: 12px;
 }
 
