@@ -9,9 +9,9 @@ is_exists() {
 install_pyenv() {
     if [ -d ~/.pyenv ]; then
         if is_exists "pyenv update"; then
-            git clone https://github.com/pyenv/pyenv-update.git $(pyenv root)/plugins/pyenv-update
-        else
             pyenv update
+        else
+            git clone https://github.com/pyenv/pyenv-update.git $(pyenv root)/plugins/pyenv-update
         fi
     else
         git clone https://github.com/pyenv/pyenv.git ~/.pyenv
