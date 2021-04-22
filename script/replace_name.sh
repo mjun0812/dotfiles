@@ -10,6 +10,6 @@ find . -maxdepth 1 -name '*'$oldText'*' | \
 while read line
 do newline=$(echo $line | sed 's/'$oldText'/'$newText'/g')
     echo $newline
-    mv "$line" $newline
+    mv "$line" "$newline"
 done
 

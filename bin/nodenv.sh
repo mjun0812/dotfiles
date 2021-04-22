@@ -1,11 +1,5 @@
 #!/bin/zsh
 
-# is_exists returns true if executable $1 exists in $PATH
-is_exists() {
-    which "$1" >/dev/null 2>&1
-    return $?
-}
-
 install_nodenv() {
     if [ -d ~/.nodenv ]; then
     else
@@ -19,6 +13,5 @@ install_nodenv() {
 
 install_nodenv
 source ~/.zshrc
-nodenv install 14.15.3
+nodenv install --skip-existing 14.15.3
 nodenv global 14.15.3
-npm install -g yarn neovim

@@ -2,7 +2,7 @@
 
 # create synbolic link
 DOTPATH=~/.dotfiles
-GITHUB=https://github.com/jackjasonb/dotfiles.git
+GITHUB=https://github.com/mjun0812/dotfiles.git
 
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
@@ -58,16 +58,20 @@ done
 mkdir -p "$HOME"/.config
 ln -snfv "$DOTPATH/nvim" "$HOME"/.config/
 
-# Coc init
+# coc init
 mkdir -p ~/.config/coc/extensions
 ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
 
 source ~/.zshrc
+./bin/dein.vim.sh
 ./bin/pyenv.sh
 ./bin/rbenv.sh
-./bin/dein.vim.sh
 ./bin/nodenv.sh
 source ~/.zshrc
 
+# install neovim plugin and yarn
+npm install -g yarn neovim
+
+# Neovim coc.vim
 cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
