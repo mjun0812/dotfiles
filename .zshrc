@@ -63,6 +63,9 @@ eval "$(nodenv init -)"
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
+# hydra complettion
+autoload -Uz bashcompinit && bashcompinit
+
 # alias
 alias emacs='emacs -nw'
 alias iplab='ssh -fN iplab'
