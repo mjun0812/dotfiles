@@ -69,10 +69,10 @@ autoload -Uz bashcompinit && bashcompinit
 
 # alias
 alias emacs='emacs -nw'
-alias iplab='ssh -fN iplab'
-alias lab='ssh -t lab "cd ldisk_shokaku/workspace && /bin/zsh"'
-alias zuikaku='ssh -t mjun_zuikaku "cd ldisk_zuikaku/workspace && /bin/zsh"'
 alias vim='nvim'
+alias iplab='ssh -fN iplab'
+alias shokaku='ssh -t lab "cd ~/ldisk_shokaku/workspace && /bin/zsh"'
+alias zuikaku='ssh -t mjun_zuikaku "cd ~/ldisk_zuikaku/workspace && /bin/zsh"'
 if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
     alias ls='gls --group-directories-first --color=auto'
 fi
@@ -85,3 +85,4 @@ alias sync-lab="~/workspace/lab/rsync_to_remote.sh"
 
 # powerlevel10k
 (( ! ${+functions[p10k]} )) || p10k finalize
+
