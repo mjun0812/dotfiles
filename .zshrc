@@ -14,6 +14,7 @@ fi
 
 # add local PATH
 export PATH=$PATH:~/.bin
+export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
 
 # CUDA
 export PATH=$HOME/cuda/18.04/cuda_10.2/bin:$PATH
