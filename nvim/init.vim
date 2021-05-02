@@ -132,6 +132,6 @@ set whichwrap=b,s,h,l,<,>,[,]
 set backspace=indent,eol,start
 
 " yank した文字列をクリップボードにコピー
-set clipboard=unnamed
+set clipboard+=unnamed
 
 source ~/.config/nvim/coc.rc.vim
