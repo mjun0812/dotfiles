@@ -2,7 +2,7 @@
 tmux new -d
 tmux send-keys "zuikaku" C-m
 tmux split-window -h
-tmux send-keys 'ssh -t mjun_zuikaku "watch nvidia-smi"' C-m
+tmux send-keys 'ssh -t lab_zuikaku "watch nvidia-smi"' C-m
 tmux split-window -v
 tmux resize-pane -D 30 
 
