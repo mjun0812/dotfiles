@@ -72,7 +72,7 @@ alias emacs='emacs -nw'
 alias vim='nvim'
 alias iplab='ssh -fN iplab'
 alias shokaku='ssh -t lab "cd ~/ldisk_shokaku/workspace && /bin/zsh"'
-alias zuikaku='ssh -t mjun_zuikaku "cd ~/ldisk_zuikaku/workspace && /bin/zsh"'
+alias zuikaku='ssh -t lab_zuikaku "cd ~/ldisk_zuikaku/workspace && /bin/zsh"'
 if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
     alias ls='gls --group-directories-first --color=auto'
 fi
