@@ -78,7 +78,8 @@ if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
 fi
 alias pip-upgrade-all="pip list -o | tail -n +3 | awk '{ print \$1 }' | xargs pip install -U"
 alias tm="~/.dotfiles/bin/tmux.sh"
-alias sync-lab="~/workspace/lab/rsync_to_remote.sh"
+alias sync-lab-remote="~/workspace/lab/rsync_to_remote.sh"
+alias sync-lab-local="~/workspace/lab/rsync_to_local.sh"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
