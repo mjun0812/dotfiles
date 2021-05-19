@@ -45,7 +45,8 @@ zstyle ':prezto:load' pmodule \
   'homebrew' \
   'osx'  \
   'prompt' \
-  'custom-prompt'
+  'custom-prompt' \
+  'dvc-zsh-completion'
 
 #
 # Autosuggestions
