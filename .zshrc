@@ -66,6 +66,7 @@ eval "$(rbenv init -)"
 
 # hydra complettion
 autoload -Uz bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
 
 # alias
 alias emacs='emacs -nw'
