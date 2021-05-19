@@ -26,6 +26,7 @@ if dein#load_state('~/.cache/dein')
   
   " syntax
   call dein#add('vim-python/python-syntax')
+  call dein#add('sheerun/vim-polyglot')
   
   " 補完
   " call dein#add('Shougo/deoplete.nvim')
