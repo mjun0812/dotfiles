@@ -13,5 +13,6 @@ install_nodenv() {
 
 install_nodenv
 source ~/.zshrc
-nodenv install --skip-existing 14.15.3
-nodenv global 14.15.3
+nodenv install --skip-existing 14.17.0
+nodenv global 14.17.0
+
