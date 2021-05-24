@@ -15,3 +15,5 @@ install_rbenv() {
 }
 
 install_rbenv
+rbenv install --skip-existing "$1"
+rbenv global "$1"

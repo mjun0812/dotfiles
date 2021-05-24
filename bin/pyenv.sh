@@ -8,11 +8,7 @@ is_exists() {
 
 install_pyenv() {
     if [ -d ~/.pyenv ]; then
-        if is_exists "pyenv update"; then
-            pyenv update
-        else
-            git clone https://github.com/pyenv/pyenv-update.git $(pyenv root)/plugins/pyenv-update
-        fi
+        pyenv update
     else
         git clone https://github.com/pyenv/pyenv.git ~/.pyenv
         source ~/.zshrc
@@ -22,3 +18,5 @@ install_pyenv() {
 }
 
 install_pyenv
+pyenv install --skip-existing "$1"
+pyenv global "$1"
