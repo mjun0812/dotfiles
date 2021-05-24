@@ -2,7 +2,11 @@
 
 # create synbolic link
 DOTPATH=~/.dotfiles
-GITHUB=https://github.com/mjun0812/dotfiles.git
+GITHUB='https://github.com/mjun0812/dotfiles.git'
+
+PYTHON_VERSION='3.8.10'
+RUBY_VERSION='2.7.2'
+NODE_VERSION='14.17.0'
 
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
@@ -22,7 +26,7 @@ if is_exists "git"; then
         git submodule update --init --recursive
     fi
 else
-    echo "please install git"
+    echo "Please install git"
     exit 1
 fi
 
@@ -51,7 +55,7 @@ for f in .??*; do
     [ "$f" = ".gitmodule" ] && continue
     [ "$f" = ".backup" ] && continue
     # do symbolic link
-    ln -snfv "$DOTPATH/$f" "$HOME"/"$f"
+    ln -snfv "$DOTPATH/$f" "$HOME/$f"
 done
 
 # set neovim settings
@@ -64,9 +68,9 @@ ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
 
 source ~/.zshrc
 ./bin/dein.vim.sh
-./bin/pyenv.sh
-./bin/rbenv.sh
-./bin/nodenv.sh
+./bin/pyenv.sh "$PYTHON_VERSION"
+./bin/rbenv.sh "$RUBY_VERSION"
+./bin/nodenv.sh "$NODE_VERSION"
 source ~/.zshrc
 
 # install neovim plugin and yarn
