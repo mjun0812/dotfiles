@@ -71,6 +71,7 @@ source ~/.zshrc
 ./bin/pyenv.sh "$PYTHON_VERSION"
 ./bin/rbenv.sh "$RUBY_VERSION"
 ./bin/nodenv.sh "$NODE_VERSION"
+./bin/neovim.sh
 source ~/.zshrc
 
 # install neovim plugin and yarn
@@ -79,3 +80,4 @@ npm install -g yarn neovim
 # Neovim coc.vim
 cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
+
