@@ -9,8 +9,9 @@ is_exists() {
 install_neovim() {
     if ! is_exists "nvim -v"; then
         mkdir -p ~/.bin
-        curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage -o ~/.bin/nvim
-        chmod u+x ~/.bin/nvim
+        curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage -o ~/.bin/
+        chmod u+x ~/.bin/nvim.appimage
+        mv ~/.bin/nvim.appimage ~/.bin/nvim
     fi
 }
 
