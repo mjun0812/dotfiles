@@ -9,6 +9,8 @@ require git, zsh
 - OS : macOS, Ubuntu, CentOS
 - SHELL : ZSH
 - pyenv, pyenv-virtualenv
+- rubenv
+- nodenv
 - emacs
 - vim
 - neovim
