@@ -1,9 +1,10 @@
+#!/bin/sh
+
 echo "Input old text"
-read oldText
+read old_text
 
 echo "Input new text"
-read newText
-
+read new_text
 
 #フォルダ名、ファイル名を置換する
 find . -maxdepth 1 -name '*'$oldText'*' | \
