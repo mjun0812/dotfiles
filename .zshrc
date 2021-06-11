@@ -69,6 +69,11 @@ eval "$(rbenv init -)"
 autoload -Uz bashcompinit && bashcompinit
 autoload -Uz compinit && compinit
 
+# LinuxBrew
+if [ -e '~/linuxbrew' ]; then 
+    eval "$(~/.linuxbrew/bin/brew shellenv)"
+fi
+
 # alias
 alias emacs='emacs -nw'
 alias vim='nvim'
