@@ -5,6 +5,7 @@
 ### not ignore ###
 !/install.sh
 !/.gitignore
+!/.gitignore*
 !/.gitmodules
 !/README.md
 
