@@ -74,8 +74,9 @@ source ~/.zshrc
 ./bin/neovim.sh
 source ~/.zshrc
 
-# install neovim plugin and yarn
-npm install -g yarn neovim
+# install packages 
+npm install -g yarn neovim md-to-pdf
+pip install pynvim
 
 # Neovim coc.vim
 cd ~/.config/coc/extensions
