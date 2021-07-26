@@ -33,7 +33,7 @@
 !/nvim/init.vim
 !/.tmux.conf
 !/github
-!/styles
-!/styles/**
+!/templates
+!/templates/**
 !/script
 !/script/**
