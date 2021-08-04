@@ -11,10 +11,8 @@ while True:
         break
 
 print(
-    "Total: {}:{}".format(
+    "Total: {}:{:02d}".format(
         sum_time // datetime.timedelta(hours=1),
-        sum_time
-        % datetime.timedelta(hours=1)
-        // datetime.timedelta(minutes=1),
+        sum_time % datetime.timedelta(hours=1) // datetime.timedelta(minutes=1),
     )
 )
