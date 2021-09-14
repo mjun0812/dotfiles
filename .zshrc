@@ -13,8 +13,8 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # add local PATH
-export PATH=$PATH:~/.bin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
+export PATH="$PATH:~/.bin"
+export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
 # CUDA
 export PATH="/usr/local/cuda/bin:$PATH"
