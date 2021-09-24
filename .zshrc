@@ -92,6 +92,8 @@ alias tm="~/.dotfiles/bin/tmux.sh"
 alias sync-lab="~/workspace/lab/rsync_to_remote.sh"
 alias sync-lab-local="~/workspace/lab/rsync_to_local.sh"
 
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
