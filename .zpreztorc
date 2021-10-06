@@ -32,21 +32,18 @@ zstyle ':prezto:load' pmodule-dirs $HOME/.dotfiles/modules
 # The order matters.
 zstyle ':prezto:load' pmodule \
   'environment' \
-  'terminal' \
-  'editor' \
-  'history' \
-  'directory' \
-  'spectrum' \
+  'osx'  \
   'utility' \
   'completion' \
-  'syntax-highlighting' \
-  'autosuggestions' \
-  'history-substring-search' \
-  'homebrew' \
-  'osx'  \
-  'prompt' \
   'custom-prompt' \
-  'dvc-zsh-completion'
+  'directory' \
+  'dvc-zsh-completion' \
+  'spectrum' \
+  'syntax-highlighting' \
+  'history-substring-search' \
+  'autosuggestions' \
+  'prompt' \
+  'terminal' 
 
 #
 # Autosuggestions
@@ -177,13 +174,13 @@ zstyle ':prezto:module:prompt' theme powerlevel10k
 
 # Set syntax highlighters.
 # By default, only the main highlighter is enabled.
-# zstyle ':prezto:module:syntax-highlighting' highlighters \
-#   'main' \
-#   'brackets' \
-#   'pattern' \
-#   'line' \
-#   'cursor' \
-#   'root'
+zstyle ':prezto:module:syntax-highlighting' highlighters \
+  'main' \
+  'brackets' \
+  'pattern' \
+  'line' \
+  'cursor' \
+  'root'
 #
 # Set syntax highlighting styles.
 # zstyle ':prezto:module:syntax-highlighting' styles \
@@ -200,7 +197,7 @@ zstyle ':prezto:module:prompt' theme powerlevel10k
 #
 
 # Auto set the tab and window titles.
-# zstyle ':prezto:module:terminal' auto-title 'yes'
+zstyle ':prezto:module:terminal' auto-title 'yes'
 
 # Set the window title format.
 # zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
