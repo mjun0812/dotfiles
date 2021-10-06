@@ -76,7 +76,8 @@ source ~/.zshrc
 
 # install packages 
 npm install -g yarn neovim md-to-pdf
-pip install pynvim
+pip install --upgrade pip
+pip install pynvim wheel
 
 # Neovim coc.vim
 cd ~/.config/coc/extensions
