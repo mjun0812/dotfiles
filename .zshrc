@@ -31,9 +31,9 @@ export LD_LIBRARY_PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/lib64:$LD_LIBRAR
 export CUDA_HOME=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2:$CUDA_HOME
 
 # zuikaku_ldisk CUDA
-export PATH=$HOME/ldisk_zuikaku/cuda/20.04/cuda-11.0/bin:$PATH
-export LD_LIBRARY_PATH=$HOME/ldisk_zuikaku/cuda/20.04/cuda-11.0/lib64:$LD_LIBRARY_PATH
-export CUDA_HOME=$HOME/ldisk_zuikaku/cuda/20.04/cuda_11.0:$CUDA_HOME
+export PATH=$HOME/ldisk_zuikaku/cuda/20.04/cuda-11.2/bin:$PATH
+export LD_LIBRARY_PATH=$HOME/ldisk_zuikaku/cuda/20.04/cuda-11.2/lib64:$LD_LIBRARY_PATH
+export CUDA_HOME=$HOME/ldisk_zuikaku/cuda/20.04/cuda_11.2:$CUDA_HOME
 
 # pyenv
 if [[ -e "$HOME/ldisk_shokaku/.pyenv" ]]; then
@@ -91,6 +91,7 @@ alias pip-upgrade-all="pip list -o | tail -n +3 | awk '{ print \$1 }' | xargs pi
 alias tm="~/.dotfiles/bin/tmux.sh"
 alias sync-lab="~/workspace/lab/rsync_to_remote.sh"
 alias sync-lab-local="~/workspace/lab/rsync_to_local.sh"
+alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 

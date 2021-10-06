@@ -1,0 +1,13 @@
+{
+    "css": " .page-break { page-break-after: always; } .markdown-body { font-size: 11px; }",
+    "body_class": "markdown-body",
+    "highlight_style": "atom-one-dark",
+    "pdf_options": {
+        "format": "A4",
+        "margin": "10mm",
+        "printBackground": true,
+        "headerTemplate": "<style> section { margin: 0 auto; font-family: system-ui; font-size: 9px; } </style>",
+        "footerTemplate": "<section><div><span class=\"pageNumber\"></span> / <span class=\"totalPages\"></span></div></section>"
+    },
+    "stylesheet_encoding": "utf-8"
+}
