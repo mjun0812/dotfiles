@@ -32,6 +32,7 @@ zstyle ':prezto:load' pmodule-dirs $HOME/.dotfiles/modules
 # The order matters.
 zstyle ':prezto:load' pmodule \
   'environment' \
+  'history' \
   'osx'  \
   'utility' \
   'completion' \
