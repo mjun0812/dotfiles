@@ -82,3 +82,4 @@ pip install pynvim wheel
 # Neovim coc.vim
 cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
+
