@@ -32,10 +32,13 @@ zinit light-mode for \
     zsh-users/zsh-history-substring-search \
     zdharma/history-search-multi-word \
     zsh-users/zsh-completions
-
+    # zsh-users/zsh-syntax-highlighting \
+    #
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
-    
+FAST_HIGHLIGHT_STYLES[path]='none'
+FAST_HIGHLIGHT_STYLES[path-to-dir]='fg=none'
+
 zinit ice as"completion"
 zinit snippet $HOME/.dotfiles/modules/dvc-zsh-completion/_dvc
 
