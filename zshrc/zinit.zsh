@@ -33,9 +33,18 @@ zinit light-mode for \
     zdharma/history-search-multi-word \
     zsh-users/zsh-completions
     # zsh-users/zsh-syntax-highlighting \
-    #
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
+
+OS=$(uname -s)
+if [ "$OS" = "Darwin" ]; then
+    bindkey '^[[A' history-substring-search-up
+    bindkey '^[[B' history-substring-search-down
+elif [ "$OS" = "Linux" ]; then
+    # https://superuser.com/a/1296543
+    # key dict is defined in /etc/zsh/zshrc
+    bindkey "$key[Up]" history-substring-search-up
+    bindkey "$key[Down]" history-substring-search-down
+fi
+
 FAST_HIGHLIGHT_STYLES[path]='none'
 FAST_HIGHLIGHT_STYLES[path-to-dir]='fg=none'
 
