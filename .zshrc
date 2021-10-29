@@ -1,16 +1,14 @@
-
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-
-# Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
+SETTING_DIR=$HOME/.dotfiles/zshrc
+source $SETTING_DIR/zinit.zsh
+source $SETTING_DIR/alias.zsh
 
 # add local PATH
 export PATH=$PATH:~/.bin
@@ -79,26 +77,5 @@ if [ -e '~/linuxbrew' ]; then
     eval "$(~/.linuxbrew/bin/brew shellenv)"
 fi
 
-# alias
-alias emacs='emacs -nw'
-alias vim='nvim'
-alias iplab='ssh -fN iplab'
-alias shokaku='ssh -t lab "cd ~/ldisk_shokaku/workspace && /bin/zsh"'
-alias zuikaku='ssh -t lab_zuikaku "cd ~/ldisk_zuikaku/workspace && /bin/zsh"'
-if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
-    alias ls='gls --group-directories-first --color=auto'
-fi
-alias pip-upgrade-all="pip list -o | tail -n +3 | awk '{ print \$1 }' | xargs pip install -U"
-alias tm="~/.dotfiles/bin/tmux.sh"
-alias sync-lab="~/workspace/lab/rsync_to_remote.sh"
-alias sync-lab-local="~/workspace/lab/rsync_to_local.sh"
-alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
-
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# powerlevel10k
-(( ! ${+functions[p10k]} )) || p10k finalize
 
