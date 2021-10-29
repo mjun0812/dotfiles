@@ -33,19 +33,11 @@ zinit light-mode for \
     zdharma/history-search-multi-word \
     zsh-users/zsh-completions
 
-OS=$(uname -s)
-if [ "$OS" = "Darwin" ]; then
-    bindkey '^[[A' history-substring-search-up
-    bindkey '^[[B' history-substring-search-down
-elif [ "$OS" = "Linux" ]; then
-    bindkey "$key[Up]" history-substring-search-up
-    bindkey "$key[Down]" history-substring-search-down
-fi
-
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+    
 zinit ice as"completion"
 zinit snippet $HOME/.dotfiles/modules/dvc-zsh-completion/_dvc
 
 zinit ice depth=1; zinit light romkatv/powerlevel10k
-
-
 ### End of Zinit's installer chunk
