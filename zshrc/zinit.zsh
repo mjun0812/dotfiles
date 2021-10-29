@@ -33,10 +33,14 @@ zinit light-mode for \
     zdharma/history-search-multi-word \
     zsh-users/zsh-completions
 
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-bindkey "$key[Up]" history-substring-search-up
-bindkey "$key[Down]" history-substring-search-down
+OS=$(uname -s)
+if [ "$OS" = "Darwin" ]; then
+    bindkey '^[[A' history-substring-search-up
+    bindkey '^[[B' history-substring-search-down
+elif [ "$OS" = "Linux" ]; then
+    bindkey "$key[Up]" history-substring-search-up
+    bindkey "$key[Down]" history-substring-search-down
+fi
 
 zinit ice as"completion"
 zinit snippet $HOME/.dotfiles/modules/dvc-zsh-completion/_dvc
