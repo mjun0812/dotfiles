@@ -16,9 +16,11 @@
   },
   "Use Italic Font" : true,
   "Foreground Color" : {
-    "Green Component" : 0.73333334922790527,
-    "Blue Component" : 0.73333334922790527,
-    "Red Component" : 0.73333334922790527
+    "Red Component" : 0.7810397744178772,
+    "Color Space" : "sRGB",
+    "Blue Component" : 0.78104829788208008,
+    "Alpha Component" : 1,
+    "Green Component" : 0.78105825185775757
   },
   "Use Custom Window Title" : false,
   "Right Option Key Sends" : 0,
@@ -47,7 +49,8 @@
     "slogin",
     "telnet"
   ],
-  "Scrollback Lines" : 1000,
+  "Scrollback Lines" : 20000,
+  "Scrollback in Alternate Screen" : true,
   "Draw Powerline Glyphs" : true,
   "Flashing Bell" : false,
   "Cursor Guide Color" : {
@@ -280,7 +283,9 @@
     "Alpha Component" : 1,
     "Green Component" : 0.65990555286407471
   },
+  "Mouse Reporting allow clicks and drags" : false,
   "Window Type" : 0,
+  "Allow Title Reporting" : false,
   "Use Bright Bold" : true,
   "Cursor Text Color" : {
     "Green Component" : 1,
@@ -304,7 +309,7 @@
   },
   "Name" : "Default",
   "Blinking Cursor" : false,
-  "Guid" : "F4573544-3F7F-4E6C-974B-8004781DDB45",
+  "Guid" : "BACD7CCF-2920-4905-B7FA-D09F4143D3FA",
   "Idle Code" : 0,
   "Ansi 10 Color" : {
     "Red Component" : 0.34304946660995483,
@@ -329,7 +334,7 @@
   },
   "Smart Cursor Color" : false,
   "Ambiguous Double Width" : false,
-  "Blur Radius" : 12.195887531725887,
+  "Blur Radius" : 8.8502795843908615,
   "Background Image Mode" : 0,
   "Ansi 0 Color" : {
     "Red Component" : 0,
@@ -339,8 +344,8 @@
     "Green Component" : 0
   },
   "Blur" : true,
+  "Normal Font" : "RobotoMonoNerdFontComplete-Regular 12",
   "Vertical Spacing" : 1,
-  "Normal Font" : "RobotoMonoForPowerline-Regular 12",
   "Ansi 7 Color" : {
     "Red Component" : 0.91824531555175781,
     "Color Space" : "sRGB",
@@ -352,7 +357,7 @@
   "Terminal Type" : "xterm-256color",
   "Horizontal Spacing" : 1,
   "Option Key Sends" : 0,
-  "Only The Default BG Color Uses Transparency" : false,
+  "Only The Default BG Color Uses Transparency" : true,
   "Minimum Contrast" : 0,
   "Ansi 15 Color" : {
     "Red Component" : 0.91824531555175781,
@@ -369,15 +374,17 @@
     "Alpha Component" : 1,
     "Green Component" : 0.82476228475570679
   },
-  "Transparency" : 0.059729933375634515,
+  "Transparency" : 0.059729933375634502,
   "Background Color" : {
-    "Green Component" : 0,
+    "Red Component" : 0,
+    "Color Space" : "sRGB",
     "Blue Component" : 0,
-    "Red Component" : 0
+    "Alpha Component" : 1,
+    "Green Component" : 0
   },
   "Screen" : -2,
   "Initial Use Transparency" : true,
-  "Non Ascii Font" : "Monaco 12",
+  "Non Ascii Font" : "RictyDiminishedForPowerline-Regular 12",
   "Ansi 13 Color" : {
     "Red Component" : 1,
     "Color Space" : "sRGB",
@@ -386,7 +393,7 @@
     "Green Component" : 0.28426170349121094
   },
   "Use Tab Color" : false,
-  "Columns" : 100,
+  "Columns" : 110,
   "Visual Bell" : true,
   "Custom Directory" : "No",
   "Ansi 5 Color" : {
