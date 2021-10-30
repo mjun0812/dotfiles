@@ -37,3 +37,6 @@
 !templates/**
 !script
 !script/**
+!iterm
+!iterm/**
+
