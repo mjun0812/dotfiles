@@ -25,27 +25,38 @@ export PATH=$HOME/cuda/18.04/cuda_10.2/bin:$PATH
 export LD_LIBRARY_PATH=$HOME/cuda/18.04/cuda_10.2/lib64:$LD_LIBRARY_PATH
 export CUDA_HOME=$HOME/cuda/18.04/cuda_10.2:$CUDA_HOME
 
-# shokaku_ldisk CUDA
-export PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/bin:$PATH
-export LD_LIBRARY_PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/lib64:$LD_LIBRARY_PATH
-export CUDA_HOME=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2:$CUDA_HOME
-
-# zuikaku_ldisk CUDA
-export PATH=$HOME/ldisk_zuikaku/cuda/20.04/cuda-11.2/bin:$PATH
-export LD_LIBRARY_PATH=$HOME/ldisk_zuikaku/cuda/20.04/cuda-11.2/lib64:$LD_LIBRARY_PATH
-export CUDA_HOME=$HOME/ldisk_zuikaku/cuda/20.04/cuda_11.2:$CUDA_HOME
-
-# pyenv
-if [[ -e "$HOME/ldisk_shokaku/.pyenv" ]]; then
-    export PYENV_ROOT="$HOME/ldisk_shokaku/.pyenv"
-    export PATH="$HOME/ldisk_shokaku/.pyenv/bin:$PATH"
-elif [[ -e "$HOME/ldisk_zuikaku/.pyenv" ]]; then
+case `hostname` in
+  zuikaku)
     export PYENV_ROOT="$HOME/ldisk_zuikaku/.pyenv"
     export PATH="$HOME/ldisk_zuikaku/.pyenv/bin:$PATH"
-else
+    # zuikaku_ldisk CUDA
+    export PATH=$HOME/ldisk_zuikaku/cuda/20.04/cuda-11.2/bin:$PATH
+    export LD_LIBRARY_PATH=$HOME/ldisk_zuikaku/cuda/20.04/cuda-11.2/lib64:$LD_LIBRARY_PATH
+    export CUDA_HOME=$HOME/ldisk_zuikaku/cuda/20.04/cuda_11.2:$CUDA_HOME
+    ;;
+  shokaku)
+    export PYENV_ROOT="$HOME/ldisk_shokaku/.pyenv"
+    export PATH="$HOME/ldisk_shokaku/.pyenv/bin:$PATH"
+    # shokaku_ldisk CUDA
+    export PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/bin:$PATH
+    export LD_LIBRARY_PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/lib64:$LD_LIBRARY_PATH
+    export CUDA_HOME=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2:$CUDA_HOME
+    ;;
+  hiryu)
+    export PYENV_ROOT="$HOME/ldisk_hiryu/.pyenv"
+    export PATH="$HOME/ldisk_hiryu/.pyenv/bin:$PATH"
+    # hiryu_ldisk cuda
+    export PATH=$HOME/ldisk_hiryu/cuda/20.04/cuda-11.2/bin:$PATH
+    export LD_LIBRARY_PATH=$HOME/ldisk_hiryu/cuda/20.04/cuda-11.2/lib64:$LD_LIBRARY_PATH
+    export CUDA_HOME=$HOME/ldisk_hiryu/cuda/20.04/cuda_11.2:$CUDA_HOME
+    ;;
+  *)
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
-fi
+    ;;
+esac
+
+# pyenv
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
