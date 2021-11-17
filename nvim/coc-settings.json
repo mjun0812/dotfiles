@@ -1,7 +1,7 @@
 {
     "coc.preferences.formatOnSaveFiletypes": ["css", "markdown", "javascript", "html", "yaml",  "json", "python"],
-    "coc.preferences.willSaveHandlerTimeout": 5000,
+    "coc.preferences.willSaveHandlerTimeout": 4999,
     "suggest.keepCompleteopt": true,
     "python.formatting.provider":"black",
-    "python.formatting.blackArgs": ["--line-length", "90"]
+    "python.formatting.blackArgs": ["--line-length", "99"]
 }
