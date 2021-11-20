@@ -50,9 +50,6 @@ case `hostname` in
     export LD_LIBRARY_PATH=$HOME/ldisk_hiryu/cuda/20.04/cuda-11.2/lib64:$LD_LIBRARY_PATH
     export CUDA_HOME=$HOME/ldisk_hiryu/cuda/20.04/cuda_11.2:$CUDA_HOME
     ;;
-  minerva.local)
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    ;;
   *)
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
@@ -92,6 +89,12 @@ autoload -Uz compinit && compinit
 if [ -e '~/linuxbrew' ]; then 
     eval "$(~/.linuxbrew/bin/brew shellenv)"
 fi
+
+case `hostname` in
+  minerva.local)
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    ;;
+esac
 
 # alias
 alias emacs='emacs -nw'
