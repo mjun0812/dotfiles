@@ -90,6 +90,12 @@ if [ -e '~/linuxbrew' ]; then
     eval "$(~/.linuxbrew/bin/brew shellenv)"
 fi
 
+case `hostname` in
+  minerva.local)
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    ;;
+esac
+
 # alias
 alias emacs='emacs -nw'
 alias vim='nvim'
