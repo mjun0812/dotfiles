@@ -75,7 +75,8 @@ source ~/.zshrc
 source ~/.zshrc
 
 # install packages 
-npm install -g yarn neovim md-to-pdf@latest
+npm install -g yarn 
+yarn global add neovim md-to-pdf@latest
 pip install --upgrade pip
 pip install pynvim wheel
 
