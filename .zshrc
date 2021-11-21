@@ -57,8 +57,8 @@ case `hostname` in
 esac
 
 # pyenv
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
+eval "$(pyenv init --path --no-rehash)"
+eval "$(pyenv init - --no-rehash)"
 eval "$(pyenv virtualenv-init -)"
 
 # pip zsh completion
