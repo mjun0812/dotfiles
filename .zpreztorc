@@ -33,13 +33,9 @@ zstyle ':prezto:load' pmodule-dirs $HOME/.dotfiles/modules
 zstyle ':prezto:load' pmodule \
   'environment' \
   'history' \
-  'osx'  \
   'utility' \
   'completion' \
-  'custom-prompt' \
   'directory' \
-  'dvc-zsh-completion' \
-  'spectrum' \
   'syntax-highlighting' \
   'history-substring-search' \
   'autosuggestions' \
