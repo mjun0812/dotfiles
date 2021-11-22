@@ -62,10 +62,6 @@ done
 mkdir -p "$HOME"/.config
 ln -snfv "$DOTPATH/nvim" "$HOME"/.config/
 
-# coc init
-mkdir -p ~/.config/coc/extensions
-ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
-
 source ~/.zshrc
 ./bin/dein.vim.sh
 ./bin/pyenv.sh "$PYTHON_VERSION"
@@ -80,7 +76,12 @@ yarn global add neovim md-to-pdf@latest
 pip install --upgrade pip
 pip install pynvim wheel
 
+# coc init
+mkdir -p ~/.config/coc/extensions
+ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
+
 # Neovim coc.vim
 cd ~/.config/coc/extensions
-npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
+# npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
+yarn install --frozen-lockfile
 
