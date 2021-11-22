@@ -31,8 +31,8 @@ if dein#load_state('~/.cache/dein')
   " 補完
   " call dein#add('Shougo/deoplete.nvim')
   " call dein#add('tbodt/deoplete-tabnine', { 'build': './install.sh' })
-  call dein#add('neoclide/coc.nvim', { 'merged': 0 })
-  
+  call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
+
   " file tree
   call dein#add('preservim/nerdtree')
   call dein#add('Xuyuanp/nerdtree-git-plugin')
