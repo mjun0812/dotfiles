@@ -85,6 +85,10 @@ case `hostname` in
     ;;
 esac
 
+autoload -Uz compinit && compinit
+autoload -U bashcompinit && bashcompinit
+complete -C '/usr/local/bin/aws_completer' aws
+
 # alias
 alias emacs='emacs -nw'
 alias vim='nvim'
