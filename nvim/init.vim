@@ -45,6 +45,9 @@ if dein#load_state('~/.cache/dein')
   "() 色付け:
   call dein#add('itchyny/lightline.vim') 
 
+  call dein#add('vim-denops/denops.vim')
+  call dein#add('kat0h/bufpreview.vim')
+
   " Required:
   call dein#end()
   call dein#save_state()
