@@ -73,6 +73,10 @@ export PATH="$(yarn global bin):$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init - --no-rehash)"
 
+# deno
+export DENO_INSTALL="$HOME/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+
 # LinuxBrew
 if [ -e '~/linuxbrew' ]; then 
     eval "$(~/.linuxbrew/bin/brew shellenv)"
