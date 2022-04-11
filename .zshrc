@@ -67,7 +67,7 @@ compctl -K _pip_completion pip
 # nodenv
 export PATH="$HOME/.nodenv/bin:$PATH"
 eval "$(nodenv init - --no-rehash)"
-export PATH="$(yarn global bin):$PATH"
+# export PATH="$(yarn global bin):$PATH"
 
 # rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
