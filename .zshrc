@@ -20,11 +20,6 @@ export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-# NFS_CUDA
-# export PATH=$HOME/cuda/18.04/cuda_10.2/bin:$PATH
-# export LD_LIBRARY_PATH=$HOME/cuda/18.04/cuda_10.2/lib64:$LD_LIBRARY_PATH
-# export CUDA_HOME=$HOME/cuda/18.04/cuda_10.2:$CUDA_HOME
-
 case `hostname` in
   zuikaku | hiryu)
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
