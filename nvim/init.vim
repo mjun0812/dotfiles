@@ -15,9 +15,7 @@ if dein#load_state('~/.cache/dein')
   call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
   
   " Add or remove your plugins here like this:
-  call dein#add('Shougo/neosnippet.vim')
-  call dein#add('Shougo/neosnippet-snippets')
-
+  
   " themes
   call dein#add('rakr/vim-one')
   
@@ -29,8 +27,6 @@ if dein#load_state('~/.cache/dein')
   call dein#add('sheerun/vim-polyglot')
   
   " 補完
-  " call dein#add('Shougo/deoplete.nvim')
-  " call dein#add('tbodt/deoplete-tabnine', { 'build': './install.sh' })
   call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
 
   " file tree
@@ -39,14 +35,15 @@ if dein#load_state('~/.cache/dein')
   call dein#add('ryanoasis/vim-devicons')
   
   " 括弧補完
-  call dein#add('Raimondi/delimitMate')
   call dein#add('cohama/lexima.vim')
-  
-  "() 色付け:
-  call dein#add('itchyny/lightline.vim') 
 
-  call dein#add('vim-denops/denops.vim')
-  call dein#add('kat0h/bufpreview.vim')
+  "() 色付け:
+  "call dein#add('itchyny/lightline.vim') 
+
+  "markdown preview
+  call dein#add('iamcco/markdown-preview.nvim', 
+              \ {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'], 
+              \ 'build': 'sh -c "cd app && yarn install"' })
 
   " Required:
   call dein#end()
@@ -60,6 +57,11 @@ syntax enable
 " If you want to install not installed plugins on startup.
 if dein#check_install()
   call dein#install()
+endif
+
+" check dein deleted plugin
+if len(dein#check_clean()) != 0
+  call map(dein#check_clean(), "delete(v:val, 'rf')")
 endif
 
 "End dein Scripts-------------------------
@@ -92,9 +94,6 @@ let g:airline_theme='one'
 
 " vim-python
 let g:python_highlight_all=1
-
-" deoplate
-" let g:deoplete#enable_at_startup=1
 
 " 行番号
 set number
@@ -150,4 +149,8 @@ if has("autocmd")
     \ endif
   augroup END
 endif
-source ~/.config/nvim/coc.rc.vim
+
+let g:lexima_enable_basic_rules=1
+
+" coc.nvim config
+"source ~/.config/nvim/coc.rc.vim
