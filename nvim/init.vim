@@ -23,22 +23,23 @@ if dein#load_state('~/.cache/dein')
   call dein#add('vim-airline/vim-airline')
   
   " syntax
-  call dein#add('vim-python/python-syntax')
+  "call dein#add('vim-python/python-syntax')
   call dein#add('sheerun/vim-polyglot')
   
   " 補完
   call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
 
   " file tree
-  call dein#add('preservim/nerdtree')
-  call dein#add('Xuyuanp/nerdtree-git-plugin')
-  call dein#add('ryanoasis/vim-devicons')
+  call dein#add('lambdalisue/fern.vim')
+  call dein#add('lambdalisue/fern-git-status.vim')
+  call dein#add('lambdalisue/nerdfont.vim')
+  call dein#add('lambdalisue/fern-renderer-nerdfont.vim')
   
   " 括弧補完
   call dein#add('cohama/lexima.vim')
 
   "() 色付け:
-  "call dein#add('itchyny/lightline.vim') 
+  call dein#add('itchyny/lightline.vim') 
 
   "markdown preview
   call dein#add('iamcco/markdown-preview.nvim', 
@@ -81,7 +82,7 @@ inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
 set cursorline
 
 " NERDTreeToggle
-nnoremap <silent><C-e> :NERDTreeToggle<CR>
+nnoremap <silent><C-e> :Fern . -reveal=% -drawer -toggle<CR>
 
 " theme
 if (has("nvim"))
@@ -91,9 +92,6 @@ set termguicolors
 set background=dark
 colorscheme one
 let g:airline_theme='one'
-
-" vim-python
-let g:python_highlight_all=1
 
 " 行番号
 set number
@@ -150,7 +148,15 @@ if has("autocmd")
   augroup END
 endif
 
+" カッコ保管のルール(lexima)
 let g:lexima_enable_basic_rules=1
 
+" vim-python
+"let g:python_highlight_all=1
+
+" fern
+let g:fern#renderer='nerdfont'
+
 " coc.nvim config
-"source ~/.config/nvim/coc.rc.vim
+source ~/.config/nvim/coc.rc.vim
+
