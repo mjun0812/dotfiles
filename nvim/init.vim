@@ -157,6 +157,11 @@ let g:lexima_enable_basic_rules=1
 " fern
 let g:fern#renderer='nerdfont'
 
+" coc-pydocstring
+nmap <silent> ga <Plug>(coc-codeaction-line)
+xmap <silent> ga <Plug>(coc-codeaction-selected)
+nmap <silent> gA <Plug>(coc-codeaction)
+
 " coc.nvim config
 source ~/.config/nvim/coc.rc.vim
 
