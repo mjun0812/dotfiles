@@ -74,7 +74,7 @@ if [ -e '~/linuxbrew' ]; then
 fi
 
 # M1 mac Homebrew
-if [ "$(uname)" = 'Darwin' && "$(uname -m)" = 'arm64' ]; then
+if [ "$(uname)" = 'Darwin' ] && [ "$(uname -m)" = 'arm64' ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
@@ -88,7 +88,7 @@ SSH_KEY_LIFE_TIME_SEC=3600
 SSH_AGENT_FILE=$HOME/.ssh-agent
 if [ "$(expr substr $(uname -s) 1 5)" = 'Linux' ]; then
     test -f $SSH_AGENT_FILE && source $SSH_AGENT_FILE > /dev/null 2>&1
-    ssh-agent -t $SSH_KEY_LIFE_TIME_SEC > $SSH_AGENT_FILE
+    ssh-agent -t $SSH_KEY_LIFE_TIME_SEC >! $SSH_AGENT_FILE
     source $SSH_AGENT_FILE > /dev/null 2>&1
 fi
 
