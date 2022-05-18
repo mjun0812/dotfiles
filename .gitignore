@@ -13,6 +13,7 @@
 !.zshenv
 !.zprofile
 !.zlogin
+!.zlogout
 !.zpreztorc
 !.zprezto
 !.zprezto/**

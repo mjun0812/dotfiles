@@ -156,6 +156,7 @@ let g:lexima_enable_basic_rules=1
 
 " fern
 let g:fern#renderer='nerdfont'
+let g:fern#default_hidden=1
 
 " coc-pydocstring
 nmap <silent> ga <Plug>(coc-codeaction-line)
