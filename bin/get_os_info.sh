@@ -5,7 +5,7 @@
 get_os_name() {
     if [ "$(uname)" = 'Darwin' ]; then
         OS='macOS'
-    elif [ "$(expr substr $(uname -s) 1 5)" = 'Linux' ]; then
+    elif [ "$(uname -s)" = 'Linux' ]; then
         RELEASE_FILE='/etc/os-release'
         if grep '^NAME="CentOS' "${RELEASE_FILE}" >/dev/null; then
             OS='CentOS'
