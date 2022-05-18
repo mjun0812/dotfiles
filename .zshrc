@@ -86,7 +86,7 @@ complete -C '/usr/local/bin/aws_completer' aws
 # ssh-agent
 SSH_KEY_LIFE_TIME_SEC=3600
 SSH_AGENT_FILE=$HOME/.ssh-agent
-if [ "$(expr substr $(uname -s) 1 5)" = 'Linux' ]; then
+if [ `uname -s`` = 'Linux' ]; then
     test -f $SSH_AGENT_FILE && source $SSH_AGENT_FILE > /dev/null 2>&1
     ssh-agent -t $SSH_KEY_LIFE_TIME_SEC >! $SSH_AGENT_FILE
     source $SSH_AGENT_FILE > /dev/null 2>&1
