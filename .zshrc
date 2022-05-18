@@ -68,25 +68,29 @@ eval "$(nodenv init - --no-rehash)"
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init - --no-rehash)"
 
-# deno
-export DENO_INSTALL="$HOME/.deno"
-export PATH="$DENO_INSTALL/bin:$PATH"
-
 # LinuxBrew
 if [ -e '~/linuxbrew' ]; then 
     eval "$(~/.linuxbrew/bin/brew shellenv)"
 fi
 
 # M1 mac Homebrew
-case `hostname` in
-  minerva.local)
+if [ "$(uname)" = 'Darwin' && "$(uname -m)" = 'arm64' ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
-    ;;
-esac
+fi
 
+# AWS CLI completion
 autoload -Uz compinit && compinit
 autoload -U bashcompinit && bashcompinit
 complete -C '/usr/local/bin/aws_completer' aws
+
+# ssh-agent
+SSH_KEY_LIFE_TIME_SEC=3600
+SSH_AGENT_FILE=$HOME/.ssh-agent
+if [ "$(expr substr $(uname -s) 1 5)" = 'Linux' ]; then
+    test -f $SSH_AGENT_FILE && source $SSH_AGENT_FILE > /dev/null 2>&1
+    ssh-agent -t $SSH_KEY_LIFE_TIME_SEC > $SSH_AGENT_FILE
+    source $SSH_AGENT_FILE > /dev/null 2>&1
+fi
 
 # alias
 alias emacs='emacs -nw'
