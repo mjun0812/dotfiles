@@ -18,12 +18,14 @@ install_neovim() {
                 brew install neovim
                 ;;
             Linux)
+                echo "Install neovim"
                 mkdir -p ~/.bin
                 cd ~/.bin/
                 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
                 chmod u+x ./nvim.appimage
-                ./nvim.appimage --appimage-extract
+                ./nvim.appimage --appimage-extract > /dev/null 2>&1
                 ln -s ./squashfs-root/AppRun nvim
+				rm -rf ~/.bin/nvim.appimage
                 cd "$CURRENT"
             esac
     fi
