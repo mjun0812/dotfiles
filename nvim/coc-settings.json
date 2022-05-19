@@ -3,6 +3,6 @@
     "coc.preferences.willSaveHandlerTimeout": 4999,
     "suggest.keepCompleteopt": true,
     "python.formatting.provider":"black",
-    "python.formatting.blackArgs": ["--line-length", "119"],
+    "python.formatting.blackArgs": ["--line-length", "99"],
     "pydocstring.formatter": "google"
 }
