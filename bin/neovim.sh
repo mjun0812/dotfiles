@@ -1,8 +1,9 @@
 #!/bin/zsh
 
-CURRENT=$(dirname $0)
+CURRENT=$(pwd)
+BIN_HOME=$(dirname $0)
 
-source ${CURRENT}/get_os_info.sh
+source ${BIN_HOME}/get_os_info.sh
 
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
@@ -12,15 +13,18 @@ is_exists() {
 
 install_neovim() {
     if ! is_exists "nvim -v"; then
-        case `get_os_name` in
+        case `uname -s` in
             macOS)
                 brew install neovim
                 ;;
-            *)
+            Linux)
                 mkdir -p ~/.bin
+                cd ~/.bin/
                 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
                 chmod u+x ./nvim.appimage
-                mv ./nvim.appimage ~/.bin/nvim
+                ./nvim.appimage --appimage-extract
+                ln -s ./squashfs-root/AppRun nvim
+                cd "$CURRENT"
             esac
     fi
 }
