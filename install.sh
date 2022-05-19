@@ -54,6 +54,11 @@ for f in .??*; do
     [ "$f" = ".gitignore" ] && continue
     [ "$f" = ".gitmodule" ] && continue
     [ "$f" = ".backup" ] && continue
+    [ "$f" = ".gitconfig" ] && continue
+    [ "$f" = ".gitconfig-jackjasonb" ] && continue
+    [ "$f" = ".gitconfig-junya" ] && continue
+    [ "$f" = ".gitconfig-lab" ] && continue
+    [ "$f" = ".gitconfig-qdoga" ] && continue
     # do symbolic link
     ln -snfv "$DOTPATH/$f" "$HOME/$f"
 done
