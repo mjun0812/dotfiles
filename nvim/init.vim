@@ -20,7 +20,8 @@ if dein#load_state('~/.cache/dein')
   call dein#add('rakr/vim-one')
   
   " status bar
-  call dein#add('vim-airline/vim-airline')
+  "call dein#add('vim-airline/vim-airline')
+  call dein#add('itchyny/lightline.vim') 
   
   " syntax
   "call dein#add('vim-python/python-syntax')
@@ -37,9 +38,6 @@ if dein#load_state('~/.cache/dein')
   
   " 括弧補完
   call dein#add('cohama/lexima.vim')
-
-  "() 色付け:
-  call dein#add('itchyny/lightline.vim') 
 
   "markdown preview
   call dein#add('iamcco/markdown-preview.nvim', 
@@ -91,7 +89,7 @@ endif
 set termguicolors
 set background=dark
 colorscheme one
-let g:airline_theme='one'
+"let g:airline_theme='one'
 
 " 行番号
 set number
@@ -148,7 +146,7 @@ if has("autocmd")
   augroup END
 endif
 
-" カッコ保管のルール(lexima)
+" lexima
 let g:lexima_enable_basic_rules=1
 
 " vim-python
