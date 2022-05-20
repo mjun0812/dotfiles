@@ -12,7 +12,7 @@ is_exists() {
 }
 
 install_neovim() {
-    if ! is_exists "nvim -v"; then
+    if ! is_exists "nvim"; then
         case `uname -s` in
             macOS)
                 brew install neovim
