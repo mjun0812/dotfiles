@@ -20,28 +20,24 @@ export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-case `hostname` in
-  zuikaku | hiryu)
+if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
     export PATH="$HOME/ldisk/.pyenv/bin:$PATH"
     # zuikaku_ldisk CUDA
     export PATH=$HOME/ldisk/cuda/20.04/cuda-11.3/bin:$PATH
     export LD_LIBRARY_PATH=$HOME/ldisk/cuda/20.04/cuda-11.3/lib64:$LD_LIBRARY_PATH
     export CUDA_HOME=$HOME/ldisk/cuda/20.04/cuda_11.3:$CUDA_HOME
-    ;;
-  shokaku)
+elif [ -e $HOME/ldisk_shokaku/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk_shokaku/.pyenv"
     export PATH="$HOME/ldisk_shokaku/.pyenv/bin:$PATH"
     # shokaku_ldisk CUDA
     export PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/bin:$PATH
     export LD_LIBRARY_PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/lib64:$LD_LIBRARY_PATH
     export CUDA_HOME=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2:$CUDA_HOME
-    ;;
-  *)
+else
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
-    ;;
-esac
+fi
 
 # pyenv
 eval "$(pyenv init --path --no-rehash)"
