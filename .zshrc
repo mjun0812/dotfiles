@@ -27,9 +27,6 @@ if [ -e $HOME/ldisk/.pyenv ]; then
     export PATH=$HOME/ldisk/cuda/20.04/cuda-11.6/bin:$PATH
     export LD_LIBRARY_PATH=$HOME/ldisk/cuda/20.04/cuda-11.6/lib64:$LD_LIBRARY_PATH
     export CUDA_HOME=$HOME/ldisk/cuda/20.04/cuda_11.6:$CUDA_HOME
-elif [ -e $HOME/ldisk_shokaku/.pyenv ]; then
-    export PYENV_ROOT="$HOME/ldisk_shokaku/.pyenv"
-    export PATH="$HOME/ldisk_shokaku/.pyenv/bin:$PATH"
     # shokaku_ldisk CUDA
     export PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/bin:$PATH
     export LD_LIBRARY_PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/lib64:$LD_LIBRARY_PATH
