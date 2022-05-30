@@ -4,9 +4,9 @@
 DOTPATH=~/.dotfiles
 GITHUB='https://github.com/mjun0812/dotfiles.git'
 
-PYTHON_VERSION='3.8.10'
+PYTHON_VERSION='3.10.4'
 RUBY_VERSION='3.0.4'
-NODE_VERSION='14.17.0'
+NODE_VERSION='14.19.3'
 
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
@@ -80,7 +80,7 @@ npm install -g yarn
 yarn global add neovim md-to-pdf@latest
 nodenv rehash
 pip install --upgrade pip
-pip install pynvim wheel
+pip install pynvim wheel black flake8
 pyenv rehash
 
 # coc init
