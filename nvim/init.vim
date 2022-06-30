@@ -146,6 +146,12 @@ endif
 
 " lexima
 let g:lexima_enable_basic_rules=1
+" 任意の文字列が既にある時は保管しない
+" 例: aaaa -(input ')-> aaa'
+call lexima#add_rule({'char': '"', 'at': '.\%#'})
+call lexima#add_rule({'char': "'", 'at': '.\%#'})
+call lexima#add_rule({'char': '(', 'at': '.\%#'})
+call lexima#add_rule({'char': '[', 'at': '.\%#'})
 
 " vim-python
 "let g:python_highlight_all=1
