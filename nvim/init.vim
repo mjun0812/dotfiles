@@ -79,8 +79,6 @@ inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
 " 行を強調表示
 set cursorline
 
-" NERDTreeToggle
-nnoremap <silent><C-e> :Fern . -reveal=% -drawer -toggle<CR>
 
 " theme
 if (has("nvim"))
@@ -155,6 +153,8 @@ let g:lexima_enable_basic_rules=1
 " fern
 let g:fern#renderer='nerdfont'
 let g:fern#default_hidden=1
+" Fern NERDTreeToggle
+nnoremap <silent><C-e> :Fern . -reveal=% -drawer -toggle<CR>
 
 " coc-pydocstring
 nmap <silent> ga <Plug>(coc-codeaction-line)
