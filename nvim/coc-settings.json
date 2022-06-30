@@ -4,5 +4,6 @@
     "suggest.keepCompleteopt": true,
     "python.formatting.provider":"black",
     "python.formatting.blackArgs": ["--line-length", "99"],
+    "pyright.disableProgressNotifications": true,
     "pydocstring.formatter": "google"
 }
