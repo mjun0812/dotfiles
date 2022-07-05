@@ -5,5 +5,7 @@
     "python.formatting.provider":"black",
     "python.formatting.blackArgs": ["--line-length", "99"],
     "pyright.disableProgressNotifications": true,
-    "pydocstring.formatter": "google"
+    "pydocstring.formatter": "google",
+    "prettier.disableLanguages": ["markdown"],
+    "markdownlint.config": {"line-length": false}
 }
