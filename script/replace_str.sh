@@ -6,7 +6,7 @@ read old_text
 echo "Input new text"
 read new_text
 
-. ~/.dotfiles/script/uname.sh
+source ~/.dotfiles/script/uname.sh
 
 case `get_os` in
     Linux)
