@@ -1,4 +1,3 @@
-
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -13,27 +12,23 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # add local PATH
-export PATH=$PATH:~/.bin
-export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+export PATH=$PATH:$HOME/.bin
+export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
 # CUDA
-export PATH=/usr/local/cuda/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+export PATH="/usr/local/cuda/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 
-export PATH=/usr/local/cuda-11.4/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda-11.4/lib64:$LD_LIBRARY_PATH
+export PATH="/usr/local/cuda/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 
 if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
     export PATH="$HOME/ldisk/.pyenv/bin:$PATH"
-    # zuikaku_ldisk CUDA
-    export PATH=$HOME/ldisk/cuda/20.04/cuda-11.6/bin:$PATH
-    export LD_LIBRARY_PATH=$HOME/ldisk/cuda/20.04/cuda-11.6/lib64:$LD_LIBRARY_PATH
-    export CUDA_HOME=$HOME/ldisk/cuda/20.04/cuda_11.6:$CUDA_HOME
-    # shokaku_ldisk CUDA
-    export PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/bin:$PATH
-    export LD_LIBRARY_PATH=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2/lib64:$LD_LIBRARY_PATH
-    export CUDA_HOME=$HOME/ldisk_shokaku/cuda/18.04/cuda-10.2:$CUDA_HOME
+    # ldisk CUDA
+    export PATH="$HOME/ldisk/cuda/20.04/cuda-11.6/bin:$PATH"
+    export LD_LIBRARY_PATH=$"HOME/ldisk/cuda/20.04/cuda-11.6/lib64:$LD_LIBRARY_PATH"
+    export CUDA_HOME="$HOME/ldisk/cuda/20.04/cuda_11.6:$CUDA_HOME"
 else
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
