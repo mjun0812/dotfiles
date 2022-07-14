@@ -156,11 +156,6 @@ let g:fern#default_hidden=1
 " Fern NERDTreeToggle
 nnoremap <silent><C-e> :Fern . -reveal=% -drawer -toggle<CR>
 
-" coc-pydocstring
-nmap <silent> ga <Plug>(coc-codeaction-line)
-xmap <silent> ga <Plug>(coc-codeaction-selected)
-nmap <silent> gA <Plug>(coc-codeaction)
-
 " coc.nvim config
 source ~/.config/nvim/coc.rc.vim
 
