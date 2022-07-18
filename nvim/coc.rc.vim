@@ -163,8 +163,11 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 " Markdownのときは補完をしない
 " autocmd FileType markdown :call CocDisable()
+autocmd FileType markdown let b:coc_suggest_disable=1
 
 " coc-pydocstring
 nmap <silent> ga <Plug>(coc-codeaction-line)
 xmap <silent> ga <Plug>(coc-codeaction-selected)
 nmap <silent> gA <Plug>(coc-codeaction)
+
+
