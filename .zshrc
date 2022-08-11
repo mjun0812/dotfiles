@@ -19,9 +19,6 @@ export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 export PATH="/usr/local/cuda/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 
-export PATH="/usr/local/cuda/bin:$PATH"
-export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
-
 if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
     export PATH="$HOME/ldisk/.pyenv/bin:$PATH"
