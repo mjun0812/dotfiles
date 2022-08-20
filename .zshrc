@@ -71,6 +71,10 @@ autoload -Uz compinit && compinit
 autoload -U bashcompinit && bashcompinit
 complete -C '/usr/local/bin/aws_completer' aws
 
+# GCP SDK
+source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+
 # ssh-agent
 SSH_KEY_LIFE_TIME_SEC=3600
 SSH_AGENT_FILE=$HOME/.ssh-agent
