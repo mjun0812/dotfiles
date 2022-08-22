@@ -4,9 +4,9 @@
 DOTPATH=~/.dotfiles
 GITHUB='https://github.com/mjun0812/dotfiles.git'
 
-PYTHON_VERSION='3.10.4'
+PYTHON_VERSION='3.10.6'
 RUBY_VERSION='3.0.4'
-NODE_VERSION='14.19.3'
+NODE_VERSION='16.17.0'
 
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
