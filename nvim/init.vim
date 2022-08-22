@@ -36,9 +36,6 @@ if dein#load_state('~/.cache/dein')
   call dein#add('lambdalisue/nerdfont.vim')
   call dein#add('lambdalisue/fern-renderer-nerdfont.vim')
   
-  " 括弧補完
-  call dein#add('cohama/lexima.vim')
-
   "markdown preview
   call dein#add('iamcco/markdown-preview.nvim', 
               \ {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'], 
@@ -70,15 +67,9 @@ set encoding=UTF-8
 " menuoneで、対象が1件しかなくても常に補完ウィンドウを表示
 " noinsertで補完ウィンドウを表示時に挿入しない
 set completeopt=menuone,noinsert
-" 補完表示時のEnterで改行をしない
-inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
-" 補完で選択したものを即時に挿入しない
-inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
-inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
 
 " 行を強調表示
 set cursorline
-
 
 " theme
 if (has("nvim"))
@@ -87,7 +78,7 @@ endif
 set termguicolors
 set background=dark
 colorscheme one
-"let g:airline_theme='one'
+let g:airline_theme='one'
 
 " 行番号
 set number
@@ -144,8 +135,8 @@ if has("autocmd")
   augroup END
 endif
 
-" lexima
-let g:lexima_enable_basic_rules=1
+" coc.nvim config
+source ~/.config/nvim/coc.rc.vim
 
 " vim-python
 "let g:python_highlight_all=1
@@ -155,7 +146,4 @@ let g:fern#renderer='nerdfont'
 let g:fern#default_hidden=1
 " Fern NERDTreeToggle
 nnoremap <silent><C-e> :Fern . -reveal=% -drawer -toggle<CR>
-
-" coc.nvim config
-source ~/.config/nvim/coc.rc.vim
 
