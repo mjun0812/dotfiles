@@ -76,7 +76,9 @@ if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
     source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
     source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
 fi
-export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/test-project-service-account.json
+if [ -e "$HOME/.config/gcloud/test-project-service-account.json"]; then
+    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/test-project-service-account.json
+fi
 
 # ssh-agent
 SSH_KEY_LIFE_TIME_SEC=3600
