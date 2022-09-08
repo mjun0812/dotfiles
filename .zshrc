@@ -18,14 +18,11 @@ export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 # CUDA
 export PATH="/usr/local/cuda/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
+export CUDA_HOME="$HOME/usr/local/cuda:$CUDA_HOME"
 
 if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
     export PATH="$HOME/ldisk/.pyenv/bin:$PATH"
-    # ldisk CUDA
-    export PATH="$HOME/ldisk/cuda/20.04/cuda-11.6/bin:$PATH"
-    export LD_LIBRARY_PATH=$"HOME/ldisk/cuda/20.04/cuda-11.6/lib64:$LD_LIBRARY_PATH"
-    export CUDA_HOME="$HOME/ldisk/cuda/20.04/cuda_11.6:$CUDA_HOME"
 else
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
