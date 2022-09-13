@@ -122,6 +122,24 @@ set backspace=indent,eol,start
 " yank した文字列をクリップボードにコピー
 set clipboard+=unnamed
 
+" ターミナルを開いたらに常にinsertモードに入る
+autocmd TermOpen * :startinsert
+
+" ターミナルモードで行番号を非表示
+autocmd TermOpen * setlocal norelativenumber
+autocmd TermOpen * setlocal nonumber
+
+" 新規タブでターミナルモードを起動
+" nnoremap <silent> tt <cmd>terminal<CR>
+" 下分割でターミナルモードを起動
+" nnoremap <silent> tx <cmd>belowright new<CR><cmd>terminal<CR>
+
+" Terminalのインサートモードからの離脱をESCにする
+:tnoremap <Esc> <C-\><C-n>
+
+" :Tコマンドで下にターミナルを表示する
+command! -nargs=* T split | wincmd j | terminal <args>
+
 " カーソル記憶
 if has("autocmd")
   augroup redhat
