@@ -4,11 +4,11 @@
 
 require git, zsh
 
-`curl -L https://raw.githubusercontent.com/jackjasonb/dotfiles/master/install.sh | zsh`
+`curl -L https://raw.githubusercontent.com/mjun0812/dotfiles/main/install.sh | zsh`
 
 ## Environment
 
-- OS : macOS, Ubuntu, CentOS
+- OS : macOS, Ubuntu
 - SHELL : ZSH
 - pyenv, pyenv-virtualenv
 - rubenv
@@ -16,4 +16,4 @@ require git, zsh
 - emacs
 - vim
 - neovim
-- prezto (Using own prompt file)
+- prezto
