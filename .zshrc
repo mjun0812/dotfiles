@@ -92,7 +92,7 @@ alias vim='nvim'
 if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
     alias ls='gls --group-directories-first --color=auto'
 fi
-alias sync="~/workspace/rsync_to_remote.sh"
+alias sync="~/workspace/sync.sh"
 alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
