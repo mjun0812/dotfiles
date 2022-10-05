@@ -65,7 +65,7 @@ fi
 
 # AWS CLI completion
 autoload -Uz compinit && compinit
-autoload -U bashcompinit && bashcompinit
+autoload -Uz bashcompinit && bashcompinit
 complete -C '/usr/local/bin/aws_completer' aws
 
 # GCP SDK
