@@ -94,6 +94,7 @@ if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
 fi
 alias sync="~/workspace/sync.sh"
 alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
+alias nvidia-smi="nvidia-smi | grep -v Xorg"
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
