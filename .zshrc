@@ -47,16 +47,10 @@ compctl -K _pip_completion pip
 # nodenv
 export PATH="$HOME/.nodenv/bin:$PATH"
 eval "$(nodenv init - --no-rehash)"
-# export PATH="$(yarn global bin):$PATH"
 
 # rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init - --no-rehash)"
-
-# LinuxBrew
-if [ -e '~/linuxbrew' ]; then 
-    eval "$(~/.linuxbrew/bin/brew shellenv)"
-fi
 
 # M1 mac Homebrew
 if [ "$(uname)" = 'Darwin' ] && [ "$(uname -m)" = 'arm64' ]; then
