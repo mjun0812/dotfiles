@@ -57,6 +57,11 @@ if [ "$(uname)" = 'Darwin' ] && [ "$(uname -m)" = 'arm64' ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+# docker completion
+if [ -e ~/.zsh/completions ]; then
+  fpath=(~/.zsh/completions $fpath)
+fi
+
 # AWS CLI completion
 autoload -Uz compinit && compinit
 autoload -Uz bashcompinit && bashcompinit
@@ -79,6 +84,8 @@ if [ "$(uname -s)" = 'Linux' ]; then
     ssh-agent -t $SSH_KEY_LIFE_TIME_SEC >! $SSH_AGENT_FILE
     source $SSH_AGENT_FILE > /dev/null 2>&1
 fi
+
+
 
 # alias
 alias emacs='emacs -nw'
