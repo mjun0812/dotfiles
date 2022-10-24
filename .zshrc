@@ -47,20 +47,19 @@ compctl -K _pip_completion pip
 # nodenv
 export PATH="$HOME/.nodenv/bin:$PATH"
 eval "$(nodenv init - --no-rehash)"
-# export PATH="$(yarn global bin):$PATH"
 
 # rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init - --no-rehash)"
 
-# LinuxBrew
-if [ -e '~/linuxbrew' ]; then 
-    eval "$(~/.linuxbrew/bin/brew shellenv)"
-fi
-
 # M1 mac Homebrew
 if [ "$(uname)" = 'Darwin' ] && [ "$(uname -m)" = 'arm64' ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# docker completion
+if [ -e ~/.zsh/completions ]; then
+  fpath=(~/.zsh/completions $fpath)
 fi
 
 # AWS CLI completion
@@ -85,6 +84,8 @@ if [ "$(uname -s)" = 'Linux' ]; then
     ssh-agent -t $SSH_KEY_LIFE_TIME_SEC >! $SSH_AGENT_FILE
     source $SSH_AGENT_FILE > /dev/null 2>&1
 fi
+
+
 
 # alias
 alias emacs='emacs -nw'
