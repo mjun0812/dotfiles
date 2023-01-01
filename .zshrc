@@ -20,6 +20,11 @@ export PATH="/usr/local/cuda/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 export CUDA_HOME="/usr/local/cuda"
 
+# WSL
+if [ -e /usr/lib/wsl/lib ]; then
+    export PATH="/usr/lib/wsl/lib:$PATH"
+fi
+
 if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
     export PATH="$HOME/ldisk/.pyenv/bin:$PATH"
