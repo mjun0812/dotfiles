@@ -27,20 +27,12 @@ let s:dein_src = '~/.cache/dein/repos/github.com/Shougo/dein.vim'
 " Set dein runtime path (required)
 execute 'set runtimepath+=' . s:dein_src
 
-" Call dein initialization (required)
-call dein#begin(s:dein_base)
-
-call dein#add(s:dein_src)
-
 if dein#load_state('~/.cache/dein')
   call dein#begin(s:dein_base)
+  call dein#add(s:dein_src)
 
-  " Let dein manage dein
-  " Required:
-  call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
-  
   " Add or remove your plugins here like this:
-  
+
   " themes
   call dein#add('rakr/vim-one')
   
