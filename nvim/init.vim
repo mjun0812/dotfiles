@@ -34,7 +34,8 @@ if dein#load_state('~/.cache/dein')
   " Add or remove your plugins here like this:
 
   " themes
-  call dein#add('rakr/vim-one')
+  "call dein#add('rakr/vim-one')
+  call dein#add('navarasu/onedark.nvim')
   
   " status bar
   "call dein#add('vim-airline/vim-airline')
@@ -43,6 +44,7 @@ if dein#load_state('~/.cache/dein')
   " syntax
   "call dein#add('vim-python/python-syntax')
   call dein#add('sheerun/vim-polyglot')
+  call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': 'TSUpdate'})
   
   " 補完
   call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
@@ -101,9 +103,16 @@ if (has("nvim"))
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 endif
 set termguicolors
-set background=dark
-colorscheme one
-let g:airline_theme='one'
+
+"set background=dark
+"colorscheme one
+"let g:airline_theme='one'
+"
+let g:onedark_config = {
+    \ 'style': 'darker',
+\}
+colorscheme onedark
+let g:airline_theme='onedark'
 
 " 行番号
 set number
@@ -189,4 +198,22 @@ let g:fern#renderer='nerdfont'
 let g:fern#default_hidden=1
 " Fern NERDTreeToggle
 nnoremap <silent><C-e> :Fern . -reveal=% -drawer -toggle<CR>
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all"
+  ensure_installed = { "c", "markdown", "markdown_inline", "python" },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = true,
+
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  auto_install = true,
+
+  highlight = {
+      enable = true,
+  }
+}
+EOF
 
