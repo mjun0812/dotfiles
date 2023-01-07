@@ -68,7 +68,6 @@ mkdir -p "$HOME"/.config
 ln -snfv "$DOTPATH/nvim" "$HOME"/.config/
 
 source ~/.zshrc
-./bin/dein.vim.sh
 ./bin/pyenv.sh "$PYTHON_VERSION"
 ./bin/rbenv.sh "$RUBY_VERSION"
 ./bin/nodenv.sh "$NODE_VERSION"
