@@ -202,7 +202,7 @@ nnoremap <silent><C-e> :Fern . -reveal=% -drawer -toggle<CR>
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "c", "markdown", "markdown_inline", "python" },
+  ensure_installed = { "c", "markdown", "lua", "markdown_inline", "python" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = true,
