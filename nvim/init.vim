@@ -187,12 +187,6 @@ if has("autocmd")
   augroup END
 endif
 
-" coc.nvim config
-source ~/.config/nvim/coc.rc.vim
-
-" vim-python
-"let g:python_highlight_all=1
-
 " fern
 let g:fern#renderer='nerdfont'
 let g:fern#default_hidden=1
@@ -216,4 +210,10 @@ require'nvim-treesitter.configs'.setup {
   }
 }
 EOF
+
+" Splitした時にステータスバーはSplitしない
+set laststatus=3
+
+" coc.nvim config
+source ~/.config/nvim/coc.rc.vim
 
