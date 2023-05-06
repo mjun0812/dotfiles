@@ -7,6 +7,7 @@ GITHUB='https://github.com/mjun0812/dotfiles.git'
 PYTHON_VERSION='3.10.6'
 RUBY_VERSION='3.0.4'
 NODE_VERSION='18.12.1'
+GO_VERSION="1.20.4"
 
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {

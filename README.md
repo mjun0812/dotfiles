@@ -4,16 +4,10 @@
 
 require git, zsh
 
-`curl -L https://raw.githubusercontent.com/mjun0812/dotfiles/main/install.sh | zsh`
 
-## Environment
+```bash
+git clone https://github.com/mjun0812/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./install.sh
+```
 
-- OS : macOS, Ubuntu
-- SHELL : ZSH
-- pyenv, pyenv-virtualenv
-- rubenv
-- nodenv
-- emacs
-- vim
-- neovim
-- prezto
