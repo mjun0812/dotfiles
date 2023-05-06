@@ -72,6 +72,7 @@ source ~/.zshrc
 ./bin/pyenv.sh "$PYTHON_VERSION"
 ./bin/rbenv.sh "$RUBY_VERSION"
 ./bin/nodenv.sh "$NODE_VERSION"
+./bin/goenv.sh "$GO_VERSION"
 ./bin/neovim.sh
 source ~/.zshrc
 
@@ -90,4 +91,7 @@ ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
 # Neovim coc.vim
 cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
+
+# glow markdown viewer
+go install github.com/charmbracelet/glow@latest
 
