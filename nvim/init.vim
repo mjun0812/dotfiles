@@ -193,6 +193,15 @@ let g:fern#default_hidden=1
 " Fern NERDTreeToggle
 nnoremap <silent><C-e> :Fern . -reveal=% -drawer -toggle<CR>
 
+function! s:init_fern() abort
+    nmap <buffer> V <Plug>(fern-action-open:split)
+endfunction
+
+augroup fern-custom
+  autocmd! *
+  autocmd FileType fern call s:init_fern()
+augroup END
+
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
@@ -216,4 +225,5 @@ set laststatus=3
 
 " coc.nvim config
 source ~/.config/nvim/coc.rc.vim
+
 
