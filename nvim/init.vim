@@ -60,6 +60,8 @@ if dein#load_state('~/.cache/dein')
               \ {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'], 
               \ 'build': 'sh -c "cd app && yarn install"' })
 
+  call dein#add('lervag/vimtex')
+
   " Required:
   call dein#end()
   call dein#save_state()
@@ -205,7 +207,7 @@ augroup END
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "c", "markdown", "lua", "markdown_inline", "python" },
+  ensure_installed = { "c", "markdown", "lua", "markdown_inline", "python"},
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = true,
@@ -216,6 +218,7 @@ require'nvim-treesitter.configs'.setup {
 
   highlight = {
       enable = true,
+      disable = { "latex" },
   }
 }
 EOF
