@@ -7,6 +7,14 @@
     "pyright.inlayHints.functionReturnTypes": false,
     "pyright.inlayHints.variableTypes": false,
     "pydocstring.formatter": "google",
-    "prettier.disableLanguages": ["markdown"],
-    "markdownlint.config": {"line-length": false}
+    //"prettier.disableLanguages": ["markdown"],
+    "markdownlint.config": {
+      "line-length": false
+    },
+    "coc.source.vimtex.enable":true,
+    "coc.source.vimtex.filetypes": [
+      "tex",
+      "plaintex",
+      "latex"
+    ]
 }

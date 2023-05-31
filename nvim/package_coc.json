@@ -6,6 +6,7 @@
     "coc-prettier": ">=9.3.1",
     "coc-pydocstring": ">=0.7.2",
     "coc-pyright": ">=1.1.255",
-    "coc-solargraph": ">=1.2.4"
+    "coc-solargraph": ">=1.2.4",
+    "coc-vimtex": ">=1.1.5"
   }
 }
