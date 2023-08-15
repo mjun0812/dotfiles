@@ -81,4 +81,5 @@ cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
 
 # glow markdown viewer
+source "$HOME/.asdf/plugins/golang/set-env.zsh"
 go install github.com/charmbracelet/glow@latest
