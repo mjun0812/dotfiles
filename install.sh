@@ -4,10 +4,7 @@
 DOTPATH=~/.dotfiles
 GITHUB='https://github.com/mjun0812/dotfiles.git'
 
-PYTHON_VERSION='3.10.6'
-RUBY_VERSION='3.0.4'
-NODE_VERSION='18.12.1'
-GO_VERSION="1.20.4"
+PYTHON_VERSION='3.11.4'
 
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
@@ -55,11 +52,7 @@ for f in .??*; do
     [ "$f" = ".gitignore" ] && continue
     [ "$f" = ".gitmodule" ] && continue
     [ "$f" = ".backup" ] && continue
-    [ "$f" = ".gitconfig" ] && continue
-    [ "$f" = ".gitconfig-jackjasonb" ] && continue
-    [ "$f" = ".gitconfig-junya" ] && continue
-    [ "$f" = ".gitconfig-lab" ] && continue
-    [ "$f" = ".gitconfig-qdoga" ] && continue
+    [ "$f" = ".gitconfig*" ] && continue
     # do symbolic link
     ln -snfv "$DOTPATH/$f" "$HOME/$f"
 done
@@ -68,19 +61,14 @@ done
 mkdir -p "$HOME"/.config
 ln -snfv "$DOTPATH/nvim" "$HOME"/.config/
 
-source ~/.zshrc
 ./bin/pyenv.sh "$PYTHON_VERSION"
-./bin/rbenv.sh "$RUBY_VERSION"
-./bin/nodenv.sh "$NODE_VERSION"
-./bin/goenv.sh "$GO_VERSION"
+./bin/asdf.sh
 ./bin/neovim.sh
 source ~/.zshrc
 
 # install packages 
-npm install -g yarn 
-yarn global add neovim md-to-pdf@latest
-nodenv rehash
-pip install --upgrade pip
+npm install -g neovim md-to-pdf@latest
+pip install -U pip
 pip install pynvim wheel black flake8
 pyenv rehash
 
@@ -94,4 +82,3 @@ npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --o
 
 # glow markdown viewer
 go install github.com/charmbracelet/glow@latest
-
