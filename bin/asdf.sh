@@ -9,5 +9,7 @@ else
     asdf plugin add ruby
     asdf plugin add nodejs
     source ~/.zshrc
+    export ASDF_GOLANG_MOD_VERSION_ENABLED=true
+    source "$HOME/.asdf/plugins/golang/set-env.zsh"
     asdf install
 fi
