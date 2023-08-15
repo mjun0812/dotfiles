@@ -2,6 +2,7 @@
     "coc.preferences.formatOnSaveFiletypes": ["css", "javascript", "html", "yaml",  "json", "python"],
     "coc.preferences.willSaveHandlerTimeout": 4999,
     "python.formatting.provider":"black",
+    "pyright.organizeimports.provider": "isort",
     "python.formatting.blackArgs": ["--line-length", "99"],
     "pyright.disableProgressNotifications": true,
     "pyright.inlayHints.functionReturnTypes": false,

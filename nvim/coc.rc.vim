@@ -175,4 +175,5 @@ inoremap <expr><CR>  coc#pum#visible() ? coc#pum#confirm() : "<CR>"
 " 補完で選択したものを即時に挿入しない
 inoremap <expr><C-n> coc#pum#visible() ? coc#pum#next(1) : "<C-n>"
 inoremap <expr><C-p> coc#pum#visible() ? coc#pum#prev(1) : "<C-p>"
-
+" Pyhtonで保存時にisortを実行する
+autocmd BufWritePre *.py silent! :call CocAction('runCommand', 'python.sortImports')
