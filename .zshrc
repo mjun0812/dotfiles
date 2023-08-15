@@ -25,6 +25,16 @@ if [ -e /usr/lib/wsl/lib ]; then
     export PATH="/usr/lib/wsl/lib:$PATH"
 fi
 
+# asdf
+if [[ -s "$HOME/.asdf/asdf.sh" ]]; then
+    source "$HOME/.asdf/asdf.sh"
+    # append completions to fpath
+    fpath=(${ASDF_DIR}/completions $fpath)
+    # Golang
+    source "$HOME/.asdf/plugins/golang/set-env.zsh"
+    export ASDF_GOLANG_MOD_VERSION_ENABLED=true
+fi
+
 if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
     export PATH="$HOME/ldisk/.pyenv/bin:$PATH"
@@ -48,21 +58,6 @@ function _pip_completion {
     PIP_AUTO_COMPLETE=1 $words[1] ) )
 }
 compctl -K _pip_completion pip
-
-# nodenv
-export PATH="$HOME/.nodenv/bin:$PATH"
-eval "$(nodenv init - --no-rehash)"
-
-# rbenv
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init - --no-rehash)"
-
-# goenv
-export GOENV_ROOT="$HOME/.goenv"
-export PATH="$GOENV_ROOT/bin:$PATH"
-eval "$(goenv init - --no-rehash)"
-export PATH="$GOROOT/bin:$PATH"
-export PATH="$PATH:$GOPATH/bin"
 
 # M1 mac Homebrew
 if [ "$(uname)" = 'Darwin' ] && [ "$(uname -m)" = 'arm64' ]; then
@@ -101,8 +96,6 @@ if [ "$(uname -s)" = 'Linux' ]; then
     source $SSH_AGENT_FILE > /dev/null 2>&1
 fi
 
-
-
 # alias
 alias emacs='emacs -nw'
 alias vim='nvim'
@@ -120,4 +113,3 @@ alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 
 # powerlevel10k
 (( ! ${+functions[p10k]} )) || p10k finalize
-
