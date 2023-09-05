@@ -87,6 +87,9 @@ if [ -e "$HOME/.config/gcloud/test-project-service-account.json" ]; then
     export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/test-project-service-account.json
 fi
 
+# Android SDK
+export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
+
 # ssh-agent
 SSH_KEY_LIFE_TIME_SEC=3600
 SSH_AGENT_FILE=$HOME/.ssh-agent
