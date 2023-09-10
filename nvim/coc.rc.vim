@@ -1,4 +1,14 @@
-let g:coc_global_extensions = ["coc-prettier", "coc-json", "coc-pyright", "coc-clangd", "coc-pydocstring"]
+let g:coc_global_extensions = [
+    \"@yaegassy/coc-black-formatter",
+    \"coc-json", 
+    \"coc-markdownlint",
+    \"coc-prettier", 
+    \"coc-pyright", 
+    \"coc-solargraph",
+    \"@yaegassy/coc-ruff",
+    \"coc-clangd",
+    \"coc-pydocstring"
+\]
 
 " TextEdit might fail if hidden is not set.
 set hidden

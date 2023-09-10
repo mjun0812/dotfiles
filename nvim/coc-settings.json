@@ -1,21 +1,16 @@
 {
-    "coc.preferences.formatOnSaveFiletypes": ["css", "javascript", "html", "yaml",  "json", "python"],
+    "coc.preferences.formatOnSave": true,
+    "coc.preferences.formatOnType": true,
     "coc.preferences.willSaveHandlerTimeout": 4999,
-    "python.formatting.provider":"black",
+    "black-formatter.args": ["--line-length", "100"],
+    "python.formatting.blackArgs": ["--line-length", "100"],
+    "python.formatting.provider":"none",
     "pyright.organizeimports.provider": "isort",
-    "python.formatting.blackArgs": ["--line-length", "99"],
     "pyright.disableProgressNotifications": true,
     "pyright.inlayHints.functionReturnTypes": false,
     "pyright.inlayHints.variableTypes": false,
     "pydocstring.formatter": "google",
-    //"prettier.disableLanguages": ["markdown"],
     "markdownlint.config": {
       "line-length": false
     },
-    "coc.source.vimtex.enable":true,
-    "coc.source.vimtex.filetypes": [
-      "tex",
-      "plaintex",
-      "latex"
-    ]
 }
