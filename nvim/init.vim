@@ -1,71 +1,37 @@
-"dein Scripts-----------------------------
-" Install Dein
-let $CACHE = expand('~/.cache')
-if !isdirectory($CACHE)
-  call mkdir($CACHE, 'p')
-endif
-if &runtimepath !~# '/dein.vim'
-  let s:dein_dir = fnamemodify('dein.vim', ':p')
-  if !isdirectory(s:dein_dir)
-    let s:dein_dir = $CACHE . '/dein/repos/github.com/Shougo/dein.vim'
-    if !isdirectory(s:dein_dir)
-      execute '!git clone https://github.com/Shougo/dein.vim' s:dein_dir
-    endif
-  endif
-  execute 'set runtimepath^=' . substitute(
-        \ fnamemodify(s:dein_dir, ':p') , '[/\\]$', '', '')
+" Install VimPlug if nothing
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 endif
 
-set nocompatible
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+\| endif
 
-" Set dein base path (required)
-let s:dein_base = '~/.cache/dein/'
-
-" Set dein source path (required)
-let s:dein_src = '~/.cache/dein/repos/github.com/Shougo/dein.vim'
-
-" Set dein runtime path (required)
-execute 'set runtimepath+=' . s:dein_src
-
-if dein#load_state('~/.cache/dein')
-  call dein#begin(s:dein_base)
-  call dein#add(s:dein_src)
-
-  " Add or remove your plugins here like this:
-
+call plug#begin()
   " themes
-  "call dein#add('rakr/vim-one')
-  call dein#add('navarasu/onedark.nvim')
+  Plug 'navarasu/onedark.nvim'
   
   " status bar
-  "call dein#add('vim-airline/vim-airline')
-  call dein#add('itchyny/lightline.vim') 
+  Plug 'itchyny/lightline.vim'
   
   " syntax
-  "call dein#add('vim-python/python-syntax')
-  call dein#add('sheerun/vim-polyglot')
-  call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': 'TSUpdate'})
+  Plug 'sheerun/vim-polyglot'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   
   " 補完
-  call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
   " file tree
-  call dein#add('lambdalisue/fern.vim')
-  call dein#add('lambdalisue/fern-git-status.vim')
-  call dein#add('lambdalisue/nerdfont.vim')
-  call dein#add('lambdalisue/fern-renderer-nerdfont.vim')
-  
-  "markdown preview
-  call dein#add('iamcco/markdown-preview.nvim', 
-              \ {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'], 
-              \ 'build': 'sh -c "cd app && yarn install"' })
+  Plug 'lambdalisue/fern.vim'
+  Plug 'lambdalisue/fern-git-status.vim'
+  Plug 'lambdalisue/nerdfont.vim'
+  Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+call plug#end()
 
-  call dein#add('lervag/vimtex')
-
-  " Required:
-  call dein#end()
-  call dein#save_state()
-endif
+set nocompatible
+set encoding=UTF-8
 
 " Attempt to determine the type of a file based on its name and possibly its
 " contents. Use this to allow intelligent auto-indenting for each filetype,
@@ -73,25 +39,12 @@ endif
 if has('filetype')
   filetype indent plugin on
 endif
+
 " Enable syntax highlighting
 if has('syntax')
   syntax on
   syntax enable
 endif
-
-" If you want to install not installed plugins on startup.
-if dein#check_install()
-  call dein#install()
-endif
-
-" check dein deleted plugin
-if len(dein#check_clean()) != 0
-  call map(dein#check_clean(), "delete(v:val, 'rf')")
-endif
-
-"End dein Scripts-------------------------
-
-set encoding=UTF-8
 
 " menuoneで、対象が1件しかなくても常に補完ウィンドウを表示
 " noinsertで補完ウィンドウを表示時に挿入しない
@@ -105,16 +58,10 @@ if (has("nvim"))
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 endif
 set termguicolors
-
-"set background=dark
-"colorscheme one
-"let g:airline_theme='one'
-"
 let g:onedark_config = {
     \ 'style': 'darker',
 \}
 colorscheme onedark
-let g:airline_theme='onedark'
 
 " 行番号
 set number
@@ -165,11 +112,6 @@ autocmd TermOpen * :startinsert
 autocmd TermOpen * setlocal norelativenumber
 autocmd TermOpen * setlocal nonumber
 
-" 新規タブでターミナルモードを起動
-" nnoremap <silent> tt <cmd>terminal<CR>
-" 下分割でターミナルモードを起動
-" nnoremap <silent> tx <cmd>belowright new<CR><cmd>terminal<CR>
-
 " Terminalのインサートモードからの離脱をESCにする
 :tnoremap <Esc> <C-\><C-n>
 
@@ -198,7 +140,6 @@ nnoremap <silent><C-e> :Fern . -reveal=% -drawer -toggle<CR>
 function! s:init_fern() abort
     nmap <buffer> V <Plug>(fern-action-open:split)
 endfunction
-
 augroup fern-custom
   autocmd! *
   autocmd FileType fern call s:init_fern()
@@ -210,7 +151,7 @@ require'nvim-treesitter.configs'.setup {
   ensure_installed = { "c", "markdown", "lua", "markdown_inline", "python"},
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
-  sync_install = true,
+  sync_install = false,
 
   -- Automatically install missing parsers when entering buffer
   -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
@@ -228,5 +169,4 @@ set laststatus=3
 
 " coc.nvim config
 source ~/.config/nvim/coc.rc.vim
-
 
