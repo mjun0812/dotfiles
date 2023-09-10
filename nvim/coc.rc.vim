@@ -1,3 +1,5 @@
+let g:coc_global_extensions = ["coc-prettier", "coc-json", "coc-pyright", "coc-clangd", "coc-pydocstring"]
+
 " TextEdit might fail if hidden is not set.
 set hidden
 

@@ -8,6 +8,7 @@
     "coc-pyright": ">=1.1.255",
     "coc-solargraph": ">=1.2.4",
     "coc-vimtex": ">=1.1.5",
-    "@yaegassy/coc-ruff": ">=0.3.12"
+    "@yaegassy/coc-ruff": ">=0.3.12",
+    "coc-clangd": ">=0.29.3"
   }
 }
