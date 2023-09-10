@@ -10,5 +10,7 @@
     "coc-pydocstring": ">=0.10.0",
     "@yaegassy/coc-black-formatter": ">=0.1.2"
   },
-  "lastUpdate": 1694363229669
+  "lastUpdate": 1694363229669,
+  "disabled": [],
+  "locked": []
 }
