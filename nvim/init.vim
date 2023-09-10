@@ -22,6 +22,7 @@ call plug#begin()
   
   " 補完
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'cohama/lexima.vim'
 
   " file tree
   Plug 'lambdalisue/fern.vim'
@@ -32,13 +33,6 @@ call plug#end()
 
 set nocompatible
 set encoding=UTF-8
-
-" Attempt to determine the type of a file based on its name and possibly its
-" contents. Use this to allow intelligent auto-indenting for each filetype,
-" and for plugins that are filetype specific.
-if has('filetype')
-  filetype indent plugin on
-endif
 
 " Enable syntax highlighting
 if has('syntax')
