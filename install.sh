@@ -81,4 +81,5 @@ npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --o
 
 # glow markdown viewer
 source "$HOME/.asdf/plugins/golang/set-env.zsh"
+asdf reshim
 go install github.com/charmbracelet/glow@latest
