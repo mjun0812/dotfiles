@@ -22,7 +22,7 @@ call plug#begin()
   
   " 補完
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'cohama/lexima.vim'
+  "Plug 'cohama/lexima.vim'
 
   " file tree
   Plug 'lambdalisue/fern.vim'
