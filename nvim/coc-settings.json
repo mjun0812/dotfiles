@@ -1,16 +1,17 @@
 {
-    "coc.preferences.formatOnSave": true,
-    "coc.preferences.formatOnType": true,
-    "coc.preferences.willSaveHandlerTimeout": 4999,
-    "black-formatter.args": ["--line-length", "100"],
-    "python.formatting.blackArgs": ["--line-length", "100"],
-    "python.formatting.provider":"none",
-    "pyright.organizeimports.provider": "isort",
-    "pyright.disableProgressNotifications": true,
-    "pyright.inlayHints.functionReturnTypes": false,
-    "pyright.inlayHints.variableTypes": false,
-    "pydocstring.formatter": "google",
-    "markdownlint.config": {
-      "line-length": false
-    },
+  "coc.preferences.formatOnSave": true,
+  "coc.preferences.formatOnType": true,
+  "coc.preferences.willSaveHandlerTimeout": 4999,
+  "black-formatter.args": ["--line-length", "100"],
+  "clangd.fallbackFlags": ["-std=c++11"],
+  "python.formatting.blackArgs": ["--line-length", "100"],
+  "python.formatting.provider": "none",
+  "pyright.organizeimports.provider": "isort",
+  "pyright.disableProgressNotifications": true,
+  "pyright.inlayHints.functionReturnTypes": false,
+  "pyright.inlayHints.variableTypes": false,
+  "pydocstring.formatter": "google",
+  "markdownlint.config": {
+    "line-length": false
+  }
 }

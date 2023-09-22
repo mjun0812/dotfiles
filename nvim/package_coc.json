@@ -8,7 +8,8 @@
     "@yaegassy/coc-ruff": ">=0.3.12",
     "coc-clangd": ">=0.29.3",
     "coc-pydocstring": ">=0.10.0",
-    "@yaegassy/coc-black-formatter": ">=0.1.2"
+    "@yaegassy/coc-black-formatter": ">=0.1.2",
+    "coc-pairs": ">=1.4.2"
   },
   "lastUpdate": 1694363229669,
   "disabled": [],
