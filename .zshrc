@@ -69,10 +69,14 @@ if [ -e ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
 fi
 
-# AWS CLI completion
-autoload -Uz compinit && compinit
 autoload -Uz bashcompinit && bashcompinit
-complete -C '/usr/local/bin/aws_completer' aws
+
+# AWS CLI completion
+if [ "$(uname)" = 'Darwin' ]; then
+    complete -C '/opt/homebrew/bin/aws_completer' aws
+else
+    complete -C '/usr/local/bin/aws_completer' aws
+fi
 
 # GCP SDK
 if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
@@ -116,3 +120,9 @@ alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 
 # powerlevel10k
 (( ! ${+functions[p10k]} )) || p10k finalize
+
+
+
+if type zprof > /dev/null 2>&1; then
+    zprof | cat
+fi
