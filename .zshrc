@@ -96,6 +96,7 @@ fi
 
 # Android SDK
 export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
+export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 
 # ssh-agent
 SSH_KEY_LIFE_TIME_SEC=3600
