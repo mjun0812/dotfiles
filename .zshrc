@@ -38,6 +38,9 @@ fi
 if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
     export PATH="$HOME/ldisk/.pyenv/bin:$PATH"
+elif [ -e $HOME/ldisk_zuikaku/.pyenv ]; then
+    export PYENV_ROOT="$HOME/ldisk_zuikaku/.pyenv"
+    export PATH="$HOME/ldisk_zuikaku/.pyenv/bin:$PATH"
 else
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
