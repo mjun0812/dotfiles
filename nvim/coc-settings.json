@@ -1,11 +1,11 @@
 {
   "coc.preferences.formatOnSave": true,
   "coc.preferences.formatOnType": true,
+  "coc.preferences.formatOnSaveTimeout": 4999,
   "coc.preferences.willSaveHandlerTimeout": 4999,
-  "black-formatter.args": ["--line-length", "100"],
   "clangd.fallbackFlags": ["-std=c++11"],
   "python.formatting.blackArgs": ["--line-length", "100"],
-  "python.formatting.provider": "none",
+  "python.formatting.provider": "black",
   "pyright.organizeimports.provider": "isort",
   "pyright.disableProgressNotifications": true,
   "pyright.inlayHints.functionReturnTypes": false,

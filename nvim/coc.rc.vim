@@ -1,15 +1,15 @@
 let g:coc_global_extensions = [
-    \"@yaegassy/coc-black-formatter",
     \"coc-json", 
     \"coc-markdownlint",
     \"coc-prettier", 
     \"coc-pyright", 
     \"coc-solargraph",
-    \"@yaegassy/coc-ruff",
     \"coc-clangd",
     \"coc-pydocstring",
     \"coc-pairs"
 \]
+" \"@yaegassy/coc-black-formatter",
+" \"@yaegassy/coc-ruff",
 
 " TextEdit might fail if hidden is not set.
 set hidden
