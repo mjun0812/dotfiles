@@ -1,4 +1,5 @@
 {
+  "coc.preferences.extensionUpdateCheck": "daily",
   "coc.preferences.formatOnSave": true,
   "coc.preferences.formatOnType": true,
   "coc.preferences.formatOnSaveTimeout": 4999,
@@ -13,5 +14,6 @@
   "pydocstring.formatter": "google",
   "markdownlint.config": {
     "line-length": false
-  }
+  },
+  "svelte.enable-ts-plugin": true
 }
