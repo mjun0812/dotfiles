@@ -15,6 +15,9 @@
   "pylsp.builtin.enableInstallPylsIsort": true,
   "pylsp.builtin.enableInstallPythonLspBlack": true,
   "pylsp.plugins.black.line_length": 99,
+  "pylsp.configurationSources": ["flake8"],
+  "pylsp.plugins.flake8.enabled": true,
+  "pylsp.plugins.flake8.ignore": ["E501"],
   "pydocstring.formatter": "google",
   "markdownlint.config": {
     "line-length": false
