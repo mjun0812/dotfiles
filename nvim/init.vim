@@ -29,7 +29,7 @@ call plug#begin()
   Plug 'lambdalisue/fern-git-status.vim'
   Plug 'lambdalisue/nerdfont.vim'
   Plug 'lambdalisue/fern-renderer-nerdfont.vim'
-  Plug 'yaegassy/coc-pylsp', {do'': 'yarn install --frozen-lockfile'}
+  Plug 'yaegassy/coc-pylsp', {'do': 'yarn install --frozen-lockfile'}
 call plug#end()
 
 set nocompatible

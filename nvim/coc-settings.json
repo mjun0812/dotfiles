@@ -14,6 +14,7 @@
   // "pyright.inlayHints.variableTypes": false,
   "pylsp.builtin.enableInstallPylsIsort": true,
   "pylsp.builtin.enableInstallPythonLspBlack": true,
+  "pylsp.plugins.black.line_length": 99,
   "pydocstring.formatter": "google",
   "markdownlint.config": {
     "line-length": false
