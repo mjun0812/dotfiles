@@ -7,9 +7,10 @@
     "coc-solargraph": ">=1.2.4",
     "coc-clangd": ">=0.29.3",
     "coc-pydocstring": ">=0.10.0",
-    "coc-pairs": ">=1.4.2"
+    "coc-pairs": ">=1.4.2",
+    "coc-svelte": ">=0.5.0"
   },
-  "lastUpdate": 1694363229669,
+  "lastUpdate": 1700182560641,
   "disabled": [],
   "locked": []
 }
