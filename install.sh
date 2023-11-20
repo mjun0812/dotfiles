@@ -68,7 +68,7 @@ source ~/.zshrc
 
 # install packages 
 npm install -g neovim md-to-pdf@latest
-pip install -U pip pynvim wheel black flake8
+pip install -U pip pynvim wheel black flake8 isort ruff 'python-lsp-server[all]'
 pyenv rehash
 
 # coc init
