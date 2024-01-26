@@ -51,6 +51,13 @@ eval "$(pyenv init --path --no-rehash)"
 eval "$(pyenv init - --no-rehash)"
 eval "$(pyenv virtualenv-init -)"
 
+# pnpm
+export PNPM_HOME="/Users/mjun/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
 # pip zsh completion
 function _pip_completion {
     local words cword
@@ -130,3 +137,4 @@ alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 if type zprof > /dev/null 2>&1; then
     zprof | cat
 fi
+
