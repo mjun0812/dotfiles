@@ -51,6 +51,9 @@ eval "$(pyenv init --path --no-rehash)"
 eval "$(pyenv init - --no-rehash)"
 eval "$(pyenv virtualenv-init -)"
 
+# rye
+source "$HOME/.rye/env"
+
 # pnpm
 export PNPM_HOME="/Users/mjun/Library/pnpm"
 case ":$PATH:" in
