@@ -1,5 +1,5 @@
 {
-  "lastUpdate": 1709889641332,
+  "lastUpdate": 1709917176743,
   "dependencies": {
     "coc-json": ">=1.9.2",
     "coc-markdownlint": ">=1.33.0",
@@ -8,6 +8,6 @@
     "coc-prettier": ">=9.3.2",
     "coc-pairs": ">=1.4.2",
     "coc-pydocstring": ">=0.10.0",
-    "coc-pyright": ">=1.1.348"
+    "coc-pyright": ">=1.1.351"
   }
 }
