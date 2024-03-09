@@ -71,6 +71,11 @@ npm install -g neovim md-to-pdf@latest
 pip install -U pip pynvim wheel black flake8 isort ruff 'python-lsp-server[all]'
 pyenv rehash
 
+# install rye
+curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash
+source ~/.zshrc
+rye config --set-bool behavior.use-uv=true
+
 # coc init
 mkdir -p ~/.config/coc/extensions
 ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json

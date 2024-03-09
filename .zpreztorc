@@ -40,7 +40,8 @@ zstyle ':prezto:load' pmodule \
   'history-substring-search' \
   'autosuggestions' \
   'prompt' \
-  'terminal' 
+  'terminal' \
+  'rye-completion'
 
 #
 # Autosuggestions
