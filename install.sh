@@ -84,6 +84,9 @@ ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
 cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
 
+# install vim plugins
+vim +'PlugInstall --sync' +qa
+
 # glow markdown viewer
 source "$HOME/.asdf/plugins/golang/set-env.zsh"
 asdf reshim
