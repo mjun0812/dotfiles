@@ -72,9 +72,15 @@ pip install -U pip pynvim wheel black flake8 isort ruff 'python-lsp-server[all]'
 pyenv rehash
 
 # install rye
-curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash
-source ~/.zshrc
-rye config --set-bool behavior.use-uv=true
+if ! is_exists "rye"; then
+    curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash
+    source ~/.zshrc
+    rye config --set-bool behavior.use-uv=true
+    rye config --set-bool behavior.global-python=false
+    source ~/.zshrc
+else
+    rye self update
+fi
 
 # coc init
 mkdir -p ~/.config/coc/extensions
@@ -91,3 +97,4 @@ vim +'PlugInstall --sync' +qa
 source "$HOME/.asdf/plugins/golang/set-env.zsh"
 asdf reshim
 go install github.com/charmbracelet/glow@latest
+
