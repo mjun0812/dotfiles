@@ -45,3 +45,5 @@
 !.gitconfig*
 !.asdfrc
 !.tool-versions
+!configs
+!configs/**
