@@ -5,7 +5,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
     source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
@@ -35,6 +34,9 @@ if [[ -s "$HOME/.asdf/asdf.sh" ]]; then
     export ASDF_GOLANG_MOD_VERSION_ENABLED=true
 fi
 
+# rye
+source "$HOME/.rye/env"
+
 if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
     export PATH="$HOME/ldisk/.pyenv/bin:$PATH"
@@ -50,9 +52,6 @@ fi
 eval "$(pyenv init --path --no-rehash)"
 eval "$(pyenv init - --no-rehash)"
 eval "$(pyenv virtualenv-init -)"
-
-# rye
-source "$HOME/.rye/env"
 
 # pnpm
 export PNPM_HOME="/Users/mjun/Library/pnpm"
@@ -134,8 +133,6 @@ alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 
 # powerlevel10k
 (( ! ${+functions[p10k]} )) || p10k finalize
-
-
 
 if type zprof > /dev/null 2>&1; then
     zprof | cat
