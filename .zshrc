@@ -19,6 +19,11 @@ export PATH="/usr/local/cuda/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 export CUDA_HOME="/usr/local/cuda"
 
+# M1 mac Homebrew
+if [ "$(uname)" = 'Darwin' ] && [ "$(uname -m)" = 'arm64' ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 # WSL
 if [ -e /usr/lib/wsl/lib ]; then
     export PATH="/usr/lib/wsl/lib:$PATH"
@@ -53,6 +58,9 @@ eval "$(pyenv init --path --no-rehash)"
 eval "$(pyenv init - --no-rehash)"
 eval "$(pyenv virtualenv-init -)"
 
+# for uv
+source "$HOME/.cargo/env"
+
 # pnpm
 export PNPM_HOME="/Users/mjun/Library/pnpm"
 case ":$PATH:" in
@@ -71,9 +79,11 @@ function _pip_completion {
 }
 compctl -K _pip_completion pip
 
-# M1 mac Homebrew
-if [ "$(uname)" = 'Darwin' ] && [ "$(uname -m)" = 'arm64' ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+# AWS CLI completion
+if [ "$(uname)" = 'Darwin' ]; then
+    complete -C '/opt/homebrew/bin/aws_completer' aws
+else
+    complete -C '/usr/local/bin/aws_completer' aws
 fi
 
 # docker completion
@@ -82,13 +92,6 @@ if [ -e ~/.zsh/completions ]; then
 fi
 
 autoload -Uz bashcompinit && bashcompinit
-
-# AWS CLI completion
-if [ "$(uname)" = 'Darwin' ]; then
-    complete -C '/opt/homebrew/bin/aws_completer' aws
-else
-    complete -C '/usr/local/bin/aws_completer' aws
-fi
 
 # GCP SDK
 if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
@@ -106,15 +109,6 @@ fi
 # Android SDK
 export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
 export PATH="$PATH:$HOME/Android/sdk/platform-tools"
-
-# ssh-agent
-SSH_KEY_LIFE_TIME_SEC=3600
-SSH_AGENT_FILE=$HOME/.ssh-agent
-if [ "$(uname -s)" = 'Linux' ]; then
-    test -f $SSH_AGENT_FILE && source $SSH_AGENT_FILE > /dev/null 2>&1
-    ssh-agent -t $SSH_KEY_LIFE_TIME_SEC >! $SSH_AGENT_FILE
-    source $SSH_AGENT_FILE > /dev/null 2>&1
-fi
 
 # alias
 alias emacs='emacs -nw'
