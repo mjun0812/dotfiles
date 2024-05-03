@@ -82,6 +82,11 @@ else
     rye self update
 fi
 
+# install uv
+if ! is_exists "uv"; then
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+fi
+
 # coc init
 mkdir -p ~/.config/coc/extensions
 ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json

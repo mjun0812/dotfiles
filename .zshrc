@@ -41,6 +41,7 @@ fi
 
 # rye
 source "$HOME/.rye/env"
+eval "$(rye self completion -s zsh)"
 
 if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
