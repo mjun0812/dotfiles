@@ -80,6 +80,7 @@ function _pip_completion {
 }
 compctl -K _pip_completion pip
 
+autoload -Uz bashcompinit && bashcompinit
 # AWS CLI completion
 if [ "$(uname)" = 'Darwin' ]; then
     complete -C '/opt/homebrew/bin/aws_completer' aws
@@ -92,7 +93,6 @@ if [ -e ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
 fi
 
-autoload -Uz bashcompinit && bashcompinit
 
 # GCP SDK
 if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
