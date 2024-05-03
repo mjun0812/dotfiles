@@ -7,23 +7,15 @@
   "clangd.fallbackFlags": ["-std=c++11"],
   "pyright.enable": true,
   "python.formatting.blackArgs": ["--line-length", "99"],
-  "python.formatting.provider": "black",
+  "python.formatting.provider": "ruff",
+  "pyright.organizeimports.provider": "ruff",
+  "python.linting.ruffEnabled": true,
   "python.analysis.autoImportCompletions": false,
-  "pyright.organizeimports.provider": "isort",
   "pyright.disableProgressNotifications": true,
   "pyright.inlayHints.functionReturnTypes": false,
   "pyright.inlayHints.variableTypes": false,
-  "pylsp.enable": false,
-  // "pylsp.builtin.enableInstallPylsIsort": false,
-  // "pylsp.builtin.enableInstallPythonLspBlack": true,
-  // "pylsp.plugins.black.line_length": 99,
-  // "pylsp.configurationSources": ["flake8"],
-  // "pylsp.plugins.flake8.enabled": true,
-  // "pylsp.plugins.flake8.extendIgnore": ["E203", "E501"],
-  // "pylsp.plugins.flake8.maxLineLength": 99,
   "pydocstring.formatter": "google",
   "markdownlint.config": {
     "line-length": false
-  },
-  "svelte.enable-ts-plugin": true
+  }
 }
