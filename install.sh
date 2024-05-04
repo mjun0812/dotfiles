@@ -93,7 +93,7 @@ ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
 
 # Neovim coc.vim
 cd ~/.config/coc/extensions
-npm install --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
+npm install --ignore-scripts --no-bin-links --no-package-lock
 
 # install vim plugins
 vim +'PlugInstall --sync' +qa
