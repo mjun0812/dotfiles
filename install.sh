@@ -1,9 +1,7 @@
 #!/bin/zsh
 
-# create synbolic link
 DOTPATH=~/.dotfiles
 GITHUB='https://github.com/mjun0812/dotfiles.git'
-
 PYTHON_VERSION='3.11.9'
 
 # is_exists returns true if executable $1 exists in $PATH
@@ -21,6 +19,7 @@ if is_exists "git"; then
         # if exist .dotfiles, update dotfiles
         cd "$DOTPATH"
         git pull
+        # update submodule
         git submodule update --init --recursive
     fi
 else
@@ -29,9 +28,6 @@ else
 fi
 
 cd "$DOTPATH"
-
-# update submodule
-git submodule update --init --recursive
 
 if [ ! -d ".backup" ]; then
     echo "backup old dotfiles..."
@@ -57,20 +53,35 @@ for f in .??*; do
     ln -snfv "$DOTPATH/$f" "$HOME/$f"
 done
 
-# set neovim settings
 mkdir -p "$HOME"/.config
-ln -snfv "$DOTPATH/nvim" "$HOME"/.config/
 
-./bin/pyenv.sh "$PYTHON_VERSION"
-./bin/asdf.sh
-./bin/neovim.sh
+################ [mise] ################
+curl https://mise.run | sh
+mise use -g go
+mise use -g node
+
+################ [Neovim] ################
+ln -snfv "$DOTPATH/nvim" "$HOME"/.config/
+./bin/neovim.sh # install
 source ~/.zshrc
+# coc init
+mkdir -p ~/.config/coc/extensions
+ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
+
+# Neovim coc.vim
+cd ~/.config/coc/extensions
+npm install --ignore-scripts --no-bin-links --no-package-lock
+
+# install vim plugins
+vim +'PlugInstall --sync' +qa
 
 # install packages 
 npm install -g neovim md-to-pdf@latest
-pip install -U pip pynvim wheel black flake8 isort ruff 'python-lsp-server[all]'
-pyenv rehash
 
+################ [Python] ################
+./bin/pyenv.sh "$PYTHON_VERSION"
+pip install -U pip pynvim wheel setuptools ruff 'python-lsp-server[all]'
+pyenv rehash
 # install rye
 if ! is_exists "rye"; then
     curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash
@@ -87,19 +98,6 @@ if ! is_exists "uv"; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
 fi
 
-# coc init
-mkdir -p ~/.config/coc/extensions
-ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
-
-# Neovim coc.vim
-cd ~/.config/coc/extensions
-npm install --ignore-scripts --no-bin-links --no-package-lock
-
-# install vim plugins
-vim +'PlugInstall --sync' +qa
-
 # glow markdown viewer
-source "$HOME/.asdf/plugins/golang/set-env.zsh"
-asdf reshim
 go install github.com/charmbracelet/glow@latest
 
