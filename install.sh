@@ -80,6 +80,7 @@ vim +'PlugInstall --sync' +qa
 npm install -g neovim md-to-pdf@latest
 
 ################ [Python] ################
+cd $DOTPATH
 ./bin/pyenv.sh "$PYTHON_VERSION"
 pip install -U pip pynvim wheel setuptools ruff 'python-lsp-server[all]'
 pyenv rehash
