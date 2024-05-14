@@ -4,7 +4,7 @@
 DOTPATH=~/.dotfiles
 GITHUB='https://github.com/mjun0812/dotfiles.git'
 
-PYTHON_VERSION='3.11.4'
+PYTHON_VERSION='3.11.9'
 
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
