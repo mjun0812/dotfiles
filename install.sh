@@ -53,6 +53,7 @@ for f in .??*; do
     ln -snfv "$DOTPATH/$f" "$HOME/$f"
 done
 
+source ~/.zshrc
 mkdir -p "$HOME"/.config
 
 ################ [mise] ################
