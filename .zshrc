@@ -29,20 +29,17 @@ if [ -e /usr/lib/wsl/lib ]; then
     export PATH="/usr/lib/wsl/lib:$PATH"
 fi
 
-# asdf
-if [[ -s "$HOME/.asdf/asdf.sh" ]]; then
-    source "$HOME/.asdf/asdf.sh"
-    # append completions to fpath
-    fpath=(${ASDF_DIR}/completions $fpath)
-    # Golang
-    source "$HOME/.asdf/plugins/golang/set-env.zsh"
-    export ASDF_GOLANG_MOD_VERSION_ENABLED=true
-fi
+# mise
+eval "$(~/.local/bin/mise activate zsh)"
 
 # rye
 source "$HOME/.rye/env"
 eval "$(rye self completion -s zsh)"
 
+# for uv
+source "$HOME/.cargo/env"
+
+# pyenv
 if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
     export PATH="$HOME/ldisk/.pyenv/bin:$PATH"
@@ -53,46 +50,9 @@ else
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
 fi
-
-# pyenv
 eval "$(pyenv init --path --no-rehash)"
 eval "$(pyenv init - --no-rehash)"
 eval "$(pyenv virtualenv-init -)"
-
-# for uv
-source "$HOME/.cargo/env"
-
-# pnpm
-export PNPM_HOME="/Users/mjun/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-
-# pip zsh completion
-function _pip_completion {
-    local words cword
-    read -Ac words
-    read -cn cword
-    reply=( $( COMP_WORDS="$words[*]" \
-            COMP_CWORD=$(( cword-1 )) \
-    PIP_AUTO_COMPLETE=1 $words[1] ) )
-}
-compctl -K _pip_completion pip
-
-autoload -Uz bashcompinit && bashcompinit
-# AWS CLI completion
-if [ "$(uname)" = 'Darwin' ]; then
-    complete -C '/opt/homebrew/bin/aws_completer' aws
-else
-    complete -C '/usr/local/bin/aws_completer' aws
-fi
-
-# docker completion
-if [ -e ~/.zsh/completions ]; then
-  fpath=(~/.zsh/completions $fpath)
-fi
-
 
 # GCP SDK
 if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
@@ -111,7 +71,33 @@ fi
 export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
 export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 
-# alias
+########## zsh completion ##########
+# pip zsh completion
+function _pip_completion {
+    local words cword
+    read -Ac words
+    read -cn cword
+    reply=( $( COMP_WORDS="$words[*]" \
+            COMP_CWORD=$(( cword-1 )) \
+    PIP_AUTO_COMPLETE=1 $words[1] ) )
+}
+compctl -K _pip_completion pip
+
+autoload -Uz bashcompinit && bashcompinit
+
+# AWS CLI completion
+if [ "$(uname)" = 'Darwin' ]; then
+    complete -C '/opt/homebrew/bin/aws_completer' aws
+else
+    complete -C '/usr/local/bin/aws_completer' aws
+fi
+
+# docker completion
+if [ -e ~/.zsh/completions ]; then
+  fpath=(~/.zsh/completions $fpath)
+fi
+
+########## alias ##########
 alias emacs='emacs -nw'
 alias vim='nvim'
 if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
