@@ -86,7 +86,7 @@ pip install -U pip pynvim wheel setuptools ruff 'python-lsp-server[all]'
 pyenv rehash
 # install rye
 if ! is_exists "rye"; then
-    curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash
+    curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
     source ~/.zshrc
     rye config --set-bool behavior.use-uv=true
     rye config --set-bool behavior.global-python=false
