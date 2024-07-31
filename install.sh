@@ -53,6 +53,7 @@ for f in .??*; do
     ln -snfv "$DOTPATH/$f" "$HOME/$f"
 done
 
+source ~/.zshrc
 mkdir -p "$HOME"/.config
 
 ################ [mise] ################
@@ -79,12 +80,13 @@ vim +'PlugInstall --sync' +qa
 npm install -g neovim md-to-pdf@latest
 
 ################ [Python] ################
+cd $DOTPATH
 ./bin/pyenv.sh "$PYTHON_VERSION"
 pip install -U pip pynvim wheel setuptools ruff 'python-lsp-server[all]'
 pyenv rehash
 # install rye
 if ! is_exists "rye"; then
-    curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash
+    curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
     source ~/.zshrc
     rye config --set-bool behavior.use-uv=true
     rye config --set-bool behavior.global-python=false
