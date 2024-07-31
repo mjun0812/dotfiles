@@ -163,7 +163,6 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 let g:coc_global_extensions = [
     \"coc-json", 
     \"coc-markdownlint",
-    \"coc-prettier", 
     \"coc-pyright", 
     \"coc-solargraph",
     \"coc-clangd",
@@ -189,7 +188,4 @@ inoremap <expr><C-n> coc#pum#visible() ? coc#pum#next(1) : "<C-n>"
 inoremap <expr><C-p> coc#pum#visible() ? coc#pum#prev(1) : "<C-p>"
 " Pyhtonで保存時にisortを実行する
 autocmd BufWritePre *.py silent! :call CocAction('runCommand', 'python.sortImports')
-
-"coc-pairs
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
