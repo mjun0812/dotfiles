@@ -162,9 +162,6 @@ EOF
 " Splitした時にステータスバーはSplitしない
 set laststatus=3
 
-" 貼り付け時にインデントを調整
-set paste
-
 " coc.nvim config
 source ~/.config/nvim/coc.rc.vim
 
