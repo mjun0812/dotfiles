@@ -32,13 +32,6 @@ fi
 # mise
 eval "$(~/.local/bin/mise activate zsh)"
 
-# rye
-source "$HOME/.rye/env"
-eval "$(rye self completion -s zsh)"
-
-# for uv
-source "$HOME/.cargo/env"
-
 # pyenv
 if [ -e $HOME/ldisk/.pyenv ]; then
     export PYENV_ROOT="$HOME/ldisk/.pyenv"
@@ -53,6 +46,13 @@ fi
 eval "$(pyenv init --path --no-rehash)"
 eval "$(pyenv init - --no-rehash)"
 eval "$(pyenv virtualenv-init -)"
+
+# rye
+source "$HOME/.rye/env"
+eval "$(rye self completion -s zsh)"
+
+# for uv
+source "$HOME/.cargo/env"
 
 # GCP SDK
 if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
