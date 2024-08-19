@@ -77,7 +77,7 @@ npm install --ignore-scripts --no-bin-links --no-package-lock
 vim +'PlugInstall --sync' +qa
 
 # install packages 
-npm install -g neovim md-to-pdf@latest
+npm install -g neovim md-to-pdf@latest prettier@latest
 
 ################ [Python] ################
 cd $DOTPATH
