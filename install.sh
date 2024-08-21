@@ -57,33 +57,36 @@ source ~/.zshrc
 mkdir -p "$HOME"/.config
 
 ################ [mise] ################
-curl https://mise.run | sh
+if ! is_exists "mise"; then
+    curl https://mise.run | sh
+fi
+source ~/.zshrc
 mise use -g go
 mise use -g node
+# install packages 
+npm install -g neovim md-to-pdf@latest prettier@latest
+# glow markdown viewer
+go install github.com/charmbracelet/glow@latest
 
 ################ [Neovim] ################
 ln -snfv "$DOTPATH/nvim" "$HOME"/.config/
 ./bin/neovim.sh # install
 source ~/.zshrc
-# coc init
+
+# coc.vim
 mkdir -p ~/.config/coc/extensions
 ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
-
-# Neovim coc.vim
 cd ~/.config/coc/extensions
-npm install --ignore-scripts --no-bin-links --no-package-lock
-
+npm install --global-style --ignore-scripts --no-bin-links --no-package-lock
 # install vim plugins
 vim +'PlugInstall --sync' +qa
-
-# install packages 
-npm install -g neovim md-to-pdf@latest prettier@latest
+cd $DOTPATH
 
 ################ [Python] ################
-cd $DOTPATH
 ./bin/pyenv.sh "$PYTHON_VERSION"
 pip install -U pip pynvim wheel setuptools ruff 'python-lsp-server[all]'
 pyenv rehash
+
 # install rye
 if ! is_exists "rye"; then
     curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
@@ -98,8 +101,8 @@ fi
 # install uv
 if ! is_exists "uv"; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
+    source ~/.zshrc
+else
+    uv self update
 fi
-
-# glow markdown viewer
-go install github.com/charmbracelet/glow@latest
 
