@@ -1,7 +1,6 @@
 #!/bin/zsh
 
 DOTPATH=~/.dotfiles
-GITHUB='https://github.com/mjun0812/dotfiles.git'
 PYTHON_VERSION='3.11'
 
 # is_exists returns true if executable $1 exists in $PATH
@@ -9,23 +8,6 @@ is_exists() {
     which "$1" >/dev/null 2>&1
     return $?
 }
-
-# download dotfiles using git from github
-if is_exists "git"; then
-    if [ ! -d "$DOTPATH" ]; then
-        # first clone
-        git clone --recursive "$GITHUB" "$DOTPATH"
-    else
-        # if exist .dotfiles, update dotfiles
-        cd "$DOTPATH"
-        git pull
-        # update submodule
-        git submodule update --init --recursive
-    fi
-else
-    echo "Please install git"
-    exit 1
-fi
 
 mkdir -p "$HOME"/.config
 mkdir -p "$HOME/.zsh/completions"
@@ -104,9 +86,9 @@ if ! is_exists "uv"; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
     source ~/.zshrc
     cd $HOME
-    uv venv --allow-existing --python $PYTHON_VERSION
 else
     uv self update
 fi
+uv venv --allow-existing --python $PYTHON_VERSION
 uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]'
 
