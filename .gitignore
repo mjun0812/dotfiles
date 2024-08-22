@@ -45,3 +45,5 @@
 !.gitconfig*
 !configs
 !configs/**
+!completions
+!completions/**
