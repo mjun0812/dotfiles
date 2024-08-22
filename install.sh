@@ -2,7 +2,7 @@
 
 DOTPATH=~/.dotfiles
 GITHUB='https://github.com/mjun0812/dotfiles.git'
-PYTHON_VERSION='3.11.9'
+PYTHON_VERSION='3.11'
 
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
@@ -26,6 +26,9 @@ else
     echo "Please install git"
     exit 1
 fi
+
+mkdir -p "$HOME"/.config
+mkdir -p "$HOME/.zsh/completions"
 
 cd "$DOTPATH"
 
@@ -53,8 +56,11 @@ for f in .??*; do
     ln -snfv "$DOTPATH/$f" "$HOME/$f"
 done
 
+for f in "$DOTPATH"/completions/*; do
+    ln -snfv "$f" "$HOME/.zsh/completions/$(basename $f)"
+done
+
 source ~/.zshrc
-mkdir -p "$HOME"/.config
 
 ################ [mise] ################
 if ! is_exists "mise"; then
@@ -83,17 +89,12 @@ vim +'PlugInstall --sync' +qa
 cd $DOTPATH
 
 ################ [Python] ################
-./bin/pyenv.sh "$PYTHON_VERSION"
-pip install -U pip pynvim wheel setuptools ruff 'python-lsp-server[all]'
-pyenv rehash
-
 # install rye
 if ! is_exists "rye"; then
     curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
     source ~/.zshrc
     rye config --set-bool behavior.use-uv=true
     rye config --set-bool behavior.global-python=false
-    source ~/.zshrc
 else
     rye self update
 fi
@@ -102,7 +103,10 @@ fi
 if ! is_exists "uv"; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
     source ~/.zshrc
+    cd $HOME
+    uv venv --allow-existing --python $PYTHON_VERSION
 else
     uv self update
 fi
+uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]'
 

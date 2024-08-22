@@ -32,27 +32,15 @@ fi
 # mise
 eval "$(~/.local/bin/mise activate zsh)"
 
-# pyenv
-if [ -e $HOME/ldisk/.pyenv ]; then
-    export PYENV_ROOT="$HOME/ldisk/.pyenv"
-    export PATH="$HOME/ldisk/.pyenv/bin:$PATH"
-elif [ -e $HOME/ldisk_zuikaku/.pyenv ]; then
-    export PYENV_ROOT="$HOME/ldisk_zuikaku/.pyenv"
-    export PATH="$HOME/ldisk_zuikaku/.pyenv/bin:$PATH"
-else
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-fi
-eval "$(pyenv init --path --no-rehash)"
-eval "$(pyenv init - --no-rehash)"
-eval "$(pyenv virtualenv-init -)"
-
 # rye
 source "$HOME/.rye/env"
 eval "$(rye self completion -s zsh)"
 
 # for uv
 source "$HOME/.cargo/env"
+export PATH="$HOME/.venv/bin:$PATH"
+export PATH="$HOME/ldisk/.venv/bin:$PATH"
+export PATH="$HOME/ldisk_zuikaku/.venv/bin:$PATH"
 
 # GCP SDK
 if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
@@ -72,29 +60,18 @@ export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
 export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 
 ########## zsh completion ##########
-# pip zsh completion
-function _pip_completion {
-    local words cword
-    read -Ac words
-    read -cn cword
-    reply=( $( COMP_WORDS="$words[*]" \
-            COMP_CWORD=$(( cword-1 )) \
-    PIP_AUTO_COMPLETE=1 $words[1] ) )
-}
-compctl -K _pip_completion pip
+if [ -e ~/.zsh/completions ]; then
+  fpath=(~/.zsh/completions $fpath)
+fi
 
 autoload -Uz bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
 
 # AWS CLI completion
 if [ "$(uname)" = 'Darwin' ]; then
     complete -C '/opt/homebrew/bin/aws_completer' aws
 else
     complete -C '/usr/local/bin/aws_completer' aws
-fi
-
-# docker completion
-if [ -e ~/.zsh/completions ]; then
-  fpath=(~/.zsh/completions $fpath)
 fi
 
 ########## alias ##########
