@@ -85,10 +85,10 @@ fi
 if ! is_exists "uv"; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
     source ~/.zshrc
-    cd $HOME
 else
     uv self update
 fi
+cd $HOME
 uv venv --allow-existing --python $PYTHON_VERSION
 uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]'
 
