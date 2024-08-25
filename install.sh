@@ -63,7 +63,7 @@ source ~/.zshrc
 
 # coc.vim
 mkdir -p ~/.config/coc/extensions
-ln -snfv "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
+cp -f "$DOTPATH/nvim/package_coc.json" ~/.config/coc/extensions/package.json
 cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock
 # install vim plugins
