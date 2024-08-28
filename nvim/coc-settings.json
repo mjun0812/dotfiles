@@ -1,26 +1,22 @@
 {
-	"coc.preferences.extensionUpdateCheck": "daily",
-	"coc.preferences.formatOnSave": true,
-	"coc.preferences.formatOnType": true,
-	"coc.preferences.formatOnSaveTimeout": 500,
-	"coc.preferences.willSaveHandlerTimeout": 500,
-	"clangd.fallbackFlags": [
-		"-std=c++11"
-	],
-	"markdownlint.config": {
-		"line-length": false
-	},
-	"pyright.enable": true,
-	"python.formatting.blackArgs": [
-		"--line-length",
-		"99"
-	],
-	"python.formatting.provider": "ruff",
-	"pyright.organizeimports.provider": "ruff",
-	"python.linting.ruffEnabled": true,
-	"python.analysis.autoImportCompletions": false,
-	"pyright.disableProgressNotifications": true,
-	"pyright.inlayHints.functionReturnTypes": false,
-	"pyright.inlayHints.variableTypes": false,
-	"pydocstring.formatter": "google",
+  "coc.preferences.extensionUpdateCheck": "daily",
+  "coc.preferences.formatOnSave": true,
+  "coc.preferences.formatOnType": true,
+  "coc.preferences.formatOnSaveTimeout": 500,
+  "coc.preferences.willSaveHandlerTimeout": 500,
+  "clangd.fallbackFlags": ["-std=c++11"],
+  "markdownlint.config": {
+    "line-length": false
+  },
+  "pyright.enable": true,
+  "python.formatting.blackArgs": ["--line-length", "99"],
+  "python.formatting.provider": "ruff",
+  "pyright.organizeimports.provider": "ruff",
+  "python.linting.ruffEnabled": true,
+  "python.analysis.autoImportCompletions": false,
+  "pyright.disableProgressNotifications": true,
+  "pyright.inlayHints.functionReturnTypes": false,
+  "pyright.inlayHints.variableTypes": false,
+  "pydocstring.formatter": "google",
+  "python.pythonPath": "${env:HOME}/.venv/bin/python"
 }
