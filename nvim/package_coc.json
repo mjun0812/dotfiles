@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "lastUpdate": 1724680767974,
+=======
+  "lastUpdate": 1724539761970,
+>>>>>>> e7e63cf0aad8d70b4011323f9cb73fbe3bb2bf22
   "dependencies": {
     "coc-json": ">=1.9.2",
     "coc-markdownlint": ">=1.33.0",
