@@ -1,5 +1,5 @@
 {
-  "lastUpdate": 1724248113957,
+  "lastUpdate": 1724537693201,
   "dependencies": {
     "coc-json": ">=1.9.2",
     "coc-markdownlint": ">=1.33.0",
@@ -7,7 +7,7 @@
     "coc-clangd": ">=0.30.2",
     "coc-pairs": ">=1.4.2",
     "coc-pydocstring": ">=0.10.0",
-    "coc-pyright": ">=1.1.351",
+    "coc-pyright": ">=1.1.375",
     "coc-prettier": "git+https://github.com/neoclide/coc-prettier.git"
   }
 }

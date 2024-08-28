@@ -83,6 +83,8 @@ fi
 alias sync="~/workspace/sync.sh"
 alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
 alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
+alias venv-a="source .venv/bin/activate"
+alias venv-d="deactivate"
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
