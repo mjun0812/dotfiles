@@ -38,6 +38,7 @@ eval "$(rye self completion -s zsh)"
 
 # for uv
 source "$HOME/.cargo/env"
+export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.venv/bin:$PATH"
 export PATH="$HOME/ldisk/.venv/bin:$PATH"
 export PATH="$HOME/ldisk_zuikaku/.venv/bin:$PATH"
