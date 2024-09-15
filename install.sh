@@ -37,9 +37,9 @@ for f in .??*; do
     ln -snfv "$DOTPATH/$f" "$HOME/$f"
 done
 
-for f in "$DOTPATH"/completions/*; do
-    ln -snfv "$f" "$HOME/.zsh/completions/$(basename $f)"
-done
+# for f in "$DOTPATH"/completions/*; do
+#     ln -snfv "$f" "$HOME/.zsh/completions/$(basename $f)"
+# done
 
 source ~/.zshrc
 
