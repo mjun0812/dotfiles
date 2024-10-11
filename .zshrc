@@ -39,8 +39,6 @@ eval "$(rye self completion -s zsh)"
 # for uv
 source "$HOME/.cargo/env"
 export PATH="$HOME/.venv/bin:$PATH"
-export PATH="$HOME/ldisk/.venv/bin:$PATH"
-export PATH="$HOME/ldisk_zuikaku/.venv/bin:$PATH"
 
 # GCP SDK
 if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
