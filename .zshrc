@@ -32,10 +32,6 @@ fi
 # mise
 eval "$(~/.local/bin/mise activate zsh)"
 
-# rye
-source "$HOME/.rye/env"
-eval "$(rye self completion -s zsh)"
-
 # for uv
 source "$HOME/.cargo/env"
 export PATH="$HOME/.cargo/bin:$PATH"

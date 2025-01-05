@@ -72,16 +72,6 @@ cd $DOTPATH
 
 ################ [Python] ################
 source ~/.zshrc
-# install rye
-if is_exists "rye"; then
-    rye self update
-else
-    curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
-    source ~/.zshrc
-    rye config --set-bool behavior.use-uv=true
-    rye config --set-bool behavior.global-python=false
-fi
-
 # install uv
 if is_exists "uv"; then
     uv self update
