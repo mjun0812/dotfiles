@@ -17,6 +17,7 @@
   "pyright.disableProgressNotifications": true,
   "pyright.inlayHints.functionReturnTypes": false,
   "pyright.inlayHints.variableTypes": false,
+  "pyright.inlayHints.parameterTypes": false,
   "pydocstring.formatter": "google",
   "python.pythonPath": "${env:HOME}/.venv/bin/python"
 }

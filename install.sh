@@ -3,6 +3,8 @@
 DOTPATH=~/.dotfiles
 PYTHON_VERSION='3.11'
 
+git submodule update --init --recursive
+
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
     command -v "$1" > /dev/null 2>&1
@@ -48,6 +50,10 @@ curl https://sh.rustup.rs -sSf | sh
 
 source ~/.zshrc
 
+################ [rustup] ###############
+
+curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
+
 ################ [mise] ################
 if ! is_exists "mise"; then
     curl https://mise.run | sh
@@ -77,16 +83,6 @@ cd $DOTPATH
 
 ################ [Python] ################
 source ~/.zshrc
-# install rye
-if is_exists "rye"; then
-    rye self update
-else
-    curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
-    source ~/.zshrc
-    rye config --set-bool behavior.use-uv=true
-    rye config --set-bool behavior.global-python=false
-fi
-
 # install uv
 if is_exists "uv"; then
     uv self update
