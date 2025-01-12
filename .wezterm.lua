@@ -26,10 +26,10 @@ config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
 config.show_new_tab_button_in_tab_bar = false
 -- Windowの余白
 config.window_padding = {
-  left = 12,
-  right = 5,
+  left = '0.5cell',
+  right = '0.5cell',
   top = 0,
-  bottom = 1,
+  bottom = '0.2cell',
 }
 -- タブの最大幅
 config.tab_max_width = 20
