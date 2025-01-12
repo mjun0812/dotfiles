@@ -21,15 +21,15 @@ config.window_background_opacity = 0.85
 -- ぼかし
 config.macos_window_background_blur = 20
 -- タブ上のタイトルを消す
-config.window_decorations = "RESIZE"
+config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
 -- タブバーの+ボタンを消す
 config.show_new_tab_button_in_tab_bar = false
 -- Windowの余白
 config.window_padding = {
-  left = 15,
+  left = 12,
   right = 5,
   top = 0,
-  bottom = 0.5,
+  bottom = 1,
 }
 -- タブの最大幅
 config.tab_max_width = 20
@@ -62,10 +62,15 @@ config.colors = {
     -- タブの境界線を削除
     inactive_tab_edge = "none",
     active_tab = {
-      bg_color = "rgba(0, 0, 0, 0.85)",
+      bg_color = "rgba(0,0,0,0.85)",
       fg_color = "#c7c7c7",
       intensity = "Bold",
-    }
+    },
+    inactive_tab = {
+      bg_color = "rgba(0,0,0,0.85)",
+      fg_color = "#7b7b7b",
+      intensity = "Normal",
+    },
   },
 
   ansi = {
