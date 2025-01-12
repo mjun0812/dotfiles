@@ -47,3 +47,4 @@
 !configs/**
 !completions
 !completions/**
+!.wezterm.lua
