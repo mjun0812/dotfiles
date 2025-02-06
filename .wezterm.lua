@@ -157,8 +157,6 @@ config.use_ime = true
 config.window_background_opacity = 0.85
 -- ぼかし
 config.macos_window_background_blur = 20
--- タブ上のタイトルを消す
-config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
 -- タブバーの+ボタンを消す
 config.show_new_tab_button_in_tab_bar = false
 -- Windowの余白
@@ -173,6 +171,14 @@ config.tab_max_width = 20
 -- window size
 config.initial_rows = 30
 config.initial_cols = 110
+
+
+-- タブ上のタイトルを消す
+if wezterm.target_triple == 'aarch64-apple-darwin' then
+  config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
+elseif wezterm.target_triple == 'x86_64-unknown-linux-gnu' then
+  config.window_decorations = "RESIZE"
+end
 
 config.use_fancy_tab_bar = true
 config.window_frame = {

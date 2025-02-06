@@ -10,8 +10,11 @@ is_exists() {
     command -v "$1" > /dev/null 2>&1
 }
 
+git submodule update --init --recursive
+
 mkdir -p "$HOME"/.config
 mkdir -p "$HOME/.zsh/completions"
+mkdir -p "$HOME/.cargo"
 
 cd "$DOTPATH"
 
@@ -42,6 +45,8 @@ done
 # for f in "$DOTPATH"/completions/*; do
 #     ln -snfv "$f" "$HOME/.zsh/completions/$(basename $f)"
 # done
+
+curl https://sh.rustup.rs -sSf | sh
 
 source ~/.zshrc
 
