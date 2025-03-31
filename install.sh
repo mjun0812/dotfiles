@@ -46,13 +46,11 @@ done
 #     ln -snfv "$f" "$HOME/.zsh/completions/$(basename $f)"
 # done
 
-curl https://sh.rustup.rs -sSf | sh
 
-source ~/.zshrc
-
-################ [rustup] ###############
-
+################ [Rust] ###############
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
+source ~/.zshrc
+cargo install bat fd-find
 
 ################ [mise] ################
 if ! is_exists "mise"; then
