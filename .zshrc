@@ -34,7 +34,6 @@ eval "$(~/.local/bin/mise activate zsh)"
 
 # for uv
 source "$HOME/.cargo/env"
-export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.venv/bin:$PATH"
 
 # GCP SDK
