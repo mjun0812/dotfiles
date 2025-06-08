@@ -38,7 +38,7 @@ done
 ################ [Rust] ###############
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
 source ~/.zshrc
-cargo install bat fd-find
+cargo install bat fd-find ripgrep
 
 ################ [mise] ################
 if ! is_exists "mise"; then
