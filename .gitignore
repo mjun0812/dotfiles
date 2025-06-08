@@ -48,3 +48,4 @@
 !completions
 !completions/**
 !.wezterm.lua
+!CLAUDE_global.md

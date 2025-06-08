@@ -18,18 +18,6 @@ mkdir -p "$HOME/.cargo"
 
 cd "$DOTPATH"
 
-if [ ! -d ".backup" ]; then
-    echo "backup old dotfiles..."
-    mkdir -p "$DOTPATH/.backup"
-    for f in .??*; do
-        [ "$f" = ".git" ] && continue
-        [ "$f" = ".DS_Store" ] && continue
-        [ "$f" = ".gitignore" ] && continue
-        [ "$f" = ".backup" ] && continue
-        mv -v "$HOME"/"$f" "$DOTPATH/.backup"
-    done
-fi
-
 for f in .??*; do
     # exclude dotfile
     [ "$f" = ".git" ] && continue
@@ -92,4 +80,8 @@ source ~/.zshrc
 cd $HOME
 uv venv --allow-existing --python $PYTHON_VERSION
 uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]'
+
+################ [Claude Code] ################
+mkdir -p "$HOME/.claude"
+ln -snfv "$DOTPATH/CLAUDE_global.md" "$HOME/.claude/CLAUDE.md"
 
