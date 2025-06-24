@@ -31,7 +31,10 @@
 !fonts
 !fonts/**
 !nvim
-!nvim/init.vim
+!nvim/init.vim*
+!nvim/init.lua
+!nvim/lua
+!nvim/lua/**
 !.tmux.conf
 !github
 !templates
