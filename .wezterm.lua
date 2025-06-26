@@ -81,9 +81,9 @@ config.mouse_bindings = {
 -- 日本語入力
 config.use_ime = true
 -- 透過
-config.window_background_opacity = 0.85
+config.window_background_opacity = 0.70
 -- ぼかし
-config.macos_window_background_blur = 20
+config.macos_window_background_blur = 30
 -- タブバーの+ボタンを消す
 config.show_new_tab_button_in_tab_bar = false
 -- Windowの余白
