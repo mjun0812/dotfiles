@@ -34,6 +34,9 @@ done
 #     ln -snfv "$f" "$HOME/.zsh/completions/$(basename $f)"
 # done
 
+mkdir -p "$HOME/.local/bin"
+ln -snfv "$DOTPATH/script/tmux-ide.sh" "$HOME/.local/bin/tmux-ide"
+
 
 ################ [Rust] ###############
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
