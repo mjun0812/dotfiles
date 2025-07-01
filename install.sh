@@ -12,22 +12,18 @@ cd "$DOTPATH"
 
 git submodule update --init --recursive
 
-mkdir -p "$HOME"/.config
-mkdir -p "$HOME/.cargo"
-mkdir -p "$HOME/.local/bin"
+mkdir -p ~/.config
+mkdir -p ~/.cargo
+mkdir -p ~/.local/bin
+mkdir -p ~/.backup
 
-for f in .??*; do
-    # exclude dotfile
-    [ "$f" = ".git" ] && continue
-    [ "$f" = ".DS_Store" ] && continue
-    [ "$f" = ".gitignore" ] && continue
-    [ "$f" = ".gitmodule" ] && continue
-    [ "$f" = ".backup" ] && continue
-    [ "$f" = ".gitconfig*" ] && continue
-    # do symbolic link
-    ln -snfv "$DOTPATH/$f" "$HOME/$f"
+for f in "$DOTPATH"/config/dot/*; do
+    if [ -e "$HOME/.$(basename $f)" ]; then
+        mv "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)"
+    fi
+    ln -snfv "$f" "$HOME/.$(basename $f)"
 done
-
+ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
 ln -snfv "$DOTPATH/script/tmux-ide.sh" "$HOME/.local/bin/tmux-ide"
 
 ################ [Rust] ################
@@ -48,20 +44,20 @@ npm install -g neovim md-to-pdf@latest prettier@latest
 go install github.com/charmbracelet/glow@latest
 
 ################ [Neovim] ################
-ln -snfv "$DOTPATH/nvim" "$HOME"/.config/
-./bin/neovim.sh # install
+ln -snfv $DOTPATH/config/nvim $HOME/.config/nvim
+$DOTPATH/script/install_neovim.sh
 source ~/.zshrc
 
 # coc.vim
 mkdir -p ~/.config/coc/extensions
 unlink ~/.config/coc/extensions/package.json
-cat "$DOTPATH/nvim/package_coc.json" >! ~/.config/coc/extensions/package.json
+cat "$DOTPATH/config/nvim/package_coc.json" >! ~/.config/coc/extensions/package.json
 cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock
 cd $DOTPATH
+source ~/.zshrc
 
 ################ [Python] ################
-source ~/.zshrc
 # install uv
 if is_exists "uv"; then
     uv self update
@@ -76,4 +72,4 @@ uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]'
 
 ################ [Claude Code] ################
 mkdir -p "$HOME/.claude"
-ln -snfv "$DOTPATH/CLAUDE_global.md" "$HOME/.claude/CLAUDE.md"
+ln -snfv "$DOTPATH/config/CLAUDE_global.md" "$HOME/.claude/CLAUDE.md"
