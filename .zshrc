@@ -41,10 +41,6 @@ if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
     source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
     source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
 fi
-if [ -e "/opt/homebrew/Caskroom/google-cloud-sdk" ]; then
-    source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
-    source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-fi
 if [ -e "$HOME/.config/gcloud/test-project-service-account.json" ]; then
     export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/test-project-service-account.json
 fi
@@ -92,4 +88,3 @@ alias cat="bat --style=plain --paging=never"
 if type zprof > /dev/null 2>&1; then
     zprof | cat
 fi
-
