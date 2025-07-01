@@ -3,20 +3,18 @@
 DOTPATH=~/.dotfiles
 PYTHON_VERSION='3.11'
 
-git submodule update --init --recursive
-
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
     command -v "$1" > /dev/null 2>&1
 }
 
+cd "$DOTPATH"
+
 git submodule update --init --recursive
 
 mkdir -p "$HOME"/.config
-mkdir -p "$HOME/.zsh/completions"
 mkdir -p "$HOME/.cargo"
-
-cd "$DOTPATH"
+mkdir -p "$HOME/.local/bin"
 
 for f in .??*; do
     # exclude dotfile
@@ -30,15 +28,9 @@ for f in .??*; do
     ln -snfv "$DOTPATH/$f" "$HOME/$f"
 done
 
-# for f in "$DOTPATH"/completions/*; do
-#     ln -snfv "$f" "$HOME/.zsh/completions/$(basename $f)"
-# done
-
-mkdir -p "$HOME/.local/bin"
 ln -snfv "$DOTPATH/script/tmux-ide.sh" "$HOME/.local/bin/tmux-ide"
 
-
-################ [Rust] ###############
+################ [Rust] ################
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
 source ~/.zshrc
 cargo install bat fd-find ripgrep
@@ -50,7 +42,7 @@ fi
 source ~/.zshrc
 mise use -g go
 mise use -g node
-# install packages 
+# install packages
 npm install -g neovim md-to-pdf@latest prettier@latest
 # glow markdown viewer
 go install github.com/charmbracelet/glow@latest
@@ -66,8 +58,6 @@ unlink ~/.config/coc/extensions/package.json
 cat "$DOTPATH/nvim/package_coc.json" >! ~/.config/coc/extensions/package.json
 cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock
-# install vim plugins
-vim +'PlugInstall --sync' +qa
 cd $DOTPATH
 
 ################ [Python] ################
@@ -87,4 +77,3 @@ uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]'
 ################ [Claude Code] ################
 mkdir -p "$HOME/.claude"
 ln -snfv "$DOTPATH/CLAUDE_global.md" "$HOME/.claude/CLAUDE.md"
-
