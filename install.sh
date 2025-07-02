@@ -18,7 +18,7 @@ mkdir -p ~/.local/bin
 
 for f in "$DOTPATH"/config/dot/*; do
     if [ -e "$HOME/.$(basename $f)" ]; then
-        mv "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)"
+        mv -f "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)"
     fi
     ln -snfv "$f" "$HOME/.$(basename $f)"
 done
@@ -27,7 +27,7 @@ ln -snfv "$DOTPATH/script/tmux-ide.sh" "$HOME/.local/bin/tmux-ide"
 
 ################ [zsh completion] ################
 if [ -e "$HOME/.zsh/completions" ]; then
-    mv "$HOME/.zsh/completions" "$DOTPATH/.backup/zsh/completions"
+    mv -f "$HOME/.zsh/completions" "$DOTPATH/.backup/zsh_completions"
 fi
 mkdir -p "$HOME/.zsh"
 ln -snfv "$DOTPATH/config/zsh_completions" "$HOME/.zsh/completions"
@@ -41,7 +41,7 @@ cargo install bat fd-find ripgrep
 if ! is_exists "mise"; then
     curl https://mise.run | sh
 fi
-mv "$HOME/.config/mise" "$DOTPATH/.backup/mise"
+mv -f "$HOME/.config/mise" "$DOTPATH/.backup/mise"
 ln -snfv "$DOTPATH/config/mise" "$HOME/.config/mise"
 source ~/.zshrc
 mise install
