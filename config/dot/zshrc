@@ -1,14 +1,9 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
+source "$HOME/.zprezto/init.zsh"
 
 # add local PATH
 export PATH="$HOME/bin:$PATH:$HOME/.bin"
@@ -67,20 +62,20 @@ fi
 ########## alias ##########
 alias emacs='emacs -nw'
 alias vim='nvim'
-if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
-    alias ls='gls --group-directories-first --color=auto'
-fi
 alias sync="~/workspace/sync.sh"
 alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
 alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
-alias cat="bat --style=plain --paging=never --theme=OneHalfDark"
+if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
+    alias ls='gls --group-directories-first --color=auto'
+fi
+if type bat > /dev/null 2>&1; then
+    alias cat="bat --style=plain --paging=never --theme=OneHalfDark"
+fi
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 # powerlevel10k
+source ~/.p10k.zsh
 (( ! ${+functions[p10k]} )) || p10k finalize
 
 # If you want to see the profile, uncomment the following line
