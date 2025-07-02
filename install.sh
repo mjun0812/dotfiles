@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-DOTPATH=~/.dotfiles
+DOTPATH=$(cd $(dirname $0) && pwd)
 PYTHON_VERSION='3.11'
 
 # is_exists returns true if executable $1 exists in $PATH
@@ -15,7 +15,6 @@ git submodule update --init --recursive
 mkdir -p ~/.config
 mkdir -p ~/.cargo
 mkdir -p ~/.local/bin
-mkdir -p ~/.backup
 
 for f in "$DOTPATH"/config/dot/*; do
     if [ -e "$HOME/.$(basename $f)" ]; then
@@ -26,6 +25,13 @@ done
 ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
 ln -snfv "$DOTPATH/script/tmux-ide.sh" "$HOME/.local/bin/tmux-ide"
 
+################ [zsh completion] ################
+if [ -e "$HOME/.zsh/completions" ]; then
+    mv "$HOME/.zsh/completions" "$DOTPATH/.backup/zsh/completions"
+fi
+mkdir -p "$HOME/.zsh"
+ln -snfv "$DOTPATH/config/zsh_completions" "$HOME/.zsh/completions"
+
 ################ [Rust] ################
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
 source ~/.zshrc
@@ -35,13 +41,14 @@ cargo install bat fd-find ripgrep
 if ! is_exists "mise"; then
     curl https://mise.run | sh
 fi
+mv "$HOME/.config/mise" "$DOTPATH/.backup/mise"
+ln -snfv "$DOTPATH/config/mise" "$HOME/.config/mise"
 source ~/.zshrc
-mise use -g go
-mise use -g node
-# install packages
+mise install
+# install npm packages
 npm install -g neovim md-to-pdf@latest prettier@latest \
     @anthropic-ai/claude-code @google/gemini-cli
-# glow markdown viewer
+# install go packages
 go install github.com/charmbracelet/glow@latest
 
 ################ [Neovim] ################

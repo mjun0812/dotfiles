@@ -49,8 +49,8 @@ if [ -e ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
 fi
 
-autoload -Uz bashcompinit && bashcompinit
 autoload -Uz compinit && compinit
+autoload -Uz bashcompinit && bashcompinit
 
 # AWS CLI completion
 if [ "$(uname)" = 'Darwin' ]; then
