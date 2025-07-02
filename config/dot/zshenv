@@ -10,4 +10,6 @@
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
-. "$HOME/.cargo/env"
+
+# If you want to see the profile, uncomment the following line
+# zmodload zsh/zprof && zprof
