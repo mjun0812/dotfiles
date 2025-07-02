@@ -40,6 +40,8 @@ cargo install bat fd-find ripgrep
 ################ [mise] ################
 if ! is_exists "mise"; then
     curl https://mise.run | sh
+else
+    mise self-update -y
 fi
 mv "$HOME/.config/mise" "$DOTPATH/.backup/mise"
 ln -snfv "$DOTPATH/config/mise" "$HOME/.config/mise"
