@@ -73,9 +73,7 @@ fi
 alias sync="~/workspace/sync.sh"
 alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
 alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
-alias venv-a="source .venv/bin/activate"
-alias venv-d="deactivate"
-alias cat="bat --style=plain --paging=never"
+alias cat="bat --style=plain --paging=never --theme=OneHalfDark"
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
@@ -85,6 +83,8 @@ alias cat="bat --style=plain --paging=never"
 # powerlevel10k
 (( ! ${+functions[p10k]} )) || p10k finalize
 
-if type zprof > /dev/null 2>&1; then
-    zprof | cat
-fi
+# If you want to see the profile, uncomment the following line
+# and edit .zshenv
+# if type zprof > /dev/null 2>&1; then
+#     zprof
+# fi

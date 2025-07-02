@@ -27,7 +27,7 @@ ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
 ln -snfv "$DOTPATH/script/tmux-ide.sh" "$HOME/.local/bin/tmux-ide"
 
 ################ [Rust] ################
-curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
+curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
 source ~/.zshrc
 cargo install bat fd-find ripgrep
 
@@ -39,7 +39,8 @@ source ~/.zshrc
 mise use -g go
 mise use -g node
 # install packages
-npm install -g neovim md-to-pdf@latest prettier@latest
+npm install -g neovim md-to-pdf@latest prettier@latest \
+    @anthropic-ai/claude-code @google/gemini-cli
 # glow markdown viewer
 go install github.com/charmbracelet/glow@latest
 
