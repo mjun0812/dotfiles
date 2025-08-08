@@ -1,9 +1,19 @@
+# Agent detection - only activate minimal mode for actual agents  
+if [[ -n "$npm_config_yes" ]] || [[ -n "$CI" ]] || [[ "$-" != *i* ]]; then
+  export AGENT_MODE=true
+  echo "Running in agent mode. Minimal configuration loaded."
+else
+  export AGENT_MODE=false
+fi
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+if [[ "$AGENT_MODE" == "false" ]] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-source "$HOME/.zprezto/init.zsh"
+if [[ "$AGENT_MODE" == "false" ]]; then
+    source "$HOME/.zprezto/init.zsh"
+fi
 
 # add local PATH
 export PATH="$HOME/bin:$PATH:$HOME/.bin"
@@ -25,7 +35,9 @@ if [ -e /usr/lib/wsl/lib ]; then
 fi
 
 # mise
-eval "$(~/.local/bin/mise activate zsh)"
+if [[ "$AGENT_MODE" == "false" ]]; then
+    eval "$(~/.local/bin/mise activate zsh)"
+fi
 
 # for uv
 source "$HOME/.cargo/env"
@@ -74,9 +86,11 @@ fi
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
-# powerlevel10k
-source ~/.p10k.zsh
-(( ! ${+functions[p10k]} )) || p10k finalize
+if [[ "$AGENT_MODE" == "false" ]]; then
+    # powerlevel10k
+    source ~/.p10k.zsh
+    (( ! ${+functions[p10k]} )) || p10k finalize
+fi
 
 # If you want to see the profile, uncomment the following line
 # and edit .zshenv
