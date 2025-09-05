@@ -87,4 +87,5 @@ ln -snfv "$DOTPATH/config/CLAUDE_global.md" "$HOME/.claude/CLAUDE.md"
 ################ [Codex] ################
 mkdir -p "$HOME/.codex"
 ln -snfv "$DOTPATH/config/dot/codex.toml" "$HOME/.codex/config.toml"
+ln -snfv "DOTPATH/config/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 
