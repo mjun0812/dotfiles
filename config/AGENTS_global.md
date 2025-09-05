@@ -1,2 +1,2 @@
-Please provide all answers in Japanese
+Always respond in Japanese.
 
