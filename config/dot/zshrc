@@ -80,8 +80,10 @@ alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
     alias ls='gls --group-directories-first --color=auto'
 fi
+# Use bat if available
 if type bat > /dev/null 2>&1; then
     alias cat="bat --style=plain --paging=never --theme=OneHalfDark"
+    alias less="bat --style=plain --paging=always --theme=OneHalfDark"
 fi
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
