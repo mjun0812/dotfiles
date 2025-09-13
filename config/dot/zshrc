@@ -61,6 +61,9 @@ if [ -e ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
 fi
 
+# Docker completion
+fpath=(/Users/mjun/.docker/completions $fpath)
+
 autoload -Uz compinit && compinit
 autoload -Uz bashcompinit && bashcompinit
 
@@ -94,8 +97,3 @@ if [[ "$AGENT_MODE" == "false" ]]; then
     (( ! ${+functions[p10k]} )) || p10k finalize
 fi
 
-# If you want to see the profile, uncomment the following line
-# and edit .zshenv
-# if type zprof > /dev/null 2>&1; then
-#     zprof
-# fi
