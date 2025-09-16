@@ -44,7 +44,8 @@ else
     mise self-update -y
 fi
 mv -f "$HOME/.config/mise" "$DOTPATH/.backup/mise"
-ln -snfv "$DOTPATH/config/mise" "$HOME/.config/mise"
+mkdir -p "$HOME/.config/mise"
+ln -snfv "$DOTPATH/config/config/mise.toml" "$HOME/.config/mise/config.toml"
 source ~/.zshrc
 mise install
 # install npm packages
@@ -54,13 +55,18 @@ npm install -g neovim md-to-pdf@latest prettier@latest \
 go install github.com/charmbracelet/glow@latest
 
 ################ [Neovim] ################
+if [ -e "$HOME/.config/nvim" ]; then
+    mv -f "$HOME/.config/nvim" "$DOTPATH/.backup/nvim"
+fi
 ln -snfv $DOTPATH/config/nvim $HOME/.config/nvim
 $DOTPATH/script/install_neovim.sh
 source ~/.zshrc
 
 # coc.vim
+if [ -e "$HOME/.config/extensions/package.json" ]; then
+    mv -f "$HOME/.config/extensions/package.json" "$DOTPATH/.backup/coc_package.json"
+fi
 mkdir -p ~/.config/coc/extensions
-unlink ~/.config/coc/extensions/package.json
 cat "$DOTPATH/config/nvim/package_coc.json" >! ~/.config/coc/extensions/package.json
 cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock
@@ -81,11 +87,14 @@ uv venv --allow-existing --python $PYTHON_VERSION
 uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]'
 
 ################ [Claude Code] ################
+cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
 mkdir -p "$HOME/.claude"
-ln -snfv "$DOTPATH/config/CLAUDE_global.md" "$HOME/.claude/CLAUDE.md"
+ln -snfv "$DOTPATH/config/config/CLAUDE_global.md" "$HOME/.claude/CLAUDE.md"
 
 ################ [Codex] ################
+cp -aLf "$HOME/.codex/codex.toml" "$DOTPATH/.backup/codex.toml" && rm -rf "$HOME/.codex/codex.toml"
+cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.toml" && rm -rf "$HOME/.codex/AGENTS.md"
 mkdir -p "$HOME/.codex"
-ln -snfv "$DOTPATH/config/codex.toml" "$HOME/.codex/config.toml"
-ln -snfv "$DOTPATH/config/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
+ln -snfv "$DOTPATH/config/config/codex.toml" "$HOME/.codex/config.toml"
+ln -snfv "$DOTPATH/config/config/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 

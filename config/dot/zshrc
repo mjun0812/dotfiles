@@ -35,9 +35,7 @@ if [ -e /usr/lib/wsl/lib ]; then
 fi
 
 # mise
-if [[ "$AGENT_MODE" == "false" ]]; then
-    eval "$(~/.local/bin/mise activate zsh)"
-fi
+eval "$(~/.local/bin/mise activate zsh)"
 
 # for uv
 source "$HOME/.cargo/env"
