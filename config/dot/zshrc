@@ -6,8 +6,18 @@ else
   export AGENT_MODE=false
 fi
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-if [[ "$AGENT_MODE" == "false" ]] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+if [[ "$AGENT_MODE" == "true" ]]; then
+  POWERLEVEL9K_INSTANT_PROMPT=off
+  # Disable complex prompt features for AI agents
+  POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
+  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
+  # Ensure non-interactive mode
+  export DEBIAN_FRONTEND=noninteractive
+  export NONINTERACTIVE=1
+fi
+
+# Enable Powerlevel10k instant prompt only when not in agent mode
+if [[ "$AGENT_MODE" != "true" ]] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
