@@ -89,7 +89,7 @@ uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]'
 ################ [Claude Code] ################
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
 mkdir -p "$HOME/.claude"
-ln -snfv "$DOTPATH/config/config/CLAUDE_global.md" "$HOME/.claude/CLAUDE.md"
+ln -snfv "$DOTPATH/config/config/AGENTS_global.md" "$HOME/.claude/CLAUDE.md"
 
 ################ [Codex] ################
 cp -aLf "$HOME/.codex/codex.toml" "$DOTPATH/.backup/codex.toml" && rm -rf "$HOME/.codex/codex.toml"
