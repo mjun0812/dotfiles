@@ -3,22 +3,17 @@
 .**
 
 ### not ignore ###
+!README.md
 !install.sh
 !.gitignore
-!.gitignore*
 !.gitmodules
-!README.md
 
-!bin
-!bin/**
-!fonts
-!fonts/**
 !templates
 !templates/**
 !script
 !script/**
 !config
 !config/**
-!CLAUDE_global.md
 
 .DS_Store
+lazy-lock.json
