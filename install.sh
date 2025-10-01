@@ -74,6 +74,7 @@ source ~/.zshrc
 cd $HOME
 uv venv --allow-existing
 uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]' glances nvitop
+cd $DOTPATH
 
 ################ [Claude Code] ################
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
