@@ -1,7 +1,6 @@
 #!/usr/bin/env zsh
 
 DOTPATH=$(cd $(dirname $0) && pwd)
-PYTHON_VERSION='3.11'
 
 # is_exists returns true if executable $1 exists in $PATH
 is_exists() {
@@ -73,8 +72,8 @@ else
 fi
 source ~/.zshrc
 cd $HOME
-uv venv --allow-existing --python $PYTHON_VERSION
-uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]'
+uv venv --allow-existing
+uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]' glances nvitop
 
 ################ [Claude Code] ################
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
