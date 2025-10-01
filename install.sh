@@ -23,7 +23,7 @@ for f in "$DOTPATH"/config/dot/*; do
     ln -snfv "$f" "$HOME/.$(basename $f)"
 done
 
-rm -rf "$DOTPATH/.zprezto"
+rm -rf "$HOME/.zprezto"
 ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
 
 ################ [Rust] ################
@@ -37,9 +37,9 @@ if ! is_exists "mise"; then
 else
     mise self-update -y
 fi
-cp -aLf "$HOME/.config/mise" "$DOTPATH/.backup/mise" && rm -rf "$HOME/.config/mise"
 mkdir -p "$HOME/.config/mise"
-ln -snfv "$DOTPATH/config/config/mise.toml" "$HOME/.config/mise/config.toml"
+cp -aLf "$HOME/.config/mise/config.toml" "$DOTPATH/.backup/mise.toml" || rm -rf "$HOME/.config/mise/config.toml"
+ln -snfv "$DOTPATH/config/cfg/mise.toml" "$HOME/.config/mise/config.toml"
 source ~/.zshrc
 mise install
 # install npm packages
@@ -79,11 +79,11 @@ uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]'
 ################ [Claude Code] ################
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
 mkdir -p "$HOME/.claude"
-ln -snfv "$DOTPATH/config/config/AGENTS_global.md" "$HOME/.claude/CLAUDE.md"
+ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.claude/CLAUDE.md"
 
 ################ [Codex] ################
 cp -aLf "$HOME/.codex/codex.toml" "$DOTPATH/.backup/codex.toml" && rm -rf "$HOME/.codex/codex.toml"
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.toml" && rm -rf "$HOME/.codex/AGENTS.md"
 mkdir -p "$HOME/.codex"
-ln -snfv "$DOTPATH/config/config/codex.toml" "$HOME/.codex/config.toml"
-ln -snfv "$DOTPATH/config/config/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
+ln -snfv "$DOTPATH/config/cfg/codex.toml" "$HOME/.codex/config.toml"
+ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
