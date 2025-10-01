@@ -16,19 +16,14 @@ mkdir -p ~/.config
 mkdir -p ~/.cargo
 mkdir -p ~/.local/bin
 
-for f in "$DOTPATH"/config/dot/*; do
-    if [ -e "$HOME/.$(basename $f)" ]; then
-        mv -f "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)"
-    fi
-    ln -snfv "$f" "$HOME/.$(basename $f)"
-done
+rm -rf "$DOTPATH/.zprezto"
 ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
+
+rm -rf "$HOME/.local/bin/tmux-ide"
 ln -snfv "$DOTPATH/script/tmux-ide.sh" "$HOME/.local/bin/tmux-ide"
 
 ################ [zsh completion] ################
-if [ -e "$HOME/.zsh/completions" ]; then
-    mv -f "$HOME/.zsh/completions" "$DOTPATH/.backup/zsh_completions"
-fi
+cp -aLf "$HOME/.zsh/completions" "$DOTPATH/.backup/zsh_completions" && rm -rf "$HOME/.zsh/completions"
 mkdir -p "$HOME/.zsh"
 ln -snfv "$DOTPATH/config/zsh_completions" "$HOME/.zsh/completions"
 
@@ -43,7 +38,7 @@ if ! is_exists "mise"; then
 else
     mise self-update -y
 fi
-mv -f "$HOME/.config/mise" "$DOTPATH/.backup/mise"
+cp -aLf "$HOME/.config/mise" "$DOTPATH/.backup/mise" && rm -rf "$HOME/.config/mise"
 mkdir -p "$HOME/.config/mise"
 ln -snfv "$DOTPATH/config/config/mise.toml" "$HOME/.config/mise/config.toml"
 source ~/.zshrc
@@ -55,17 +50,13 @@ npm install -g neovim md-to-pdf@latest prettier@latest \
 go install github.com/charmbracelet/glow@latest
 
 ################ [Neovim] ################
-if [ -e "$HOME/.config/nvim" ]; then
-    mv -f "$HOME/.config/nvim" "$DOTPATH/.backup/nvim"
-fi
+cp -aLf "$HOME/.config/nvim" "$DOTPATH/.backup/nvim" && rm -rf "$HOME/.config/nvim"
 ln -snfv $DOTPATH/config/nvim $HOME/.config/nvim
 $DOTPATH/script/install_neovim.sh
 source ~/.zshrc
 
 # coc.vim
-if [ -e "$HOME/.config/extensions/package.json" ]; then
-    mv -f "$HOME/.config/extensions/package.json" "$DOTPATH/.backup/coc_package.json"
-fi
+cp -aLf "$HOME/.config/extensions/package.json" "$DOTPATH/.backup/coc_package.json" && rm -rf "$HOME/.config/extensions/package.json"
 mkdir -p ~/.config/coc/extensions
 cat "$DOTPATH/config/nvim/package_coc.json" >! ~/.config/coc/extensions/package.json
 cd ~/.config/coc/extensions
@@ -97,4 +88,3 @@ cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.toml" && rm -rf 
 mkdir -p "$HOME/.codex"
 ln -snfv "$DOTPATH/config/config/codex.toml" "$HOME/.codex/config.toml"
 ln -snfv "$DOTPATH/config/config/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
-
