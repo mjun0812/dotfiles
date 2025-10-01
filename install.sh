@@ -16,16 +16,15 @@ mkdir -p ~/.config
 mkdir -p ~/.cargo
 mkdir -p ~/.local/bin
 
+for f in "$DOTPATH"/config/dot/*; do
+    if [ -e "$HOME/.$(basename $f)" ]; then
+        mv -f "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)"
+    fi
+    ln -snfv "$f" "$HOME/.$(basename $f)"
+done
+
 rm -rf "$DOTPATH/.zprezto"
 ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
-
-rm -rf "$HOME/.local/bin/tmux-ide"
-ln -snfv "$DOTPATH/script/tmux-ide.sh" "$HOME/.local/bin/tmux-ide"
-
-################ [zsh completion] ################
-cp -aLf "$HOME/.zsh/completions" "$DOTPATH/.backup/zsh_completions" && rm -rf "$HOME/.zsh/completions"
-mkdir -p "$HOME/.zsh"
-ln -snfv "$DOTPATH/config/zsh_completions" "$HOME/.zsh/completions"
 
 ################ [Rust] ################
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
