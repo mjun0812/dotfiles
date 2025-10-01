@@ -16,6 +16,13 @@ mkdir -p ~/.config
 mkdir -p ~/.cargo
 mkdir -p ~/.local/bin
 
+for f in "$DOTPATH"/config/dot/*; do
+    if [ -e "$HOME/.$(basename $f)" ]; then
+        mv -f "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)"
+    fi
+    ln -snfv "$f" "$HOME/.$(basename $f)"
+done
+
 rm -rf "$DOTPATH/.zprezto"
 ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
 
