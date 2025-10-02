@@ -4,4 +4,5 @@ brew install \
     alt-tab \
     coreutils \
     xquartz \
-    raycast
+    raycast \
+    iterm2
