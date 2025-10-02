@@ -2,6 +2,7 @@
 ruby = "latest"
 go = "latest"
 node = "latest"
+rust = "latest"
 "aqua:sharkdp/fd" = "latest"
 "aqua:sharkdp/bat" = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"

@@ -39,10 +39,6 @@ npm install -g \
     @google/gemini-cli@latest \
     @openai/codex@latest
 
-################ [Rust] ################
-curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
-source ~/.zshrc
-
 ################ [Neovim] ################
 zsh $DOTPATH/script/install_neovim.sh
 cp -aLf "$HOME/.config/nvim" "$DOTPATH/.backup/nvim" && rm -rf "$HOME/.config/nvim"
@@ -57,7 +53,6 @@ npm install --global-style --ignore-scripts --no-bin-links --no-package-lock
 cd $DOTPATH
 
 ################ [Python] ################
-# install uv
 zsh $DOTPATH/script/install_uv.sh
 cd $HOME
 uv venv --allow-existing
