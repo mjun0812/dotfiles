@@ -11,47 +11,42 @@ cd "$DOTPATH"
 
 git submodule update --init --recursive
 
+mkdir -p ${DOTPATH}/.backup
 mkdir -p ~/.config
 mkdir -p ~/.cargo
 mkdir -p ~/.local/bin
 
 for f in "$DOTPATH"/config/dot/*; do
-    if [ -e "$HOME/.$(basename $f)" ]; then
-        mv -f "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)"
-    fi
+    cp -aLf "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)" && rm -rf "$HOME/.$(basename $f)"
     ln -snfv "$f" "$HOME/.$(basename $f)"
 done
 
 rm -rf "$HOME/.zprezto"
 ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
 
-################ [Rust] ################
-curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
-source ~/.zshrc
-cargo install bat fd-find ripgrep
-
 ################ [mise] ################
-if ! is_exists "mise"; then
-    curl https://mise.run | sh
-else
-    mise self-update -y
-fi
+zsh $DOTPATH/script/install_mise.sh
 mkdir -p "$HOME/.config/mise"
 cp -aLf "$HOME/.config/mise/config.toml" "$DOTPATH/.backup/mise.toml" || rm -rf "$HOME/.config/mise/config.toml"
 ln -snfv "$DOTPATH/config/cfg/mise.toml" "$HOME/.config/mise/config.toml"
-source ~/.zshrc
-mise install
 # install npm packages
-npm install -g neovim md-to-pdf@latest prettier@latest \
-    @anthropic-ai/claude-code @google/gemini-cli
-# install go packages
-go install github.com/charmbracelet/glow@latest
+mise install
+npm install -g \
+    neovim \
+    md-to-pdf@latest \
+    prettier@latest \
+    @anthropic-ai/claude-code@latest \
+    @google/gemini-cli@latest \
+    @openai/codex@latest
+
+################ [Rust] ################
+curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
+source ~/.zshrc
 
 ################ [Neovim] ################
+zsh $DOTPATH/script/install_neovim.sh
 cp -aLf "$HOME/.config/nvim" "$DOTPATH/.backup/nvim" && rm -rf "$HOME/.config/nvim"
 ln -snfv $DOTPATH/config/nvim $HOME/.config/nvim
-$DOTPATH/script/install_neovim.sh
-source ~/.zshrc
 
 # coc.vim
 cp -aLf "$HOME/.config/extensions/package.json" "$DOTPATH/.backup/coc_package.json" && rm -rf "$HOME/.config/extensions/package.json"
@@ -60,20 +55,21 @@ cat "$DOTPATH/config/nvim/package_coc.json" >! ~/.config/coc/extensions/package.
 cd ~/.config/coc/extensions
 npm install --global-style --ignore-scripts --no-bin-links --no-package-lock
 cd $DOTPATH
-source ~/.zshrc
 
 ################ [Python] ################
 # install uv
-if is_exists "uv"; then
-    uv self update
-else
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    source ~/.zshrc
-fi
-source ~/.zshrc
+zsh $DOTPATH/script/install_uv.sh
 cd $HOME
 uv venv --allow-existing
-uv pip install -U pip setuptools wheel pynvim ruff 'python-lsp-server[all]' glances nvitop
+uv pip install -U \
+    pip \
+    setuptools \
+    wheel \
+    pynvim \
+    ruff \
+    'python-lsp-server[all]' \
+    glances \
+    nvitop
 cd $DOTPATH
 
 ################ [Claude Code] ################
@@ -83,7 +79,7 @@ ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.claude/CLAUDE.md"
 
 ################ [Codex] ################
 cp -aLf "$HOME/.codex/codex.toml" "$DOTPATH/.backup/codex.toml" && rm -rf "$HOME/.codex/codex.toml"
-cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.toml" && rm -rf "$HOME/.codex/AGENTS.md"
+cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
 mkdir -p "$HOME/.codex"
 ln -snfv "$DOTPATH/config/cfg/codex.toml" "$HOME/.codex/config.toml"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"

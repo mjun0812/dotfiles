@@ -1,9 +1,8 @@
 #!/bin/zsh
 
-
 if ! command -v nvim >/dev/null 2>&1; then
     case `uname -s` in
-        macOS)
+        Darwin)
             brew install neovim
             ;;
         Linux)
@@ -17,6 +16,6 @@ if ! command -v nvim >/dev/null 2>&1; then
             ln -s ./squashfs-root/AppRun nvim
             rm -rf ~/.bin/nvim.appimage
             cd "$CURRENT"
-        esac
+    esac
 fi
 
