@@ -7,15 +7,11 @@ case `uname -s` in
         fi
         ;;
     Linux)
-        CURRENT="$(pwd)"
-        rm -rf ~/.local/bin/squashfs-root
+	URL=$(curl -sSL https://api.github.com/repos/neovim/neovim/releases/latest | jq -r '.. | .browser_download_url? // empty' | grep 'nvim-linux-x86_64.appimage$')
+	rm -rf ~/.local/bin/nvim
         mkdir -p ~/.local/bin
-        cd ~/.local/bin
-        curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-        chmod u+x ./nvim.appimage
-        ./nvim.appimage --appimage-extract > /dev/null 2>&1
-        ln -s ./squashfs-root/AppRun nvim
-        rm -rf ~/.local/bin/nvim.appimage
+        curl -o ~/.local/bin/nvim -L $URL
+        chmod u+x ~/.local/bin/nvim
         cd "${CURRENT}"
         ;;
 esac
