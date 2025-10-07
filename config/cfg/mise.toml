@@ -1,5 +1,5 @@
 [tools]
-ruby = "latest"
+# ruby = "latest"
 go = "latest"
 node = "latest"
 rust = "latest"
