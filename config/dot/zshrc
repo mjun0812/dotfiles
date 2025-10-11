@@ -5,6 +5,7 @@ if [[ -n "$npm_config_yes" ]] || [[ -n "$CI" ]] || [[ "$-" != *i* ]]; then
 else
   export AGENT_MODE=false
 fi
+export AGENT_MODE=false
 
 if [[ "$AGENT_MODE" == "true" ]]; then
   POWERLEVEL9K_INSTANT_PROMPT=off
@@ -19,10 +20,6 @@ fi
 # Enable Powerlevel10k instant prompt only when not in agent mode
 if [[ "$AGENT_MODE" != "true" ]] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-if [[ "$AGENT_MODE" == "false" ]]; then
-    source "$HOME/.zprezto/init.zsh"
 fi
 
 # add local PATH
@@ -64,6 +61,10 @@ fi
 export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
 export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 
+# eval "$(starship init zsh)"
+
+eval "$(sheldon source)"
+
 ########## zsh completion ##########
 if [ -e ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
@@ -100,4 +101,3 @@ if [[ "$AGENT_MODE" == "false" ]]; then
     source ~/.p10k.zsh
     (( ! ${+functions[p10k]} )) || p10k finalize
 fi
-
