@@ -1,12 +1,6 @@
 #!/usr/bin/env zsh
 
 DOTPATH=$(cd $(dirname $0) && pwd)
-
-# is_exists returns true if executable $1 exists in $PATH
-is_exists() {
-    command -v "$1" > /dev/null 2>&1
-}
-
 cd "$DOTPATH"
 
 git submodule update --init --recursive
@@ -16,6 +10,11 @@ mkdir -p ~/.config
 mkdir -p ~/.cargo
 mkdir -p ~/.local/bin
 
+if [ "$(uname -s)" == "Darwin" ]; then
+    $DOTPATH/script/install_homebrew.sh
+fi
+
+# Copy dotfiles
 for f in "$DOTPATH"/config/dot/*; do
     cp -aLf "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)" && rm -rf "$HOME/.$(basename $f)"
     ln -snfv "$f" "$HOME/.$(basename $f)"
@@ -23,6 +22,9 @@ done
 
 rm -rf "$HOME/.zprezto"
 ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
+
+rm -rf "$HOME/.config/sheldon"
+ln -snfv "$DOTPATH/config/cfg/sheldon.toml" "$HOME/.config/sheldon/plugins.toml"
 
 ################ [mise] ################
 zsh $DOTPATH/script/install_mise.sh
