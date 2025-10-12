@@ -86,7 +86,7 @@ file_type:
   temp: { foreground: White }
   compiled: { foreground: Yellow }
   build: { foreground: Default, is_bold: true, is_underline: false }
-  source: { foreground: Yellow, is_bold: true }
+  source: { foreground: Default, is_bold: false }
 
 punctuation: { foreground: DarkGray, is_bold: true }
 date: { foreground: DarkGray }

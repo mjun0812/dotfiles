@@ -63,6 +63,7 @@ bindkey -e # Use Emacs key bindings
 bindkey "^[[Z" reverse-menu-complete
 
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
+[ -f ~/.opt.zsh ] && source ~/.opt.zsh
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 # powerlevel10k
