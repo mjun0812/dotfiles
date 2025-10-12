@@ -25,6 +25,8 @@ cp -aLf "$HOME/.config/mise/config.toml" "$DOTPATH/.backup/mise.toml" || rm -rf 
 ln -snfv "$DOTPATH/config/cfg/mise.toml" "$HOME/.config/mise/config.toml"
 # install npm packages
 mise install
+mise reshim
+source ~/.zshrc
 npm install -g \
     neovim \
     md-to-pdf@latest \
