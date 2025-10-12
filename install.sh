@@ -19,14 +19,15 @@ for f in "$DOTPATH"/config/dot/*; do
 done
 
 ################ [mise] ################
-$DOTPATH/script/install_mise.sh
-mkdir -p "$HOME/.config/mise"
 cp -aLf "$HOME/.config/mise/config.toml" "$DOTPATH/.backup/mise.toml" || rm -rf "$HOME/.config/mise/config.toml"
+rm -rf "$HOME/.config/mise"
+mkdir -p "$HOME/.config/mise"
 ln -snfv "$DOTPATH/config/cfg/mise.toml" "$HOME/.config/mise/config.toml"
-# install npm packages
+$DOTPATH/script/install_mise.sh
 mise install
 mise reshim
 source ~/.zshrc
+# install npm packages
 npm install -g \
     neovim \
     md-to-pdf@latest \
