@@ -1,0 +1,111 @@
+format = """
+$username\
+$hostname\
+$os\
+[](fg:black bg:blue)\
+$directory\
+[](fg:blue bg:green)\
+$git_branch\
+$git_status\
+\n\
+$character"""
+
+add_newline = false
+
+[username]
+style_user = 'fg:white bg:black'
+style_root = 'fg:white bg:black'
+format = '[ $user]($style)'
+disabled = false
+show_always = true
+
+[hostname]
+ssh_only = false
+format = '[@](fg:white bg:black)[$hostname]($style)'
+style = 'fg:white bg:black'
+disabled = false
+
+[character]
+success_symbol = "[❯](fg:76)"
+error_symbol = "[❯](fg:196)"
+
+[directory]
+format = '[$read_only]($read_only_style)[ $path ]($style)'
+style = 'fg:black bg:blue'
+read_only_style = 'fg:black bg:blue'
+disabled = false
+read_only = " "
+truncate_to_repo = false
+
+[git_branch]
+format = "[$symbol$branch(:$remote_branch) ]($style)"
+symbol = "  "
+style = "fg:black bg:green"
+
+[git_status]
+format = '([](fg:green bg:yellow)[ $all_status$ahead_behind ]($style)[](fg:yellow))([$up_to_date](fg:green))'
+style = "fg:black bg:yellow"
+stashed = '\$${count}'
+ahead = "⇡${count}"
+behind = "⇣${count}"
+up_to_date = ""
+diverged = "⇕"
+conflicted = "="
+deleted = "✘"
+renamed = "»"
+modified = "!${count}"
+staged = "+"
+untracked = "?"
+typechanged = ""
+
+[os]
+format = "[ $symbol ]($style)"
+style = "fg:white bg:black"
+disabled = false
+
+[os.symbols]
+Alpaquita = ""
+Alpine = ""
+AlmaLinux = ""
+Amazon = ""
+Android = ""
+Arch = ""
+Artix = ""
+CachyOS = ""
+CentOS = ""
+Debian = ""
+DragonFly = ""
+Emscripten = ""
+EndeavourOS = ""
+Fedora = ""
+FreeBSD = ""
+Garuda = "󰛓"
+Gentoo = ""
+HardenedBSD = "󰞌"
+Illumos = "󰈸"
+Kali = ""
+Linux = ""
+Mabox = ""
+Macos = ""
+Manjaro = ""
+Mariner = ""
+MidnightBSD = ""
+Mint = ""
+NetBSD = ""
+NixOS = ""
+Nobara = ""
+OpenBSD = "󰈺"
+openSUSE = ""
+OracleLinux = "󰌷"
+Pop = ""
+Raspbian = ""
+Redhat = ""
+RedHatEnterprise = ""
+RockyLinux = ""
+Redox = "󰀘"
+Solus = "󰠳"
+SUSE = ""
+Ubuntu = ""
+Unknown = ""
+Void = ""
+Windows = "󰍲"
