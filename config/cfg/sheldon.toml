@@ -25,7 +25,7 @@ setopt AUTO_MENU            # Show completion menu on a successive tab press.
 setopt AUTO_LIST            # Automatically list choices on ambiguous completion.
 setopt AUTO_PARAM_SLASH     # If completed parameter is a directory, add a trailing slash.
 setopt EXTENDED_GLOB        # Needed for file modification glob modifiers with compinit.
-unsetopt MENU_COMPLETE      # Do not autoselect the first completion entry.
+setopt MENU_COMPLETE        # autoselect the first completion entry.
 unsetopt FLOW_CONTROL       # Disable start/stop characters in shell editor.
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 # Defaults.
@@ -148,52 +148,19 @@ export SAVEHIST=$HISTSIZE
 
 [plugins.directory]
 inline = """
-setopt AUTO_CD              # Auto changes to a directory without typing cd.
 setopt AUTO_PUSHD           # Push the old directory onto the stack on cd.
 setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
 setopt PUSHD_SILENT         # Do not print the directory stack after pushd or popd.
 setopt PUSHD_TO_HOME        # Push to home directory when no argument is given.
 setopt CDABLE_VARS          # Change directory to a path stored in a variable.
 setopt MULTIOS              # Write to multiple descriptors.
-setopt EXTENDED_GLOB        # Use extended globbing syntax.
 unsetopt CLOBBER            # Do not overwrite existing files with > and >>.
                             # Use >! and >>! to bypass.
-alias -- -='cd -'
-alias d='dirs -v'
-for index ({1..9}) alias "$index"="cd +${index}"; unset index
 """
 
 [plugins.prezto-utility]
 inline = """
 setopt CORRECT
-# Disable correction.
-alias cd='nocorrect cd'
-alias cp='nocorrect cp'
-alias gcc='nocorrect gcc'
-alias grep='nocorrect grep'
-alias ln='nocorrect ln'
-alias mkdir='nocorrect mkdir'
-alias mv='nocorrect mv'
-alias rm='nocorrect rm'
-
-# Disable globbing.
-alias find='noglob find'
-alias history='noglob history'
-alias rsync='noglob rsync'
-alias scp='noglob scp'
-
-alias mkdir="${aliases[mkdir]:-mkdir} -p"
-
-alias l='ls -1A'         # Lists in one column, hidden files.
-alias ll='ls -lh'        # Lists human readable sizes.
-alias la='ll -A'         # Lists human readable sizes, hidden files.
-
-alias pbc='pbcopy'
-alias pbp='pbpaste'
-
-# Resource Usage
-alias df='df -kh'
-alias du='du -kh'
 """
 
 [plugins.prezto-environment]
