@@ -3,28 +3,23 @@
 DOTPATH=$(cd $(dirname $0) && pwd)
 cd "$DOTPATH"
 
-git submodule update --init --recursive
-
 mkdir -p ${DOTPATH}/.backup
 mkdir -p ~/.config
 mkdir -p ~/.cargo
 mkdir -p ~/.local/bin
 
-if [ "$(uname -s)" == "Darwin" ]; then
+if [ "$(uname -s)" = "Darwin" ]; then
     zsh $DOTPATH/script/install_homebrew.sh
 fi
 
-# Copy dotfiles
+# ############## [dotfiles] ##############
 for f in "$DOTPATH"/config/dot/*; do
     cp -aLf "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)" && rm -rf "$HOME/.$(basename $f)"
     ln -snfv "$f" "$HOME/.$(basename $f)"
 done
 
-rm -rf "$HOME/.zprezto"
-ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
-
 ################ [mise] ################
-zsh $DOTPATH/script/install_mise.sh
+$DOTPATH/script/install_mise.sh
 mkdir -p "$HOME/.config/mise"
 cp -aLf "$HOME/.config/mise/config.toml" "$DOTPATH/.backup/mise.toml" || rm -rf "$HOME/.config/mise/config.toml"
 ln -snfv "$DOTPATH/config/cfg/mise.toml" "$HOME/.config/mise/config.toml"
@@ -40,11 +35,12 @@ npm install -g \
 
 ################ [Sheldon] ################
 rm -rf "$HOME/.config/sheldon"
+mkdir -p "$HOME/.config/sheldon"
 ln -snfv "$DOTPATH/config/cfg/sheldon.toml" "$HOME/.config/sheldon/plugins.toml"
-zsh $DOTPATH/script/install_sheldon.sh
+$DOTPATH/script/install_sheldon.sh
 
 ################ [Neovim] ################
-zsh $DOTPATH/script/install_neovim.sh
+$DOTPATH/script/install_neovim.sh
 cp -aLf "$HOME/.config/nvim" "$DOTPATH/.backup/nvim" && rm -rf "$HOME/.config/nvim"
 ln -snfv $DOTPATH/config/nvim $HOME/.config/nvim
 
@@ -57,7 +53,7 @@ npm install --global-style --ignore-scripts --no-bin-links --no-package-lock
 cd $DOTPATH
 
 ################ [Python] ################
-zsh $DOTPATH/script/install_uv.sh
+$DOTPATH/script/install_uv.sh
 cd $HOME
 uv venv --allow-existing
 uv pip install -U \
