@@ -1,8 +1,13 @@
 #!/bin/bash
 
 brew install \
-    alt-tab \
     coreutils \
+
+brew install --cask \
+    karabiner-elements \
     xquartz \
     raycast \
+    alt-tab \
+    bettertouchtool \
+    clipy \
     iterm2
