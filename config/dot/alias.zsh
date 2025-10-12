@@ -13,8 +13,9 @@ if command -v bat > /dev/null 2>&1; then
     alias less="bat --style=plain --paging=always --theme=OneHalfDark"
 fi
 if command -v eza > /dev/null 2>&1; then
-    alias ls='eza --group-directories-first'
-    alias lt='eza --group-directories-first -T'
+    alias eza='eza --group-directories-first --time-style=long-iso'
+    alias ls='eza'
+    alias lt='eza -T'
 fi
 
 # Directory

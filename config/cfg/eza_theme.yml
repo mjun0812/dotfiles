@@ -89,7 +89,7 @@ file_type:
   source: { foreground: Yellow, is_bold: true }
 
 punctuation: { foreground: DarkGray, is_bold: true }
-date: { foreground: Blue }
+date: { foreground: DarkGray }
 inode: { foreground: Purple }
 blocks: { foreground: Cyan }
 header: { foreground: Default, is_underline: true }
