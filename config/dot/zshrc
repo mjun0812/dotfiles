@@ -1,5 +1,5 @@
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+if [[ -r "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 # add local PATH
@@ -40,6 +40,9 @@ fi
 # Android SDK
 export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
 export PATH="$PATH:$HOME/Android/sdk/platform-tools"
+
+# eza
+export EZA_CONFIG_DIR="$HOME/.config/eza"
 
 eval "$(sheldon source)"
 

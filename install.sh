@@ -78,3 +78,8 @@ cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$
 mkdir -p "$HOME/.codex"
 ln -snfv "$DOTPATH/config/cfg/codex.toml" "$HOME/.codex/config.toml"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
+
+################ [eza] ################
+rm -rf "$HOME/.config/eza"
+mkdir -p "$HOME/.config/eza"
+ln -snfv "$DOTPATH/config/cfg/eza_theme.yml" "$HOME/.config/eza/theme.yml"
