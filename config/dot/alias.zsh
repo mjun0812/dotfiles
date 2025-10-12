@@ -3,23 +3,26 @@ alias sync="~/workspace/sync.sh"
 alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
 alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 
-# ***** Editors *****
+# Editors
 alias emacs='emacs -nw'
 alias vim='nvim'
 
-# ***** Directory *****
+# Alternative commands
+if command -v bat > /dev/null 2>&1; then
+    alias cat="bat --style=plain --paging=never --theme=OneHalfDark"
+    alias less="bat --style=plain --paging=always --theme=OneHalfDark"
+fi
+if command -v eza > /dev/null 2>&1; then
+    alias ls='eza --group-directories-first'
+    alias lt='eza --group-directories-first -T'
+fi
+
+# Directory
 alias d='dirs -v'
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
 alias l='ls -1A'         # Lists in one column, hidden files.
 alias ll='ls -lh'        # Lists human readable sizes.
 alias la='ll -A'         # Lists human readable sizes, hidden files.
-if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
-    alias ls='gls --group-directories-first --color=auto'
-fi
-if type bat > /dev/null 2>&1; then
-    alias cat="bat --style=plain --paging=never --theme=OneHalfDark"
-    alias less="bat --style=plain --paging=always --theme=OneHalfDark"
-fi
 
 # Disable correction.
 alias cd='nocorrect cd'
