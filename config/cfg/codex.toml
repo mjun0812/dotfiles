@@ -1,6 +1,5 @@
 model = "gpt-5-codex"
 
-approval_policy = "untrusted"
 model_reasoning_effort="medium"
 
 file_opener = "cursor"
