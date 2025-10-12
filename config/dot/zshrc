@@ -58,8 +58,11 @@ if command -v aws_completer >/dev/null 2>&1; then
     complete -C "$(command -v aws_completer)" aws
 fi
 
-[ -f ~/.alias.zsh ] && source ~/.alias.zsh
+# ############## Key bindings ##############
+bindkey -e # Use Emacs key bindings
+bindkey "^[[Z" reverse-menu-complete
 
+[ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 # powerlevel10k

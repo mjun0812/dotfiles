@@ -101,10 +101,6 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 [plugins.zsh-autosuggestions]
 github = "zsh-users/zsh-autosuggestions"
 apply = ["defer"]
-hooks.post = """
-bindkey -M viins '^F' vi-forward-word  # Ctrl+F: move forward one word
-bindkey -M viins '^E' vi-add-eol       # Ctrl+E: move to the end of the line
-"""
 
 [plugins.fast-syntax-highlighting]
 github = "zdharma-continuum/fast-syntax-highlighting"
@@ -119,9 +115,6 @@ export HISTORY_SUBSTRING_SEARCH_FUZZY=1
 # enable arrow key bindings
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
-# enable vi-style keybindings
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
 # enable emacs-style keybindings
 bindkey -M emacs '^P' history-substring-search-up
 bindkey -M emacs '^N' history-substring-search-down
