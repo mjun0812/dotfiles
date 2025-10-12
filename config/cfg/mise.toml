@@ -8,6 +8,7 @@ rust = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
 "aqua:aws/aws-cli" = "latest"
+eza = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []

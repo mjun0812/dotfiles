@@ -1,24 +1,4 @@
-# Agent detection - only activate minimal mode for actual agents  
-if [[ -n "$npm_config_yes" ]] || [[ -n "$CI" ]] || [[ "$-" != *i* ]]; then
-  export AGENT_MODE=true
-  echo "Running in agent mode. Minimal configuration loaded."
-else
-  export AGENT_MODE=false
-fi
-export AGENT_MODE=false
-
-if [[ "$AGENT_MODE" == "true" ]]; then
-  POWERLEVEL9K_INSTANT_PROMPT=off
-  # Disable complex prompt features for AI agents
-  POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
-  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
-  # Ensure non-interactive mode
-  export DEBIAN_FRONTEND=noninteractive
-  export NONINTERACTIVE=1
-fi
-
-# Enable Powerlevel10k instant prompt only when not in agent mode
-if [[ "$AGENT_MODE" != "true" ]] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
@@ -31,7 +11,7 @@ export PATH="/usr/local/cuda/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 export CUDA_HOME="/usr/local/cuda"
 
-# M1 mac Homebrew
+# Apple Silicon Mac Homebrew
 if [ "$(uname)" = 'Darwin' ] && [ "$(uname -m)" = 'arm64' ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
@@ -61,16 +41,12 @@ fi
 export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
 export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 
-# eval "$(starship init zsh)"
-
 eval "$(sheldon source)"
 
 ########## zsh completion ##########
 if [ -e ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
 fi
-# Docker completion
-fpath=(/Users/mjun/.docker/completions $fpath)
 
 autoload -Uz compinit && compinit
 autoload -Uz bashcompinit && bashcompinit
@@ -79,25 +55,10 @@ if command -v aws_completer >/dev/null 2>&1; then
     complete -C "$(command -v aws_completer)" aws
 fi
 
-########## alias ##########
-alias emacs='emacs -nw'
-alias vim='nvim'
-alias sync="~/workspace/sync.sh"
-alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
-alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
-if [ "$(uname)" = "Darwin" ] && type "gls" > /dev/null 2>&1; then
-    alias ls='gls --group-directories-first --color=auto'
-fi
-# Use bat if available
-if type bat > /dev/null 2>&1; then
-    alias cat="bat --style=plain --paging=never --theme=OneHalfDark"
-    alias less="bat --style=plain --paging=always --theme=OneHalfDark"
-fi
+[ -f ~/.alias.zsh ] && source ~/.alias.zsh
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
-if [[ "$AGENT_MODE" == "false" ]]; then
-    # powerlevel10k
-    source ~/.p10k.zsh
-    (( ! ${+functions[p10k]} )) || p10k finalize
-fi
+# powerlevel10k
+source ~/.p10k.zsh
+(( ! ${+functions[p10k]} )) || p10k finalize

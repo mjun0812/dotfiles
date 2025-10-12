@@ -11,7 +11,7 @@ mkdir -p ~/.cargo
 mkdir -p ~/.local/bin
 
 if [ "$(uname -s)" == "Darwin" ]; then
-    $DOTPATH/script/install_homebrew.sh
+    zsh $DOTPATH/script/install_homebrew.sh
 fi
 
 # Copy dotfiles
@@ -22,9 +22,6 @@ done
 
 rm -rf "$HOME/.zprezto"
 ln -snfv "$DOTPATH/.zprezto" "$HOME/.zprezto"
-
-rm -rf "$HOME/.config/sheldon"
-ln -snfv "$DOTPATH/config/cfg/sheldon.toml" "$HOME/.config/sheldon/plugins.toml"
 
 ################ [mise] ################
 zsh $DOTPATH/script/install_mise.sh
@@ -40,6 +37,11 @@ npm install -g \
     @anthropic-ai/claude-code@latest \
     @google/gemini-cli@latest \
     @openai/codex@latest
+
+################ [Sheldon] ################
+rm -rf "$HOME/.config/sheldon"
+ln -snfv "$DOTPATH/config/cfg/sheldon.toml" "$HOME/.config/sheldon/plugins.toml"
+zsh $DOTPATH/script/install_sheldon.sh
 
 ################ [Neovim] ################
 zsh $DOTPATH/script/install_neovim.sh
