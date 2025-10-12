@@ -42,10 +42,10 @@ size:
   unit_huge: { foreground: Green }
 
 users:
-  user_you: { foreground: Yellow, is_bold: false }
+  user_you: { foreground: Default, is_bold: true }
   user_root: { foreground: Default }
   user_other: { foreground: Default }
-  group_yours: { foreground: Yellow, is_bold: true }
+  group_yours: { foreground: Default, is_bold: true }
   group_other: { foreground: Default }
   group_root: { foreground: Default }
 
@@ -85,7 +85,7 @@ file_type:
   compressed: { foreground: Red }
   temp: { foreground: White }
   compiled: { foreground: Yellow }
-  build: { foreground: Yellow, is_bold: true, is_underline: true }
+  build: { foreground: Default, is_bold: true, is_underline: false }
   source: { foreground: Yellow, is_bold: true }
 
 punctuation: { foreground: DarkGray, is_bold: true }

@@ -102,8 +102,8 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 github = "zsh-users/zsh-autosuggestions"
 apply = ["defer"]
 
-[plugins.fast-syntax-highlighting]
-github = "zdharma-continuum/fast-syntax-highlighting"
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
 apply = ["defer"]
 
 [plugins.zsh-history-substring-search]
