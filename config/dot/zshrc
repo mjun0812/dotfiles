@@ -44,6 +44,10 @@ export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 # eza
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 
+# ############## Key bindings ##############
+bindkey -e # Use Emacs key bindings
+bindkey "^[[Z" reverse-menu-complete
+
 eval "$(sheldon source)"
 
 ########## zsh completion ##########
@@ -57,10 +61,6 @@ autoload -Uz bashcompinit && bashcompinit
 if command -v aws_completer >/dev/null 2>&1; then
     complete -C "$(command -v aws_completer)" aws
 fi
-
-# ############## Key bindings ##############
-bindkey -e # Use Emacs key bindings
-bindkey "^[[Z" reverse-menu-complete
 
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
