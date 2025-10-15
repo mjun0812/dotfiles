@@ -9,7 +9,10 @@ rust = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
 "aqua:aws/aws-cli" = "latest"
 eza = "latest"
+pnpm = "latest"
+gh = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
 pipx.uvx = true
+

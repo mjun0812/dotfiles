@@ -52,7 +52,7 @@ cp -aLf "$HOME/.config/extensions/package.json" "$DOTPATH/.backup/coc_package.js
 mkdir -p ~/.config/coc/extensions
 cat "$DOTPATH/config/nvim/package_coc.json" >! ~/.config/coc/extensions/package.json
 cd ~/.config/coc/extensions
-npm install --global-style --ignore-scripts --no-bin-links --no-package-lock
+npm install coc-snippets --ignore-scripts --no-bin-links --no-package-lock --install-strategy=shallow
 cd $DOTPATH
 
 ################ [Python] ################
