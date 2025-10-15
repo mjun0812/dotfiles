@@ -28,6 +28,8 @@ LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40
 # Defaults.
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+# Case-insensitive (all), partial-word, and then substring completion.
+zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}' 'm:{[:upper:]}={[:lower:]}'  'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 # Group matches and describe.
 zstyle ':completion:*:*:*:*:*' menu select
 zstyle ':completion:*:matches' group 'yes'
