@@ -109,3 +109,21 @@ vim.api.nvim_create_autocmd('BufReadPost', {
       end
     end,
 })
+
+-- ########## Terminal ########
+-- ターミナルモードで <Esc> を押したらノーマルモードに戻る
+vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true, silent = true })
+
+-- :T コマンドで水平分割＋下部に高さ20行のターミナルを開く
+vim.api.nvim_create_user_command('T', function(opts)
+  vim.cmd('split')
+  vim.cmd('wincmd j')
+  vim.cmd('resize 20')
+  vim.cmd('terminal ' .. opts.args)
+end, { nargs = '*' })
+
+-- ターミナルが開いたら自動でインサートモードに入る
+vim.api.nvim_create_autocmd('TermOpen', {
+  pattern = '*',
+  command = 'startinsert',
+})
