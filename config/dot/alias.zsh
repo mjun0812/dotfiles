@@ -47,3 +47,5 @@ alias pbp='pbpaste'
 # Resource Usage
 alias df='df -kh'
 alias du='du -kh'
+
+alias claude="claude --mcp-config ~/.dotfiles/config/cfg/claude_mcp.json"
