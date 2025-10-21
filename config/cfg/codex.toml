@@ -8,7 +8,6 @@ file_opener = "cursor"
 web_search = true
 
 [tui]
-notifications = true
 #　デスクトップ通知に関する設定
 # - "agent-turn-complete": エージェントの１ターン処理が完了した際に通知
 # - "approval-requested": ユーザーの操作や承認が必要な時に通知
