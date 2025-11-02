@@ -11,6 +11,9 @@ export PATH="/usr/local/cuda/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 export CUDA_HOME="/usr/local/cuda"
 
+# AMD GPU
+export PATH=$PATH:/opt/rocm/bin
+
 # Apple Silicon Mac Homebrew
 if [ "$(uname)" = 'Darwin' ] && [ "$(uname -m)" = 'arm64' ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
