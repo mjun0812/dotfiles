@@ -23,11 +23,8 @@ fi
 
 # for uv
 source "$HOME/.cargo/env"
+export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.venv/bin:$PATH"
-
-# pnpm
-export PNPM_HOME="$HOME/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
 
 # GCP SDK
 if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
