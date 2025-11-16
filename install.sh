@@ -48,7 +48,7 @@ cp -aLf "$HOME/.config/nvim" "$DOTPATH/.backup/nvim" && rm -rf "$HOME/.config/nv
 ln -snfv $DOTPATH/config/nvim $HOME/.config/nvim
 
 # coc.vim
-cp -aLf "$HOME/.config/extensions/package.json" "$DOTPATH/.backup/coc_package.json" && rm -rf "$HOME/.config/extensions/package.json"
+cp -aLf "$HOME/.config/coc/extensions/package.json" "$DOTPATH/.backup/coc_package.json" && rm -rf "$HOME/.config/coc/extensions/package.json"
 mkdir -p ~/.config/coc/extensions
 cat "$DOTPATH/config/nvim/package_coc.json" >! ~/.config/coc/extensions/package.json
 cd ~/.config/coc/extensions
