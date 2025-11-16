@@ -4,8 +4,8 @@ model_reasoning_effort="medium"
 
 file_opener = "cursor"
 
-[tools]
-web_search = true
+[features]
+web_search_request = true
 
 [tui]
 #　デスクトップ通知に関する設定
