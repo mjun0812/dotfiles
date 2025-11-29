@@ -58,8 +58,8 @@ WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
 eval "$(sheldon source)"
 
-########## zsh completion ##########
-if [ -e ~/.zsh/completions ]; then
+# ######### zsh completion ##########
+if [ -d ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
 fi
 
