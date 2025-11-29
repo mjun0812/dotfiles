@@ -18,6 +18,11 @@ for f in "$DOTPATH"/config/dot/*; do
     ln -snfv "$f" "$HOME/.$(basename $f)"
 done
 
+################ [Zsh Completions] ################
+cp -aLf "$HOME/.zsh/completions" "$DOTPATH/.backup/zsh_completions" && rm -rf "$HOME/.zsh/completions"
+mkdir -p "$HOME/.zsh"/completions
+ln -snfv "$DOTPATH/config/completions" "$HOME/.zsh/completions"
+
 ################ [mise] ################
 cp -aLf "$HOME/.config/mise/config.toml" "$DOTPATH/.backup/mise.toml" || rm -rf "$HOME/.config/mise/config.toml"
 rm -rf "$HOME/.config/mise"
