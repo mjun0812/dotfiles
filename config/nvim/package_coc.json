@@ -1,13 +1,14 @@
 {
-  "lastUpdate": 1724539761970,
+  "lastUpdate": 1764517870552,
   "dependencies": {
+    "coc-clangd": ">=0.30.2",
     "coc-json": ">=1.9.2",
     "coc-markdownlint": ">=1.33.0",
-    "coc-solargraph": ">=1.2.4",
-    "coc-clangd": ">=0.30.2",
     "coc-pairs": ">=1.4.2",
+    "coc-prettier": "git+https://github.com/neoclide/coc-prettier.git",
     "coc-pydocstring": ">=0.10.0",
     "coc-pyright": ">=1.1.375",
-    "coc-prettier": "git+https://github.com/neoclide/coc-prettier.git"
+    "coc-snippets": "^3.4.7",
+    "coc-solargraph": ">=1.2.4"
   }
 }
