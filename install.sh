@@ -53,10 +53,10 @@ cp -aLf "$HOME/.config/nvim" "$DOTPATH/.backup/nvim" && rm -rf "$HOME/.config/nv
 ln -snfv $DOTPATH/config/nvim $HOME/.config/nvim
 
 # coc.vim
+mkdir -p ${HOME}/.config/coc/extensions
 cp -aLf "$HOME/.config/coc/extensions/package.json" "$DOTPATH/.backup/coc_package.json" && rm -rf "$HOME/.config/coc/extensions/package.json"
-mkdir -p ~/.config/coc/extensions
-cat "$DOTPATH/config/nvim/package_coc.json" >! ~/.config/coc/extensions/package.json
-cd ~/.config/coc/extensions
+ln -snfv $DOTPATH/config/nvim/package_coc.json $HOME/.config/coc/extensions/package.json
+cd ${HOME}/.config/coc/extensions
 npm install coc-snippets --ignore-scripts --no-bin-links --no-package-lock --install-strategy=shallow
 cd $DOTPATH
 
