@@ -77,8 +77,12 @@ cd $DOTPATH
 
 ################ [Claude Code] ################
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
+cp -aLf "$HOME/.claude/settings.json" "$DOTPATH/.backup/claude_settings.json" && rm -rf "$HOME/.claude/settings.json"
+cp -aLf "$HOME/.claude/commands" "$DOTPATH/.backup/claude_commands" && rm -rf "$HOME/.claude/commands"
 mkdir -p "$HOME/.claude"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.claude/CLAUDE.md"
+ln -snfv "$DOTPATH/config/cfg/claude/settings.json" "$HOME/.claude/settings.json"
+ln -snfv "$DOTPATH/config/cfg/claude/commands" "$HOME/.claude/commands"
 
 ################ [Codex] ################
 cp -aLf "$HOME/.codex/codex.toml" "$DOTPATH/.backup/codex.toml" && rm -rf "$HOME/.codex/codex.toml"
@@ -91,3 +95,4 @@ ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 rm -rf "$HOME/.config/eza"
 mkdir -p "$HOME/.config/eza"
 ln -snfv "$DOTPATH/config/cfg/eza_theme.yml" "$HOME/.config/eza/theme.yml"
+

@@ -48,4 +48,5 @@ alias pbp='pbpaste'
 alias df='df -kh'
 alias du='du -kh'
 
-alias claude="claude --mcp-config ~/.dotfiles/config/cfg/claude_mcp.json"
+alias claude="claude --mcp-config=${HOME}/.dotfiles/config/cfg/claude/mcp.json"
+alias 'git aicommit'='\claude \aicommit'
