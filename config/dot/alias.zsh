@@ -53,7 +53,6 @@ alias claude="claude --mcp-config=${HOME}/.dotfiles/config/cfg/claude/mcp.json"
 alias cc-commit='command claude --model=haiku /aicommit'
 alias cc-commit-ja='command claude --model=haiku /aicommit_ja'
 # Gemini-cli
-alias gemini-commit='command gemini-cli --model=gemini-2.5-flash /aicommit'
-alias gemini-commit-ja='command gemini-cli --model=gemini-2.5-flash /aicommit_ja'
+alias gemini-commit='command gemini -p "/aicommit" --model=gemini-2.5-flash --allowed-tools "run_shell_command(git status),run_shell_command(git log:*),run_shell_command(git branch:*),run_shell_command(git diff:*),run_shell_command(git commit:*)"'
 alias aicommit='cc-commit'
 alias aicommit-ja='cc-commit-ja'
