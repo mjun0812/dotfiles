@@ -56,6 +56,9 @@ alias cc-commit-ja='command claude --model=haiku /aicommit_ja'
 # Gemini-cli
 alias gemini-commit='command gemini -i "/aicommit" --model=gemini-2.5-flash --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
 alias gemini-commit-ja='command gemini -i "/aicommit_ja" --model=gemini-2.5-flash --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
+# Copilot-cli
+alias copilot-commit='copilot -i "~/.dotfiles/config/cfg/claude/commands/aicommit.md に書かれたTaskを実行してください"'
+alias copilot-commit-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/aicommit_ja.md に書かれたTaskを実行してください"'
 # Alias
 alias aicommit='cc-commit'
 alias aicommit-ja='cc-commit-ja'
