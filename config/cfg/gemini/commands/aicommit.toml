@@ -12,10 +12,10 @@ After the first line (title), add a blank line, then list comments as bullet poi
 
 ## Context
 
-- Current staged changes: !{git diff --cached}
-- Current git status: !{git status}
-- Current branch: !{git branch --show-current}
-- Recent commits: !{git log -10 --oneline}
+- Current staged changes: `git diff --cached`
+- Current git status: `git status`
+- Current branch: `git branch --show-current`
+- Recent commits: `git log -10 --oneline`
 - Convetional Commits specification
 
 ## Conventional Commits 1.0.0
