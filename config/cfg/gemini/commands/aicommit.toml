@@ -21,7 +21,7 @@ After the first line (title), add a blank line, then list comments as bullet poi
 ## Conventional Commits 1.0.0
 
 ### Summary
-∂
+
 The Conventional Commits specification is a lightweight convention on top of commit messages.
 It provides an easy set of rules for creating an explicit commit history;
 which makes it easier to write automated tools on top of.
