@@ -49,10 +49,13 @@ alias df='df -kh'
 alias du='du -kh'
 
 alias claude="claude --mcp-config=${HOME}/.dotfiles/config/cfg/claude/mcp.json"
+
 # Claude Code
 alias cc-commit='command claude --model=haiku /aicommit'
 alias cc-commit-ja='command claude --model=haiku /aicommit_ja'
 # Gemini-cli
 alias gemini-commit='command gemini -i "/aicommit" --model=gemini-2.5-flash --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
+alias gemini-commit-ja='command gemini -i "/aicommit_ja" --model=gemini-2.5-flash --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
+# Alias
 alias aicommit='cc-commit'
 alias aicommit-ja='cc-commit-ja'
