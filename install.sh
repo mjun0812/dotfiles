@@ -91,8 +91,12 @@ mkdir -p "$HOME/.codex"
 ln -snfv "$DOTPATH/config/cfg/codex.toml" "$HOME/.codex/config.toml"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 
+################ [Gemini-cli] ################
+cp -aLf "$HOME/.gemini/commands" "$DOTPATH/.backup/gemini_commands" && rm -rf "$HOME/.gemini/commands"
+mkdir -p "$HOME/.gemini"
+ln -snfv "$DOTPATH/config/cfg/gemini/commands" "$HOME/.gemini/commands"
+
 ################ [eza] ################
 rm -rf "$HOME/.config/eza"
 mkdir -p "$HOME/.config/eza"
 ln -snfv "$DOTPATH/config/cfg/eza_theme.yml" "$HOME/.config/eza/theme.yml"
-
