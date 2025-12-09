@@ -1,5 +1,5 @@
 {
-  "lastUpdate": 1765133294792,
+  "lastUpdate": 1765250729327,
   "dependencies": {
     "coc-clangd": ">=0.30.2",
     "coc-json": ">=1.9.2",

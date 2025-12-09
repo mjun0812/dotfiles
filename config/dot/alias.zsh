@@ -49,7 +49,7 @@ alias df='df -kh'
 alias du='du -kh'
 
 alias claude="claude --mcp-config=${HOME}/.dotfiles/config/cfg/claude/mcp.json"
-alias cc-aicommit='command claude --model=haiku /aicommit'
-alias cc-aicommit-ja='command claude --model=haiku /aicommit_ja'
-alias aicommit='cc-aicommit'
-alias aicommit-ja='cc-aicommit-ja'
+alias cc-commit='command claude --model=haiku /aicommit'
+alias cc-commit-ja='command claude --model=haiku /aicommit_ja'
+alias aicommit='cc-commit'
+alias aicommit-ja='cc-commit-ja'
