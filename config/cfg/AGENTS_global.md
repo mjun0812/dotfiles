@@ -29,4 +29,3 @@ You can use the following cli tools:
 ## Versioning
 
 - Follow Semantic Versioning 2.0.0 when handling version numbers.
-
