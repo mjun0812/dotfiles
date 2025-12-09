@@ -1,39 +1,35 @@
 ---
 allowed-tools: Bash(git status:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
-description: Commit current staged changes with AI-generated commit message.
+description: Commit current staged changes with AI-generated commit message in Japanese.
 ---
 
 ## Context
 
-- Current staged changes: !`git diff --cached`
-- Current git status: !`git status`
-- Current branch: !`git branch --show-current`
-- Recent commits: !`git log -10 --oneline`
-- Convetional Commits specification: [below section](#conventional-commits-100)
+- 現在のステージングされた変更: !`git diff --cached`
+- 現在のgitステータス: !`git status`
+- 現在のブランチ: !`git branch --show-current`
+- 最近のコミット: !`git log -10 --oneline`
+- Convetional Commitsの仕様: [下記セクション](#conventional-commits-100)
 
 ## Task
 
-Important: This command only commits staged changes. It does not stage any new files.
+重要: このコマンドはステージングされた変更のみをコミットします。新しいファイルをステージングしません。
 
-1. Check the current staged changes, branch and recent commits using
-`git diff --cached`, `git status`, `git branch --show-current` and `git log -10 --oneline`.
-2. Generate a concise and descriptive commit message summarizing the staged changes in japanese, following the Conventional Commits format.
-After the first line (title), add a blank line, then list comments as bullet points starting from the third line. Do not include scope in commit title.
-3. Check the generated commit message in japanese.
-4. Commit the staged changes with the generated commit message using `git commit -m "<commit message>"`.
+1. 現在のステージングされた変更、ブランチ、最近のコミットを使用して、`git diff --cached`、`git status`、`git branch --show-current`、`git log -10 --oneline`を確認します。
+2. コンパクトで説明的なコミットメッセージを生成します。Conventional Commitsのフォーマットに従って、ステージングされた変更を要約します。
+最初の行（タイトル）の後に空の行を追加し、3行目から始まるコメントに詳細な変更を箇条書きで記述します。コミットタイトルにはスコープを含めないでください。
+3. 生成されたコミットメッセージが日本語であることを確認します。
+4. 生成されたコミットメッセージを使用して、ステージングされた変更をコミットします。`git commit -m "<commit message>"`を使用します。
 
 ## Conventional Commits 1.0.0
 
-### Summary
+### 概要
 
-The Conventional Commits specification is a lightweight convention on top of commit messages.
-It provides an easy set of rules for creating an explicit commit history;
-which makes it easier to write automated tools on top of.
-This convention dovetails with [SemVer](http://semver.org),
-by describing the features, fixes, and breaking changes made in commit messages.
+Conventional Commits の仕様はコミットメッセージのための軽量の規約です。
+明示的なコミット履歴を作成するための簡単なルールを提供します。この規則に従うことで自動化ツールの導入を簡単にします。
+コミットメッセージで機能追加・修正・破壊的変更などを説明することで、この規約は [SemVer](http://semver.org/lang/ja/) と協調動作します。
 
-The commit message should be structured as follows:
-
+コミットメッセージは次のような形にする必要があります:
 
 ```
 <type>[optional scope]: <description>
@@ -43,24 +39,22 @@ The commit message should be structured as follows:
 [optional footer(s)]
 ```
 
-The commit contains the following structural elements, to communicate intent to the
-consumers of your library:
+あなたのライブラリの利用者に意図を伝えるために、コミットは以下の構造化された要素を持ちます：
 
-1. **fix:** a commit of the _type_ `fix` patches a bug in your codebase (this correlates with [`PATCH`](http://semver.org/#summary) in Semantic Versioning).
-2. **feat:** a commit of the _type_ `feat` introduces a new feature to the codebase (this correlates with [`MINOR`](http://semver.org/#summary) in Semantic Versioning).
-3. **BREAKING CHANGE:** a commit that has a footer `BREAKING CHANGE:`, or appends a '!' after the type/scope, introduces a breaking API change (correlating with [`MAJOR`](http://semver.org/#summary) in Semantic Versioning).
-A BREAKING CHANGE can be part of commits of any _type_.
-4. _types_ other than `fix:` and `feat:` are allowed, for example [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional) (based on the [Angular convention](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines)) recommends `build:`, `chore:`,
-  `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`, and others.
-5. _footers_ other than `BREAKING CHANGE: <description>` may be provided and follow a convention similar to
-  [git trailer format](https://git-scm.com/docs/git-interpret-trailers).
+1. **fix:** _型_ `fix` を持つコミットはコードベースのバグにパッチを当てます (これは Semantic Versioning における [`PATCH`](http://semver.org/#summary) に相当します)。
+2. **feat:** _型_ `feat` を持つコミットはコードベースに新しい機能を追加します (これは Semantic Versioning における [`MINOR`](http://semver.org/#summary) に相当します)。
+3. **BREAKING CHANGE:** _フッター_ に `BREAKING CHANGE:` が書かれているか型/スコープの直後に `!` が追加されているコミットは API の破壊的変更を導入します (Semantic Versioning における [`MAJOR`](http://semver.org/#summary) に相当します)。
+`BREAKING CHANGE` は任意の _型_ のコミットに含めることができます。
+4. `fix:` や `feat:` 以外の _型_ も許されています。たとえば  [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional) (これは [Angular の規約](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines) が基になっています) は  `build:`, `chore:`, `ci:`,`docs:`, `style:`, `refactor:`, `perf:`, `test:`, などを推奨しています。
+5. [git trailer format](https://git-scm.com/docs/git-interpret-trailers) に似た規約に従って、`BREAKING CHANGE: <タイトル>` 以外の _フッター_ が与えられるかもしれません。
 
-Additional types are not mandated by the Conventional Commits specification, and have no implicit effect in Semantic Versioning (unless they include a BREAKING CHANGE).
-A scope may be provided to a commit's type, to provide additional contextual information and is contained within parenthesis, e.g., `feat(parser): add ability to parse arrays`.
+追加の型たちは Conventional Commits の仕様で義務付けられているものではなく、(BREAKING CHANGE を含まない限り) Semantic Versioning に対する暗黙的な効果を持ちません。
 
-### Examples
+コミットの型には追加の文脈の情報として _スコープ_ を追加することができます。スコープは括弧で囲みます。たとえば `feat(parser): add ability to parse arrays` のようになります。
 
-#### Commit message with description and breaking change footer
+### 例
+
+#### タイトルおよび破壊的変更のフッターを持つコミットメッセージ
 
 ```
 feat: allow provided config object to extend other configs
@@ -68,19 +62,19 @@ feat: allow provided config object to extend other configs
 BREAKING CHANGE: `extends` key in config file is now used for extending other config files
 ```
 
-#### Commit message with '!' to draw attention to breaking change
+#### 破壊的変更を目立たせるために `!` を持つコミットメッセージ
 
 ```
 feat!: send an email to the customer when a product is shipped
 ```
 
-#### Commit message with scope and '!' to draw attention to breaking change
+#### スコープおよび破壊的変更を目立たせるための `!` を持つコミットメッセージ
 
 ```
 feat(api)!: send an email to the customer when a product is shipped
 ```
 
-#### Commit message with both '!' and BREAKING CHANGE footer
+#### `!` と BREAKING CHANGE フッターの両方を持つコミットメッセージ
 
 ```
 chore!: drop support for Node 6
@@ -88,19 +82,19 @@ chore!: drop support for Node 6
 BREAKING CHANGE: use JavaScript features not available in Node 6.
 ```
 
-#### Commit message with no body
+#### 本文を持たないコミットメッセージ
 
 ```
 docs: correct spelling of CHANGELOG
 ```
 
-#### Commit message with scope
+#### スコープを持つコミットメッセージ
 
 ```
-feat(lang): add Polish language
+feat(lang): add polish language
 ```
 
-#### Commit message with multi-paragraph body and multiple footers
+#### 複数段落からなる本文と複数のフッターを持ったコミットメッセージ
 
 ```
 fix: prevent racing of requests
@@ -115,35 +109,27 @@ Reviewed-by: Z
 Refs: #123
 ```
 
-### Specification
+### 仕様
 
-The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be interpreted as described in [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt).
+この文書におけるキーワード「しなければならない (MUST)」「してはならない (MUST NOT)」「要求されている (REQUIRED)」「することになる (SHALL)」「することはない(SHALL NOT)」「する必要がある (SHOULD)」「しないほうがよい (SHOULD NOT)」「推奨される (RECOMMENDED)」「してもよい (MAY)」「選択できる (OPTIONAL)」は [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt) ([JPNIC 日本語訳](https://www.nic.ad.jp/ja/tech/ipa/RFC2119JA.html)) で述べられているように解釈されるべきものです。
 
-1. Commits MUST be prefixed with a type, which consists of a noun, `feat`, `fix`, etc., followed
-  by the OPTIONAL scope, OPTIONAL "!", and REQUIRED terminal colon and space.
-2. The type `feat` MUST be used when a commit adds a new feature to your application or library.
-3. The type `fix` MUST be used when a commit represents a bug fix for your application.
-4. A scope MAY be provided after a type. A scope MUST consist of a noun describing a
-  section of the codebase surrounded by parenthesis, e.g., `fix(parser):`
-5. A description MUST immediately follow the colon and space after the type/scope prefix.
-The description is a short summary of the code changes, e.g., _fix: array parsing issue when multiple spaces were contained in string_.
-6. A longer commit body MAY be provided after the short description, providing additional contextual information about the code changes. The body MUST begin one blank line after the description.
-7. A commit body is free-form and MAY consist of any number of newline separated paragraphs.
-8. One or more footers MAY be provided one blank line after the body. Each footer MUST consist of
- a word token, followed by either a `:<space>` or `<space>#` separator, followed by a string value (this is inspired by the
-  [git trailer convention](https://git-scm.com/docs/git-interpret-trailers)).
-9. A footer's token MUST use `-` in place of whitespace characters, e.g., `Acked-by` (this helps differentiate
-  the footer section from a multi-paragraph body). An exception is made for `BREAKING CHANGE`, which MAY also be used as a token.
-10. A footer's value MAY contain spaces and newlines, and parsing MUST terminate when the next valid footer
-  token/separator pair is observed.
-11. Breaking changes MUST be indicated in the type/scope prefix of a commit, or as an entry in the
-  footer.
-12. If included as a footer, a breaking change MUST consist of the uppercase text BREAKING CHANGE, followed by a colon, space, and description, e.g.,
-_BREAKING CHANGE: environment variables now take precedence over config files_.
-13. If included in the type/scope prefix, breaking changes MUST be indicated by a
-  "!" immediately before the `:`. If "!" is used, `BREAKING CHANGE:` MAY be omitted from the footer section,
-  and the commit description SHALL be used to describe the breaking change.
-14. Types other than `feat` and `fix` MAY be used in your commit messages, e.g., _docs: update ref docs._
-15. The units of information that make up Conventional Commits MUST NOT be treated as case sensitive by implementors, with the exception of BREAKING CHANGE which MUST be uppercase.
-16. BREAKING-CHANGE MUST be synonymous with BREAKING CHANGE, when used as a token in a footer.
-
+1. コミットは `feat` や `fix` などの型から始まり (MUST)、その後ろにはスコープ (OPTIONAL) と `!` (OPTIONAL) が続き、その後ろにコロンとスペース (REQUIRED) が続く。
+2. コミットがあなたのアプリケーションやライブラリに新しい機能を追加するとき、型 `feat` が使われなければならない (MUST)。
+3. コミットがあなたのアプリケーションのためのバグ修正を行うとき、型 `fix` が使われなければならない (MUST)。
+4. スコープを型の後ろに記述してもよい (MAY)。スコープは、コードベースのセクションを記述する括弧で囲まれた名詞にしなければならない (MUST)。例: `fix(parser):`。
+5. 型/スコープの後ろのコロンとスペースの直後にタイトルが続かなければならない (MUST)。
+タイトルはコード変更の短かい要約である。例: `fix: array parsing issue when multiple spaces were contained in string`。
+6. 短いタイトルの後ろにより長いコミットの本文を追加してもよい (MAY)。これはコード変更に関する追加の情報を提供する。
+本文はタイトルの下の 1 行の空行から始めなければならない (MUST)。
+7. コミットの本文は自由な形式であり、改行で区切られた複数の段落で構成することができる (MAY)。
+8. ひとつ以上のフッターを、本文の下の 1 行の空行に続けて書くことができる (MAY)。
+それぞれのフッターは、ひとつの単語トークン、それに続く `:<space>` か `<space>#` によるセパレータ、そして文字列の値から構成されなければならない (MUST) (これは [git trailer convention](https://git-scm.com/docs/git-interpret-trailers) に触発されている)。
+9. フッターのトークンは空白の代わりに `-` を使わなければならない (MUST)。例えば `Acked-by` とする (これは複数段落からなる本文からフッターを区別するのに役立つ)。
+例外として `BREAKING CHANGE` があり、これをトークンとして使用することができる (MAY)。
+10. フッターの値にはスペースと改行を含めることができる (MAY)。そして次のフッターのトークンとセパレータの組が見つかった時、以前のフッターのパースは終了しなければならない (MUST)。
+11. 破壊的変更は、コミットの型/スコープの接頭辞か、フッターによって明示されなければならない (MUST)。
+12. 破壊的変更がフッターとして含まれる場合は、大文字の BREAKING CHANGE の後ろにコロンとスペース、そしてタイトルを続けなければならない (MUST)。例: `BREAKING CHANGE: environment variables now take precedence over config files`。
+13. 破壊的変更が型/スコープの接頭辞として含まれる場合は、`:` の直前に `!` を用いて明示されねばならない (MUST)。`!` が使用された場合には、 フッターから `BREAKING CHANGE:` を省略してもよい (MAY)。その場合はコミットのタイトル部分で破壊的変更の内容を説明することになる (SHALL)。
+14. `feat` と `fix` 以外の型を使うことができる (MAY)。例: `docs: updated ref docs.`。
+15. Conventional Commits を構成する情報の単位は、大文字の `BREAKING CHANGE` を除いて、実装は大文字と小文字を区別してはならない (MUST NOT)。
+16. フッターのトークンにおいて BREAKING-CHANGE は BREAKING CHANGE と同じトークンとして解釈されなければならない (MUST)。
