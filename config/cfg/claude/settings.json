@@ -22,7 +22,7 @@
     "includeCoAuthoredBy": false,
     "statusLine": {
         "type": "command",
-        "command": "bun x ccusage statiusline",
+        "command": "~/.dotfiles/config/cfg/claude/statusline.sh",
         "padding": 0
     }
 }
