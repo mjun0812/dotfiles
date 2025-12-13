@@ -1,23 +1,28 @@
 {
-  "includeCoAuthoredBy": false,
-  "permissions": {
-    "allow": [
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(git branch:*)",
-      "Bash(git log:*)",
-      "Bash(eza:*)",
-      "Bash(rgrep:*)",
-      "Bash(fd:*)"
-    ],
-    "deny": [
-      "Read(.env)",
-      "Read(~/.aws/**)"
-    ],
-    "ask": [
-      "Bash(git push:*)",
-      "Bash(git commit:*)"
-    ]
-  },
-  "alwaysThinkingEnabled": false
+    "permissions": {
+        "allow": [
+            "Bash(git status:*)",
+            "Bash(git diff:*)",
+            "Bash(git branch:*)",
+            "Bash(git log:*)",
+            "Bash(eza:*)",
+            "Bash(rgrep:*)",
+            "Bash(fd:*)"
+        ],
+        "deny": [
+            "Read(.env)",
+            "Read(~/.aws/**)"
+        ],
+        "ask": [
+            "Bash(rm:*)",
+            "Bash(git commit:*)",
+            "Bash(git push:*)"
+        ]
+    },
+    "includeCoAuthoredBy": false,
+    "statusLine": {
+        "type": "command",
+        "command": "bun x ccusage statiusline",
+        "padding": 0
+    }
 }

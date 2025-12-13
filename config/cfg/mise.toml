@@ -12,6 +12,7 @@ eza = "latest"
 pnpm = "latest"
 gh = "latest"
 lazygit = "latest"
+bun = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
