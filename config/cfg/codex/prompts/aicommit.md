@@ -1,5 +1,4 @@
 ---
-allowed-tools: Bash(git status:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
 description: Commit current staged changes with AI-generated commit message.
 ---
 
