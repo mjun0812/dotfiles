@@ -4,9 +4,9 @@ DOTPATH=$(cd $(dirname $0) && pwd)
 cd "$DOTPATH"
 
 mkdir -p ${DOTPATH}/.backup
-mkdir -p ~/.config
-mkdir -p ~/.cargo
-mkdir -p ~/.local/bin
+mkdir -p "$HOME/.config"
+mkdir -p "$HOME/.cargo"
+mkdir -p "$HOME/.local/bin"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     zsh $DOTPATH/script/install_homebrew.sh
@@ -31,7 +31,7 @@ ln -snfv "$DOTPATH/config/cfg/mise.toml" "$HOME/.config/mise/config.toml"
 $DOTPATH/script/install_mise.sh
 mise install
 mise reshim
-source ~/.zshrc
+source "$HOME/.zshrc"
 # install npm packages
 npm install -g \
     neovim \
@@ -87,9 +87,11 @@ ln -snfv "$DOTPATH/config/cfg/claude/commands" "$HOME/.claude/commands"
 ################ [Codex] ################
 cp -aLf "$HOME/.codex/codex.toml" "$DOTPATH/.backup/codex.toml" && rm -rf "$HOME/.codex/codex.toml"
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
+rm -rf "$DOTPATH/.backup/codex_prompts" && cp -aLf "$HOME/.codex/prompts" "$DOTPATH/.backup/codex_prompts" && rm -rf "$HOME/.codex/prompts"
 mkdir -p "$HOME/.codex"
 ln -snfv "$DOTPATH/config/cfg/codex.toml" "$HOME/.codex/config.toml"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
+ln -snfv "$DOTPATH/config/cfg/codex/prompts" "$HOME/.codex/prompts"
 
 ################ [Gemini-cli] ################
 cp -aLf "$HOME/.gemini/commands" "$DOTPATH/.backup/gemini_commands" && rm -rf "$HOME/.gemini/commands"

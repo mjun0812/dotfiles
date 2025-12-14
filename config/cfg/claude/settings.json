@@ -1,28 +1,29 @@
 {
-    "permissions": {
-        "allow": [
-            "Bash(git status:*)",
-            "Bash(git diff:*)",
-            "Bash(git branch:*)",
-            "Bash(git log:*)",
-            "Bash(eza:*)",
-            "Bash(rgrep:*)",
-            "Bash(fd:*)"
-        ],
-        "deny": [
-            "Read(.env)",
-            "Read(~/.aws/**)"
-        ],
-        "ask": [
-            "Bash(rm:*)",
-            "Bash(git commit:*)",
-            "Bash(git push:*)"
-        ]
-    },
-    "includeCoAuthoredBy": false,
-    "statusLine": {
-        "type": "command",
-        "command": "~/.dotfiles/config/cfg/claude/statusline.sh",
-        "padding": 0
-    }
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git log:*)",
+      "Bash(eza:*)",
+      "Bash(rgrep:*)",
+      "Bash(fd:*)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(~/.aws/**)"
+    ],
+    "ask": [
+      "Bash(rm:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.dotfiles/config/cfg/claude/statusline.sh",
+    "padding": 0
+  },
+  "model": "opus"
 }
