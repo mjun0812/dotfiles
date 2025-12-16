@@ -1,6 +1,6 @@
 ---
 allowed-tools: Bash(git status:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git fetch:*), Bash(git merge-base:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*)
-description: Generate pull request for current branch with AI-generated title and description in Japanese.
+description: Generate pull request for current branch with AI-generated title and description.
 argument-hint: [instructions]
 ---
 
@@ -14,7 +14,6 @@ argument-hint: [instructions]
 
 ## Task
 
-MUST: The generated pull request title and description must be in Japanese.
 MUST: If a PR template file (e.g., `.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE.md`) exists in the current repository, create the pull request following its content.
 
 1. If instructions are specified in $ARGUMENTS, create the pull request according to them.
@@ -29,7 +28,13 @@ MUST: If a PR template file (e.g., `.github/pull_request_template.md`, `.github/
 ```markdown
 ## Overview
 
+<!-- Describe the purpose of this PR in short. -->
+
 ## Changes
 
+<!-- Describe the changes made in this PR in bullet points. -->
+
 ## Test Instructions
+
+<!-- Describe the test instructions for this PR. -->
 ```
