@@ -52,16 +52,26 @@ alias claude="claude --mcp-config=${HOME}/.dotfiles/config/cfg/claude/mcp.json"
 
 # Claude Code
 alias cc-commit='command claude --model=haiku /aicommit'
-alias cc-commit-ja='command claude --model=haiku /aicommit_ja'
+alias cc-commit-ja='command claude --model=haiku /aicommit-ja'
+alias cc-pr='command claude --model=haiku /aipr'
+alias cc-pr-ja='command claude --model=haiku /aipr-ja'
+
 # Gemini-cli
-alias gemini-commit='command gemini -i "/aicommit" --model=gemini-2.5-flash --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
-alias gemini-commit-ja='command gemini -i "/aicommit_ja" --model=gemini-2.5-flash --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
+alias gemini-commit='command gemini -i "/aicommit" --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
+alias gemini-commit-ja='command gemini -i "/aicommit-ja" --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
+
 # Codex
 alias codex-commit='command codex "/prompts:aicommit" --model=gpt-5.1-codex-mini'
-alias codex-commit-ja='command codex "/prompts:aicommit_ja" --model=gpt-5.1-codex-mini'
+alias codex-commit-ja='command codex "/prompts:aicommit-ja" --model=gpt-5.1-codex-mini'
+
 # Copilot-cli
 alias copilot-commit='copilot -i "~/.dotfiles/config/cfg/claude/commands/aicommit.md に書かれたTaskを実行してください"'
-alias copilot-commit-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/aicommit_ja.md に書かれたTaskを実行してください"'
+alias copilot-commit-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/aicommit-ja.md に書かれたTaskを実行してください"'
+alias copilot-pr='copilot -i "~/.dotfiles/config/cfg/claude/commands/aipr.md に書かれたTaskを実行してください"'
+alias copilot-pr-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/aipr-ja.md に書かれたTaskを実行してください"'
+
 # Alias
 alias aicommit='cc-commit'
 alias aicommit-ja='cc-commit-ja'
+alias aipr='cc-pr'
+alias aipr-ja='cc-pr-ja'
