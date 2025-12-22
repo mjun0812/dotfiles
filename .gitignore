@@ -8,12 +8,11 @@
 !.gitignore
 !.gitmodules
 
-!templates
-!templates/**
-!script
-!script/**
 !config
 !config/**
-
-.DS_Store
-lazy-lock.json
+!doc
+!doc/**
+!script
+!script/**
+!templates
+!templates/**
