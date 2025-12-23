@@ -93,7 +93,7 @@ ln -snfv "$DOTPATH/config/cfg/codex.toml" "$HOME/.codex/config.toml"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 ln -snfv "$DOTPATH/config/cfg/codex/prompts" "$HOME/.codex/prompts"
 
-################ [Gemini-cli] ################
+################ [Gemini] ################
 cp -aLf "$HOME/.gemini/commands" "$DOTPATH/.backup/gemini_commands" && rm -rf "$HOME/.gemini/commands"
 mkdir -p "$HOME/.gemini"
 ln -snfv "$DOTPATH/config/cfg/gemini/commands" "$HOME/.gemini/commands"
