@@ -1,16 +1,20 @@
 [tools]
-neovim = "latest"
+# lang
 go = "latest"
 node = "latest"
-pnpm = "latest"
-bun = "latest"
 rust = "latest"
+# package manager
+bun = "latest"
+pnpm = "latest"
+# tool
+eza = "latest"
+gh = "latest"
+ghq = "latest"
+lazygit = "latest"
+neovim = "latest"
 "aqua:aws/aws-cli" = "latest"
 "aqua:sharkdp/bat" = "latest"
-eza = "latest"
 "aqua:sharkdp/fd" = "latest"
-gh = "latest"
-lazygit = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
 
