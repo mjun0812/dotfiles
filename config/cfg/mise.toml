@@ -1,20 +1,19 @@
 [tools]
-# ruby = "latest"
+neovim = "latest"
 go = "latest"
 node = "latest"
-rust = "latest"
-"aqua:sharkdp/fd" = "latest"
-"aqua:sharkdp/bat" = "latest"
-"aqua:BurntSushi/ripgrep" = "latest"
-"aqua:phiresky/ripgrep-all" = "latest"
-"aqua:aws/aws-cli" = "latest"
-eza = "latest"
 pnpm = "latest"
+bun = "latest"
+rust = "latest"
+"aqua:aws/aws-cli" = "latest"
+"aqua:sharkdp/bat" = "latest"
+eza = "latest"
+"aqua:sharkdp/fd" = "latest"
 gh = "latest"
 lazygit = "latest"
-bun = "latest"
+"aqua:BurntSushi/ripgrep" = "latest"
+"aqua:phiresky/ripgrep-all" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
 pipx.uvx = true
-

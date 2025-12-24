@@ -48,7 +48,6 @@ ln -snfv "$DOTPATH/config/cfg/sheldon.toml" "$HOME/.config/sheldon/plugins.toml"
 $DOTPATH/script/install_sheldon.sh
 
 ################ [Neovim] ################
-$DOTPATH/script/install_neovim.sh
 cp -aLf "$HOME/.config/nvim" "$DOTPATH/.backup/nvim" && rm -rf "$HOME/.config/nvim"
 ln -snfv $DOTPATH/config/nvim $HOME/.config/nvim
 
