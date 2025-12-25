@@ -32,14 +32,19 @@ $DOTPATH/script/install_mise.sh
 mise install
 mise reshim
 source "$HOME/.zshrc"
-# install npm packages
-npm install -g \
+# install node packages
+pnpm install -g \
     neovim \
     md-to-pdf@latest \
     prettier@latest \
     @anthropic-ai/claude-code@latest \
     @google/gemini-cli@latest \
     @openai/codex@latest
+
+################ [eza] ################
+rm -rf "$HOME/.config/eza"
+mkdir -p "$HOME/.config/eza"
+ln -snfv "$DOTPATH/config/cfg/eza_theme.yml" "$HOME/.config/eza/theme.yml"
 
 ################ [Sheldon] ################
 rm -rf "$HOME/.config/sheldon"
@@ -93,11 +98,8 @@ ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 ln -snfv "$DOTPATH/config/cfg/codex/prompts" "$HOME/.codex/prompts"
 
 ################ [Gemini] ################
+cp -aLf "$HOME/.gemini/GEMINI.md" "$DOTPATH/.backup/GEMINI.md" && rm -rf "$HOME/.gemini/GEMINI.md"
 cp -aLf "$HOME/.gemini/commands" "$DOTPATH/.backup/gemini_commands" && rm -rf "$HOME/.gemini/commands"
 mkdir -p "$HOME/.gemini"
 ln -snfv "$DOTPATH/config/cfg/gemini/commands" "$HOME/.gemini/commands"
-
-################ [eza] ################
-rm -rf "$HOME/.config/eza"
-mkdir -p "$HOME/.config/eza"
-ln -snfv "$DOTPATH/config/cfg/eza_theme.yml" "$HOME/.config/eza/theme.yml"
+ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.gemini/GEMINI.md"
