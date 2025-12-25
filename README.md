@@ -63,6 +63,10 @@ aicommit # = cc-commit
 aicommit-ja # = cc-commit-ja
 aipr # = cc-pr
 aipr-ja # = cc-pr-ja
+
+# ghq + fzf
+cd_repo # ghqで管理しているリポジトリをfzfで選択してcdする
+# Ctrl+f でも同様の操作が可能
 ```
 
 ## Neovim Keyboard Shortcuts

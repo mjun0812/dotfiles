@@ -70,8 +70,22 @@ alias copilot-commit-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/aico
 alias copilot-pr='copilot -i "~/.dotfiles/config/cfg/claude/commands/aipr.md に書かれたTaskを実行してください"'
 alias copilot-pr-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/aipr-ja.md に書かれたTaskを実行してください"'
 
-# Alias
+# ai commands alias
 alias aicommit='cc-commit'
 alias aicommit-ja='cc-commit-ja'
 alias aipr='cc-pr'
 alias aipr-ja='cc-pr-ja'
+
+# cd repository alias
+function cd_repo_ghq_fzf() {
+    local ghq_root=$(ghq root)
+    local repo_path=$(ghq list --full-path | fzf --preview "eza -l -g -a --icons ${ghq_root}/{} | awk '{print \$8\" \"\$9}'")
+    if [ -n "$repo_path" ]; then
+        BUFFER="cd ${(q)repo_path}"
+        zle accept-line
+    fi
+    zle .reset-prompt
+}
+zle -N cd_repo_ghq_fzf
+bindkey '^f' cd_repo_ghq_fzf
+alias cd_repo='cd_repo_ghq_fzf'
