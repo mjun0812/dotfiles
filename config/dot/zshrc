@@ -24,10 +24,17 @@ if [ -e /usr/lib/wsl/lib ]; then
     export PATH="/usr/lib/wsl/lib:$PATH"
 fi
 
-# for uv
+# uv
 source "$HOME/.cargo/env"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.venv/bin:$PATH"
+
+# bun
+export PATH="$HOME/.bun/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
 
 # GCP SDK
 if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
@@ -48,11 +55,7 @@ export EZA_CONFIG_DIR="$HOME/.config/eza"
 # mise
 eval "$(~/.local/bin/mise activate zsh)"
 
-# ############## Key bindings ##############
-bindkey -e # Use Emacs key bindings
-bindkey "^[[Z" reverse-menu-complete
-WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
-
+# sheldon
 eval "$(sheldon source)"
 
 # ######### zsh completion ##########
@@ -74,4 +77,3 @@ fi
 # powerlevel10k
 source ~/.p10k.zsh
 (( ! ${+functions[p10k]} )) || p10k finalize
-
