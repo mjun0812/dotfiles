@@ -64,6 +64,11 @@ cd ${HOME}/.config/coc/extensions
 npm install coc-snippets --ignore-scripts --no-bin-links --no-package-lock --install-strategy=shallow
 cd $DOTPATH
 
+################ [Ghostty] ################
+cp -aLf "$HOME/.config/ghostty" "$DOTPATH/.backup/ghostty" && rm -rf "$HOME/.config/ghostty"
+mkdir -p "$HOME/.config/ghostty"
+ln -snfv "$DOTPATH/config/cfg/ghostty_config" "$HOME/.config/ghostty/config"
+
 ################ [Python] ################
 $DOTPATH/script/install_uv.sh
 cd $HOME

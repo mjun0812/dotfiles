@@ -10,4 +10,5 @@ brew install --cask \
     alt-tab \
     bettertouchtool \
     clipy \
-    iterm2
+    iterm2 \
+    ghostty
