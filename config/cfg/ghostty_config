@@ -1,0 +1,45 @@
+foreground = #EAEAEA
+
+background = #000000
+background-blur = true
+background-opacity = 0.8
+background-blur-radius = 10
+
+theme = tokyonight
+font-family = RobotoMonoJP
+font-size = 12
+adjust-cell-width = -1
+
+cursor-color = #4AA5F8
+cursor-style = block
+cursor-style-blink = false
+
+macos-titlebar-proxy-icon = hidden
+macos-titlebar-style = tabs
+macos-option-as-alt = true
+
+shell-integration-features = no-cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo
+
+window-padding-balance = true
+window-height = 30
+window-width = 110
+confirm-close-surface = false
+quit-after-last-window-closed = false
+
+# Color
+palette = 0=#000000
+palette = 1=#EB6049
+palette = 2=#7DD981
+palette = 3=#F6CD45
+palette = 4=#4AA5F8
+palette = 5=#EB576A
+palette = 6=#84CFF6
+palette = 7=#EAEAEA
+palette = 8=#7B7B7B
+palette = 9=#EB6049
+palette = 10=#7DD981
+palette = 11=#F6CD45
+palette = 12=#4AA5F8
+palette = 13=#EB576A
+palette = 14=#84CFF6
+palette = 15=#EAEAEA

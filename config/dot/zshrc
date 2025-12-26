@@ -2,6 +2,11 @@ if [[ -r "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
 # add local PATH
 export PATH="$HOME/bin:$PATH:$HOME/.bin"
 export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
