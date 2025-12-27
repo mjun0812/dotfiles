@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git status:*), Bash(git add:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
+allowed-tools: Bash(cat:*), Bash(git status:*), Bash(git add:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
 description: Commit current staged changes with AI-generated commit message.
 ---
 
@@ -9,7 +9,7 @@ description: Commit current staged changes with AI-generated commit message.
 - Current git status: !`git status`
 - Current branch: !`git branch --show-current`
 - Recent commits: !`git log -10 --oneline`
-- Convetional Commits specification: `~/.dotfiles/doc/conventional_commits.md`
+- Convetional Commits specification: !`cat ~/.dotfiles/doc/conventional_commits.md`
 
 ## Task
 
