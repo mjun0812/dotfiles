@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git status:*), Bash(git add:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
+allowed-tools: Bash(cat:*),  Bash(git status:*), Bash(git add:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
 description: Commit current staged changes with AI-generated commit message in Japanese.
 ---
 
@@ -9,7 +9,7 @@ description: Commit current staged changes with AI-generated commit message in J
 - 現在のgitステータス: !`git status`
 - 現在のブランチ: !`git branch --show-current`
 - 最近のコミット: !`git log -10 --oneline`
-- Convetional Commitsの仕様: `~/.dotfiles/doc/conventional_commits_ja.md`
+- Convetional Commitsの仕様: !`cat ~/.dotfiles/doc/conventional_commits_ja.md`
 
 ## Task
 
