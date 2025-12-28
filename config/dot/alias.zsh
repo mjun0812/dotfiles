@@ -79,13 +79,37 @@ alias aipr-ja='cc-pr-ja'
 # cd repository alias
 function cd_repo_ghq_fzf() {
     local ghq_root=$(ghq root)
-    local repo_path=$(ghq list --full-path | fzf --preview "eza -l -g -a --icons ${ghq_root}/{} | awk '{print \$8\" \"\$9}'")
+    local repo_path=$(ghq list | fzf --preview "eza -l -g -a --icons $ghq_root/{} | awk '{print \$8\" \"\$9}'")
     if [ -n "$repo_path" ]; then
-        BUFFER="cd ${(q)repo_path}"
-        zle accept-line
+        if [[ -n "$WIDGET" ]] && [[ -o zle ]]; then
+            # Called as zle widget
+            BUFFER="cd ${(q)ghq_root}/${(q)repo_path}"
+            zle accept-line
+            zle .reset-prompt
+        else
+            # Called as regular function/alias
+            cd "$ghq_root/$repo_path"
+        fi
     fi
-    zle .reset-prompt
 }
 zle -N cd_repo_ghq_fzf
 bindkey '^f' cd_repo_ghq_fzf
 alias cd_repo='cd_repo_ghq_fzf'
+
+# cd git worktree with gwq
+function cd_git_worktree_fzf() {
+    local worktree_path=$(gwq list --json | jq -r '.[] | .path' | fzf)
+    if [ -n "$worktree_path" ]; then
+        if [[ -n "$WIDGET" ]] && [[ -o zle ]]; then
+            # Called as zle widget
+            BUFFER="cd ${(q)worktree_path}"
+            zle accept-line
+            zle .reset-prompt
+        else
+            # Called as regular function/alias
+            cd "$worktree_path"
+        fi
+    fi
+}
+zle -N cd_git_worktree_fzf
+alias cd_gwq='cd_git_worktree_fzf'

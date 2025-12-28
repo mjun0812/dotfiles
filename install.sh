@@ -46,6 +46,11 @@ rm -rf "$HOME/.config/eza"
 mkdir -p "$HOME/.config/eza"
 ln -snfv "$DOTPATH/config/cfg/eza_theme.yml" "$HOME/.config/eza/theme.yml"
 
+################ [gwq] ################
+cp -aLf "$HOME/.config/gwq" "$DOTPATH/.backup/gwq" && rm -rf "$HOME/.config/gwq"
+mkdir -p "$HOME/.config/gwq"
+ln -snfv "$DOTPATH/config/cfg/gwq.toml" "$HOME/.config/gwq/config.toml"
+
 ################ [Sheldon] ################
 rm -rf "$HOME/.config/sheldon"
 mkdir -p "$HOME/.config/sheldon"

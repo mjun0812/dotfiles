@@ -1,5 +1,5 @@
 [worktree]
-base_dir = "~/workspace/worktrees"
+basedir = "~/workspace/worktrees"
 auto_mkdir = true
 
 [finder]
