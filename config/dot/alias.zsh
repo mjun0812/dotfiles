@@ -59,6 +59,8 @@ alias cc-pr-ja='command claude --model=haiku /aipr-ja'
 # Gemini-cli
 alias gemini-commit='command gemini -i "/aicommit" --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
 alias gemini-commit-ja='command gemini -i "/aicommit-ja" --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
+alias gemini-pr='command gemini -i "/aipr" --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
+alias gemini-pr-ja='command gemini -i "/aipr-ja" --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
 
 # Codex
 alias codex-commit='command codex "/prompts:aicommit" --model=gpt-5.1-codex-mini'

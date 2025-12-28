@@ -1,0 +1,17 @@
+{
+  "ide": {
+    "enabled": true
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "ui": {
+    "theme": "Atom One",
+    "hideTips": true
+  },
+  "general": {
+    "previewFeatures": true
+  }
+}
