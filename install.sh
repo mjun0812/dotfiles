@@ -102,17 +102,17 @@ ln -snfv "$DOTPATH/config/cfg/claude/commands" "$HOME/.claude/commands"
 ln -snfv "$DOTPATH/config/cfg/claude/skills" "$HOME/.claude/skills"
 
 ################ [Codex] ################
-cp -aLf "$HOME/.codex/config.toml" "$DOTPATH/.backup/codex_config.toml" && rm -rf "$HOME/.codex/config.toml"
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
 rm -rf "$DOTPATH/.backup/codex_prompts" && cp -aLf "$HOME/.codex/prompts" "$DOTPATH/.backup/codex_prompts" && rm -rf "$HOME/.codex/prompts"
 mkdir -p "$HOME/.codex"
-ln -snfv "$DOTPATH/config/cfg/codex/config.toml" "$HOME/.codex/config.toml"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 ln -snfv "$DOTPATH/config/cfg/codex/prompts" "$HOME/.codex/prompts"
 
 ################ [Gemini] ################
 cp -aLf "$HOME/.gemini/GEMINI.md" "$DOTPATH/.backup/GEMINI.md" && rm -rf "$HOME/.gemini/GEMINI.md"
 cp -aLf "$HOME/.gemini/commands" "$DOTPATH/.backup/gemini_commands" && rm -rf "$HOME/.gemini/commands"
+cp -aLf "$HOME/.gemini/settings.json" "$DOTPATH/.backup/gemini_settings.json" && rm -rf "$HOME/.gemini/settings.json"
 mkdir -p "$HOME/.gemini"
 ln -snfv "$DOTPATH/config/cfg/gemini/commands" "$HOME/.gemini/commands"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.gemini/GEMINI.md"
+ln -snfv "$DOTPATH/config/cfg/gemini/settings.json" "$HOME/.gemini/settings.json"
