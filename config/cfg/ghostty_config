@@ -20,9 +20,12 @@ macos-option-as-alt = true
 
 shell-integration-features = no-cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo
 
-window-padding-balance = true
 window-height = 30
 window-width = 110
+window-padding-balance = true
+window-inherit-working-directory = false
+window-colorspace = display-p3
+
 confirm-close-surface = false
 quit-after-last-window-closed = false
 
