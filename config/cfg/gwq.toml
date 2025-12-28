@@ -1,0 +1,18 @@
+[worktree]
+base_dir = "~/workspace/worktrees"
+auto_mkdir = true
+
+[finder]
+preview = true
+
+[ui]
+icons = true
+# Display home directory as ~ in paths
+tilde_home = true
+
+[naming]
+# Directory name template
+# Available variables: Host, Owner, Repository, Branch, Hash
+template = "{{.Host}}/{{.Owner}}/{{.Repository}}/{{.Branch}}"
+# Invalid character replacement (applied to branch names)
+sanitize_chars = { "/" = "-", ":" = "-" }

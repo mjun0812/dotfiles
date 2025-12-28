@@ -74,6 +74,10 @@ autoload -Uz bashcompinit && bashcompinit
 if command -v aws_completer >/dev/null 2>&1; then
     complete -C "$(command -v aws_completer)" aws
 fi
+# gwq completion
+if command -v gwq >/dev/null 2>&1; then
+  source <(gwq completion zsh)
+fi
 
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
