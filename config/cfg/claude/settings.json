@@ -6,9 +6,13 @@
       "Bash(git diff:*)",
       "Bash(git branch:*)",
       "Bash(git log:*)",
+      "Bash(ls:*)",
       "Bash(eza:*)",
+      "Bash(grep:*)",
       "Bash(rgrep:*)",
-      "Bash(fd:*)"
+      "Bash(fd:*)",
+      "Bash(cat:*)",
+      "Bash(bat:*)"
     ],
     "deny": [
       "Read(.env)",
@@ -17,13 +21,14 @@
     "ask": [
       "Bash(rm:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)"
     ]
   },
+  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "~/.dotfiles/config/cfg/claude/statusline.sh",
     "padding": 0
-  },
-  "model": "opus"
+  }
 }

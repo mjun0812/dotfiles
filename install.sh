@@ -81,24 +81,27 @@ uv pip install -U \
     ruff \
     'python-lsp-server[all]' \
     glances \
-    nvitop
+    nvitop \
+    pymupdf
 cd $DOTPATH
 
 ################ [Claude Code] ################
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
 cp -aLf "$HOME/.claude/settings.json" "$DOTPATH/.backup/claude_settings.json" && rm -rf "$HOME/.claude/settings.json"
 cp -aLf "$HOME/.claude/commands" "$DOTPATH/.backup/claude_commands" && rm -rf "$HOME/.claude/commands"
+cp -aLf "$HOME/.claude/skills" "$DOTPATH/.backup/claude_skills" && rm -rf "$HOME/.claude/skills"
 mkdir -p "$HOME/.claude"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.claude/CLAUDE.md"
 ln -snfv "$DOTPATH/config/cfg/claude/settings.json" "$HOME/.claude/settings.json"
 ln -snfv "$DOTPATH/config/cfg/claude/commands" "$HOME/.claude/commands"
+ln -snfv "$DOTPATH/config/cfg/claude/skills" "$HOME/.claude/skills"
 
 ################ [Codex] ################
-cp -aLf "$HOME/.codex/codex.toml" "$DOTPATH/.backup/codex.toml" && rm -rf "$HOME/.codex/codex.toml"
+cp -aLf "$HOME/.codex/config.toml" "$DOTPATH/.backup/codex_config.toml" && rm -rf "$HOME/.codex/config.toml"
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
 rm -rf "$DOTPATH/.backup/codex_prompts" && cp -aLf "$HOME/.codex/prompts" "$DOTPATH/.backup/codex_prompts" && rm -rf "$HOME/.codex/prompts"
 mkdir -p "$HOME/.codex"
-ln -snfv "$DOTPATH/config/cfg/codex.toml" "$HOME/.codex/config.toml"
+ln -snfv "$DOTPATH/config/cfg/codex/config.toml" "$HOME/.codex/config.toml"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 ln -snfv "$DOTPATH/config/cfg/codex/prompts" "$HOME/.codex/prompts"
 

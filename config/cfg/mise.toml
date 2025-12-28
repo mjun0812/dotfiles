@@ -17,6 +17,7 @@ neovim = "latest"
 "aqua:sharkdp/fd" = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
+"github:d-kuro/gwq" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []

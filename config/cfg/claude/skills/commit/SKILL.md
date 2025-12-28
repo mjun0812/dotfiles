@@ -17,6 +17,8 @@ This skill is used to commit current staged changes with commit message formatte
    following the Conventional Commits format.
    After the first line (title), add a blank line, then list comments as bullet points starting from the third line. Do not include scope in commit title.
 4. Commit the staged changes with the generated commit message using `git commit -m "<commit message>"`.
+5. Ask the user if they want to push the changes to the remote repository. "Do you want to push the changes to the remote repository?"
+6. If the user agrees, use `git push` to push the changes to the remote repository.
 
 ## References
 
