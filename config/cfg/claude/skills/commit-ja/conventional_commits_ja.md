@@ -1,0 +1,1 @@
+/Users/mjun/.dotfiles/doc/conventional_commits_ja.md

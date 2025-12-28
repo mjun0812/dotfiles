@@ -1,6 +1,6 @@
 ---
 name: commit
-description: When user requests to commit, use this skill. Commit current staged changes with commit message formatted by Conventional Commits.
+description: "Commit current staged changes with commit message formatted by Conventional Commits.　WHEN: When user requests to commit, use this skill."
 allowed-tools: Read, Grep, Glob
 ---
 
