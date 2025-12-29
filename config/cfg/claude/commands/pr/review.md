@@ -70,8 +70,6 @@ description: Review a pull request as an independent reviewer and provide struct
 ### English Template
 
 ```markdown
-# Review by Claude
-
 ## Summary
 
 <!-- 1-2 sentence summary of what this PR does -->
@@ -80,28 +78,24 @@ description: Review a pull request as an independent reviewer and provide struct
 
 - <!-- Positive aspects of the implementation -->
 
-## Must Fix (Blocking)
+## Must Fix
 
-- [ ] `filename:line` - Description of the issue
+- `filename:line` - Description of the issue
 
-## Should Fix (Non-blocking)
+## Should Fix
 
-- [ ] `filename:line` - Description of the suggestion
-
-## Questions
-
-- <!-- Questions for the author -->
+- `filename:line` - Description of the suggestion
 
 ## Verdict
 
 <!-- APPROVE / REQUEST_CHANGES / COMMENT -->
+
+Reviewed by Claude
 ```
 
 ### Japanese Template (日本語)
 
 ```markdown
-# Review by Claude
-
 ## 概要
 
 <!-- このPRの変更内容を1-2文で要約 -->
@@ -110,21 +104,19 @@ description: Review a pull request as an independent reviewer and provide struct
 
 - <!-- 実装の良い点 -->
 
-## 要修正（ブロッキング）
+## 要修正
 
-- [ ] `ファイルパス:行番号` - 問題の説明
+- `ファイルパス:行番号` - 問題の説明
 
-## 提案（ノンブロッキング）
+## 提案
 
-- [ ] `ファイルパス:行番号` - 提案内容
-
-## 質問
-
-- <!-- 作成者への質問 -->
+- `ファイルパス:行番号` - 提案内容
 
 ## 判定
 
 <!-- APPROVE / REQUEST_CHANGES / COMMENT -->
+
+Reviewed by Claude
 ```
 
 ## Posting Review with Inline Comments

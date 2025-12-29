@@ -25,7 +25,6 @@
       "Bash(gh pr create:*)"
     ]
   },
-  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "~/.dotfiles/config/cfg/claude/statusline.sh",
