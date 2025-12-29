@@ -1,37 +1,58 @@
-description = "Generate pull request for current branch with AI-generated title and description."
+# ~/.gemini/commands/aipr.toml
+
+description = "Generate pull request for current branch with AI-generated title and description in the specified language (default: English)."
 prompt = """
-## Context
+User Argument: "{{args}}"
 
-- Current git status: `git status`
-- Current branch: `git branch --show-current`
-- Branch base: `git merge-base --is-ancestor origin/main HEAD`
-- List of commits diverging from base: `git fetch origin && git log --oneline origin/main..HEAD`
-- List of changes in this branch: `git fetch origin && git log -p origin/main..HEAD`
+1. **Determine Language:**
+   - If "User Argument" specifies Japanese (e.g., "ja", "jp", "japanese") or the user asks for Japanese, the PR title and description MUST be in **Japanese**.
+   - If "User Argument" is empty or specifies English, the PR title and description MUST be in **English**.
+   - If another language is specified, use that language.
 
-## Task
+2. **Gather Context:**
+   Use the following commands to understand the branch status and changes:
+   - `git status`
+   - `git branch --show-current`
+   - `git fetch origin && git merge-base --is-ancestor origin/main HEAD` (Verify branch is derived from main)
+   - `git log --oneline origin/main..HEAD` (List of commits)
+   - `git log -p origin/main..HEAD` (List of changes)
 
-MUST: If a PR template file (e.g., `.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE.md`) exists in the current repository, create the pull request following its content.
+3. **Select Template:**
+   - Check if a PR template exists in the repository (e.g., `.github/pull_request_template.md`). If it exists, use it and fill it out in the determined language.
+   - If NO repository template exists, use the appropriate **Default Template** below based on the determined language.
 
-1. If instructions are specified in $ARGUMENTS, create the pull request according to them.
-2. Verify that the current branch is derived from `main`.
-3. Check the status and changes (diffs) of the current branch.
-4. If a PR template file exists in the current repository, create the pull request following its content. If not, create the PR title and description following the [template below](#pull-request-template).
-5. Create the pull request using `gh pr create` with the generated PR title and description.
-6. Return the URL of the created PR.
+   **Default Template (English):**
+   ```markdown
+   ## Overview
 
-## Pull Request Template
+   <!-- Describe the purpose of this PR in short. -->
 
-```markdown
-## Overview
+   ## Changes
 
-<!-- Describe the purpose of this PR in short. -->
+   <!-- Describe the changes made in this PR in bullet points. -->
 
-## Changes
+   ## Test Instructions
 
-<!-- Describe the changes made in this PR in bullet points. -->
+   <!-- Describe the test instructions for this PR. -->
+   ```
 
-## Test Instructions
+   **Default Template (Japanese):**
+   ```markdown
+   ## 概要
 
-<!-- Describe the test instructions for this PR. -->
-```
+   <!-- このPRは何を目的としているかを簡潔に一言で記載してください -->
+
+   ## 変更内容
+
+   <!-- このPRで行われた変更を箇条書きで記載してください -->
+
+   ## テスト方法
+
+   <!-- このPRのテスト方法を記載してください -->
+   ```
+
+4. **Generate Content & Create PR:**
+   - Generate the PR Title and Body.
+   - Execute `gh pr create --title "<Generated Title>" --body "<Generated Body>"`.
+   - Return the URL of the created PR.
 """
