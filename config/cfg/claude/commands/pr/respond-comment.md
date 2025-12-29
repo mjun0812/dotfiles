@@ -45,7 +45,7 @@ description: Review and respond to review comments on a pull request.
 
 4. **Display comment summary** (in detected language):
 
-#### English Format
+## English Format
 
 ```markdown
 ## Review Comments Summary
@@ -69,7 +69,7 @@ description: Review and respond to review comments on a pull request.
    > → Accept / Decline with reason: ...
 ```
 
-#### Japanese Format (日本語)
+## Japanese Format (日本語)
 
 ```markdown
 ## レビューコメント一覧

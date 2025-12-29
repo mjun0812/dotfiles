@@ -51,10 +51,10 @@ alias du='du -kh'
 alias claude="claude --mcp-config=${HOME}/.dotfiles/config/cfg/claude/mcp.json"
 
 # Claude Code
-alias cc-commit='command claude --model=haiku /aicommit'
-alias cc-commit-ja='command claude --model=haiku /aicommit ja'
-alias cc-pr='command claude --model=haiku /aipr'
-alias cc-pr-ja='command claude --model=haiku /aipr ja'
+alias cc-commit='command claude --model=haiku /git:commit'
+alias cc-commit-ja='command claude --model=haiku /git:commit ja'
+alias cc-pr='command claude --model=haiku /pr:create'
+alias cc-pr-ja='command claude --model=haiku /pr:create ja'
 
 # Gemini-cli
 alias gemini-commit='command gemini -i "/aicommit" --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff)"'
@@ -67,10 +67,10 @@ alias codex-commit='command codex "/prompts:aicommit"'
 alias codex-commit-ja='command codex "/prompts:aicommit ja"'
 
 # Copilot-cli
-alias copilot-commit='copilot -i "~/.dotfiles/config/cfg/claude/commands/aicommit.md に書かれたTaskを実行してください。言語はEnglishです"'
-alias copilot-commit-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/aicommit.md に書かれたTaskを実行してください。言語はJapaneseです。"'
-alias copilot-pr='copilot -i "~/.dotfiles/config/cfg/claude/commands/aipr.md に書かれたTaskを実行してください。言語はEnglishです。"'
-alias copilot-pr-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/aipr.md に書かれたTaskを実行してください。言語はJapaneseです。"'
+alias copilot-commit='copilot -i "~/.dotfiles/config/cfg/claude/commands/git/commit.md に書かれたTaskを実行してください。言語はEnglishです。"'
+alias copilot-commit-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/git/commit.md に書かれたTaskを実行してください。言語はJapaneseです。"'
+alias copilot-pr='copilot -i "~/.dotfiles/config/cfg/claude/commands/pr/create.md に書かれたTaskを実行してください。言語はEnglishです。"'
+alias copilot-pr-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/pr/create.md に書かれたTaskを実行してください。言語はJapaneseです。"'
 
 # ai commands alias
 alias aicommit='cc-commit'
