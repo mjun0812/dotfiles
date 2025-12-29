@@ -1,6 +1,6 @@
 ---
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), SlashCommand
-argument-hint: [PR number]
+argument-hint: [PR number] [--reply]
 description: Auto-detect and fix all PR issues (conflicts, CI failures, review comments).
 ---
 
@@ -9,6 +9,7 @@ description: Auto-detect and fix all PR issues (conflicts, CI failures, review c
 ## Arguments
 
 - `PR number`: PR number to fix (optional, defaults to PR for current branch)
+- `--reply`: Post reply comments to GitHub after addressing (optional)
 
 ## Context
 
@@ -57,14 +58,14 @@ This command orchestrates three sub-commands to fix all PR issues in the correct
 4. **Step 3: Check and respond to review comments**:
    - Check for pending review comments: `gh pr view --json reviews,comments`
    - If there are unaddressed comments:
-     - Execute `/pr:respond-comment`
+     - Execute `/pr:respond-comment --reply`
      - Wait for completion
    - If no pending comments: Skip
    - Report status in detected language
 
 5. **Final summary** (in detected language):
 
-#### English Format
+### English Format
 
 ```markdown
 ## PR Fix Summary
@@ -88,15 +89,9 @@ This command orchestrates three sub-commands to fix all PR issues in the correct
 - `abc1234` - merge: resolve conflicts with main
 - `def5678` - fix: resolve CI failures
 - `ghi9012` - fix: address review comments
-
-### Next Steps
-
-- [ ] Wait for CI to complete (if still running)
-- [ ] Request re-review from reviewers
-- [ ] Merge when approved
 ```
 
-#### Japanese Format (日本語)
+### Japanese Format (日本語)
 
 ```markdown
 ## PR修正サマリー
@@ -120,12 +115,6 @@ This command orchestrates three sub-commands to fix all PR issues in the correct
 - `abc1234` - merge: mainとのコンフリクトを解消
 - `def5678` - fix: CI失敗を修正
 - `ghi9012` - fix: レビューコメントに対応
-
-### 次のステップ
-
-- [ ] CIの完了を待つ（実行中の場合）
-- [ ] レビュワーに再レビューを依頼
-- [ ] 承認後にマージ
 ```
 
 ## Notes
