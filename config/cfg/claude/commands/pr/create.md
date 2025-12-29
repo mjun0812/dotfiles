@@ -61,9 +61,9 @@ description: Generate pull request for current branch with AI-generated title an
 ### English Template
 
 ```markdown
-## Overview and Background
+## Overview
 
-<!-- Describe the purpose of this PR and the background in short. -->
+<!-- Describe the purpose of this PR in short. -->
 
 ## Related Issues
 
@@ -81,9 +81,9 @@ description: Generate pull request for current branch with AI-generated title an
 ### Japanese Template (日本語)
 
 ```markdown
-## 概要・背景
+## 概要
 
-<!-- このPRの目的と背景を簡潔に記載してください -->
+<!-- このPRは何を目的としているかを簡潔に一言で記載してください -->
 
 ## 関連Issue
 
