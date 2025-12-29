@@ -1,7 +1,12 @@
 ---
-allowed-tools: Bash(cat:*), Bash(git status:*), Bash(git add:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
-description: Commit current staged changes with AI-generated commit message.
+allowed-tools: Bash(git status:*), Bash(git add:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
+argument-hint: [language]
+description: Commit current staged changes with AI-generated commit message in the specified language.
 ---
+
+## Arguments
+
+- `language`: Language for commit message (e.g., "ja", "en"). Default: "English"
 
 ## Context
 
@@ -9,21 +14,16 @@ description: Commit current staged changes with AI-generated commit message.
 - Current git status: !`git status`
 - Current branch: !`git branch --show-current`
 - Recent commits: !`git log -10 --oneline`
-- Convetional Commits specification: [Conventional Commits 1.0.0](#conventional-commits-100)
+- Conventional Commits specification: [Conventional Commits 1.0.0](#conventional-commits-100)
 
 ## Task
 
-Important: This command only commits staged changes. It does not stage any new files.
-
-1. Check the current staged changes, branch and recent commits using
-   `git diff --cached`, `git status`, `git branch --show-current` and `git log -10 --oneline`.
-2. If there are no staged changes, prompt the user to stage the changes.
-3. Generate a concise and descriptive commit message summarizing the staged changes,
-   following the [Conventional Commits format](~/.dotfiles/doc/conventional_commits.md).
-   After the first line (title), add a blank line, then list comments as bullet points starting from the third line. Do not include scope in commit title.
-4. Commit the staged changes with the generated commit message using `git commit -m "<commit message>"`.
-5. Ask the user if they want to push the changes to the remote repository. "Do you want to push the changes to the remote repository?"
-6. If the user agrees, use `git push` to push the changes to the remote repository.
+1. If no staged changes exist, prompt the user to stage changes first.
+2. Generate a commit message in $ARGUMENTS language (default: English) following Conventional Commits:
+   - First line: `<type>: <description>` (no scope)
+   - Second line: blank
+   - Third line onwards: bullet points describing changes
+3. Commit with `git commit -m "<message>"`.
 
 ## Conventional Commits 1.0.0
 
@@ -37,7 +37,7 @@ by describing the features, fixes, and breaking changes made in commit messages.
 
 The commit message should be structured as follows:
 
-```
+```text
 <type>[optional scope]: <description>
 
 [optional body]
@@ -100,21 +100,6 @@ docs: correct spelling of CHANGELOG
 
 ```
 feat(lang): add Polish language
-```
-
-#### Commit message with multi-paragraph body and multiple footers
-
-```
-fix: prevent racing of requests
-
-Introduce a request id and a reference to latest request. Dismiss
-incoming responses other than from latest request.
-
-Remove timeouts which were used to mitigate the racing issue but are
-obsolete now.
-
-Reviewed-by: Z
-Refs: #123
 ```
 
 ### Specification

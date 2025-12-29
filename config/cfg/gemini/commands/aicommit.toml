@@ -1,14 +1,25 @@
 # ~/.gemini/commands/aicommit.toml
 
-description = "Commit current staged changes with AI-generated commit message."
+description = "Commit current staged changes with AI-generated commit message in the specified language (default: English)."
 prompt = """
 Important: This command only commits staged changes. It does not stage any new files.
 
+User Argument: "{{args}}"
+
 1. Check the current staged changes, branch and recent commits using
 `git diff --cached`, `git status`, `git branch --show-current` and `git log -10 --oneline`.
-2. Generate a concise and descriptive commit message summarizing the staged changes, following the Conventional Commits format.
-After the first line (title), add a blank line, then list comments as bullet points starting from the third line. Do not include scope in commit title.
-3. Commit the staged changes with the generated commit message using `git commit -m "<commit message>"`.
+
+2. Determine the output language based on the "User Argument".
+   - If the argument specifies Japanese (e.g., "ja", "jp", "japanese"), the commit message MUST be in **Japanese**.
+   - If the argument is empty or specifies English (e.g., "en", "english"), the commit message MUST be in **English**.
+   - If the argument specifies another language, use that language.
+
+3. Generate a concise and descriptive commit message summarizing the staged changes, following the Conventional Commits format.
+   - After the first line (title), add a blank line, then list comments as bullet points starting from the third line.
+   - Do not include scope in commit title.
+   - Ensure the message strictly adheres to the determined language.
+
+4. Commit the staged changes with the generated commit message using `git commit -m "<commit message>"`.
 
 ## Context
 

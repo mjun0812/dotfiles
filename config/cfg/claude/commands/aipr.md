@@ -1,8 +1,12 @@
 ---
 allowed-tools: Bash(git status:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git fetch:*), Bash(git merge-base:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*)
-description: Generate pull request for current branch with AI-generated title and description.
-argument-hint: [instructions]
+argument-hint: [language]
+description: Generate pull request for current branch with AI-generated title and description in the specified language.
 ---
+
+## Arguments
+
+- `language`: Language for PR title and description (e.g., "ja", "en"). Default: "English"
 
 ## Context
 
@@ -14,16 +18,18 @@ argument-hint: [instructions]
 
 ## Task
 
-MUST: If a PR template file (e.g., `.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE.md`) exists in the current repository, create the pull request following its content.
-
-1. If instructions are specified in $ARGUMENTS, create the pull request according to them.
-2. Verify that the current branch is derived from `main`.
-3. Check the status and changes (diffs) of the current branch.
-4. If a PR template file exists in the current repository, create the pull request following its content. If not, create the PR title and description following the [template below](#pull-request-template).
+1. Verify that the current branch is derived from `main`.
+2. Check the status and changes (diffs) of the current branch.
+3. Check if a PR template file exists in the current repository (e.g., `.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE.md`).
+4. Generate PR title and description:
+   - **If a repository PR template exists**: Use that template and follow its language (do NOT translate to the specified language).
+   - **If no repository PR template exists**: Use the [default template below](#default-pull-request-templates) in the language specified by $ARGUMENTS (default: English).
 5. Create the pull request using `gh pr create` with the generated PR title and description.
 6. Return the URL of the created PR.
 
-## Pull Request Template
+## Default Pull Request Templates
+
+### English Template
 
 ```markdown
 ## Overview
@@ -37,4 +43,20 @@ MUST: If a PR template file (e.g., `.github/pull_request_template.md`, `.github/
 ## Test Instructions
 
 <!-- Describe the test instructions for this PR. -->
+```
+
+### Japanese Template (日本語)
+
+```markdown
+## 概要
+
+<!-- このPRは何を目的としているかを簡潔に一言で記載してください -->
+
+## 変更内容
+
+<!-- このPRで行われた変更を箇条書きで記載してください -->
+
+## テスト方法
+
+<!-- このPRのテスト方法を記載してください -->
 ```
