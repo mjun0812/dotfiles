@@ -57,7 +57,7 @@ This command orchestrates three sub-commands to fix all PR issues in the correct
 4. **Step 3: Check and respond to review comments**:
    - Check for pending review comments: `gh pr view --json reviews,comments`
    - If there are unaddressed comments:
-     - Execute `/pr:respond`
+     - Execute `/pr:respond-comment`
      - Wait for completion
    - If no pending comments: Skip
    - Report status in detected language
