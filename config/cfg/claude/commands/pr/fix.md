@@ -14,7 +14,8 @@ description: Auto-detect and fix all PR issues (conflicts, CI failures, review c
 
 - Current branch: !`git branch --show-current`
 - Current PR: !`gh pr view --json number,url,mergeable,mergeStateStatus 2>/dev/null || echo "No PR found"`
-- PR title and body: !`gh pr view --json title,body --jq '"\(.title)\n\(.body)"' 2>/dev/null | head -30`
+- PR title: !`gh pr view --json title --jq '.title' 2>/dev/null`
+- PR body: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
 - CI status: !`gh pr checks --json name,state,conclusion 2>/dev/null || echo "No checks"`
 - Pending reviews: !`gh pr view --json reviews --jq '[.reviews[] | select(.state == "CHANGES_REQUESTED")] | length' 2>/dev/null || echo "0"`
 

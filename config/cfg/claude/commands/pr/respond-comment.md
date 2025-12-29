@@ -15,7 +15,8 @@ description: Review and respond to review comments on a pull request.
 
 - Current branch: !`git branch --show-current`
 - Current PR: !`gh pr view --json number,url,reviewDecision 2>/dev/null || echo "No PR found"`
-- PR title and body: !`gh pr view --json title,body --jq '"\(.title)\n\(.body)"' 2>/dev/null | head -30`
+- PR title: !`gh pr view --json title --jq '.title' 2>/dev/null`
+- PR body: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
 - Pending reviews: !`gh pr view --json reviews --jq '.reviews | map(select(.state != "APPROVED")) | length' 2>/dev/null || echo "0"`
 
 ## Task
