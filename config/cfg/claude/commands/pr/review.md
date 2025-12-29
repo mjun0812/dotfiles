@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
+allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*)
 argument-hint: [PR number] [--post]
-description: Review a pull request as an independent reviewer and provide structured feedback.
+description: Review a pull request as an independent reviewer and provide structured feedback with inline comments.
 ---
 
 # Review Pull Request
@@ -9,7 +9,7 @@ description: Review a pull request as an independent reviewer and provide struct
 ## Arguments
 
 - `PR number`: PR number to review (optional, defaults to PR for current branch)
-- `--post`: Post the review comment to GitHub after review (optional)
+- `--post`: Post the review with inline comments to GitHub (optional)
 
 ## Context
 
@@ -35,6 +35,7 @@ description: Review a pull request as an independent reviewer and provide struct
    - Get PR metadata: `gh pr view <number> --json title,body,baseRefName,headRefName,author,additions,deletions,changedFiles`
    - Get list of changed files: `gh pr view <number> --json files --jq '.files[].path'`
    - Get the diff: `gh pr diff <number>`
+   - Get the latest commit SHA: `gh pr view <number> --json commits --jq '.commits[-1].oid'`
 
 3. **Analyze the changes**:
    - Understand the purpose of the PR from title and description
@@ -53,23 +54,24 @@ description: Review a pull request as an independent reviewer and provide struct
 5. **Generate review report**:
    - Use the appropriate template based on the detected language
    - See [Review Report Templates](#review-report-templates) below
+   - **IMPORTANT**: For items in "Must Fix" and "Should Fix", use exact format `` `filepath:line` `` to enable inline comment posting
 
 6. **Post review to GitHub** (if `--post` flag is provided):
    - Confirm with user before posting
-   - Post in the same language as the PR
-   - Use `gh pr review <number> --comment --body "<review body>"` for comments
-   - Use `gh pr review <number> --approve --body "<review body>"` for approval
-   - Use `gh pr review <number> --request-changes --body "<review body>"` for requesting changes
+   - Parse the review report to extract inline comments from "Must Fix" and "Should Fix" sections
+   - Post using `gh api` with the reviews endpoint (see [Posting Review with Inline Comments](#posting-review-with-inline-comments))
 
 7. **Return the result**:
    - Display the review report in the detected language
-   - If posted, show the URL of the review comment
+   - If posted, show the URL of the PR
 
 ## Review Report Templates
 
 ### English Template
 
 ```markdown
+# Review by Claude
+
 ## Summary
 
 <!-- 1-2 sentence summary of what this PR does -->
@@ -98,6 +100,8 @@ description: Review a pull request as an independent reviewer and provide struct
 ### Japanese Template (日本語)
 
 ```markdown
+# Review by Claude
+
 ## 概要
 
 <!-- このPRの変更内容を1-2文で要約 -->
@@ -108,11 +112,11 @@ description: Review a pull request as an independent reviewer and provide struct
 
 ## 要修正（ブロッキング）
 
-- [ ] `ファイル名:行番号` - 問題の説明
+- [ ] `ファイルパス:行番号` - 問題の説明
 
 ## 提案（ノンブロッキング）
 
-- [ ] `ファイル名:行番号` - 提案内容
+- [ ] `ファイルパス:行番号` - 提案内容
 
 ## 質問
 
@@ -122,3 +126,68 @@ description: Review a pull request as an independent reviewer and provide struct
 
 <!-- APPROVE / REQUEST_CHANGES / COMMENT -->
 ```
+
+## Posting Review with Inline Comments
+
+When `--post` flag is provided:
+
+### Step 1: Parse inline comments from report
+
+Extract items from "Must Fix" / "要修正" and "Should Fix" / "提案" sections.
+
+Pattern: `` `filepath:line` - comment ``
+
+Example:
+
+```
+- [ ] `src/auth.ts:42` - null チェックが必要です
+```
+
+→ `{ "path": "src/auth.ts", "line": 42, "body": "🔴 **要修正**: null チェックが必要です" }`
+
+### Step 2: Prepare variables
+
+```bash
+REPO=$(gh repo view --json nameWithOwner --jq '.nameWithOwner')
+OWNER=$(echo $REPO | cut -d'/' -f1)
+REPO_NAME=$(echo $REPO | cut -d'/' -f2)
+PR_NUMBER=<number>
+COMMIT_SHA=$(gh pr view $PR_NUMBER --json commits --jq '.commits[-1].oid')
+```
+
+### Step 3: Build and post the review
+
+```bash
+gh api repos/$OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews \
+  -f body="# Review by Claude
+
+## 概要
+...
+
+## 判定
+REQUEST_CHANGES" \
+  -f commit_id="$COMMIT_SHA" \
+  -f event="REQUEST_CHANGES" \
+  --raw-field 'comments=[{"path":"src/auth.ts","line":42,"body":"🔴 **要修正**: null チェックが必要です"}]'
+```
+
+### Comment prefixes by section
+
+| Section    | English    | Japanese | Emoji Prefix   |
+| ---------- | ---------- | -------- | -------------- |
+| Must Fix   | Must Fix   | 要修正   | 🔴 **要修正**: |
+| Should Fix | Suggestion | 提案     | 💡 **提案**:   |
+
+### Event types
+
+| Verdict         | Event             |
+| --------------- | ----------------- |
+| APPROVE         | `APPROVE`         |
+| REQUEST_CHANGES | `REQUEST_CHANGES` |
+| COMMENT         | `COMMENT`         |
+
+## Notes
+
+- Line numbers must correspond to the NEW file (right side of diff)
+- If a comment cannot be posted as inline (e.g., line not in diff), it will be included in the body
+- Maximum 50 inline comments per review
