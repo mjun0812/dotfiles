@@ -15,7 +15,8 @@ description: Detect and resolve merge conflicts in the current PR.
 
 - Current branch: !`git branch --show-current`
 - Base branch: !`gh pr view --json baseRefName --jq .baseRefName 2>/dev/null || echo "main"`
-- PR title and body: !`gh pr view --json title,body --jq '"\(.title)\n\(.body)"' 2>/dev/null | head -30`
+- PR title: !`gh pr view --json title --jq '.title' 2>/dev/null`
+- PR body: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
 - Merge status: !`gh pr view --json mergeable,mergeStateStatus --jq '"\(.mergeable) - \(.mergeStateStatus)"' 2>/dev/null || echo "unknown"`
 - Conflict files: !`git diff --name-only --diff-filter=U 2>/dev/null || echo "none"`
 

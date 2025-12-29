@@ -15,7 +15,8 @@ description: Review a pull request as an independent reviewer and provide struct
 
 - Current branch: !`git branch --show-current`
 - Current PR: !`gh pr view --json number,title,state,baseRefName,headRefName,url 2>/dev/null || echo "No PR found for current branch"`
-- PR title and body: !`gh pr view --json title,body --jq '"\(.title)\n\(.body)"' 2>/dev/null | head -50`
+- PR title: !`gh pr view --json title --jq '.title' 2>/dev/null`
+- PR body: !`gh pr view --json body --jq '.body' 2>/dev/null | head -50`
 - Repository: !`gh repo view --json nameWithOwner --jq .nameWithOwner`
 
 ## Task

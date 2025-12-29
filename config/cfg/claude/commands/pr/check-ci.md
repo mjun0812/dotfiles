@@ -14,7 +14,8 @@ description: Check CI status for a PR, analyze failures, and fix issues automati
 
 - Current branch: !`git branch --show-current`
 - Current PR: !`gh pr view --json number,url 2>/dev/null || echo "No PR found"`
-- PR title and body: !`gh pr view --json title,body --jq '"\(.title)\n\(.body)"' 2>/dev/null | head -30`
+- PR title: !`gh pr view --json title --jq '.title' 2>/dev/null`
+- PR body: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
 - CI status: !`gh pr checks 2>/dev/null || echo "No checks found"`
 
 ## Task
