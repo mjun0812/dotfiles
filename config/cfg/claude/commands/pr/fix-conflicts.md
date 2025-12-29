@@ -75,7 +75,7 @@ description: Detect and resolve merge conflicts in the current PR.
 
 8. **Return the result** (in detected language):
 
-#### English Format
+## English Format
 
 ```markdown
 ## Conflict Resolution Summary
@@ -91,14 +91,9 @@ description: Detect and resolve merge conflicts in the current PR.
 - Strategy used: merge / rebase
 - Commits created: X
 - Force push required: Yes / No
-
-### Recommended Next Steps
-
-- [ ] Run tests locally to verify resolution
-- [ ] Review the merge commit diff
 ```
 
-#### Japanese Format (日本語)
+## Japanese Format (日本語)
 
 ```markdown
 ## コンフリクト解消サマリー
@@ -114,11 +109,6 @@ description: Detect and resolve merge conflicts in the current PR.
 - 使用した戦略: merge / rebase
 - 作成したコミット: X件
 - Force pushが必要: はい / いいえ
-
-### 推奨される次のステップ
-
-- [ ] ローカルでテストを実行して解消を確認
-- [ ] マージコミットのdiffをレビュー
 ```
 
 ## Notes
