@@ -77,6 +77,52 @@ git aipr
 git aipr-ja
 ```
 
+## ANSI 16 Color
+
+For terminal color schemes.
+
+### sRGB
+
+| Color         | Hex     |
+| ------------- | ------- |
+| Black         | #000000 |
+| Red           | #FE533E |
+| Green         | #57DC76 |
+| Yellow        | #FECB00 |
+| Blue          | #00A7FF |
+| Magenta       | #FF4867 |
+| Cyan          | #69D1FA |
+| White         | #EAEAEA |
+| Gray          | #7B7B7B |
+| Light Red     | #FE533E |
+| Light Green   | #57DC76 |
+| Light Yellow  | #FECB00 |
+| Light Blue    | #00A7FF |
+| Light Magenta | #FF4867 |
+| Light Cyan    | #69D1FA |
+| Light White   | #EAEAEA |
+
+### Display-P3 (only supported on macOS)
+
+| Color         | Hex     |
+| ------------- | ------- |
+| Black         | #000000 |
+| Red           | #EB6049 |
+| Green         | #7DD981 |
+| Yellow        | #F6CD45 |
+| Blue          | #4AA5F8 |
+| Magenta       | #EB576A |
+| Cyan          | #84CFF6 |
+| White         | #EAEAEA |
+| Gray          | #7B7B7B |
+| Light Red     | #EB6049 |
+| Light Green   | #7DD981 |
+| Light Yellow  | #F6CD45 |
+| Light Blue    | #4AA5F8 |
+| Light Magenta | #EB576A |
+| Light Cyan    | #84CFF6 |
+| Light White   | #EAEAEA |
+
 ## Neovim Keyboard Shortcuts
 
 Leader key: `<Space>`, Local leader: `\`
