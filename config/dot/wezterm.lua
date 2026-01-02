@@ -2,6 +2,7 @@ local wezterm = require 'wezterm'
 
 local config = wezterm.config_builder()
 config.automatically_reload_config = true
+config.front_end = "OpenGL"
 
 -- Font
 config.font = wezterm.font_with_fallback({
@@ -12,6 +13,115 @@ config.font = wezterm.font_with_fallback({
 })
 config.font_size = 12.0
 
+-- 日本語入力
+config.use_ime = true
+-- Windowを閉じた時にWeztermを終了しない
+config.quit_when_all_windows_are_closed = false
+-- Windowを閉じるときの確認を無効
+config.window_close_confirmation = "NeverPrompt"
+-- 透過
+config.window_background_opacity = 0.70
+-- ぼかし
+config.macos_window_background_blur = 30
+
+-- Window Settings
+-- size
+config.initial_rows = 30
+config.initial_cols = 110
+-- titlebar
+config.window_frame = {
+  font = wezterm.font({ family = "RobotoMonoJP", weight = "Bold" }),
+  font_size = 12.0,
+  inactive_titlebar_bg = "none",
+  active_titlebar_bg = "none",
+}
+-- 背景グラデーション
+config.window_background_gradient = {
+  colors = { "#000000" },
+}
+-- Windowの余白
+config.window_padding = {
+  left = '0.5cell',
+  right = '0.5cell',
+  top = '0.1cell',
+  bottom = '0',
+}
+
+-- タブの最大幅
+config.tab_max_width = 8
+-- タブ上のタイトルを消す
+if wezterm.target_triple == 'aarch64-apple-darwin' then
+  config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
+  -- config.window_decorations = "RESIZE"
+elseif wezterm.target_triple == 'x86_64-unknown-linux-gnu' then
+  config.window_decorations = "RESIZE"
+end
+-- タブが一つのときタブバーを隠す
+config.hide_tab_bar_if_only_one_tab = false
+-- タブの閉じるボタンを消す
+config.show_close_tab_button_in_tabs = false
+-- タブバーの+ボタンを消す
+config.show_new_tab_button_in_tab_bar = false
+-- タブ番号を消す
+config.show_tab_index_in_tab_bar = false
+-- rendered in a native style with proportional fonts
+config.use_fancy_tab_bar = true
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+  local title = wezterm.truncate_right(tab.active_pane.title, max_width - 1)
+  local space_after = string.rep(' ', math.max(0, max_width - #title - 1))
+  return {
+    { Text = " " .. title .. space_after },
+  }
+end)
+
+config.colors = {
+  -- ターミナルの文字色
+  foreground = "#EAEAEA",
+  -- ターミナルの背景色
+  background = "#000000",
+  -- カーソル
+  cursor_bg = "#00A7FF",
+  cursor_border = "#00A7FF",
+  -- tab bar
+  tab_bar = {
+    background = "#000000",
+    -- タブの境界線を削除
+    inactive_tab_edge = "none",
+    active_tab = {
+      bg_color = "rgba(0,0,0,0.0)",
+      fg_color = "#EAEAEA",
+      intensity = "Bold",
+    },
+    inactive_tab = {
+      bg_color = "rgba(0,0,0,0.0)",
+      fg_color = "#7b7b7b",
+      intensity = "Half",
+    },
+  },
+  -- colors
+  ansi = {
+    "#000000", -- black
+    "#FE533E", -- red
+    "#57DC76", -- green
+    "#FECB00", -- yellow
+    "#00A7FF", -- blue
+    "#FF4867", -- magenta
+    "#69D1FA", -- cyan
+    "#EAEAEA", -- white
+  },
+  brights = {
+    "#7B7B7B", -- gray
+    "#FE533E", -- red
+    "#57DC76", -- green
+    "#FECB00", -- yellow
+    "#00A7FF", -- blue
+    "#FF4867", -- magenta
+    "#69D1FA", -- cyan
+    "#EAEAEA", -- white
+  },
+}
+
+-- Hyperlink 抽出と処理
 local function extract_path(uri)
   -- `$EDITOR:/path/to/file` → `/path/to/file`
   local s, e = uri:find("^$EDITOR:")
@@ -38,7 +148,7 @@ local function strip_line_numbers(path)
              :gsub(":%d+$", "")      -- :行
 end
 
--- open-uri ハンドラ -----------------------------------------------------------
+-- open-uri ハンドラ
 wezterm.on("open-uri", function(window, pane, uri)
   local raw_path = extract_path(uri)
   if not raw_path then return end               -- URL などは既定動作
@@ -55,8 +165,8 @@ local hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- ファイルパス検出用ルールを追加
 table.insert(hyperlink_rules, {
-  --   ~ / ./ ../ C:\     で始まり、空白や<>\"' を除く任意文字列
-  --   オプションで :行 または :行:列 を繰り返し許可
+  --  ~ / ./ ../ C:\     で始まり、空白や<>\"' を除く任意文字列
+  --  オプションで :行 または :行:列 を繰り返し許可
   regex = [[(?:~|/|\.{1,2}/|\w:[\\/])[^[:space:]'"<>]+(?::\d+(?::\d+)*)?]],
   format = '$0',      -- ← `$EDITOR:` は付けない
   highlight = 0,      -- 色を変えたいときは 1
@@ -75,92 +185,6 @@ config.mouse_bindings = {
     event = { Up = { streak = 1, button = 'Left' } },
     mods = 'CMD',
     action = wezterm.action.OpenLinkAtMouseCursor,
-  },
-}
-
--- 日本語入力
-config.use_ime = true
--- 透過
-config.window_background_opacity = 0.70
--- ぼかし
-config.macos_window_background_blur = 30
--- タブバーの+ボタンを消す
-config.show_new_tab_button_in_tab_bar = false
--- Windowの余白
-config.window_padding = {
-  left = '0.5cell',
-  right = '0.5cell',
-  top = 0,
-  bottom = '0.2cell',
-}
--- タブの最大幅
-config.tab_max_width = 20
--- window size
-config.initial_rows = 30
-config.initial_cols = 110
-
--- タブ上のタイトルを消す
-if wezterm.target_triple == 'aarch64-apple-darwin' then
-  config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
-elseif wezterm.target_triple == 'x86_64-unknown-linux-gnu' then
-  config.window_decorations = "RESIZE"
-end
-
-config.use_fancy_tab_bar = true
-config.window_frame = {
-  font = wezterm.font({ family = "RobotoMonoJP"}),
-  font_size = 13.0,
-  inactive_titlebar_bg = "none",
-  active_titlebar_bg = "none",
-}
-config.window_background_gradient = {
-  colors = { "#000000" },
-}
-config.colors = {
-  -- ターミナルの文字色
-  foreground = "#c7c7c7",
-  -- ターミナルの背景色
-  background = "#000000",
-
-  -- カーソル
-  cursor_bg = "#4aa5f8",
-  cursor_border = "#4aa5f8",
-
-  tab_bar = {
-    background = "#000000",
-    -- タブの境界線を削除
-    inactive_tab_edge = "none",
-    active_tab = {
-      bg_color = "rgba(0,0,0,0.85)",
-      fg_color = "#c7c7c7",
-      intensity = "Bold",
-    },
-    inactive_tab = {
-      bg_color = "rgba(0,0,0,0.85)",
-      fg_color = "#7b7b7b",
-      intensity = "Normal",
-    },
-  },
-
-  ansi = {
-    "#000000", -- black
-    "#eb6049", -- red
-    "#7dd981", -- green
-    "#f6cd45", -- yellow
-    "#4aa5f8", -- blue
-    "#eb576a", -- magenta
-    "#84cff6", -- cyan
-    "#eaeaea", -- white
-  },
-  brights = {
-    "#7b7b7b", -- gray
-    "#eb6049", -- red
-    "#7dd981", -- green
-    "#f6cd45", -- yellow
-    "#4aa5f8", -- blue
-    "#eb576a", -- magenta
-    "#84cff6", -- cyan
-    "#eaeaea", -- white
   },
 }
 
