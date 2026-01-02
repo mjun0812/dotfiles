@@ -150,17 +150,44 @@ COMMIT_SHA=$(gh pr view $PR_NUMBER --json commits --jq '.commits[-1].oid')
 ### Step 3: Build and post the review
 
 ```bash
-gh api repos/$OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews \
-  -f body="# Review by Claude
+# Create temporary files for review body and comments
+REVIEW_BODY_FILE=$(mktemp)
+COMMENTS_FILE=$(mktemp)
+REQUEST_FILE=$(mktemp)
+
+# Write review body to file
+cat > "$REVIEW_BODY_FILE" << 'REVIEW_EOF'
+# Review by Claude
 
 ## 概要
 ...
 
 ## 判定
-REQUEST_CHANGES" \
-  -f commit_id="$COMMIT_SHA" \
-  -f event="REQUEST_CHANGES" \
-  --raw-field 'comments=[{"path":"src/auth.ts","line":42,"body":"🔴 **要修正**: null チェックが必要です"}]'
+REQUEST_CHANGES
+REVIEW_EOF
+
+# Write comments array to file (JSON array)
+cat > "$COMMENTS_FILE" << 'COMMENTS_EOF'
+[
+  {"path": "src/auth.ts", "line": 42, "body": "🔴 **要修正**: null チェックが必要です"},
+  {"path": "src/utils.ts", "line": 15, "body": "💡 **提案**: 変数名をより明確にしてください"}
+]
+COMMENTS_EOF
+
+# Build complete request JSON using jq
+jq -n \
+  --arg body "$(cat "$REVIEW_BODY_FILE")" \
+  --arg commit_id "$COMMIT_SHA" \
+  --arg event "REQUEST_CHANGES" \
+  --slurpfile comments "$COMMENTS_FILE" \
+  '{body: $body, commit_id: $commit_id, event: $event, comments: $comments[0]}' \
+  > "$REQUEST_FILE"
+
+# Post the review
+gh api repos/$OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews --input "$REQUEST_FILE"
+
+# Cleanup temporary files
+rm -f "$REVIEW_BODY_FILE" "$COMMENTS_FILE" "$REQUEST_FILE"
 ```
 
 ### Comment prefixes by section

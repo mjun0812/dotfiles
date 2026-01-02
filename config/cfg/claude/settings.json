@@ -29,5 +29,6 @@
     "type": "command",
     "command": "~/.dotfiles/config/cfg/claude/statusline.sh",
     "padding": 0
-  }
+  },
+  "model": "opus"
 }
