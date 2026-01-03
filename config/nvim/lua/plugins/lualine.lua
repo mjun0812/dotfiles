@@ -4,6 +4,9 @@ return {
     config = function()
         local lualine = require('lualine')
         local config = {
+            options = {
+                globalstatus = true, -- ステータスラインをグローバルに表示
+            },
             sections = {
                 lualine_a = {'mode'},
                 lualine_b = {'branch', 'diff', 'diagnostics'},

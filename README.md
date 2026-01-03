@@ -134,6 +134,13 @@ Leader key: `<Space>`, Local leader: `\`
 | `<Esc>`     | Terminal | Exit terminal mode to normal mode      |
 | `:T [args]` | Command  | Open terminal at bottom with height 20 |
 
+### Terminal (ToggleTerm)
+
+| Key     | Mode            | Description                |
+| ------- | --------------- | -------------------------- |
+| `<C-`>` | Normal/Terminal | Toggle horizontal terminal |
+| `<M-`>` | Normal/Terminal | Toggle floating terminal   |
+
 ### File Explorer (Fern)
 
 | Key     | Mode        | Description                 |
