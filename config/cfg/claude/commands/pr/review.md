@@ -65,11 +65,15 @@ description: Review a pull request as an independent reviewer and provide struct
    - Display the review report in the detected language
    - If posted, show the URL of the PR
 
-## Review Report Templates
+## Reference
 
-### English Template
+### Review Report Templates
+
+#### English Template
 
 ```markdown
+# <img src="https://github.com/claude.png?size=32" alt="Claude Icon" width="32" height="32" style="vertical-align:middle; margin-right:8px;" /> Claude Review Pull Request
+
 ## Summary
 
 <!-- 1-2 sentence summary of what this PR does -->
@@ -90,12 +94,16 @@ description: Review a pull request as an independent reviewer and provide struct
 
 <!-- APPROVE / REQUEST_CHANGES / COMMENT -->
 
+---
+
 Reviewed by Claude
 ```
 
-### Japanese Template (日本語)
+#### Japanese Template (日本語)
 
 ```markdown
+# <img src="https://github.com/claude.png?size=32" alt="Claude Icon" width="32" height="32" style="vertical-align:middle; margin-right:8px;" /> Claude Review Pull Request
+
 ## 概要
 
 <!-- このPRの変更内容を1-2文で要約 -->
@@ -116,86 +124,50 @@ Reviewed by Claude
 
 <!-- APPROVE / REQUEST_CHANGES / COMMENT -->
 
+---
+
 Reviewed by Claude
 ```
 
-## Posting Review with Inline Comments
+### Posting Review with Inline Comments
 
 When `--post` flag is provided:
 
-### Step 1: Parse inline comments from report
+#### Step 1: Parse inline comments from report
 
 Extract items from "Must Fix" / "要修正" and "Should Fix" / "提案" sections.
 
 Pattern: `` `filepath:line` - comment ``
 
-Example:
+#### Step 2: Post review via GitHub API
 
+**Endpoint**: `POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews`
+
+**Request body**:
+
+```json
+{
+  "body": "Review summary...",
+  "commit_id": "<latest commit SHA>",
+  "event": "REQUEST_CHANGES",
+  "comments": [
+    {
+      "path": "src/auth.ts",
+      "line": 42,
+      "body": "🔴 **Must Fix**: Null check is required\n\n---\nCommented by Claude"
+    }
+  ]
+}
 ```
-- [ ] `src/auth.ts:42` - null チェックが必要です
-```
 
-→ `{ "path": "src/auth.ts", "line": 42, "body": "🔴 **要修正**: null チェックが必要です" }`
-
-### Step 2: Prepare variables
-
-```bash
-REPO=$(gh repo view --json nameWithOwner --jq '.nameWithOwner')
-OWNER=$(echo $REPO | cut -d'/' -f1)
-REPO_NAME=$(echo $REPO | cut -d'/' -f2)
-PR_NUMBER=<number>
-COMMIT_SHA=$(gh pr view $PR_NUMBER --json commits --jq '.commits[-1].oid')
-```
-
-### Step 3: Build and post the review
-
-```bash
-# Create temporary files for review body and comments
-REVIEW_BODY_FILE=$(mktemp)
-COMMENTS_FILE=$(mktemp)
-REQUEST_FILE=$(mktemp)
-
-# Write review body to file
-cat > "$REVIEW_BODY_FILE" << 'REVIEW_EOF'
-# Review by Claude
-
-## 概要
-...
-
-## 判定
-REQUEST_CHANGES
-REVIEW_EOF
-
-# Write comments array to file (JSON array)
-cat > "$COMMENTS_FILE" << 'COMMENTS_EOF'
-[
-  {"path": "src/auth.ts", "line": 42, "body": "🔴 **要修正**: null チェックが必要です"},
-  {"path": "src/utils.ts", "line": 15, "body": "💡 **提案**: 変数名をより明確にしてください"}
-]
-COMMENTS_EOF
-
-# Build complete request JSON using jq
-jq -n \
-  --arg body "$(cat "$REVIEW_BODY_FILE")" \
-  --arg commit_id "$COMMIT_SHA" \
-  --arg event "REQUEST_CHANGES" \
-  --slurpfile comments "$COMMENTS_FILE" \
-  '{body: $body, commit_id: $commit_id, event: $event, comments: $comments[0]}' \
-  > "$REQUEST_FILE"
-
-# Post the review
-gh api repos/$OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews --input "$REQUEST_FILE"
-
-# Cleanup temporary files
-rm -f "$REVIEW_BODY_FILE" "$COMMENTS_FILE" "$REQUEST_FILE"
-```
+Use `gh api` to post the review.
 
 ### Comment prefixes by section
 
-| Section    | English    | Japanese | Emoji Prefix   |
-| ---------- | ---------- | -------- | -------------- |
-| Must Fix   | Must Fix   | 要修正   | 🔴 **要修正**: |
-| Should Fix | Suggestion | 提案     | 💡 **提案**:   |
+| Section    | English Prefix     | Japanese Prefix |
+| ---------- | ------------------ | --------------- |
+| Must Fix   | 🔴 **Must Fix**:   | 🔴 **要修正**:  |
+| Should Fix | 💡 **Suggestion**: | 💡 **提案**:    |
 
 ### Event types
 
@@ -205,7 +177,7 @@ rm -f "$REVIEW_BODY_FILE" "$COMMENTS_FILE" "$REQUEST_FILE"
 | REQUEST_CHANGES | `REQUEST_CHANGES` |
 | COMMENT         | `COMMENT`         |
 
-## Notes
+### Notes
 
 - Line numbers must correspond to the NEW file (right side of diff)
 - If a comment cannot be posted as inline (e.g., line not in diff), it will be included in the body
