@@ -3,6 +3,7 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 config.automatically_reload_config = true
 config.front_end = "OpenGL"
+config.audible_bell = "Disabled"
 
 -- Font
 config.font = wezterm.font_with_fallback({
