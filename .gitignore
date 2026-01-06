@@ -16,3 +16,5 @@
 !script/**
 !templates
 !templates/**
+
+.DS_Store

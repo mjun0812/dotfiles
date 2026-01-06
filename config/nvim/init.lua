@@ -18,6 +18,8 @@ opt.cursorline = true
 opt.termguicolors = true
 -- 行番号を表示
 opt.number = true
+-- サインカラムを常に表示（LSPエラー等で画面が動かないように）
+opt.signcolumn = 'yes'
 
 -- 行末でのカーソル移動
 opt.whichwrap:append('<,>,[,],h,l,b,s')
