@@ -1,4 +1,5 @@
 require('config.lazy')
+require('config.lsp')
 
 vim.cmd[[colorscheme tokyonight-night]]
 
@@ -88,3 +89,6 @@ vim.api.nvim_create_autocmd('TermOpen', {
   pattern = '*',
   command = 'startinsert',
 })
+
+opt.clipboard = "unnamedplus"
+

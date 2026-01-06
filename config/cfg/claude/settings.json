@@ -1,34 +1,58 @@
 {
-  "includeCoAuthoredBy": false,
-  "permissions": {
-    "allow": [
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(git branch:*)",
-      "Bash(git log:*)",
-      "Bash(ls:*)",
-      "Bash(eza:*)",
-      "Bash(grep:*)",
-      "Bash(rgrep:*)",
-      "Bash(fd:*)",
-      "Bash(cat:*)",
-      "Bash(bat:*)"
-    ],
-    "deny": [
-      "Read(.env)",
-      "Read(~/.aws/**)"
-    ],
-    "ask": [
-      "Bash(rm:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(gh pr create:*)"
-    ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.dotfiles/config/cfg/claude/statusline.sh",
-    "padding": 0
-  },
-  "model": "opus"
+    "permissions": {
+        "allow": [
+            "Bash(git status:*)",
+            "Bash(git diff:*)",
+            "Bash(git branch:*)",
+            "Bash(git log:*)",
+            "Bash(ls:*)",
+            "Bash(eza:*)",
+            "Bash(grep:*)",
+            "Bash(rgrep:*)",
+            "Bash(fd:*)",
+            "Bash(cat:*)",
+            "Bash(bat:*)"
+        ],
+        "deny": [
+            "Read(.env)",
+            "Read(~/.aws/**)"
+        ],
+        "ask": [
+            "Bash(rm:*)",
+            "Bash(git commit:*)",
+            "Bash(git push:*)",
+            "Bash(gh pr create:*)"
+        ]
+    },
+    "statusLine": {
+        "type": "command",
+        "command": "~/.dotfiles/config/cfg/claude/statusline.sh",
+        "padding": 0
+    },
+    "hooks": {
+        "Stop": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "~/.dotfiles/script/notify.sh 'Claude Code' 'タスクが完了しました ✅'"
+                    }
+                ]
+            }
+        ],
+        "Notification": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "~/.dotfiles/script/notify.sh 'Claude Code' '入力を待っています 📝'"
+                    }
+                ]
+            }
+        ]
+    },
+    "includeCoAuthoredBy": false,
+    "model": "opus"
 }

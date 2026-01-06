@@ -2,7 +2,6 @@ local wezterm = require 'wezterm'
 
 local config = wezterm.config_builder()
 config.automatically_reload_config = true
-config.front_end = "OpenGL"
 config.audible_bell = "Disabled"
 
 -- Font
@@ -49,7 +48,7 @@ config.window_padding = {
 }
 
 -- タブの最大幅
-config.tab_max_width = 8
+config.tab_max_width = 10
 -- タブ上のタイトルを消す
 if wezterm.target_triple == 'aarch64-apple-darwin' then
   config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
@@ -68,7 +67,7 @@ config.show_tab_index_in_tab_bar = false
 -- rendered in a native style with proportional fonts
 config.use_fancy_tab_bar = true
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-  local title = wezterm.truncate_right(tab.active_pane.title, max_width - 1)
+  local title = wezterm.truncate_right(tab.active_pane.title, max_width)
   local space_after = string.rep(' ', math.max(0, max_width - #title - 1))
   return {
     { Text = " " .. title .. space_after },
@@ -120,6 +119,28 @@ config.colors = {
     "#69D1FA", -- cyan
     "#EAEAEA", -- white
   },
+}
+
+-- mouse bindings
+config.mouse_bindings = {
+  -- Ctrl-click will open the link under the mouse cursor
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'CTRL',
+    action = wezterm.action.OpenLinkAtMouseCursor,
+  },
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'CMD',
+    action = wezterm.action.OpenLinkAtMouseCursor,
+  },
+}
+
+config.keys = {{
+    key = 'Enter',
+    mods = 'SHIFT',
+    action = wezterm.action.SendString('\n'),
+  {key="Enter", mods="SHIFT", action=wezterm.action{SendString="\x1b\r"}},}
 }
 
 -- Hyperlink 抽出と処理
@@ -174,19 +195,5 @@ table.insert(hyperlink_rules, {
 })
 
 config.hyperlink_rules = hyperlink_rules
-
-config.mouse_bindings = {
-  -- Ctrl-click will open the link under the mouse cursor
-  {
-    event = { Up = { streak = 1, button = 'Left' } },
-    mods = 'CTRL',
-    action = wezterm.action.OpenLinkAtMouseCursor,
-  },
-  {
-    event = { Up = { streak = 1, button = 'Left' } },
-    mods = 'CMD',
-    action = wezterm.action.OpenLinkAtMouseCursor,
-  },
-}
 
 return config
