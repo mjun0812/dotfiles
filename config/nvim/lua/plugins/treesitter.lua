@@ -17,12 +17,18 @@ return {
         TelescopePrompt = true,
         TelescopeResults = true,
         lazy = true,
+        toggleterm = true,
       }
       local ignore_bt = {
         terminal = true,
+        prompt = true,
+        nofile = true,
+        acwrite = true,
+        quickfix = true,
       }
       local ignore_lang = {
         -- comment = true,
+        
       }
 
       local function should_ignore(buf, ft, lang)
@@ -85,7 +91,7 @@ return {
           return
         end
 
-        local ok = pcall(ts.install, { lang }, { summary = true })
+        local ok = pcall(ts.install, { lang }, { summary = false })
         if ok then
           installing[lang] = true
           vim.notify(("Installing TS parser: %s"):format(lang), vim.log.levels.INFO)

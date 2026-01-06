@@ -1,11 +1,3 @@
-
-vim.lsp.enable({
-  -- nvim-lspconfig で"lua_ls"という名前で設定したプリセットが読まれる
-  -- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/lua_ls.lua
-  "ruff",
-  'ty',
-})
-
 -- 言語サーバーがアタッチされた時に呼ばれる
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("my.lsp", {}),
