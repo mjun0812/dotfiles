@@ -82,12 +82,13 @@ uv pip install -U \
     pip \
     setuptools \
     wheel \
-    pynvim \
-    ruff \
-    'python-lsp-server[all]' \
     glances \
     nvitop \
-    pymupdf
+    pymupdf \
+    pynvim \
+    'python-lsp-server[all]' \
+    ruff \
+    ty
 cd $DOTPATH
 
 ################ [Claude Code] ################

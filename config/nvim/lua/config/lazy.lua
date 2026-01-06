@@ -29,9 +29,10 @@ require("lazy").setup({
     { import = "plugins.telescope" },
     { import = "plugins.fern" },
     { import = "plugins.lualine" },
-    { import = "plugins.coc" },
+    -- { import = "plugins.coc" },
     { import = "plugins.copilot" },
     { import = "plugins.toggleterm" },
+    { import = "plugins.nvim-lspconfig" },
   },
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.
