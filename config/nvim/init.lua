@@ -1,16 +1,16 @@
 require('config.lazy')
 require('config.lsp')
 
-vim.cmd[[colorscheme tokyonight-night]]
+vim.cmd [[colorscheme tokyonight-night]]
 
 local opt = vim.opt
 
 opt.encoding = 'utf-8'
-opt.fileencodings = {'utf-8', 'cp932'}
+opt.fileencodings = { 'utf-8', 'cp932' }
 
 -- menuoneで、対象が1件しかなくても常に補完ウィンドウを表示
 -- noinsertで補完ウィンドウを表示時に挿入しない
-opt.completeopt = {'menuone', 'noinsert'}
+opt.completeopt = { 'menuone', 'noinsert' }
 
 -- カーソル行をハイライト
 opt.cursorline = true
@@ -24,12 +24,12 @@ opt.signcolumn = 'yes'
 -- 行末でのカーソル移動
 opt.whichwrap:append('<,>,[,],h,l,b,s')
 -- バックスペースで削除できる範囲を設定
-opt.backspace = {'start', 'eol', 'indent'}
+opt.backspace = { 'start', 'eol', 'indent' }
 
 -- マウスを有効化
 opt.mouse = 'a'
 -- OSのクリップボードとの連携
-opt.clipboard:append({unnamedeplus = true})
+opt.clipboard = "unnamedplus"
 
 -- ステータスラインを常に表示 (globalstatus)
 -- Splitした時にステータスバーはSplitしないようにする
@@ -67,10 +67,10 @@ opt.wrapscan = true
 vim.api.nvim_create_autocmd('BufReadPost', {
     pattern = '*',
     callback = function()
-      local line = vim.fn.line("'\"")
-      if line > 0 and line <= vim.fn.line('$') then
-        vim.cmd("normal! g'\"")
-      end
+        local line = vim.fn.line("'\"")
+        if line > 0 and line <= vim.fn.line('$') then
+            vim.cmd("normal! g'\"")
+        end
     end,
 })
 
@@ -80,17 +80,21 @@ vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true, silent = true })
 
 -- :T コマンドで水平分割＋下部に高さ20行のターミナルを開く
 vim.api.nvim_create_user_command('T', function(opts)
-  vim.cmd('split')
-  vim.cmd('wincmd j')
-  vim.cmd('resize 20')
-  vim.cmd('terminal ' .. opts.args)
+    vim.cmd('split')
+    vim.cmd('wincmd j')
+    vim.cmd('resize 20')
+    vim.cmd('terminal ' .. opts.args)
 end, { nargs = '*' })
 
 -- ターミナルが開いたら自動でインサートモードに入る
 vim.api.nvim_create_autocmd('TermOpen', {
-  pattern = '*',
-  command = 'startinsert',
+    pattern = '*',
+    command = 'startinsert',
 })
 
-opt.clipboard = "unnamedplus"
-
+-- ########## Keys ########
+-- Resize window using <ctrl> arrow keys
+vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })
+vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease Window Height" })
+vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
+vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase Window Width" })
