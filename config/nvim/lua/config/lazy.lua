@@ -34,7 +34,6 @@ require("lazy").setup({
         { import = "plugins.snacks" },
         { import = "plugins.telescope" },
         { import = "plugins.theme" },
-        { import = "plugins.toggleterm" },
         { import = "plugins.treesitter" },
         { import = "plugins.trouble" },
         { import = "plugins.which-key" },

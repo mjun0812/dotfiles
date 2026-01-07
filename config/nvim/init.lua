@@ -16,6 +16,8 @@ opt.completeopt = { 'menuone', 'noinsert' }
 opt.cursorline = true
 -- True Colorを有効化
 opt.termguicolors = true
+-- カーソルの点滅を無効化
+opt.guicursor = "a:blinkon0"
 -- 行番号を表示
 opt.number = true
 -- サインカラムを常に表示（LSPエラー等で画面が動かないように）
@@ -40,8 +42,12 @@ opt.showmode = false
 -- ######## インデント ########
 -- タブをスペースに展開
 opt.expandtab = true
--- スマートインデント
+-- タブ幅
+opt.tabstop = 4
+-- スマートインデント(C言語系の自動インデント)
 opt.smartindent = true
+-- 今の行のインデントを引き継ぐ
+opt.autoindent = true
 -- 自動インデントの幅
 opt.shiftwidth = 4
 -- タブキーで挿入されるスペースの数
