@@ -20,6 +20,7 @@ neovim = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
 "github:d-kuro/gwq" = "latest"
 tree-sitter = "latest"
+starship = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
