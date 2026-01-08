@@ -48,7 +48,7 @@ alias pbp='pbpaste'
 alias df='df -kh'
 alias du='du -kh'
 
-alias claude="claude --mcp-config=${HOME}/.dotfiles/config/cfg/claude/mcp.json"
+alias claude="claude --mcp-config=${HOME}/.claude/mcp.json"
 
 # Claude Code
 alias cc-commit='command claude --model=haiku /git:commit'
