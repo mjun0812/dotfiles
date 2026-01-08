@@ -41,6 +41,23 @@ pnpm install -g \
     @google/gemini-cli@latest \
     @openai/codex@latest
 
+################ [Python] ################
+$DOTPATH/script/install_uv.sh
+cd $HOME
+uv venv --allow-existing
+uv pip install -U \
+    pip \
+    setuptools \
+    wheel \
+    glances \
+    nvitop \
+    pymupdf \
+    pynvim \
+    'python-lsp-server[all]' \
+    ruff \
+    ty
+cd $DOTPATH
+
 ################ [eza] ################
 rm -rf "$HOME/.config/eza"
 mkdir -p "$HOME/.config/eza"
@@ -69,27 +86,23 @@ cd ${HOME}/.config/coc/extensions
 npm install coc-snippets --ignore-scripts --no-bin-links --no-package-lock --install-strategy=shallow
 cd $DOTPATH
 
+################ [Cursor] ################
+if [ "$(uname -s)" = "Darwin" ]; then
+    CURSOR_USER_DIR="$HOME/Library/Application Support/Cursor/User"
+else
+    CURSOR_USER_DIR="$HOME/.config/Cursor/User"
+fi
+cp -aLf "$CURSOR_USER_DIR/settings.json" "$DOTPATH/.backup/cursor_settings.json" 2>/dev/null || true
+cp -aLf "$CURSOR_USER_DIR/keybindings.json" "$DOTPATH/.backup/cursor_keybindings.json" 2>/dev/null || true
+mkdir -p "$CURSOR_USER_DIR"
+rm -f "$CURSOR_USER_DIR/settings.json" "$CURSOR_USER_DIR/keybindings.json"
+ln -snfv "$DOTPATH/config/cursor/settings.json" "$CURSOR_USER_DIR/settings.json"
+ln -snfv "$DOTPATH/config/cursor/keybindings.json" "$CURSOR_USER_DIR/keybindings.json"
+
 ################ [Ghostty] ################
 cp -aLf "$HOME/.config/ghostty" "$DOTPATH/.backup/ghostty" && rm -rf "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/ghostty"
 ln -snfv "$DOTPATH/config/cfg/ghostty_config" "$HOME/.config/ghostty/config"
-
-################ [Python] ################
-$DOTPATH/script/install_uv.sh
-cd $HOME
-uv venv --allow-existing
-uv pip install -U \
-    pip \
-    setuptools \
-    wheel \
-    glances \
-    nvitop \
-    pymupdf \
-    pynvim \
-    'python-lsp-server[all]' \
-    ruff \
-    ty
-cd $DOTPATH
 
 ################ [Claude Code] ################
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
