@@ -85,11 +85,13 @@ cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/
 cp -aLf "$HOME/.claude/settings.json" "$DOTPATH/.backup/claude_settings.json" && rm -rf "$HOME/.claude/settings.json"
 cp -aLf "$HOME/.claude/commands" "$DOTPATH/.backup/claude_commands" && rm -rf "$HOME/.claude/commands"
 cp -aLf "$HOME/.claude/skills" "$DOTPATH/.backup/claude_skills" && rm -rf "$HOME/.claude/skills"
+cp -aLf "$HOME/.claude/mcp.json" "$DOTPATH/.backup/claude_mcp.json" && rm -rf "$HOME/.claude/mcp.json"
 mkdir -p "$HOME/.claude"
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.claude/CLAUDE.md"
 ln -snfv "$DOTPATH/config/ai-agents/claude/settings.json" "$HOME/.claude/settings.json"
 ln -snfv "$DOTPATH/config/ai-agents/claude/commands" "$HOME/.claude/commands"
 ln -snfv "$DOTPATH/config/ai-agents/claude/skills" "$HOME/.claude/skills"
+ln -snfv "$DOTPATH/config/ai-agents/claude/mcp.json" "$HOME/.claude/mcp.json"
 
 ################ [Codex] ################
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
