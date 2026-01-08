@@ -1,10 +1,11 @@
 #!/usr/bin/env zsh
 
 DOTPATH=$(cd $(dirname $0) && pwd)
+CONFIG_DIR="$HOME/.config"
 cd "$DOTPATH"
 
 mkdir -p ${DOTPATH}/.backup
-mkdir -p "$HOME/.config"
+mkdir -p "$CONFIG_DIR"
 mkdir -p "$HOME/.cargo"
 mkdir -p "$HOME/.local/bin"
 
@@ -18,16 +19,20 @@ for f in "$DOTPATH"/config/dot/*; do
     ln -snfv "$f" "$HOME/.$(basename $f)"
 done
 
+################ [config] ################
+for d in "$DOTPATH"/config/config/*; do
+    app=$(basename "$d")
+    cp -aLf "$CONFIG_DIR/$app" "$DOTPATH/.backup/$app" 2>/dev/null || true
+    rm -rf "$CONFIG_DIR/$app"
+    ln -snfv "$d" "$CONFIG_DIR/$app"
+done
+
 ################ [Zsh Completions] ################
 cp -aLf "$HOME/.zsh/completions" "$DOTPATH/.backup/zsh_completions" && rm -rf "$HOME/.zsh/completions"
 mkdir -p "$HOME/.zsh"/completions
 ln -snfv "$DOTPATH/config/completions" "$HOME/.zsh/completions"
 
 ################ [mise] ################
-cp -aLf "$HOME/.config/mise/config.toml" "$DOTPATH/.backup/mise.toml" || rm -rf "$HOME/.config/mise/config.toml"
-rm -rf "$HOME/.config/mise"
-mkdir -p "$HOME/.config/mise"
-ln -snfv "$DOTPATH/config/cfg/mise.toml" "$HOME/.config/mise/config.toml"
 $DOTPATH/script/install_mise.sh
 mise install
 mise reshim
@@ -58,39 +63,14 @@ uv pip install -U \
     ty
 cd $DOTPATH
 
-################ [eza] ################
-rm -rf "$HOME/.config/eza"
-mkdir -p "$HOME/.config/eza"
-ln -snfv "$DOTPATH/config/cfg/eza_theme.yml" "$HOME/.config/eza/theme.yml"
-
-################ [gwq] ################
-cp -aLf "$HOME/.config/gwq" "$DOTPATH/.backup/gwq" && rm -rf "$HOME/.config/gwq"
-mkdir -p "$HOME/.config/gwq"
-ln -snfv "$DOTPATH/config/cfg/gwq.toml" "$HOME/.config/gwq/config.toml"
-
 ################ [Sheldon] ################
-rm -rf "$HOME/.config/sheldon"
-mkdir -p "$HOME/.config/sheldon"
-ln -snfv "$DOTPATH/config/cfg/sheldon.toml" "$HOME/.config/sheldon/plugins.toml"
 $DOTPATH/script/install_sheldon.sh
-
-################ [Neovim] ################
-cp -aLf "$HOME/.config/nvim" "$DOTPATH/.backup/nvim" && rm -rf "$HOME/.config/nvim"
-ln -snfv $DOTPATH/config/nvim $HOME/.config/nvim
-
-# coc.vim
-mkdir -p ${HOME}/.config/coc/extensions
-cp -aLf "$HOME/.config/coc/extensions/package.json" "$DOTPATH/.backup/coc_package.json" && rm -rf "$HOME/.config/coc/extensions/package.json"
-ln -snfv $DOTPATH/config/nvim/package_coc.json $HOME/.config/coc/extensions/package.json
-cd ${HOME}/.config/coc/extensions
-npm install coc-snippets --ignore-scripts --no-bin-links --no-package-lock --install-strategy=shallow
-cd $DOTPATH
 
 ################ [Cursor] ################
 if [ "$(uname -s)" = "Darwin" ]; then
     CURSOR_USER_DIR="$HOME/Library/Application Support/Cursor/User"
 else
-    CURSOR_USER_DIR="$HOME/.config/Cursor/User"
+    CURSOR_USER_DIR="$CONFIG_DIR/Cursor/User"
 fi
 cp -aLf "$CURSOR_USER_DIR/settings.json" "$DOTPATH/.backup/cursor_settings.json" 2>/dev/null || true
 cp -aLf "$CURSOR_USER_DIR/keybindings.json" "$DOTPATH/.backup/cursor_keybindings.json" 2>/dev/null || true
@@ -98,11 +78,6 @@ mkdir -p "$CURSOR_USER_DIR"
 rm -f "$CURSOR_USER_DIR/settings.json" "$CURSOR_USER_DIR/keybindings.json"
 ln -snfv "$DOTPATH/config/cursor/settings.json" "$CURSOR_USER_DIR/settings.json"
 ln -snfv "$DOTPATH/config/cursor/keybindings.json" "$CURSOR_USER_DIR/keybindings.json"
-
-################ [Ghostty] ################
-cp -aLf "$HOME/.config/ghostty" "$DOTPATH/.backup/ghostty" && rm -rf "$HOME/.config/ghostty"
-mkdir -p "$HOME/.config/ghostty"
-ln -snfv "$DOTPATH/config/cfg/ghostty_config" "$HOME/.config/ghostty/config"
 
 ################ [Claude Code] ################
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
@@ -118,9 +93,11 @@ ln -snfv "$DOTPATH/config/cfg/claude/skills" "$HOME/.claude/skills"
 ################ [Codex] ################
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
 rm -rf "$DOTPATH/.backup/codex_prompts" && cp -aLf "$HOME/.codex/prompts" "$DOTPATH/.backup/codex_prompts" && rm -rf "$HOME/.codex/prompts"
+cp -aLf "$HOME/.codex/config.toml" "$DOTPATH/.backup/codex_config.toml" && rm -rf "$HOME/.codex/config.toml"
 mkdir -p "$HOME/.codex"
 ln -snfv "$DOTPATH/config/cfg/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 ln -snfv "$DOTPATH/config/cfg/codex/prompts" "$HOME/.codex/prompts"
+ln -snfv "$DOTPATH/config/cfg/codex/config.toml" "$HOME/.codex/config.toml"
 
 ################ [Gemini] ################
 cp -aLf "$HOME/.gemini/GEMINI.md" "$DOTPATH/.backup/GEMINI.md" && rm -rf "$HOME/.gemini/GEMINI.md"
