@@ -21,6 +21,7 @@ neovim = "latest"
 "github:d-kuro/gwq" = "latest"
 tree-sitter = "latest"
 starship = "latest"
+git-lfs = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
