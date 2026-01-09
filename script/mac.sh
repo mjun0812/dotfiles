@@ -4,11 +4,16 @@ brew install \
     coreutils \
 
 brew install --cask \
-    karabiner-elements \
-    xquartz \
-    raycast \
+    nikitabobko/tap/aerospace \
     alt-tab \
+    balenaetcher \
     bettertouchtool \
     clipy \
+    font-roboto-mono-nerd-font \
+    ghostty \
+    inkscape \
     iterm2 \
-    ghostty
+    karabiner-elements \
+    raycast \
+    wezterm@nightly \
+    xquartz
