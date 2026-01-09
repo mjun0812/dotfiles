@@ -1,14 +1,70 @@
 # dotfiles
 
+My Linux/macOS dotfiles.
+
 ## Install
 
-require git, zsh
+require git, zsh, curl
 
 ```bash
 git clone --recursive git@github.com:mjun0812/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
 ```
+
+## Tools
+
+| Tool   | Description     |
+| ------ | --------------- |
+| zsh    | Shell           |
+| mise   | Package manager |
+| Neovim | editor          |
+| Cursor | IDE             |
+| VSCode | IDE             |
+
+### CLI
+
+| Tool    | Description                           |
+| ------- | ------------------------------------- |
+| bat     | Modern `cat` with syntax highlighting |
+| eza     | Modern `ls`                           |
+| fd      | Modern `find`                         |
+| gh      | GitHub CLI                            |
+| ghq     | Repository management                 |
+| git-lfs | Git Large File Storage                |
+| gwq     | Git worktree management               |
+| jq      | JSON processor                        |
+| lazygit | Git TUI                               |
+| ripgrep | Modern `grep`                         |
+
+### AI Agents
+
+| Agent       | Description       |
+| ----------- | ----------------- |
+| Claude Code | AI agent for code |
+| Gemini-cli  | AI agent for code |
+| Codex       | AI agent for code |
+| Copilot-cli | AI agent for code |
+
+### macOS Only
+
+Apps installed via Homebrew Cask.
+
+| App                | Description                   |
+| ------------------ | ----------------------------- |
+| AeroSpace          | Tiling window manager         |
+| Alt-Tab            | Windows-style window switcher |
+| balenaEtcher       | USB flash tool                |
+| BetterTouchTool    | Input device customization    |
+| Clipy              | Clipboard manager             |
+| Ghostty            | Terminal emulator             |
+| Hammerspoon        | macOS automation              |
+| Inkscape           | Vector graphics editor        |
+| iTerm2             | Terminal emulator             |
+| Karabiner-Elements | Keyboard customization        |
+| Raycast            | Launcher                      |
+| WezTerm            | Terminal emulator             |
+| XQuartz            | X11 for macOS                 |
 
 ## Alias
 
@@ -59,21 +115,16 @@ cd_gwq
 
 ```bash
 # Delete local branches that are deleted and merged
-# すでにremoteでマージされて，削除されたブランチをローカルでも削除する
 git prune-branch
 
 # commit with AI generated commit message
-# AIが生成したコミットメッセージでコミットする
 git aicommit
 # commit with AI generated commit message in Japanese
-# AIが生成した日本語のコミットメッセージでコミットする
 git aicommit-ja
 
 # generate pull request with AI generated title and description
-# AIが生成したタイトルと説明でプルリクエストを作成する
 git aipr
 # generate pull request with AI generated title and description in Japanese
-# AIが生成した日本語のタイトルと説明でプルリクエストを作成する
 git aipr-ja
 ```
 
@@ -126,3 +177,26 @@ For terminal color schemes.
 ## Neovim
 
 See [doc/nvim.md](doc/nvim.md) for Neovim configuration and keyboard shortcuts.
+
+## AeroSpace
+
+See [doc/aerospace.md](doc/aerospace.md) for AeroSpace window manager configuration and keyboard shortcuts.
+
+## Hammerspoon
+
+Hammerspoon is used for window management features that AeroSpace cannot handle natively.
+
+Currently configured features:
+
+- Center window on screen via URL scheme (`hammerspoon://center`)
+
+## Raycast Scripts
+
+Custom Raycast scripts are available in `script/raycast/`:
+
+| Script                      | Description                              |
+| --------------------------- | ---------------------------------------- |
+| `toggle_aerospace.sh`       | Toggle AeroSpace ON/OFF                  |
+| `toggle_aerospace_float.sh` | Toggle floating layout and center window |
+| `new_chrome.sh`             | Open new Chrome window in current space  |
+| `new_safari.sh`             | Open new Safari window in current space  |
