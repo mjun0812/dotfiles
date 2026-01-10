@@ -26,7 +26,7 @@
     },
     "statusLine": {
         "type": "command",
-        "command": "~/.dotfiles/config/cfg/claude/statusline.sh",
+        "command": "~/.dotfiles/config/ai-agents/claude/statusline.sh",
         "padding": 0
     },
     "hooks": {
