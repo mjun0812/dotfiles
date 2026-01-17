@@ -1,5 +1,8 @@
 {
-  "includeCoAuthoredBy": false,
+  "attribution": {
+    "commit": "",
+    "pr": "🤖 Generated with [Claude Code](https://claude.com/claude-code)"
+  },
   "permissions": {
     "allow": [
       "Bash(git status:*)",
@@ -23,7 +26,8 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(gh pr create:*)"
-    ]
+    ],
+    "defaultMode": "plan"
   },
   "hooks": {
     "Stop": [
@@ -54,5 +58,9 @@
     "command": "~/.dotfiles/config/ai-agents/claude/statusline.sh",
     "padding": 0
   },
-  "language": "Japanese"
+  "language": "japanese",
+  "plansDirectory": "./docs/plans",
+  "enabledPlugins": {
+    "code-simplifier@claude-plugins-official": true
+  }
 }
