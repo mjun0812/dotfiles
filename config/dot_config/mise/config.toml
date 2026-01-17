@@ -6,22 +6,24 @@ rust = "latest"
 # package manager
 bun = "latest"
 pnpm = "latest"
-# tool
+# cli
 eza = "latest"
 gh = "latest"
 ghq = "latest"
 jq = "latest"
 lazygit = "latest"
-neovim = "latest"
 "aqua:aws/aws-cli" = "latest"
 "aqua:sharkdp/bat" = "latest"
 "aqua:sharkdp/fd" = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
 "github:d-kuro/gwq" = "latest"
+# tool
+neovim = "latest"
 tree-sitter = "latest"
 starship = "latest"
 git-lfs = "latest"
+# ai
 gemini-cli = "latest"
 codex = "latest"
 "npm:@anthropic-ai/claude-code" = "latest"
@@ -30,3 +32,4 @@ codex = "latest"
 idiomatic_version_file_enable_tools = []
 pipx.uvx = true
 npm.package_manager = "bun"
+

@@ -39,10 +39,11 @@ mise install
 mise reshim
 source "$HOME/.zshrc"
 # install node packages
-pnpm install -g \
+bun install -g \
     neovim \
     md-to-pdf@latest \
-    prettier@latest
+    prettier@latest \
+    oxfmt
 
 ################ [Python] ################
 $DOTPATH/script/install_uv.sh
