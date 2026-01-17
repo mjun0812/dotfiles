@@ -54,7 +54,7 @@
         "files.encoding": "utf8"
     },
     "[markdown]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one",
         "editor.quickSuggestions": {
             "comments": "off",
             "other": "off",
@@ -200,7 +200,9 @@
         "*.dvi",
         "*.synctex.gz",
         "*.run.xml",
-        "*.bcf"
+        "*.bcf",
+        "*.bbl",
+        "*.blg"
     ],
     "latex-workshop.latex.recipe.default": "lastUsed",
     "latex-workshop.latex.recipes": [

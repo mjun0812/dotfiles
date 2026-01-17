@@ -42,10 +42,7 @@ source "$HOME/.zshrc"
 pnpm install -g \
     neovim \
     md-to-pdf@latest \
-    prettier@latest \
-    @anthropic-ai/claude-code@latest \
-    @google/gemini-cli@latest \
-    @openai/codex@latest
+    prettier@latest
 
 ################ [Python] ################
 $DOTPATH/script/install_uv.sh

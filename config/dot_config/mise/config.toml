@@ -1,7 +1,7 @@
 [tools]
 # lang
 go = "latest"
-node = "latest"
+node = "lts"
 rust = "latest"
 # package manager
 bun = "latest"
@@ -22,7 +22,11 @@ neovim = "latest"
 tree-sitter = "latest"
 starship = "latest"
 git-lfs = "latest"
+gemini-cli = "latest"
+codex = "latest"
+"npm:@anthropic-ai/claude-code" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
 pipx.uvx = true
+npm.package_manager = "bun"

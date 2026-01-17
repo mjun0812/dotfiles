@@ -8,8 +8,11 @@
     }
   },
   "ui": {
-    "theme": "Atom One",
-    "hideTips": true
+    "theme": "GitHub",
+    "hideTips": true,
+    "showModelInfoInChat": true,
+    "showMemoryUsage": true,
+    "showStatusInTitle": true
   },
   "general": {
     "previewFeatures": true
