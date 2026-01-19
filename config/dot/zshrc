@@ -79,6 +79,8 @@ if command -v gwq >/dev/null 2>&1; then
   source <(gwq completion zsh)
 fi
 
+eval "$(zoxide init zsh --cmd cd)"
+
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
