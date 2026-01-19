@@ -27,6 +27,7 @@ git-lfs = "latest"
 gemini-cli = "latest"
 codex = "latest"
 "npm:@anthropic-ai/claude-code" = "latest"
+zoxide = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
