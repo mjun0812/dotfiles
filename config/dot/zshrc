@@ -30,7 +30,7 @@ if [ -e /usr/lib/wsl/lib ]; then
 fi
 
 # uv
-source "$HOME/.cargo/env"
+[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.venv/bin:$PATH"
 
@@ -79,7 +79,7 @@ if command -v gwq >/dev/null 2>&1; then
   source <(gwq completion zsh)
 fi
 
-eval "$(zoxide init zsh --cmd cd)"
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
 
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
