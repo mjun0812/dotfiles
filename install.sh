@@ -35,8 +35,6 @@ ln -snfv "$DOTPATH/config/completions" "$HOME/.zsh/completions"
 
 ################ [mise] ################
 $DOTPATH/script/install_mise.sh
-# Install Node.js first (required for npm packages in config.toml)
-mise install node
 mise install
 mise reshim
 source "$HOME/.zshrc"
