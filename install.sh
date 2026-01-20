@@ -35,10 +35,11 @@ ln -snfv "$DOTPATH/config/completions" "$HOME/.zsh/completions"
 
 ################ [mise] ################
 $DOTPATH/script/install_mise.sh
+source "$HOME/.zshrc"
 mise install
 mise reshim
-source "$HOME/.zshrc"
-# install node packages
+
+################ [Node] ################
 bun install -g \
     neovim \
     md-to-pdf@latest \
@@ -47,6 +48,7 @@ bun install -g \
 
 ################ [Python] ################
 $DOTPATH/script/install_uv.sh
+source "$HOME/.zshrc"
 cd $HOME
 uv venv --allow-existing
 uv pip install -U \
@@ -64,6 +66,7 @@ cd $DOTPATH
 
 ################ [Sheldon] ################
 $DOTPATH/script/install_sheldon.sh
+source "$HOME/.zshrc"
 
 ################ [Cursor] ################
 if [ "$(uname -s)" = "Darwin" ]; then
