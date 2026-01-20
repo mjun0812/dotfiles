@@ -98,7 +98,7 @@ jobs:
 
   test-ubuntu:
     name: Test on Ubuntu (Container)
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     timeout-minutes: 45
     container:
       image: ubuntu:latest
