@@ -32,7 +32,7 @@ sanitize_osc() {
 }
 
 emit_osc_notification() {
-  local title body seq
+  local title body seq output_target
   title="$(sanitize_osc "$TITLE")"
   body="$(sanitize_osc "$MESSAGE")"
   seq="$(printf '\e]777;notify;%s;%s\e\\' "$title" "$body")"
@@ -42,7 +42,16 @@ emit_osc_notification() {
     seq="$(printf '\033Ptmux;\033%s\033\\' "$seq")"
   fi
 
-  printf '%b' "$seq"
+  # Determine output target: use /dev/tty if stdout is not a TTY
+  if [[ -t 1 ]]; then
+    output_target="/dev/stdout"
+  elif [[ -e /dev/tty ]]; then
+    output_target="/dev/tty"
+  else
+    return 1  # No TTY available
+  fi
+
+  printf '%b' "$seq" > "$output_target"
 }
 
 detect_os() {
@@ -114,15 +123,20 @@ notify_native() {
   esac
 }
 
+has_tty_access() {
+  # Check if stdout is a TTY or /dev/tty is available
+  [[ -t 1 ]] || [[ -e /dev/tty ]]
+}
+
 main() {
-  # OSC mode: emit if stdout is a TTY
+  # OSC mode: emit if TTY is available
   if [[ "$FORCE_MODE" == "osc" ]]; then
-    [[ -t 1 ]] && emit_osc_notification
+    has_tty_access && emit_osc_notification
     return
   fi
 
-  # Auto mode: use OSC for SSH sessions with TTY
-  if [[ "$FORCE_MODE" == "auto" ]] && is_ssh && [[ -t 1 ]]; then
+  # Auto mode: use OSC for SSH sessions with TTY access
+  if [[ "$FORCE_MODE" == "auto" ]] && is_ssh && has_tty_access; then
     emit_osc_notification
     return
   fi
