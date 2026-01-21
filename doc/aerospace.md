@@ -8,11 +8,18 @@ This document describes the AeroSpace window manager configuration and keyboard 
 
 | Setting | Value |
 | ------- | ----- |
+| Config version | 2 |
 | Start at login | Yes |
 | Accordion padding | 30 |
 | Default layout | tiles |
 | Default orientation | auto |
 | Key preset | qwerty |
+| Normalization (flatten containers) | Yes |
+| Normalization (opposite orientation) | Yes |
+| Mouse follows focus on monitor change | Yes |
+| Auto-unhide hidden apps | No |
+| Persistent workspaces | 1-9 |
+| Gaps | All 0 |
 
 ## Workspaces
 
@@ -34,10 +41,10 @@ This document describes the AeroSpace window manager configuration and keyboard 
 
 | Key | Description |
 | --- | ----------- |
-| `Alt + ←` | Focus window to the left |
-| `Alt + ↓` | Focus window below |
-| `Alt + ↑` | Focus window above |
-| `Alt + →` | Focus window to the right |
+| `Alt + Ctrl + H` / `Alt + Ctrl + ←` | Focus window to the left |
+| `Alt + Ctrl + J` / `Alt + Ctrl + ↓` | Focus window below |
+| `Alt + Ctrl + K` / `Alt + Ctrl + ↑` | Focus window above |
+| `Alt + Ctrl + L` / `Alt + Ctrl + →` | Focus window to the right |
 
 #### Move Window
 
@@ -92,6 +99,7 @@ The following apps are configured to open in floating mode by default:
 | Finder | com.apple.finder |
 | LINE | jp.naver.line.mac |
 | Mattermost | Mattermost.Desktop |
+| Apple Mail | com.apple.mail |
 | Slack | com.tinyspeck.slackmacgap |
 | DeepL | com.linguee.DeepLCopyTranslator |
 | 何 (Nani) | jp.kiok.nani |
