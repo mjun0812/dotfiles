@@ -7,11 +7,13 @@ rust = "latest"
 bun = "latest"
 pnpm = "latest"
 # cli
+delta = "latest"
 eza = "latest"
 gh = "latest"
 ghq = "latest"
 jq = "latest"
 lazygit = "latest"
+zoxide = "latest"
 "aqua:aws/aws-cli" = "latest"
 "aqua:sharkdp/bat" = "latest"
 "aqua:sharkdp/fd" = "latest"
@@ -27,7 +29,7 @@ git-lfs = "latest"
 gemini-cli = "latest"
 codex = "latest"
 "npm:@anthropic-ai/claude-code" = "latest"
-zoxide = "latest"
+opencode = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
