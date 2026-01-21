@@ -19,6 +19,7 @@
     ],
     "deny": [
       "Read(.env)",
+      "Read(~/.ssh/**)",
       "Read(~/.aws/**)"
     ],
     "ask": [
@@ -36,7 +37,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/check_plan_rename.sh ./docs/plans"
+            "command": "~/.dotfiles/script/check_plan_rename.sh"
           }
         ]
       }
