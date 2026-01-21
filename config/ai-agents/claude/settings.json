@@ -30,6 +30,17 @@
     "defaultMode": "plan"
   },
   "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/check_plan_rename.sh ./docs/plans"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",
