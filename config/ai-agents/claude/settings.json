@@ -3,45 +3,6 @@
     "commit": "",
     "pr": "🤖 Generated with [Claude Code](https://claude.com/claude-code)"
   },
-  "enabledPlugins": {
-    "code-simplifier@claude-plugins-official": true
-  },
-  "hooks": {
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "command": "~/.dotfiles/script/notify.sh --osc 'Claude Code' '入力を待っています 📝'",
-            "type": "command"
-          }
-        ],
-        "matcher": ""
-      }
-    ],
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "~/.dotfiles/script/check_plan_rename.sh ./.claude/plans",
-            "type": "command"
-          }
-        ],
-        "matcher": "ExitPlanMode"
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "~/.dotfiles/script/notify.sh --osc 'Claude Code' 'タスクが完了しました ✅'",
-            "type": "command"
-          }
-        ],
-        "matcher": ""
-      }
-    ]
-  },
-  "language": "japanese",
   "permissions": {
     "allow": [
       "Bash(git:*)",
@@ -59,22 +20,64 @@
       "Edit(./.claude/plans/**)",
       "Write(./.claude/plans/**)"
     ],
+    "deny": [
+      "Read(.env)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)"
+    ],
     "ask": [
       "Bash(rm:*)",
       "Bash(git push:*)",
       "Bash(gh pr create:*)"
     ],
-    "defaultMode": "plan",
-    "deny": [
-      "Read(.env)",
-      "Read(~/.ssh/**)",
-      "Read(~/.aws/**)"
+    "defaultMode": "plan"
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/notify.sh --osc 'Claude Code' '入力を待っています 📝'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/check_plan_rename.sh ./.claude/plans"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/notify.sh --osc 'Claude Code' 'タスクが完了しました ✅'"
+          }
+        ]
+      }
     ]
   },
-  "plansDirectory": "./.claude/plans",
   "statusLine": {
+    "type": "command",
     "command": "~/.dotfiles/config/ai-agents/claude/statusline.sh",
-    "padding": 0,
-    "type": "command"
-  }
+    "padding": 0
+  },
+  "enabledPlugins": {
+    "code-simplifier@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "clangd-lsp@claude-plugins-official": true
+  },
+  "language": "japanese",
+  "plansDirectory": "./.claude/plans"
 }
