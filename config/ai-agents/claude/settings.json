@@ -5,17 +5,17 @@
   },
   "permissions": {
     "allow": [
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(git branch:*)",
-      "Bash(git log:*)",
+      "Bash(git:*)",
       "Bash(ls:*)",
       "Bash(eza:*)",
       "Bash(grep:*)",
       "Bash(rgrep:*)",
       "Bash(fd:*)",
       "Bash(cat:*)",
-      "Bash(bat:*)"
+      "Bash(bat:*)",
+      "Skill",
+      "WebFetch",
+      "WebSearch"
     ],
     "deny": [
       "Read(.env)",
@@ -24,7 +24,6 @@
     ],
     "ask": [
       "Bash(rm:*)",
-      "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(gh pr create:*)"
     ],
@@ -48,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/notify.sh 'Claude Code' 'タスクが完了しました ✅'"
+            "command": "~/.dotfiles/script/notify.sh --osc 'Claude Code' 'タスクが完了しました ✅'"
           }
         ]
       }
@@ -59,7 +58,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/notify.sh 'Claude Code' '入力を待っています 📝'"
+            "command": "~/.dotfiles/script/notify.sh --osc 'Claude Code' '入力を待っています 📝'"
           }
         ]
       }
