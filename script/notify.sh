@@ -14,28 +14,22 @@ set -euo pipefail
 
 # Parse force mode flag
 FORCE_MODE="auto"
-if [[ "${1:-}" == "--osc" ]]; then
-  FORCE_MODE="osc"
-  shift
-elif [[ "${1:-}" == "--native" ]]; then
-  FORCE_MODE="native"
-  shift
-fi
+case "${1:-}" in
+  --osc)
+    FORCE_MODE="osc"
+    shift
+    ;;
+  --native)
+    FORCE_MODE="native"
+    shift
+    ;;
+esac
 
 TITLE="${1:-Claude Code}"
 MESSAGE="${2:-Notification}"
 
 # Determine if we should use OSC notification
-USE_OSC=false
-
-if [[ "$FORCE_MODE" == "osc" ]]; then
-  USE_OSC=true
-elif [[ "$FORCE_MODE" == "auto" ]]; then
-  # Auto mode: use OSC for SSH sessions
-  if [[ -n "${SSH_CONNECTION:-}" || -n "${SSH_CLIENT:-}" || -n "${SSH_TTY:-}" ]]; then
-    USE_OSC=true
-  fi
-fi
+USE_OSC=$([[ "$FORCE_MODE" == "osc" || ( "$FORCE_MODE" == "auto" && ( -n "${SSH_CONNECTION:-}" || -n "${SSH_CLIENT:-}" || -n "${SSH_TTY:-}" ) ) ]] && printf 'true' || printf 'false')
 
 # Handle OSC notification
 if [[ "$USE_OSC" == "true" ]]; then
@@ -46,31 +40,44 @@ if [[ "$USE_OSC" == "true" ]]; then
   SAFE_TITLE="$(printf '%s' "$TITLE" | LC_ALL=C tr -d '\000-\010\013-\037\177' | sed 's/;/,/g')"
   SAFE_MESSAGE="$(printf '%s' "$MESSAGE" | LC_ALL=C tr -d '\000-\010\013-\037\177' | sed 's/;/,/g')"
 
-  # Build OSC sequences
+  # Detect client terminal to choose the correct OSC protocol
+  OSC_KIND="777"
+  if [[ -n "${ITERM_SESSION_ID:-}" || "${TERM_PROGRAM:-}" == "iTerm.app" ]]; then
+    OSC_KIND="9"
+  elif [[ -n "${WEZTERM_PANE:-}" || "${TERM_PROGRAM:-}" == "WezTerm" ]]; then
+    OSC_KIND="777"
+  elif [[ "${TERM_PROGRAM:-}" == "vscode" || -n "${VSCODE_IPC_HOOK_CLI:-}" || -n "${VSCODE_PID:-}" ]]; then
+    OSC_KIND="777"
+  elif [[ "${TERM_PROGRAM:-}" == "cursor" || -n "${CURSOR_IPC_HOOK_CLI:-}" || -n "${CURSOR_TRACE_ID:-}" ]]; then
+    OSC_KIND="777"
+  fi
+
+  # Build OSC sequence
   # OSC 777: WezTerm, VSCode, Cursor (supports title + body)
-  OSC_777="$(printf '\e]777;notify;%s;%s\e\\' "$SAFE_TITLE" "$SAFE_MESSAGE")"
   # OSC 9: iTerm2 (single message only, combine title and body)
-  OSC_9="$(printf '\e]9;%s: %s\a' "$SAFE_TITLE" "$SAFE_MESSAGE")"
+  if [[ "$OSC_KIND" == "9" ]]; then
+    OSC_PAYLOAD="$(printf '\e]9;%s: %s\a' "$SAFE_TITLE" "$SAFE_MESSAGE")"
+  else
+    OSC_PAYLOAD="$(printf '\e]777;notify;%s;%s\e\\' "$SAFE_TITLE" "$SAFE_MESSAGE")"
+  fi
 
   # Wrap in tmux passthrough if inside tmux
   if [[ -n "${TMUX:-}" ]]; then
-    OSC_777="$(printf '\033Ptmux;\033%s\033\\' "$OSC_777")"
-    OSC_9="$(printf '\033Ptmux;\033%s\033\\' "$OSC_9")"
+    OSC_PAYLOAD="$(printf '\033Ptmux;\033%s\033\\' "$OSC_PAYLOAD")"
   fi
 
   # Determine output target
   if [[ -t 1 ]]; then
-    printf '%b' "$OSC_777"
-    printf '%b' "$OSC_9"
+    printf '%b' "$OSC_PAYLOAD"
   else
-    printf '%b' "$OSC_777" > /dev/tty
-    printf '%b' "$OSC_9" > /dev/tty
+    printf '%b' "$OSC_PAYLOAD" > /dev/tty
   fi
 
   exit 0
 fi
 
-# Native notification: detect OS
+# ################ Native notification ################
+# detect OS
 OS_TYPE="unknown"
 case "$(uname -s)" in
   Darwin*)
