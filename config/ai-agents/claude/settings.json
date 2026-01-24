@@ -16,7 +16,8 @@
       "Skill",
       "WebFetch",
       "WebSearch",
-      "Read(./claude/plans/**)",
+      "Read(~/.dotfiles/doc/templates/**)",
+      "Read(./.claude/plans/**)",
       "Edit(./.claude/plans/**)",
       "Write(./.claude/plans/**)"
     ],
