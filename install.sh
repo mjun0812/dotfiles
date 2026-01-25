@@ -52,7 +52,10 @@ log_section "Setting up Node..."
 bun install -g \
     neovim \
     md-to-pdf@latest \
+    pyright \
     prettier@latest \
+    typescript-language-server \
+    typescript \
     oxfmt
 
 ################ [Python] ################

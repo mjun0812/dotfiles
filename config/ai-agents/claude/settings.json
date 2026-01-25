@@ -13,6 +13,7 @@
       "Bash(fd:*)",
       "Bash(cat:*)",
       "Bash(bat:*)",
+      "Bash(uvx ruff:*)",
       "Skill",
       "WebFetch",
       "WebSearch",

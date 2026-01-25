@@ -16,8 +16,19 @@ You can use the following cli tools:
 
 ## Plan Mode
 
-Check current plan filename and rename it to `YYYYMMDD-<english-slug>.md` format (kebab-case).
-The english-slug should be a concise, descriptive summary of the plan's main objective (e.g., 'add-user-auth', 'fix-api-timeout', 'refactor-database-layer').
+### Plan File Naming Convention
+
+Plan files should be saved in `YYYYMMDD-<english-slug>.md` format.
+- `english-slug`: A concise, descriptive summary of the plan's main objective (kebab-case)
+- Examples: `20250125-add-user-auth.md`, `20250125-fix-api-timeout.md`, `20250125-refactor-database-layer.md`
+
+### Exiting Plan Mode
+
+Before exiting Plan Mode and starting implementation:
+1. Rename the plan file to `YYYYMMDD-<english-slug>.md` format
+2. Proceed with implementation only after renaming is complete
+
+Note: Temporary filenames (e.g., `plan.md`, `draft-plan.md`) are acceptable during planning.
 
 ## Versioning
 
