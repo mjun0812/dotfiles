@@ -2,7 +2,13 @@
 
 brew install \
     coreutils \
-    git
+    git \
+    curl \
+    wget \
+    llvm \
+    ninja \
+    cmake \
+    tree
 
 brew install --cask \
     nikitabobko/tap/aerospace \
