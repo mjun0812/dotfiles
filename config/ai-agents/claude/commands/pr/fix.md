@@ -48,7 +48,7 @@ This command orchestrates three sub-commands to fix all PR issues in the correct
 3. **Step 2: Check and fix CI failures**:
    - Check CI status: `gh pr checks`
    - If any checks failed:
-     - Execute `/pr:check-ci`
+     - Execute `/github:fix-ci`
      - Wait for completion
      - Note: CI will re-run after push
    - If all checks pass: Skip to next step
