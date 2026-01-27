@@ -31,8 +31,7 @@
       "Bash(rm:*)",
       "Bash(git push:*)",
       "Bash(gh pr create:*)"
-    ],
-    "defaultMode": "plan"
+    ]
   },
   "hooks": {
     "Notification": [
