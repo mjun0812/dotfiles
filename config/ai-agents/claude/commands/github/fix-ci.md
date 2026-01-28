@@ -2,6 +2,7 @@
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 argument-hint: [PR number] [--no-commit]
 description: Check CI status for a repository or PR, analyze failures, and fix issues automatically.
+context: fork
 ---
 
 # Check CI Status and Fix Failures

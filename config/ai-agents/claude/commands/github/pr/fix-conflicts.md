@@ -2,6 +2,7 @@
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 argument-hint: [--rebase | --merge]
 description: Detect and resolve merge conflicts in the current PR.
+context: fork
 ---
 
 # Fix Merge Conflicts

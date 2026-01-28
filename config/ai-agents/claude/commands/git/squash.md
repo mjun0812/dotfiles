@@ -3,6 +3,7 @@ name: squash
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 argument-hint: [--one | --auto] [--message <commit message>]
 description: Squash and organize commits on the current branch using interactive rebase.
+context: fork
 ---
 
 # Squash Commits
