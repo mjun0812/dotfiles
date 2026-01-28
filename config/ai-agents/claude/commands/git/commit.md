@@ -3,6 +3,7 @@ name: commit
 allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Bash(git status:*), Bash(git add:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
 argument-hint: [language]
 description: Commit current staged changes with AI-generated commit message in the specified language.
+context: fork
 ---
 
 # git commit

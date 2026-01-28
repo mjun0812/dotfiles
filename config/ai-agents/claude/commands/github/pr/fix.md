@@ -2,6 +2,7 @@
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), SlashCommand
 argument-hint: [PR number] [--reply]
 description: Auto-detect and fix all PR issues (conflicts, CI failures, review comments).
+context: fork
 ---
 
 # Fix All PR Issues
@@ -74,9 +75,9 @@ This command orchestrates three sub-commands to fix all PR issues in the correct
 
 | Check     | Before | After |
 | --------- | ------ | ----- |
-| Conflicts | ❌/✅  | ✅    |
-| CI        | ❌/✅  | ✅/⏳ |
-| Reviews   | ❌/✅  | ✅    |
+| Conflicts | ❌/✅    | ✅     |
+| CI        | ❌/✅    | ✅/⏳   |
+| Reviews   | ❌/✅    | ✅     |
 
 ### Actions Taken
 
@@ -100,9 +101,9 @@ This command orchestrates three sub-commands to fix all PR issues in the correct
 
 | チェック     | 修正前 | 修正後 |
 | ------------ | ------ | ------ |
-| コンフリクト | ❌/✅  | ✅     |
-| CI           | ❌/✅  | ✅/⏳  |
-| レビュー     | ❌/✅  | ✅     |
+| コンフリクト | ❌/✅    | ✅      |
+| CI           | ❌/✅    | ✅/⏳    |
+| レビュー     | ❌/✅    | ✅      |
 
 ### 実行したアクション
 

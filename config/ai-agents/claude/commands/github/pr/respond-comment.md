@@ -2,6 +2,7 @@
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 argument-hint: [PR number] [--reply]
 description: Review and respond to review comments on a pull request.
+context: fork
 ---
 
 # Respond to Review Comments

@@ -2,6 +2,7 @@
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*)
 argument-hint: [PR number] [--post]
 description: Review a pull request as an independent reviewer and provide structured feedback with inline comments.
+context: fork
 ---
 
 # Review Pull Request
@@ -164,10 +165,10 @@ Use `gh api` to post the review.
 
 ### Comment prefixes by section
 
-| Section    | English Prefix     | Japanese Prefix |
-| ---------- | ------------------ | --------------- |
-| Must Fix   | 🔴 **Must Fix**:   | 🔴 **要修正**:  |
-| Should Fix | 💡 **Suggestion**: | 💡 **提案**:    |
+| Section    | English Prefix    | Japanese Prefix |
+| ---------- | ----------------- | --------------- |
+| Must Fix   | 🔴 **Must Fix**:   | 🔴 **要修正**:   |
+| Should Fix | 💡 **Suggestion**: | 💡 **提案**:     |
 
 ### Event types
 

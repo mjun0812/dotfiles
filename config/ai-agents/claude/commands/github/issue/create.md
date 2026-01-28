@@ -1,7 +1,8 @@
 ---
 allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*)
 argument-hint: [language] [--label <name>] [--assignee <username>]
-description: Custom command
+description: Create a GitHub Issue interactively by gathering information from the user.
+context: fork
 ---
 
 # Create GitHub Issue

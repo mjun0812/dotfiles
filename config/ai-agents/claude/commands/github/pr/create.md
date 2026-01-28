@@ -2,6 +2,7 @@
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 argument-hint: [language] [--draft] [--reviewer <username>] [--label <name>]
 description: Generate pull request for current branch with AI-generated title and description in the specified language.
+context: fork
 ---
 
 # Create Pull Request
