@@ -1,15 +1,13 @@
 # Global Instructions
 
-- Always respond in Japanese.
-- Use English for all code comments and documentation within code blocks.
-- Maintain Japanese for error explanations and troubleshooting guidance.
+Always respond in Japanese.
 
 ## Tools
 
 You can use the following cli tools:
 
 - fd
-- rg
+- ripgrep
 - gh
 - bat
 - eza
@@ -33,5 +31,6 @@ You can use the following cli tools:
 ## Post accept plan
 
 Plan modeのplanが承認された後は，planファイルの名前を，`YYYY-MM-DD-<short description>.md`の形式に変更してください．
-例: `2024-06-15-add-github-issue-create-command.md`
+設定でplanファイルの場所が変更されている場合があるので，注意してください．
 
+例: `2024-06-15-add-github-issue-create-command.md`
