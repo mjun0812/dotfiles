@@ -32,6 +32,7 @@
     ],
     "ask": [
       "Bash(rm:*)",
+      "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(gh pr create:*)"
     ]
@@ -44,17 +45,6 @@
           {
             "type": "command",
             "command": "~/.dotfiles/script/notify.sh --osc 'Claude Code' '入力を待っています 📝'"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "ExitPlanMode",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.dotfiles/script/check_plan_rename.sh ./.claude/plans"
           }
         ]
       }

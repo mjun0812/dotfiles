@@ -25,8 +25,9 @@ Commit current staged changes with AI-generated commit message in the specified 
 ## Task
 
 1. If no staged changes exist, prompt the user to stage changes first.
-2. Generate a commit message in $ARGUMENTS language (default: English) following Conventional Commits:
+2. Generate a commit message following Conventional Commits format:
    - First line: `<type>: <description>` (no scope)
    - Second line: blank
    - Third line onwards: bullet points describing changes
-3. Commit with `git commit -m "<message>"`.
+3. **IMPORTANT: The commit message MUST be written in `$ARGUMENTS` language (default: English).** The Conventional Commits specification is for format reference only; always write the actual message in the specified language.
+4. Commit with `git commit -m "<message>"`.
