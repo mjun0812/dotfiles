@@ -19,8 +19,8 @@ context: fork
 
 - Current branch: !`git branch --show-current`
 - Base branch: !`gh pr view --json baseRefName --jq .baseRefName 2>/dev/null || git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | grep -o '[^/]*$' || echo "main"`
-- PR title: !`gh pr view --json title --jq '.title' 2>/dev/null`
-- PR body: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
+- PR title: !`gh pr view --json title --jq '.title'`
+- PR body: !`gh pr view --json body --jq '.body' | head -30`
 
 ## Task
 
