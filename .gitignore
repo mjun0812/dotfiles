@@ -20,3 +20,5 @@
 !templates/**
 
 .DS_Store
+config/dot_config/yazi/plugins
+config/dot_config/yazi/package.toml

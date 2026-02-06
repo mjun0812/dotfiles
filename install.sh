@@ -47,6 +47,9 @@ source "$HOME/.zshrc"
 mise install
 mise reshim
 
+################ [yazi] ################
+ya pkg add yazi-rs/plugins:mime-ext
+
 ################ [Node] ################
 log_section "Setting up Node..."
 bun install -g \
