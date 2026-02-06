@@ -21,6 +21,7 @@ zoxide = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
 "github:d-kuro/gwq" = "latest"
+"aqua:sxyazi/yazi" = "latest"
 # tool
 neovim = "latest"
 tree-sitter = "latest"
@@ -30,11 +31,7 @@ git-lfs = "latest"
 gemini-cli = "latest"
 codex = "latest"
 opencode = "latest"
-claude-code = { version = "latest", bin = "claude", platforms = """
-[windows-x64]
-bin = "claude.exe"
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/win32-x64/claude.exe"
-""", url = 'https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/{{ os(macos="darwin") }}-{{ arch() }}/claude', version_list_url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/latest" }
+claude-code = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
