@@ -21,12 +21,12 @@ zoxide = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
 "github:d-kuro/gwq" = "latest"
-"aqua:sxyazi/yazi" = "latest"
 # tool
 neovim = "latest"
 tree-sitter = "latest"
 starship = "latest"
 git-lfs = "latest"
+yazi = "latest"
 # ai
 gemini-cli = "latest"
 codex = "latest"
