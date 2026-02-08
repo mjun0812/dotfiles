@@ -19,23 +19,30 @@ cd ~/.dotfiles
 | zsh    | Shell           |
 | mise   | Package manager |
 | Neovim | editor          |
-| Cursor | IDE             |
 | VSCode | IDE             |
+| Cursor | IDE             |
 
 ### CLI
 
-| Tool    | Description                           |
-| ------- | ------------------------------------- |
-| bat     | Modern `cat` with syntax highlighting |
-| eza     | Modern `ls`                           |
-| fd      | Modern `find`                         |
-| gh      | GitHub CLI                            |
-| ghq     | Repository management                 |
-| git-lfs | Git Large File Storage                |
-| gwq     | Git worktree management               |
-| jq      | JSON processor                        |
-| lazygit | Git TUI                               |
-| ripgrep | Modern `grep`                         |
+| Tool        | Description                           |
+| ----------- | ------------------------------------- |
+| aws-cli     | AWS command-line interface            |
+| bat         | Modern `cat` with syntax highlighting |
+| delta       | Git diff pager                        |
+| eza         | Modern `ls`                           |
+| fd          | Modern `find`                         |
+| gh          | GitHub CLI                            |
+| ghq         | Repository management                 |
+| git-lfs     | Git Large File Storage                |
+| gwq         | Git worktree management               |
+| jq          | JSON processor                        |
+| lazygit     | Git TUI                               |
+| ripgrep     | Modern `grep`                         |
+| starship    | Cross-shell prompt                    |
+| tree-sitter | Parser generator tool                 |
+| yazi        | Terminal file manager                 |
+| yq          | YAML processor                        |
+| zoxide      | Smart `cd` command                    |
 
 ### AI Agents
 

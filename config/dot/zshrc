@@ -58,10 +58,10 @@ export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 
 # mise
-eval "$(~/.local/bin/mise activate zsh)"
+command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 
 # sheldon
-eval "$(sheldon source)"
+command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 
 # ######### zsh completion ##########
 if [ -d ~/.zsh/completions ]; then
@@ -79,7 +79,9 @@ if command -v gwq >/dev/null 2>&1; then
   source <(gwq completion zsh)
 fi
 
-command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
+if [[ "$CLAUDECODE" != "1" ]]; then
+    command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
+fi
 
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
