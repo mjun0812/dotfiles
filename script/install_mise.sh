@@ -6,4 +6,3 @@ else
     mise self-update -y
     mise up
 fi
-
