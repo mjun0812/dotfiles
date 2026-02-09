@@ -18,6 +18,7 @@ jobs:
     env:
       NONINTERACTIVE: "1"
       CI: "true"
+      GITHUB_TOKEN: ${{ github.token }}
 
     steps:
       - name: Checkout repository
@@ -135,8 +136,10 @@ jobs:
           chown -R testuser:testuser /home/testuser/.dotfiles
 
       - name: Run install script
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          su - testuser -c 'cd ~/.dotfiles && zsh ./install.sh'
+          su - testuser -c "export GITHUB_TOKEN='${GITHUB_TOKEN}' && cd ~/.dotfiles && zsh ./install.sh"
 
       - name: Verify symlinks (dotfiles)
         shell: zsh {0}
