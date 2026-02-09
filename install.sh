@@ -46,6 +46,7 @@ $DOTPATH/script/install_mise.sh
 source "$HOME/.zshrc"
 mise install
 mise reshim
+source "$HOME/.zshrc"
 
 ################ [yazi] ################
 ya pkg add yazi-rs/plugins:mime-ext
