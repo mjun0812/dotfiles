@@ -35,13 +35,15 @@ context: fork
 - `feature_request.md` - 機能追加
 - `bug_report.md` - バグ報告
 - `task.md` - タスク
+- `test.md` - テスト追加
 
 ## Task
 
-1. **Issue種別の確認**: AskUserQuestion を使用して、作成するIssueの種類を確認する：
-   - ✨ 機能追加 (Feature Request)
-   - 🐛 バグ報告 (Bug Report)
-   - 📝 タスク (Task)
+1. **Issue種別の確認**: AskUserQuestion を使用して、作成するIssueの種類を確認する。各選択肢の description にはテンプレートの `about` フィールドの内容を使用する：
+   - ✨ 機能追加 (Feature Request) — Propose a new feature or improvement
+   - 🐛 バグ報告 (Bug Report) — Report a bug or issue
+   - 📝 タスク (Task) — Work that doesn't fit the above categories
+   - 🧪 テスト追加 (Add Tests) — Add or improve tests
 
 2. **テンプレートの読み込み**: 以下の優先順位でテンプレートを決定する：
    - **優先度1**: リポジトリ内に `.github/ISSUE_TEMPLATE/` が存在する場合、該当するテンプレートを読み込む
@@ -54,8 +56,15 @@ context: fork
    - ユーザーは背景、目的、詳細などを自由に記述できる
 
 4. **タイトルと本文の提案**: ユーザーの入力を元に、テンプレートに沿った形でタイトルと本文を生成し、ユーザーに提示する：
-   - テンプレートのフロントマターからデフォルトラベルを抽出する（例: `labels: feature` や `labels: bug`）
-   - テンプレートの各セクションにユーザーの入力内容を適切に振り分けて埋め込む
+   - テンプレートのフロントマターから以下を抽出する：
+     - `labels`: デフォルトラベルとして使用（例: `labels: enhancement`, `labels: bug`, `labels: test`）
+     - `about`: Issue種別の補足説明として活用
+   - ユーザーの入力内容を、テンプレート種別に応じて以下のセクションに振り分ける：
+     - **Feature Request**: 背景→「Background & Summary」、具体的な要件→「Specifications & Requirements」、完了基準→「Acceptance Criteria」
+     - **Bug Report**: 現象→「Summary」、正常動作→「Expected Behavior」、手順→「Steps to Reproduce」、コード/ログ→該当セクション
+     - **Task**: 背景と目的→「Background, Purpose & Summary」、完了基準→「Acceptance Criteria」
+     - **Test**: 対象と目的→「Summary & Purpose」、完了基準→「Acceptance Criteria」、テストケース→「Test Scenarios to Implement」
+   - ユーザー入力から情報が不足しているセクションは、コメントプレースホルダーを残すのではなくセクション自体を省略する
    - 生成したタイトルと本文をユーザーに提示し、確認または修正を求める
    - 最終的なIssue本文からはフロントマターを除去する
 

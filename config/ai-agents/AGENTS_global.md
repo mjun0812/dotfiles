@@ -2,18 +2,6 @@
 
 常に日本語で応答すること。
 
-## Tools
-
-以下のCLIツールが使用可能：
-
-- fd
-- ripgrep
-- gh
-- bat
-- eza
-- uvx
-- bunx
-
 ## Versioning
 
 - バージョン番号を扱う際は Semantic Versioning 2.0.0 に従うこと。
@@ -26,7 +14,8 @@
 
 ## Post accept plan
 
-Plan modeのplanが承認された後は、planファイルの名前を `YYYY-MM-DD-<short description>.md` の形式に変更すること。
+Plan modeのplanファイルはPostToolUse hookにより自動的に `YYYY-MM-DD-<english-slug>.md` 形式にリネームされる。
+自動リネームが失敗した場合は、手動でリネームすること。
 設定でplanファイルの場所が変更されている場合があるので注意すること。
 
 例: `2024-06-15-add-github-issue-create-command.md`
