@@ -15,15 +15,22 @@
       "Bash(fd:*)",
       "Bash(cat:*)",
       "Bash(bat:*)",
-      "Bash(uvx ruff:*)",
+      "Bash(tree:*)",
+      "Bash(gh:*)",
+      "Bash(bunx:*)",
+      "Bash(bun:*)",
+      "Bash(uvx:*)",
+      "Bash(uv:*)",
       "Bash(ruff:*)",
       "Bash(ty:*)",
-      "Bash(tree:*)",
+      "Bash(mise:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(pytest:*)",
       "Skill",
       "WebFetch",
       "WebSearch",
-      "Read(~/.dotfiles/doc/templates/**)",
-      "Read(./.claude/plans/**)",
+      "Read",
       "Edit(./.claude/plans/**)",
       "Write(./.claude/plans/**)"
     ],
@@ -36,10 +43,25 @@
       "Bash(rm:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(gh pr create:*)"
+      "Bash(gh pr create:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh issue close:*)",
+      "Bash(gh pr close:*)",
+      "Bash(gh pr merge:*)"
     ]
   },
   "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/rename-plan.sh"
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "",
