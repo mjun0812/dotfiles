@@ -12,6 +12,14 @@
 - 2行目は必ず空行とし、コミットの説明は3行目から記述すること。
 - Gitタグを使用する際は "v1.0.0" や "v2.1.3" の形式を使用すること。
 
+## Post accept plan
+
+Plan modeのplanファイルはPostToolUse hookにより自動的に `YYYY-MM-DD-<english-slug>.md` 形式にリネームされる。
+自動リネームが失敗した場合は、手動でリネームすること。
+設定でplanファイルの場所が変更されている場合があるので注意すること。
+
+例: `2024-06-15-add-github-issue-create-command.md`
+
 ## Python
 
 - 環境およびパッケージ管理には `uv` を使用すること。

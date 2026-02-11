@@ -122,7 +122,7 @@ cp -aLf "$HOME/.claude/commands" "$DOTPATH/.backup/claude_commands" && rm -rf "$
 cp -aLf "$HOME/.claude/skills" "$DOTPATH/.backup/claude_skills" && rm -rf "$HOME/.claude/skills"
 cp -aLf "$HOME/.claude/mcp.json" "$DOTPATH/.backup/claude_mcp.json" && rm -rf "$HOME/.claude/mcp.json"
 mkdir -p "$HOME/.claude"
-ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.claude/CLAUDE.md"
+ln -snfv "$DOTPATH/config/ai-agents/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 ln -snfv "$DOTPATH/config/ai-agents/claude/settings.json" "$HOME/.claude/settings.json"
 ln -snfv "$DOTPATH/config/ai-agents/claude/commands" "$HOME/.claude/commands"
 ln -snfv "$DOTPATH/config/ai-agents/claude/skills" "$HOME/.claude/skills"
