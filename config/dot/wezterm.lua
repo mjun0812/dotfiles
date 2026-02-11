@@ -70,7 +70,17 @@ config.show_tab_index_in_tab_bar = false
 -- rendered in a native style with proportional fonts
 config.use_fancy_tab_bar = true
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-    local title = wezterm.truncate_right(tab.active_pane.title, max_width)
+    local title = tab.active_pane.title or ""
+    if title == "" then
+        local cwd = tab.active_pane.current_working_dir
+        if cwd then
+            local path = cwd.file_path or tostring(cwd)
+            title = path:match("([^/]+)/?$") or path
+        else
+            title = "untitled"
+        end
+    end
+    title = wezterm.truncate_right(title, max_width)
     local space_after = string.rep(' ', math.max(0, max_width - #title - 1))
     return {
         { Text = " " .. title .. space_after },

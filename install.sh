@@ -72,19 +72,33 @@ uv pip install -U \
     pip \
     setuptools \
     wheel \
-    glances \
-    nvitop \
     pymupdf \
     pynvim \
-    'python-lsp-server[all]' \
-    ruff \
-    ty
+    'python-lsp-server[all]'
+UV_TOOLS=(ruff glances nvitop ty pre-commit prek plamo-translate copier)
+for tool in "${UV_TOOLS[@]}"; do
+    uv tool install -U $tool
+done
 cd $DOTPATH
 
 ################ [Sheldon] ################
 log_section "Setting up Sheldon..."
 $DOTPATH/script/install_sheldon.sh
 source "$HOME/.zshrc"
+
+################ [VSCode] ################
+log_section "Setting up VSCode..."
+if [ "$(uname -s)" = "Darwin" ]; then
+    VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
+else
+    VSCODE_USER_DIR="$CONFIG_DIR/Code/User"
+fi
+cp -aLf "$VSCODE_USER_DIR/settings.json" "$DOTPATH/.backup/vscode_settings.json" 2>/dev/null || true
+cp -aLf "$VSCODE_USER_DIR/keybindings.json" "$DOTPATH/.backup/vscode_keybindings.json" 2>/dev/null || true
+mkdir -p "$VSCODE_USER_DIR"
+rm -f "$VSCODE_USER_DIR/settings.json" "$VSCODE_USER_DIR/keybindings.json"
+ln -snfv "$DOTPATH/config/vscode/settings.json" "$VSCODE_USER_DIR/settings.json"
+ln -snfv "$DOTPATH/config/vscode/keybindings.json" "$VSCODE_USER_DIR/keybindings.json"
 
 ################ [Cursor] ################
 log_section "Setting up Cursor..."
