@@ -7,6 +7,12 @@
         "chrome-devtools-mcp@latest"
       ],
       "env": {}
+    },
+    "drawio": {
+      "command": "bunx",
+      "args": [
+        "@drawio/mcp"
+      ]
     }
   }
 }

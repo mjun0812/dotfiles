@@ -1,76 +1,131 @@
 ---
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*)
-argument-hint: [PR number] [--post]
-description: Review a pull request as an independent reviewer and provide structured feedback with inline comments.
-context: fork
+argument-hint: [PR number]
+description: GitHubのpull request(PR)のコードレビューを行うSkill。5つの専門レビュアーagentを並列実行し、統合レビューレポートとインラインコメントを生成する。
 ---
 
-# Review Pull Request
+# Pull Request Review（オーケストレーション）
+
+5つの専門レビュアー agent を並列実行し，結果を統合してレビューレポートを生成する．
 
 ## Arguments
 
-- `PR number`: PR number to review (optional, defaults to PR for current branch)
-- `--post`: Post the review with inline comments to GitHub (optional)
-
-## Context
-
-- Current branch: !`git branch --show-current`
-- Current PR: !`gh pr view --json number,title,state,baseRefName,headRefName,url 2>/dev/null || echo "No PR found for current branch"`
-- PR title: !`gh pr view --json title --jq '.title' 2>/dev/null`
-- PR body: !`gh pr view --json body --jq '.body' 2>/dev/null | head -50`
-- Repository: !`gh repo view --json nameWithOwner --jq .nameWithOwner`
+- `PR number`: レビューするPR番号 (optional, defaults to PR for current branch)
 
 ## Task
 
-0. **Pre-checks**:
-   - If PR number is provided in $ARGUMENTS, use `gh pr view <number>`
-   - Otherwise, use the PR associated with the current branch
-   - If no PR exists, abort with an error message
+### Phase 1: 事前チェック + PR情報収集
 
-1. **Detect PR language**:
-   - Analyze the PR title and body to detect the language (e.g., Japanese, English, Chinese)
-   - **IMPORTANT**: All review comments and reports MUST be written in this detected language
-   - If language is ambiguous, default to English
+1. **事前チェック**:
+   - `$ARGUMENTS` にPR番号が指定されている場合は `gh pr view <number>` を使用
+   - 指定がない場合は現在のブランチに紐づくPRを使用
+   - PRが存在しない場合はエラーメッセージを表示して中断
 
-2. **Gather PR information**:
-   - Get PR metadata: `gh pr view <number> --json title,body,baseRefName,headRefName,author,additions,deletions,changedFiles`
-   - Get list of changed files: `gh pr view <number> --json files --jq '.files[].path'`
-   - Get the diff: `gh pr diff <number>`
-   - Get the latest commit SHA: `gh pr view <number> --json commits --jq '.commits[-1].oid'`
+2. **PR情報を収集する**:
+   - PRメタデータの取得: `gh pr view <number> --json title,body,baseRefName,headRefName,author,additions,deletions,changedFiles`
+   - 変更ファイル一覧の取得: `gh pr view <number> --json files --jq '.files[].path'`
+   - diff の取得: `gh pr diff <number>`
+   - 最新の commit SHA の取得: `gh pr view <number> --json commits --jq '.commits[-1].oid'`
 
-3. **Analyze the changes**:
-   - Understand the purpose of the PR from title and description
-   - Identify the scope of changes (which modules/features are affected)
-   - Note the size of the PR (additions, deletions, files changed)
+3. **言語検出**:
+   - PRのタイトルと本文を分析して言語を検出する（例: 日本語、英語、中国語）
+   - **重要**: すべてのレビューコメントとレポートは、検出された言語で記述すること
+   - 言語が曖昧な場合は、英語をデフォルトとする
 
-4. **Review the code** with the following perspectives:
-   - **Correctness**: Logic errors, bugs, edge cases not handled
-   - **Security**: Vulnerabilities, injection risks, authentication/authorization issues
-   - **Performance**: Inefficient algorithms, N+1 queries, unnecessary computations
-   - **Readability**: Naming conventions, code structure, complexity
-   - **Maintainability**: Code duplication, tight coupling, missing abstractions
-   - **Testing**: Test coverage, test quality, missing test cases
-   - **Documentation**: Missing comments, outdated docs, unclear code
+4. **PR の目的を要約する**:
+   - タイトルと説明文からPRの目的を1-2文で要約する
+   - この要約を各 agent に渡す
 
-5. **Generate review report**:
-   - Use the appropriate template based on the detected language
-   - See [Review Report Templates](#review-report-templates) below
-   - **IMPORTANT**: For items in "Must Fix" and "Should Fix", use exact format `` `filepath:line` `` to enable inline comment posting
+### Phase 2: 5つのレビュアー agent を並列実行
 
-6. **Post review to GitHub** (if `--post` flag is provided):
-   - Confirm with user before posting
-   - Parse the review report to extract inline comments from "Must Fix" and "Should Fix" sections
-   - Post using `gh api` with the reviews endpoint (see [Posting Review with Inline Comments](#posting-review-with-inline-comments))
+Taskツールを使い，以下の5つのagentを**すべて同時に並列起動**すること．
 
-7. **Return the result**:
-   - Display the review report in the detected language
-   - If posted, show the URL of the PR
+各 agent には以下の情報を渡す:
 
-## Reference
+- PRの目的（Phase 1 で作成した要約）
+- diff の全文
+- 変更ファイル一覧
+- 使用言語（検出された言語）
 
-### Review Report Templates
+#### Agent 1: code-quality-reviewer
 
-#### English Template
+```yaml
+subagent_type: code-quality-reviewer
+```
+
+PRの diff を分析し，コード品質の観点でレビューしてください．
+PRの出力形式セクションに従って Must Fix / Should Fix / Good Points で結果を出力してください．
+
+#### Agent 2: documentation-accuracy-reviewer
+
+```yaml
+subagent_type: documentation-accuracy-reviewer
+```
+
+PRの diff を分析し，ドキュメントの正確性・完全性の観点でレビューしてください．
+PRの出力形式セクションに従って Must Fix / Should Fix / Good Points で結果を出力してください．
+
+#### Agent 3: performance-reviewer
+
+```yaml
+subagent_type: performance-reviewer
+```
+
+PRの diff を分析し，パフォーマンスの観点でレビューしてください．
+PRの出力形式セクションに従って Must Fix / Should Fix / Good Points で結果を出力してください．
+
+#### Agent 4: security-reviewer
+
+```yaml
+subagent_type: security-reviewer
+```
+
+PRの diff を分析し，セキュリティの観点でレビューしてください．
+PRの出力形式セクションに従って Must Fix / Should Fix / Good Points で結果を出力してください．
+
+#### Agent 5: testing-reviewer
+
+```yaml
+subagent_type: testing-reviewer
+```
+
+PRの diff を分析し，テストの観点でレビューしてください．
+PRの出力形式セクションに従って Must Fix / Should Fix / Good Points で結果を出力してください．
+
+### Phase 3: 結果統合 + レビューレポート生成
+
+1. **5つの agent の結果を統合する**:
+   - 各 agent の Must Fix / Should Fix / Good Points を集約する
+   - 重複する指摘を統合する（同じファイル・行への指摘がある場合）
+
+2. **Mergeの判定を行う**:
+   - Must Fix が1件以上 → `REQUEST_CHANGES`
+   - Must Fix が0件で Should Fix が1件以上 → `COMMENT`
+   - 指摘なし → `APPROVE`
+
+3. **レビューレポートを生成する**:
+   - 検出された言語に応じた適切なテンプレートを使用する
+   - 後述の [レビューレポートテンプレート](#レビューレポートテンプレート) を参照
+   - **重要**: "Must Fix" および "Should Fix" の項目には，inline comment の投稿を可能にするため `` `filepath:line` `` の形式を正確に使用すること
+   - 各項目にはどの観点（code-quality, documentation, performance, security, testing）からの指摘かを明記すること
+
+4. **レビューレポートを表示する**:
+   - 検出された言語でレビューレポートを表示する
+
+5. **GitHub への投稿を確認する**:
+   - AskUserQuestion ツールを使い，レビューを GitHub に投稿するかユーザーに確認する
+   - ユーザーが投稿を選択した場合:
+     - レビューレポートの "Must Fix" および "Should Fix" セクションから inline comments を抽出する
+     - `gh api` を使用して reviews endpoint に投稿する（[inline comments 付きレビューの投稿](#inline-comments-付きレビューの投稿) を参照）
+     - 投稿後にPRの URL を表示する
+   - ユーザーが投稿しないを選択した場合:
+     - そのまま終了する
+
+## リファレンス
+
+### レビューレポートテンプレート
+
+#### 英語テンプレート
 
 ```markdown
 # <img src="https://github.com/claude.png?size=32" alt="Claude Icon" width="32" height="32" style="vertical-align:middle; margin-right:8px;" /> Claude Review Pull Request
@@ -85,11 +140,13 @@ context: fork
 
 ## Must Fix
 
-- `filename:line` - Description of the issue
+- `filename:line` - [category] Description of the issue
 
 ## Should Fix
 
-- `filename:line` - Description of the suggestion
+- `filename:line` - [category] Description of the suggestion
+
+## Suggestion
 
 ## Verdict
 
@@ -100,28 +157,30 @@ context: fork
 Reviewed by Claude
 ```
 
-#### Japanese Template (日本語)
+#### 日本語テンプレート
 
 ```markdown
 # <img src="https://github.com/claude.png?size=32" alt="Claude Icon" width="32" height="32" style="vertical-align:middle; margin-right:8px;" /> Claude Review Pull Request
 
-## 概要
+## Summary(概要)
 
-<!-- このPRの変更内容を1-2文で要約 -->
+<!-- 1-2 sentence summary of what this PR does -->
 
-## 良い点
+## Good Points(良い点)
 
-- <!-- 実装の良い点 -->
+- <!-- Positive aspects of the implementation -->
 
-## 要修正
+## Must Fix(要修正)
 
-- `ファイルパス:行番号` - 問題の説明
+- `filename:line` - [category] Description of the issue
 
-## 提案
+## Should Fix(修正推奨)
 
-- `ファイルパス:行番号` - 提案内容
+- `filename:line` - [category] Description of the suggestion
 
-## 判定
+## Suggestion(提案)
+
+## Verdict(判定)
 
 <!-- APPROVE / REQUEST_CHANGES / COMMENT -->
 
@@ -130,17 +189,27 @@ Reviewed by Claude
 Reviewed by Claude
 ```
 
-### Posting Review with Inline Comments
+### カテゴリ表記
 
-When `--post` flag is provided:
+| Agent                           | 英語表記      | 日本語表記     |
+| ------------------------------- | ------------- | -------------- |
+| code-quality-reviewer           | code-quality  | コード品質     |
+| documentation-accuracy-reviewer | documentation | ドキュメント   |
+| performance-reviewer            | performance   | パフォーマンス |
+| security-reviewer               | security      | セキュリティ   |
+| testing-reviewer                | testing       | テスト         |
 
-#### Step 1: Parse inline comments from report
+### Inline comments 付きレビューの投稿
 
-Extract items from "Must Fix" / "要修正" and "Should Fix" / "提案" sections.
+ユーザーが GitHub への投稿を選択した場合:
 
-Pattern: `` `filepath:line` - comment ``
+#### ステップ 1: レポートから inline comments を抽出する
 
-#### Step 2: Post review via GitHub API
+"Must Fix" / "要修正" および "Should Fix" / "提案" セクションから項目を抽出する。
+
+パターン: `` `filepath:line` - comment ``
+
+#### ステップ 2: GitHub API 経由でレビューを投稿する
 
 **Endpoint**: `POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews`
 
@@ -161,25 +230,25 @@ Pattern: `` `filepath:line` - comment ``
 }
 ```
 
-Use `gh api` to post the review.
+`gh api` を使用してレビューを投稿する。
 
-### Comment prefixes by section
+### セクション別コメント prefix
 
-| Section    | English Prefix    | Japanese Prefix |
-| ---------- | ----------------- | --------------- |
-| Must Fix   | 🔴 **Must Fix**:   | 🔴 **要修正**:   |
-| Should Fix | 💡 **Suggestion**: | 💡 **提案**:     |
+| セクション | 英語 Prefix       | 日本語 Prefix |
+| ---------- | ----------------- | ------------- |
+| Must Fix   | 🔴 **Must Fix**:   | 🔴 **要修正**: |
+| Should Fix | 💡 **Suggestion**: | 💡 **提案**:   |
 
-### Event types
+### Event type
 
-| Verdict         | Event             |
+| 判定            | Event             |
 | --------------- | ----------------- |
 | APPROVE         | `APPROVE`         |
 | REQUEST_CHANGES | `REQUEST_CHANGES` |
 | COMMENT         | `COMMENT`         |
 
-### Notes
+### 注意事項
 
-- Line numbers must correspond to the NEW file (right side of diff)
-- If a comment cannot be posted as inline (e.g., line not in diff), it will be included in the body
-- Maximum 50 inline comments per review
+- 行番号は新しいファイル（diff の右側）に対応するものでなければならない
+- inline として投稿できないコメント（例: diff に含まれない行）は、body に含める
+- 1回のレビューにつき inline comments は最大50件まで

@@ -6,6 +6,8 @@
   "permissions": {
     "allow": [
       "Bash(git:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
       "Bash(ls:*)",
       "Bash(eza:*)",
       "Bash(grep:*)",
