@@ -87,7 +87,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "~/.dotfiles/config/ai-agents/claude/statusline.sh",
+    "command": "bunx -y ccstatusline@latest",
     "padding": 0
   },
   "enabledPlugins": {
