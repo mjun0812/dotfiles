@@ -1,0 +1,39 @@
+[
+  // パネル（ターミナル、出力、問題など）の最大化を切り替え
+  {
+    "key": "alt+f",
+    "command": "workbench.action.toggleMaximizedPanel"
+  },
+  // クイックオープン内での前の項目選択を無効化
+  {
+    "key": "ctrl+p",
+    "command": "-workbench.action.quickOpenSelectPrevious",
+    "when": "inQuickOpen"
+  },
+  // クイックオープンビューを無効化
+  {
+    "key": "ctrl+q",
+    "command": "-workbench.action.quickOpenView"
+  },
+  // ターミナルでShift+Enterを押すと、改行せずにコマンドを実行（Escキー + Enter）
+  {
+    "key": "shift+enter",
+    "command": "workbench.action.terminal.sendSequence",
+    "args": {
+      "text": "\u001b\r"
+    },
+    "when": "terminalFocus"
+  },
+  // セカンダリサイドバーを開く/フォーカス（非表示時、または他の場所にフォーカスがある時）
+  {
+    "key": "cmd+alt+b",
+    "command": "workbench.action.focusAuxiliaryBar",
+    "when": "!auxiliaryBarVisible || editorFocus || terminalFocus || sideBarFocus || panelFocus"
+  },
+  // セカンダリサイドバーを閉じる（表示中かつauxiliary bar内にフォーカスがある時、webview含む）
+  {
+    "key": "cmd+alt+b",
+    "command": "workbench.action.toggleAuxiliaryBar",
+    "when": "auxiliaryBarVisible && !editorFocus && !terminalFocus && !sideBarFocus && !panelFocus"
+  }
+]
