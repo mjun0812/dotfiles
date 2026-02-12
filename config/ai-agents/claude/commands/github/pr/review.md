@@ -32,7 +32,12 @@ description: GitHubのpull request(PR)のコードレビューを行うSkill。5
    - **重要**: すべてのレビューコメントとレポートは、検出された言語で記述すること
    - 言語が曖昧な場合は、英語をデフォルトとする
 
-4. **PR の目的を要約する**:
+4. **既存レビューの確認**:
+   - 現在の GitHub ユーザー名を取得: `gh api user --jq '.login'`
+   - PRの既存レビュー一覧を取得: `gh api repos/{owner}/{repo}/pulls/{pull_number}/reviews --jq '.[] | select(.user.login == "<current_user>") | {id, state, submitted_at}'`
+   - 自分の既存レビューがある場合は，その情報（レビューID，state，投稿日時）を Phase 3 で使用するために保持する
+
+5. **PR の目的を要約する**:
    - タイトルと説明文からPRの目的を1-2文で要約する
    - この要約を各 agent に渡す
 
@@ -108,13 +113,20 @@ PRの出力形式セクションに従って Must Fix / Should Fix / Good Points
    - 後述の [レビューレポートテンプレート](#レビューレポートテンプレート) を参照
    - **重要**: "Must Fix" および "Should Fix" の項目には，inline comment の投稿を可能にするため `` `filepath:line` `` の形式を正確に使用すること
    - 各項目にはどの観点（code-quality, documentation, performance, security, testing）からの指摘かを明記すること
+   - **重要**: "Must Fix" および "Should Fix" の全項目をレビューレポート本文に記載すること。「inline commentsを参照」等の省略は禁止。これらの項目はレビューレポート本文と inline comments の両方に記載される
 
 4. **レビューレポートを表示する**:
    - 検出された言語でレビューレポートを表示する
 
 5. **GitHub への投稿を確認する**:
-   - AskUserQuestion ツールを使い，レビューを GitHub に投稿するかユーザーに確認する
+   - Phase 1 で取得した既存レビュー情報に基づき，AskUserQuestion ツールでユーザーに確認する
+   - **既存レビューがない場合**: 新規投稿するか／投稿しないかを確認する
+   - **既存レビューがある場合**: 既存レビューの state と投稿日時を提示し，以下の選択肢を提供する:
+     - 既存レビューを dismiss して新規レビューを投稿する（推奨: 既存が `REQUEST_CHANGES` や `COMMENT` で，内容が古い場合）
+     - 既存レビューはそのままで新規レビューを追加する（既存レビューの指摘がまだ有効な場合）
+     - 投稿しない
    - ユーザーが投稿を選択した場合:
+     - dismiss を選択された場合は，既存レビューを dismiss する: `gh api -X PUT repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/dismissals -f message="Superseded by new review"`
      - レビューレポートの "Must Fix" および "Should Fix" セクションから inline comments を抽出する
      - `gh api` を使用して reviews endpoint に投稿する（[inline comments 付きレビューの投稿](#inline-comments-付きレビューの投稿) を参照）
      - 投稿後にPRの URL を表示する
