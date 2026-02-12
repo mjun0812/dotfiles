@@ -97,6 +97,5 @@
     "clangd-lsp@claude-plugins-official": true
   },
   "language": "japanese",
-  "plansDirectory": "./.claude/plans",
-  "fastMode": true
+  "plansDirectory": "./.claude/plans"
 }
