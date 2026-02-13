@@ -10,6 +10,7 @@
       "Bash(tail:*)",
       "Bash(ls:*)",
       "Bash(eza:*)",
+      "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(rgrep:*)",
       "Bash(fd:*)",
@@ -31,6 +32,7 @@
       "WebFetch",
       "WebSearch",
       "Read",
+      "Search",
       "Edit(./.claude/plans/**)",
       "Write(./.claude/plans/**)"
     ],

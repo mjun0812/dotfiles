@@ -1,6 +1,6 @@
 ---
 name: create
-allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
+allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 argument-hint: [language] [--draft] [--reviewer <username>] [--label <name>]
 description: Pull Requestを作成するときに呼び出すSkill．現在のbranchからpull requestを作成する。言語指定可能。
 context: fork
@@ -20,7 +20,7 @@ context: fork
 - 現在のbranch: !`git branch --show-current`
 - default branch: !`gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`
 - 既存のPR: !`gh pr view --json url,state 2>/dev/null || echo "none"`
-- Conventional Commits specification: !`cat ~/.dotfiles/doc/templates/conventional_commits.md`
+- Conventional Commits specification: `~/.dotfiles/doc/templates/conventional_commits.md`
 
 ## Task
 
