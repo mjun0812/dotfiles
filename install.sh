@@ -15,6 +15,12 @@ mkdir -p "$HOME/.local/bin"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     zsh $DOTPATH/script/install_homebrew.sh
+
+    # karabiner-elements
+    mkdir -p "$HOME/.config/karabiner"
+    cp -aLf "$HOME/.config/karabiner/karabiner.json" "$DOTPATH/.backup/karabiner.json" 2>/dev/null || true
+    rm -rf "$HOME/.config/karabiner/karabiner.json"
+    ln -snfv "$DOTPATH/config/mac/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
 fi
 
 # ############## [dotfiles] ##############
