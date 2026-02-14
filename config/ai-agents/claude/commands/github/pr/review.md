@@ -192,7 +192,7 @@ Reviewed by Claude
 
 - `filename:line` - [category] Description of the suggestion
 
-## Suggestion(提案)
+## Suggestion(提案・質問)
 
 <!--　質問や改善提案などがあれば記載してください -->
 
