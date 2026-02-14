@@ -160,6 +160,8 @@ PRの出力形式セクションに従って Must Fix / Should Fix / Good Points
 
 ## Suggestion
 
+<!--　Questions or improvement suggestions, if any -->
+
 ## Verdict
 
 <!-- APPROVE / REQUEST_CHANGES / COMMENT -->
@@ -191,6 +193,8 @@ Reviewed by Claude
 - `filename:line` - [category] Description of the suggestion
 
 ## Suggestion(提案)
+
+<!--　質問や改善提案などがあれば記載してください -->
 
 ## Verdict(判定)
 
