@@ -55,8 +55,8 @@ alias cc-commit='command claude --model=haiku /git:commit'
 alias cc-commit-ja='command claude --model=haiku /git:commit ja'
 
 # Gemini-cli
-alias gemini-commit='command gemini -i "/aicommit" --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff),ShellTool(git commit)"'
-alias gemini-commit-ja='command gemini -i "/aicommit ja" --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff),ShellTool(git commit)"'
+alias gemini-commit='command gemini -p "/aicommit" -y --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff),ShellTool(git commit)"'
+alias gemini-commit-ja='command gemini -p "/aicommit ja" -y --model=gemini-3-flash-preview --allowed-tools "ShellTool(git status),ShellTool(git log),ShellTool(git branch),ShellTool(git diff),ShellTool(git commit)"'
 
 # Codex
 alias codex-commit='command codex "/prompts:aicommit"'
