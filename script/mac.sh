@@ -24,4 +24,6 @@ brew install --cask \
     karabiner-elements \
     raycast \
     wezterm@nightly \
-    xquartz
+    xquartz \
+    cursor \
+    visual-studio-code
