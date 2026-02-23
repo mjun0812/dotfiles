@@ -444,7 +444,7 @@
    "workbench.editor.labelFormat": "short",
    "workbench.editor.scrollToSwitchTabs": true,
    "workbench.editor.splitInGroupLayout": "vertical",
-   "workbench.editor.wrapTabs": true,
+   "workbench.editor.wrapTabs": false,
    "workbench.editorAssociations": {
       "*.ipynb": "jupyter-notebook",
       "*.pdf": "latex-workshop-pdf-hook"
