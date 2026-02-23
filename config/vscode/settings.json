@@ -1,429 +1,460 @@
 {
-  "[astro]": {
-    "editor.defaultFormatter": "astro-build.astro-vscode"
-  },
-  "[bibtex]": {
-    "editor.tabSize": 2
-  },
-  "[c]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools",
-    "editor.formatOnSave": false
-  },
-  "[cpp]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools",
-    "editor.formatOnSave": false
-  },
-  "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[cuda-cpp]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools"
-  },
-  "[dockercompose]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-  "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[latex]": {
-    "editor.tabSize": 2,
-    "files.encoding": "utf8"
-  },
-  "[markdown]": {
-    "editor.defaultFormatter": "yzhang.markdown-all-in-one",
-    "editor.snippetSuggestions": "top",
-    "editor.wordWrap": "on"
-  },
-  "[php]": {
-    "editor.defaultFormatter": "DEVSENSE.phptools-vscode"
-  },
-  "[python]": {
-    "diffEditor.ignoreTrimWhitespace": true,
-    "editor.codeActionsOnSave": {
-      "source.fixAll": "never",
-      "source.organizeImports": "explicit"
-    },
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnType": true,
-    "editor.semanticHighlighting.enabled": false
-  },
-  "[ruby]": {
-    "editor.defaultFormatter": "Shopify.ruby-lsp",
-    "editor.formatOnSave": false
-  },
-  "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[sql]": {
-    "editor.formatOnSave": false,
-    "editor.formatOnType": false
-  },
-  "[svelte]": {
-    "editor.defaultFormatter": "svelte.svelte-vscode"
-  },
-  "[tex]": {
-    "editor.tabSize": 2,
-    "files.encoding": "utf8"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "[xml]": {
-    "editor.defaultFormatter": "DotJoshJohnson.xml"
-  },
-  "[yaml]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-  "C_Cpp.clang_format_fallbackStyle": "Google",
-  "C_Cpp.formatting": "clangFormat",
-  "C_Cpp.vcFormat.indent.accessSpecifiers": true,
-  "C_Cpp.vcFormat.indent.braces": true,
-  "claudeCode.preferredLocation": "sidebar",
-  "cmake.pinnedCommands": [
-    "workbench.action.tasks.configureTaskRunner",
-    "workbench.action.tasks.runTask"
-  ],
-  "csv-preview.numberFormat": "g5",
-  "csv-preview.resizeColumns": "all",
-  "docker.extension.enableComposeLanguageServer": false,
-  "editor.accessibilitySupport": "off",
-  "editor.bracketPairColorization.enabled": true,
-  "editor.fontFamily": "'RobotoMonoJP', 'RobotoMono JP Nerd', Menlo, Monaco, 'Courier New', monospace",
-  "editor.fontLigatures": false,
-  "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "file",
-  "editor.formatOnType": true,
-  "editor.inlineSuggest.suppressSuggestions": true,
-  "editor.largeFileOptimizations": false,
-  "editor.parameterHints.cycle": true,
-  "editor.parameterHints.enabled": true,
-  "editor.quickSuggestionsDelay": 5,
-  "editor.rename.enablePreview": false,
-  "editor.suggestSelection": "first",
-  "editor.tokenColorCustomizations": {
-    "textMateRules": [
+   "[astro]": {
+      "editor.defaultFormatter": "astro-build.astro-vscode"
+   },
+   "[bibtex]": {
+      "editor.tabSize": 2
+   },
+   "[c]": {
+      "editor.defaultFormatter": "ms-vscode.cpptools",
+      "editor.formatOnSave": false
+   },
+   "[cpp]": {
+      "editor.defaultFormatter": "ms-vscode.cpptools",
+      "editor.formatOnSave": false
+   },
+   "[css]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+   },
+   "[cuda-cpp]": {
+      "editor.defaultFormatter": "ms-vscode.cpptools"
+   },
+   "[dockercompose]": {
+      "editor.defaultFormatter": "redhat.vscode-yaml"
+   },
+   "[html]": {
+      "editor.defaultFormatter": "vscode.html-language-features"
+   },
+   "[javascript]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+   },
+   "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+   },
+   "[jsonc]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+   },
+   "[latex]": {
+      "editor.tabSize": 2,
+      "files.encoding": "utf8"
+   },
+   "[markdown]": {
+      "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+      "editor.snippetSuggestions": "top",
+      "editor.wordWrap": "on"
+   },
+   "[php]": {
+      "editor.defaultFormatter": "DEVSENSE.phptools-vscode"
+   },
+   "[python]": {
+      "diffEditor.ignoreTrimWhitespace": true,
+      "editor.codeActionsOnSave": {
+         "source.fixAll": "never",
+         "source.organizeImports": "explicit"
+      },
+      "editor.defaultFormatter": "charliermarsh.ruff",
+      "editor.formatOnType": true,
+      "editor.semanticHighlighting.enabled": false
+   },
+   "[ruby]": {
+      "editor.defaultFormatter": "Shopify.ruby-lsp",
+      "editor.formatOnSave": false
+   },
+   "[scss]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+   },
+   "[sql]": {
+      "editor.formatOnSave": false,
+      "editor.formatOnType": false
+   },
+   "[svelte]": {
+      "editor.defaultFormatter": "svelte.svelte-vscode"
+   },
+   "[tex]": {
+      "editor.tabSize": 2,
+      "files.encoding": "utf8"
+   },
+   "[typescriptreact]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+   },
+   "[xml]": {
+      "editor.defaultFormatter": "DotJoshJohnson.xml"
+   },
+   "[yaml]": {
+      "editor.defaultFormatter": "redhat.vscode-yaml"
+   },
+   "C_Cpp.clang_format_fallbackStyle": "Google",
+   "C_Cpp.formatting": "clangFormat",
+   "C_Cpp.vcFormat.indent.accessSpecifiers": true,
+   "C_Cpp.vcFormat.indent.braces": true,
+   "claudeCode.preferredLocation": "sidebar",
+   "cmake.pinnedCommands": [
+      "workbench.action.tasks.configureTaskRunner",
+      "workbench.action.tasks.runTask"
+   ],
+   "csv-preview.numberFormat": "g5",
+   "csv-preview.resizeColumns": "all",
+   "docker.extension.enableComposeLanguageServer": false,
+   "editor.accessibilitySupport": "off",
+   "editor.bracketPairColorization.enabled": true,
+   "editor.cursorBlinking": "phase",
+   "editor.cursorSmoothCaretAnimation": "on",
+   "editor.fontFamily": "'RobotoMonoJP', 'RobotoMono JP Nerd', Menlo, Monaco, 'Courier New', monospace",
+   "editor.fontLigatures": false,
+   "editor.formatOnSave": true,
+   "editor.formatOnSaveMode": "file",
+   "editor.formatOnType": true,
+   "editor.guides.bracketPairs": true,
+   "editor.inlineSuggest.suppressSuggestions": true,
+   "editor.largeFileOptimizations": false,
+   "editor.lineHeight": 1.8,
+   "editor.minimap.maxColumn": 80,
+   "editor.minimap.showSlider": "always",
+   "editor.parameterHints.cycle": true,
+   "editor.parameterHints.enabled": true,
+   "editor.quickSuggestionsDelay": 5,
+   "editor.rename.enablePreview": false,
+   "editor.renderLineHighlight": "all",
+   "editor.renderWhitespace": "all",
+   "editor.smoothScrolling": true,
+   "editor.suggestSelection": "first",
+   "editor.tokenColorCustomizations": {
+      "textMateRules": [
+         {
+            "scope": [
+               "string.quoted.docstring.multi.python"
+            ],
+            "settings": {
+               "fontStyle": "italic",
+               "foreground": "#107a84"
+            }
+         }
+      ]
+   },
+   "editor.unicodeHighlight.allowedCharacters": {
+      "，": true,
+      "．": true
+   },
+   "editor.unicodeHighlight.ambiguousCharacters": false,
+   "editor.wordWrap": "on",
+   "explorer.compactFolders": false,
+   "explorer.confirmDelete": false,
+   "explorer.confirmDragAndDrop": false,
+   "explorer.confirmPasteNative": false,
+   "explorer.sortOrder": "type",
+   "files.associations": {
+      "*.erb": "html"
+   },
+   "files.autoGuessEncoding": true,
+   "files.candidateGuessEncodings": [
+      "utf8",
+      "shiftjis",
+      "eucjp"
+   ],
+   "git-graph.date.format": "ISO Date & Time",
+   "git.autofetch": "all",
+   "git.confirmSync": false,
+   "git.mergeEditor": false,
+   "git.openRepositoryInParentFolders": "never",
+   "git.pruneOnFetch": true,
+   "git.suggestSmartCommit": false,
+   "github.copilot.enable": {
+      "*": true,
+      "markdown": true
+   },
+   "github.copilot.nextEditSuggestions.extendedRange": true,
+   "gitlens.advanced.messages": {
+      "suppressGitMissingWarning": true
+   },
+   "gitlens.ai.model": "vscode",
+   "gitlens.ai.vscode.model": "copilot:gpt-4.1",
+   "gitlens.codeLens.authors.enabled": false,
+   "gitlens.codeLens.recentChange.enabled": false,
+   "gitlens.defaultGravatarsStyle": "wavatar",
+   "javascript.updateImportsOnFileMove.enabled": "always",
+   "latex-workshop.formatting.latex": "latexindent",
+   "latex-workshop.intellisense.package.enabled": true,
+   "latex-workshop.latex.autoClean.run": "onBuilt",
+   "latex-workshop.latex.clean.fileTypes": [
+      "*.aux",
+      "*.bbl",
+      "*.blg",
+      "*.idx",
+      "*.ind",
+      "*.lof",
+      "*.lot",
+      "*.out",
+      "*.toc",
+      "*.acn",
+      "*.acr",
+      "*.alg",
+      "*.glg",
+      "*.glo",
+      "*.gls",
+      "*.ist",
+      "*.fls",
+      "*.log",
+      "*.fdb_latexmk",
+      "*.snm",
+      "*.nav",
+      "*.dvi",
+      "*.synctex.gz",
+      "*.run.xml",
+      "*.bcf",
+      "*.bbl",
+      "*.blg"
+   ],
+   "latex-workshop.latex.recipe.default": "lastUsed",
+   "latex-workshop.latex.recipes": [
       {
-        "scope": [
-          "string.quoted.docstring.multi.python"
-        ],
-        "settings": {
-          "fontStyle": "italic",
-          "foreground": "#107a84"
-        }
+         "name": "platex_no_pbibtex",
+         "tools": [
+            "platex",
+            "platex",
+            "platex",
+            "dvipdfmx"
+         ]
+      },
+      {
+         "name": "platex_pbibtex",
+         "tools": [
+            "platex",
+            "pbibtex",
+            "platex",
+            "platex",
+            "dvipdfmx"
+         ]
+      },
+      {
+         "name": "uplatex_pbibtex",
+         "tools": [
+            "uplatex",
+            "pbibtex",
+            "uplatex",
+            "uplatex",
+            "dvipdfmx"
+         ]
+      },
+      {
+         "name": "uplatex_biber",
+         "tools": [
+            "uplatex",
+            "biber",
+            "uplatex",
+            "uplatex",
+            "dvipdfmx"
+         ]
+      },
+      {
+         "name": "uplatex_no_pbibtex",
+         "tools": [
+            "uplatex",
+            "uplatex",
+            "uplatex",
+            "dvipdfmx"
+         ]
+      },
+      {
+         "name": "lualatex_pbibtex",
+         "tools": [
+            "lualatex",
+            "pbibtex",
+            "lualatex",
+            "lualatex"
+         ]
+      },
+      {
+         "name": "lualatex_no_pbibtex",
+         "tools": [
+            "lualatex",
+            "lualatex",
+            "lualatex"
+         ]
+      },
+      {
+         "name": "make",
+         "tools": [
+            "make"
+         ]
+      },
+      {
+         "name": "latexmk",
+         "tools": [
+            "latexmk"
+         ]
       }
-    ]
-  },
-  "editor.unicodeHighlight.allowedCharacters": {
-    "，": true,
-    "．": true
-  },
-  "editor.unicodeHighlight.ambiguousCharacters": false,
-  "editor.wordWrap": "on",
-  "explorer.confirmDelete": false,
-  "explorer.confirmDragAndDrop": false,
-  "explorer.confirmPasteNative": false,
-  "explorer.sortOrder": "type",
-  "files.associations": {
-    "*.erb": "html"
-  },
-  "git.autofetch": true,
-  "git.confirmSync": false,
-  "git.mergeEditor": false,
-  "git.openRepositoryInParentFolders": "never",
-  "github.copilot.enable": {
-    "*": true,
-    "markdown": true
-  },
-  "github.copilot.nextEditSuggestions.extendedRange": true,
-  "gitlens.advanced.messages": {
-    "suppressGitMissingWarning": true
-  },
-  "gitlens.codeLens.authors.enabled": false,
-  "gitlens.codeLens.recentChange.enabled": false,
-  "gitlens.defaultGravatarsStyle": "wavatar",
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "latex-workshop.formatting.latex": "latexindent",
-  "latex-workshop.intellisense.package.enabled": true,
-  "latex-workshop.latex.autoClean.run": "onBuilt",
-  "latex-workshop.latex.clean.fileTypes": [
-    "*.aux",
-    "*.bbl",
-    "*.blg",
-    "*.idx",
-    "*.ind",
-    "*.lof",
-    "*.lot",
-    "*.out",
-    "*.toc",
-    "*.acn",
-    "*.acr",
-    "*.alg",
-    "*.glg",
-    "*.glo",
-    "*.gls",
-    "*.ist",
-    "*.fls",
-    "*.log",
-    "*.fdb_latexmk",
-    "*.snm",
-    "*.nav",
-    "*.dvi",
-    "*.synctex.gz",
-    "*.run.xml",
-    "*.bcf",
-    "*.bbl",
-    "*.blg"
-  ],
-  "latex-workshop.latex.recipe.default": "lastUsed",
-  "latex-workshop.latex.recipes": [
-    {
-      "name": "platex_no_pbibtex",
-      "tools": [
-        "platex",
-        "platex",
-        "platex",
-        "dvipdfmx"
-      ]
-    },
-    {
-      "name": "platex_pbibtex",
-      "tools": [
-        "platex",
-        "pbibtex",
-        "platex",
-        "platex",
-        "dvipdfmx"
-      ]
-    },
-    {
-      "name": "uplatex_pbibtex",
-      "tools": [
-        "uplatex",
-        "pbibtex",
-        "uplatex",
-        "uplatex",
-        "dvipdfmx"
-      ]
-    },
-    {
-      "name": "uplatex_biber",
-      "tools": [
-        "uplatex",
-        "biber",
-        "uplatex",
-        "uplatex",
-        "dvipdfmx"
-      ]
-    },
-    {
-      "name": "uplatex_no_pbibtex",
-      "tools": [
-        "uplatex",
-        "uplatex",
-        "uplatex",
-        "dvipdfmx"
-      ]
-    },
-    {
-      "name": "lualatex_pbibtex",
-      "tools": [
-        "lualatex",
-        "pbibtex",
-        "lualatex",
-        "lualatex"
-      ]
-    },
-    {
-      "name": "lualatex_no_pbibtex",
-      "tools": [
-        "lualatex",
-        "lualatex",
-        "lualatex"
-      ]
-    },
-    {
-      "name": "make",
-      "tools": [
-        "make"
-      ]
-    },
-    {
-      "name": "latexmk",
-      "tools": [
-        "latexmk"
-      ]
-    }
-  ],
-  "latex-workshop.latex.tools": [
-    {
-      "args": [
-        "%DOCFILE%.dvi"
-      ],
-      "command": "dvipdfmx",
-      "name": "dvipdfmx"
-    },
-    {
-      "args": [
-        "-kanji=utf8",
-        "-synctex=1",
-        "-interaction=nonstopmode",
-        "-halt-on-error",
-        "-file-line-error",
-        "%DOC%"
-      ],
-      "command": "platex",
-      "name": "platex"
-    },
-    {
-      "args": [
-        "--bblencoding=utf8",
-        "-u",
-        "-U",
-        "--output_safechars",
-        "%DOCFILE%"
-      ],
-      "command": "biber",
-      "name": "biber"
-    },
-    {
-      "args": [
-        "-kanji=utf8",
-        "%DOCFILE%"
-      ],
-      "command": "pbibtex",
-      "name": "pbibtex"
-    },
-    {
-      "args": [
-        "-synctex=1",
-        "-kanji=utf8",
-        "-interaction=nonstopmode",
-        "%DOC%"
-      ],
-      "command": "uplatex",
-      "name": "uplatex"
-    },
-    {
-      "args": [
-        "-synctex=1",
-        "-shell-escape",
-        "-interaction=nonstopmode",
-        "%DOC%"
-      ],
-      "command": "lualatex",
-      "name": "lualatex"
-    },
-    {
-      "args": [],
-      "command": "make",
-      "name": "make"
-    },
-    {
-      "args": [
-        "-silent",
-        "%DOC%"
-      ],
-      "command": "latexmk",
-      "name": "latexmk"
-    }
-  ],
-  "latex-workshop.view.pdf.tab.editorGroup": "left",
-  "latex-workshop.view.pdf.viewer": "tab",
-  "makefile.configureOnOpen": true,
-  "markdown-pdf.breaks": true,
-  "markdown-pdf.emoji": true,
-  "markdown-pdf.footerTemplate": "<div style=\"font-size: 9px; margin: 0 auto;\"> <span class='pageNumber'></span></div>",
-  "markdown-pdf.headerTemplate": "<div style=\"font-size: 9px; margin-left: 1cm;\"> <span class='title'></span></div> <div style=\"font-size: 9px; margin-left: auto; margin-right: 1cm; \"> <span class='date'></span></div>",
-  "markdown-pdf.highlightStyle": "atom-one-dark.css",
-  "markdown-pdf.styles": [
-    "~/.dotfiles/templates/github-markdown.css"
-  ],
-  "markdown-pdf.stylesRelativePathFile": true,
-  "markdown.extension.print.theme": "dark",
-  "markdown.extension.tableFormatter.normalizeIndentation": true,
-  "markdown.validate.duplicateLinkDefinitions.enabled": "ignore",
-  "notebook.cellToolbarLocation": {
-    "default": "right",
-    "jupyter-notebook": "left"
-  },
-  "notebook.codeActionsOnSave": {
-    "notebook.source.fixAll": "never",
-    "notebook.source.organizeImports": "explicit"
-  },
-  "notebook.formatOnSave.enabled": true,
-  "oneDarkPro.italic": false,
-  "pasteImage.defaultName": "YMMDD_HHmmss",
-  "pasteImage.path": "${currentFileDir}/images",
-  "prettier.resolveGlobalModules": true,
-  "python.analysis.autoImportCompletions": false,
-  "python.languageServer": "None",
-  "python.terminal.activateEnvInCurrentTerminal": true,
-  "python.terminal.activateEnvironment": false,
-  "redhat.telemetry.enabled": false,
-  "remote.SSH.lockfilesInTmp": true,
-  "security.workspace.trust.untrustedFiles": "open",
-  "terminal.integrated.enableMultiLinePasteWarning": "never",
-  "terminal.integrated.scrollback": 10000,
-  "terminal.integrated.tabs.enabled": true,
-  "terminal.integrated.tabs.location": "left",
-  "text-tables.showStatus": false,
-  "trailing-spaces.backgroundColor": "rgba(47,52,65,0.3)",
-  "vsicons.dontShowNewVersionMessage": true,
-  "window.commandCenter": false,
-  "window.customTitleBarVisibility": "auto",
-  "workbench.activityBar.location": "top",
-  "workbench.colorCustomizations": {
-    // Tokyo Night Highlight
-    "[Tokyo Night]": {
-      "activityBar.foreground": "#bdc7f0",
-      "activityBar.inactiveForeground": "#787c99",
-      "breadcrumb.activeSelectionForeground": "#bdc7f0",
-      "breadcrumb.focusForeground": "#bdc7f0",
-      "breadcrumb.foreground": "#959cbd",
-      "dropdown.foreground": "#959cbd",
-      "foreground": "#959cbd",
-      "gitDecoration.ignoredResourceForeground": "#696d87",
-      "input.foreground": "#959cbd",
-      "input.placeholderForeground": "#959cbd",
-      "list.activeSelectionForeground": "#bdc7f0",
-      "list.focusForeground": "#bdc7f0",
-      "list.hoverForeground": "#bdc7f0",
-      "list.inactiveSelectionBackground": "#202330",
-      "list.inactiveSelectionForeground": "#bdc7f0",
-      "menu.foreground": "#bdc7f0",
-      "menubar.selectionForeground": "#bdc7f0",
-      "panelTitle.activeBorder": "#3d59a1",
-      "panelTitle.activeForeground": "#bdc7f0",
-      "panelTitle.inactiveForeground": "#959cbd",
-      "sideBar.foreground": "#959cbd",
-      "statusBar.foreground": "#bdc7f0",
-      "tab.activeForeground": "#bdc7f0",
-      "tab.inactiveForeground": "#959cbd"
-    }
-  },
-  "workbench.colorTheme": "Tokyo Night",
-  "workbench.editor.labelFormat": "short",
-  "workbench.editor.splitInGroupLayout": "vertical",
-  "workbench.editorAssociations": {
-    "*.ipynb": "jupyter-notebook",
-    "*.pdf": "latex-workshop-pdf-hook"
-  },
-  "workbench.editorLargeFileConfirmation": 30,
-  "workbench.iconTheme": "vscode-icons",
-  "workbench.preferredDarkColorTheme": "One Dark Pro Darker",
-  "workbench.startupEditor": "none",
-  "ty.completions.autoImport": false,
-  "gitlens.ai.model": "vscode",
-  "gitlens.ai.vscode.model": "copilot:gpt-4.1",
-  "markdown.extension.toc.updateOnSave": false,
-  "markdown-preview-enhanced.previewTheme": "one-dark.css"
+   ],
+   "latex-workshop.latex.tools": [
+      {
+         "args": [
+            "%DOCFILE%.dvi"
+         ],
+         "command": "dvipdfmx",
+         "name": "dvipdfmx"
+      },
+      {
+         "args": [
+            "-kanji=utf8",
+            "-synctex=1",
+            "-interaction=nonstopmode",
+            "-halt-on-error",
+            "-file-line-error",
+            "%DOC%"
+         ],
+         "command": "platex",
+         "name": "platex"
+      },
+      {
+         "args": [
+            "--bblencoding=utf8",
+            "-u",
+            "-U",
+            "--output_safechars",
+            "%DOCFILE%"
+         ],
+         "command": "biber",
+         "name": "biber"
+      },
+      {
+         "args": [
+            "-kanji=utf8",
+            "%DOCFILE%"
+         ],
+         "command": "pbibtex",
+         "name": "pbibtex"
+      },
+      {
+         "args": [
+            "-synctex=1",
+            "-kanji=utf8",
+            "-interaction=nonstopmode",
+            "%DOC%"
+         ],
+         "command": "uplatex",
+         "name": "uplatex"
+      },
+      {
+         "args": [
+            "-synctex=1",
+            "-shell-escape",
+            "-interaction=nonstopmode",
+            "%DOC%"
+         ],
+         "command": "lualatex",
+         "name": "lualatex"
+      },
+      {
+         "args": [],
+         "command": "make",
+         "name": "make"
+      },
+      {
+         "args": [
+            "-silent",
+            "%DOC%"
+         ],
+         "command": "latexmk",
+         "name": "latexmk"
+      }
+   ],
+   "latex-workshop.view.pdf.tab.editorGroup": "left",
+   "latex-workshop.view.pdf.viewer": "tab",
+   "makefile.configureOnOpen": true,
+   "markdown-pdf.breaks": true,
+   "markdown-pdf.emoji": true,
+   "markdown-pdf.footerTemplate": "<div style=\"font-size: 9px; margin: 0 auto;\"> <span class='pageNumber'></span></div>",
+   "markdown-pdf.headerTemplate": "<div style=\"font-size: 9px; margin-left: 1cm;\"> <span class='title'></span></div> <div style=\"font-size: 9px; margin-left: auto; margin-right: 1cm; \"> <span class='date'></span></div>",
+   "markdown-pdf.highlightStyle": "atom-one-dark.css",
+   "markdown-pdf.styles": [
+      "~/.dotfiles/templates/github-markdown.css"
+   ],
+   "markdown-pdf.stylesRelativePathFile": true,
+   "markdown-preview-enhanced.previewTheme": "one-dark.css",
+   "markdown.extension.print.theme": "dark",
+   "markdown.extension.tableFormatter.normalizeIndentation": true,
+   "markdown.extension.toc.updateOnSave": false,
+   "markdown.validate.duplicateLinkDefinitions.enabled": "ignore",
+   "notebook.cellToolbarLocation": {
+      "default": "right",
+      "jupyter-notebook": "left"
+   },
+   "notebook.codeActionsOnSave": {
+      "notebook.source.fixAll": "never",
+      "notebook.source.organizeImports": "explicit"
+   },
+   "notebook.formatOnSave.enabled": true,
+   "oneDarkPro.italic": false,
+   "pasteImage.defaultName": "YMMDD_HHmmss",
+   "pasteImage.path": "${currentFileDir}/images",
+   "prettier.resolveGlobalModules": true,
+   "python.analysis.autoImportCompletions": false,
+   "python.languageServer": "None",
+   "python.terminal.activateEnvInCurrentTerminal": true,
+   "python.terminal.activateEnvironment": false,
+   "redhat.telemetry.enabled": false,
+   "remote.SSH.lockfilesInTmp": true,
+   "scm.alwaysShowRepositories": true,
+   "scm.compactFolders": false,
+   "scm.defaultViewMode": "tree",
+   "scm.inputFontFamily": "editor",
+   "search.showLineNumbers": true,
+   "security.workspace.trust.untrustedFiles": "open",
+   "terminal.integrated.enableMultiLinePasteWarning": "never",
+   "terminal.integrated.scrollback": 10000,
+   "terminal.integrated.tabs.enabled": true,
+   "terminal.integrated.tabs.location": "left",
+   "text-tables.showStatus": false,
+   "trailing-spaces.backgroundColor": "rgba(47,52,65,0.3)",
+   "ty.completions.autoImport": false,
+   "vsicons.dontShowNewVersionMessage": true,
+   "window.commandCenter": false,
+   "window.customTitleBarVisibility": "auto",
+   "workbench.activityBar.location": "top",
+   "workbench.colorCustomizations": {
+      // Tokyo Night Highlight
+      "[Tokyo Night]": {
+         "activityBar.foreground": "#bdc7f0",
+         "activityBar.inactiveForeground": "#787c99",
+         "breadcrumb.activeSelectionForeground": "#bdc7f0",
+         "breadcrumb.focusForeground": "#bdc7f0",
+         "breadcrumb.foreground": "#959cbd",
+         "dropdown.foreground": "#959cbd",
+         "foreground": "#959cbd",
+         "gitDecoration.ignoredResourceForeground": "#696d87",
+         "input.foreground": "#959cbd",
+         "input.placeholderForeground": "#959cbd",
+         "list.activeSelectionForeground": "#bdc7f0",
+         "list.focusForeground": "#bdc7f0",
+         "list.hoverForeground": "#bdc7f0",
+         "list.inactiveSelectionBackground": "#202330",
+         "list.inactiveSelectionForeground": "#bdc7f0",
+         "menu.foreground": "#bdc7f0",
+         "menubar.selectionForeground": "#bdc7f0",
+         "panelTitle.activeBorder": "#3d59a1",
+         "panelTitle.activeForeground": "#bdc7f0",
+         "panelTitle.inactiveForeground": "#959cbd",
+         "sideBar.foreground": "#959cbd",
+         "statusBar.foreground": "#bdc7f0",
+         "tab.activeForeground": "#bdc7f0",
+         "tab.inactiveForeground": "#959cbd"
+      }
+   },
+   "workbench.colorTheme": "Tokyo Night",
+   "workbench.editor.closeOnFileDelete": true,
+   "workbench.editor.labelFormat": "short",
+   "workbench.editor.scrollToSwitchTabs": true,
+   "workbench.editor.splitInGroupLayout": "vertical",
+   "workbench.editor.wrapTabs": true,
+   "workbench.editorAssociations": {
+      "*.ipynb": "jupyter-notebook",
+      "*.pdf": "latex-workshop-pdf-hook"
+   },
+   "workbench.editorLargeFileConfirmation": 30,
+   "workbench.iconTheme": "vscode-icons",
+   "workbench.list.smoothScrolling": true,
+   "workbench.preferredDarkColorTheme": "One Dark Pro Darker",
+   "workbench.startupEditor": "none",
+   "workbench.tree.indent": 16,
+   "workbench.tree.renderIndentGuides": "always",
+   "workbench.view.alwaysShowHeaderActions": true
 }

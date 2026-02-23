@@ -82,8 +82,6 @@ nvs
 # Claude Code
 cc-commit # AIが生成したコミットメッセージでコミットする
 cc-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
-cc-pr # AIが生成したタイトルと説明でプルリクエストを作成する
-cc-pr-ja # AIが生成した日本語のタイトルと説明でプルリクエストを作成する
 
 # Gemini-cli
 gemini-commit # AIが生成したコミットメッセージでコミットする
@@ -96,14 +94,10 @@ codex-commit-ja # AIが生成した日本語のコミットメッセージでコ
 # Copilot-cli
 copilot-commit # AIが生成したコミットメッセージでコミットする
 copilot-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
-copilot-pr # AIが生成したタイトルと説明でプルリクエストを作成する
-copilot-pr-ja # AIが生成した日本語のタイトルと説明でプルリクエストを作成する
 
 # Alias
 aicommit # = cc-commit
 aicommit-ja # = cc-commit-ja
-aipr # = cc-pr
-aipr-ja # = cc-pr-ja
 
 # ghq + fzf
 # ghqで管理しているリポジトリをfzfで選択してcdする
@@ -128,11 +122,6 @@ git prune-branch
 git aicommit
 # commit with AI generated commit message in Japanese
 git aicommit-ja
-
-# generate pull request with AI generated title and description
-git aipr
-# generate pull request with AI generated title and description in Japanese
-git aipr-ja
 ```
 
 ## ANSI 16 Color
