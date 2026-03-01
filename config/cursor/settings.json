@@ -410,7 +410,7 @@
     "terminal.integrated.tabs.enabled": true,
     "trailing-spaces.backgroundColor": "rgba(47,52,65,0.3)",
     "vsicons.dontShowNewVersionMessage": true,
-    "window.commandCenter": false,
+    "window.commandCenter": true,
     "workbench.colorCustomizations": {
         // Tokyo Night Highlight
         "[Tokyo Night]": {
