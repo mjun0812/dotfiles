@@ -406,6 +406,11 @@
    "text-tables.showStatus": false,
    "trailing-spaces.backgroundColor": "rgba(47,52,65,0.3)",
    "ty.completions.autoImport": false,
+   "ty.configuration": {
+      "rules": {
+         "all": "warn"
+      }
+   },
    "vsicons.dontShowNewVersionMessage": true,
    "window.commandCenter": false,
    "window.customTitleBarVisibility": "auto",
