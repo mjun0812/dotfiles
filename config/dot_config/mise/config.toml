@@ -33,6 +33,7 @@ codex = "latest"
 opencode = "latest"
 claude-code = "latest"
 tmux = "latest"
+cmake = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
