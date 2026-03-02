@@ -67,7 +67,6 @@ command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 if [ -d ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
 fi
-
 autoload -Uz compinit && compinit
 autoload -Uz bashcompinit && bashcompinit
 # AWS CLI completion
@@ -76,9 +75,12 @@ if command -v aws_completer >/dev/null 2>&1; then
 fi
 # gwq completion
 if command -v gwq >/dev/null 2>&1; then
-  source <(gwq completion zsh)
+    source <(gwq completion zsh)
 fi
-
+# docker completion
+if command -v docker >/dev/null 2>&1; then
+    source <(docker completion zsh)
+fi
 if [[ "$CLAUDECODE" != "1" ]]; then
     command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
 fi
