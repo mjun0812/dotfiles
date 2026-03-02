@@ -1,7 +1,4 @@
 {
-  "ide": {
-    "enabled": true
-  },
   "security": {
     "auth": {
       "selectedType": "oauth-personal"
