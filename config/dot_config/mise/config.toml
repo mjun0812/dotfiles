@@ -23,7 +23,7 @@ zoxide = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
 "github:d-kuro/gwq" = "latest"
 # tool
-neovim = "latest"
+"aqua:neovim/neovim" = "latest"
 tree-sitter = "latest"
 starship = "latest"
 git-lfs = "latest"
