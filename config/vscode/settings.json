@@ -461,5 +461,6 @@
    "workbench.startupEditor": "none",
    "workbench.tree.indent": 16,
    "workbench.tree.renderIndentGuides": "always",
-   "workbench.view.alwaysShowHeaderActions": true
+   "workbench.view.alwaysShowHeaderActions": true,
+   "workbench.secondarySideBar.defaultVisibility": "hidden"
 }
