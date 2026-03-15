@@ -136,15 +136,20 @@ ln -snfv "$DOTPATH/config/ai-agents/claude/mcp.json" "$HOME/.claude/mcp.json"
 
 ################ [Codex] ################
 log_section "Setting up Codex..."
+CODEX_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/codex/skills"
+CODEX_SKILLS_TARGET_DIR="$HOME/.codex/skills"
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
 cp -aLf "$HOME/.codex/config.toml" "$DOTPATH/.backup/codex_config.toml" && rm -rf "$HOME/.codex/config.toml"
 rm -rf "$DOTPATH/.backup/codex_prompts" && cp -aLf "$HOME/.codex/prompts" "$DOTPATH/.backup/codex_prompts" && rm -rf "$HOME/.codex/prompts"
-rm -rf "$DOTPATH/.backup/codex_skills" && cp -aLf "$HOME/.codex/skills" "$DOTPATH/.backup/codex_skills" && rm -rf "$HOME/.codex/skills"
 mkdir -p "$HOME/.codex"
+mkdir -p "$CODEX_SKILLS_TARGET_DIR"
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 ln -snfv "$DOTPATH/config/ai-agents/codex/config.toml" "$HOME/.codex/config.toml"
 ln -snfv "$DOTPATH/config/ai-agents/codex/prompts" "$HOME/.codex/prompts"
-ln -snfv "$DOTPATH/config/ai-agents/codex/skills" "$HOME/.codex/skills"
+for skill_dir in "$CODEX_SKILLS_SOURCE_DIR"/*(/N); do
+    skill_name=$(basename "$skill_dir")
+    ln -snfv "$skill_dir" "$CODEX_SKILLS_TARGET_DIR/$skill_name"
+done
 
 ################ [Gemini] ################
 log_section "Setting up Gemini..."
