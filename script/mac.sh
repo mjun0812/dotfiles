@@ -8,7 +8,8 @@ brew install \
     llvm \
     ninja \
     cmake \
-    tree
+    tree \
+    subversion
 
 brew install --cask \
     nikitabobko/tap/aerospace \
