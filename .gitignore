@@ -19,6 +19,9 @@
 !templates
 !templates/**
 
+config/ai-agents/codex/skills/.system
+config/ai-agents/codex/skills/.system/**
+
 .DS_Store
 config/dot_config/yazi/plugins
 config/dot_config/yazi/package.toml
