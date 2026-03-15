@@ -99,6 +99,5 @@
     "clangd-lsp@claude-plugins-official": true
   },
   "language": "japanese",
-  "plansDirectory": "./.claude/plans",
-  "effortLevel": "medium"
+  "plansDirectory": "./.claude/plans"
 }
