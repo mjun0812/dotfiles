@@ -17,7 +17,7 @@ context: fork
 
 ## Context
 
-- リポジトリ情報: !`gh repo view --json name,owner --jq '"\(.owner.login)/\(.name)"'`
+- リポジトリ情報: !`gh repo view --json name,owner --jq '.owner.login + "/" + .name'`
 - 利用可能なラベル: !`gh label list --limit 50 --json name --jq '.[].name' 2>/dev/null || echo "none"`
 - リポジトリ内Issueテンプレート: !`ls .github/ISSUE_TEMPLATE/ 2>/dev/null || echo "none"`
 
