@@ -15,6 +15,7 @@ mkdir -p "$HOME/.local/bin"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     zsh $DOTPATH/script/install_homebrew.sh
+    zsh $DOTPATH/script/mac.sh
 
     # karabiner-elements
     mkdir -p "$HOME/.config/karabiner"
