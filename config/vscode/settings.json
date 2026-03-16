@@ -172,7 +172,7 @@
    "gitlens.codeLens.recentChange.enabled": false,
    "gitlens.defaultGravatarsStyle": "wavatar",
    "javascript.updateImportsOnFileMove.enabled": "always",
-   "latex-workshop.formatting.latex": "latexindent",
+   "latex-workshop.formatting.latex": "tex-fmt",
    "latex-workshop.intellisense.package.enabled": true,
    "latex-workshop.latex.autoClean.run": "onBuilt",
    "latex-workshop.latex.clean.fileTypes": [
@@ -462,5 +462,10 @@
    "workbench.tree.indent": 16,
    "workbench.tree.renderIndentGuides": "always",
    "workbench.view.alwaysShowHeaderActions": true,
-   "workbench.secondarySideBar.defaultVisibility": "hidden"
+   "workbench.secondarySideBar.defaultVisibility": "hidden",
+   "latex-workshop.formatting.tex-fmt.args": [
+      "--nowrap",
+      "--tabsize",
+      "2"
+   ]
 }
