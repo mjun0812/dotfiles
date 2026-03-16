@@ -27,4 +27,6 @@ brew install --cask \
     wezterm@nightly \
     xquartz \
     cursor \
-    visual-studio-code
+    visual-studio-code \
+    notion \
+    obsidian
