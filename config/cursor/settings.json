@@ -6,11 +6,11 @@
         "editor.tabSize": 2
     },
     "[c]": {
-        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+        "editor.defaultFormatter": "ms-vscode.cpptools",
         "editor.formatOnSave": false
     },
     "[cpp]": {
-        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+        "editor.defaultFormatter": "ms-vscode.cpptools",
         "editor.formatOnSave": false
     },
     "[css]": {
@@ -20,25 +20,10 @@
         "editor.defaultFormatter": "ms-vscode.cpptools"
     },
     "[dockercompose]": {
-        "editor.autoIndent": "advanced",
-        "editor.defaultFormatter": "redhat.vscode-yaml",
-        "editor.insertSpaces": true,
-        "editor.quickSuggestions": {
-            "comments": false,
-            "other": true,
-            "strings": true
-        },
-        "editor.tabSize": 2
-    },
-    "[dockerfile]": {
-        "editor.defaultFormatter": "ms-azuretools.vscode-containers"
-    },
-    "[github-actions-workflow]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "redhat.vscode-yaml"
     },
     "[html]": {
-        "editor.defaultFormatter": "vscode.html-language-features",
-        "editor.formatOnSave": false
+        "editor.defaultFormatter": "vscode.html-language-features"
     },
     "[javascript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
@@ -55,11 +40,6 @@
     },
     "[markdown]": {
         "editor.defaultFormatter": "yzhang.markdown-all-in-one",
-        "editor.quickSuggestions": {
-            "comments": "off",
-            "other": "off",
-            "strings": "off"
-        },
         "editor.snippetSuggestions": "top",
         "editor.wordWrap": "on"
     },
@@ -77,7 +57,7 @@
         "editor.semanticHighlighting.enabled": false
     },
     "[ruby]": {
-        "editor.defaultFormatter": "jnbt.vscode-rufo",
+        "editor.defaultFormatter": "Shopify.ruby-lsp",
         "editor.formatOnSave": false
     },
     "[scss]": {
@@ -98,41 +78,45 @@
         "editor.defaultFormatter": "vscode.typescript-language-features"
     },
     "[xml]": {
-        "editor.defaultFormatter": "redhat.vscode-xml"
+        "editor.defaultFormatter": "DotJoshJohnson.xml"
     },
     "[yaml]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "redhat.vscode-yaml"
     },
     "C_Cpp.clang_format_fallbackStyle": "Google",
-    "C_Cpp.dimInactiveRegions": false,
     "C_Cpp.formatting": "clangFormat",
     "C_Cpp.vcFormat.indent.accessSpecifiers": true,
     "C_Cpp.vcFormat.indent.braces": true,
-    "clangd.checkUpdates": true,
+    "claudeCode.preferredLocation": "sidebar",
     "cmake.pinnedCommands": [
         "workbench.action.tasks.configureTaskRunner",
         "workbench.action.tasks.runTask"
     ],
-    "cmake.showConfigureWithDebuggerNotification": false,
     "csv-preview.numberFormat": "g5",
     "csv-preview.resizeColumns": "all",
-    "cursor.cpp.disabledLanguages": [
-        "plaintext"
-    ],
-    "cursor.cpp.enablePartialAccepts": true,
     "docker.extension.enableComposeLanguageServer": false,
     "editor.accessibilitySupport": "off",
     "editor.bracketPairColorization.enabled": true,
-    "editor.cursorBlinking": "solid",
-    "editor.fontFamily": "'RobotoMonoJP', Menlo, Monaco, 'Courier New', monospace",
+    "editor.cursorBlinking": "phase",
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.fontFamily": "'RobotoMonoJP', 'RobotoMono JP Nerd', Menlo, Monaco, 'Courier New', monospace",
     "editor.fontLigatures": false,
     "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
     "editor.formatOnType": true,
+    "editor.guides.bracketPairs": true,
+    "editor.inlineSuggest.suppressSuggestions": true,
     "editor.largeFileOptimizations": false,
+    "editor.lineHeight": 1.5,
+    "editor.minimap.maxColumn": 80,
+    "editor.minimap.showSlider": "always",
     "editor.parameterHints.cycle": true,
     "editor.parameterHints.enabled": true,
     "editor.quickSuggestionsDelay": 5,
     "editor.rename.enablePreview": false,
+    "editor.renderLineHighlight": "line",
+    "editor.renderWhitespace": "all",
+    "editor.smoothScrolling": true,
     "editor.suggestSelection": "first",
     "editor.tokenColorCustomizations": {
         "textMateRules": [
@@ -142,7 +126,7 @@
                 ],
                 "settings": {
                     "fontStyle": "italic",
-                    "foreground": "#107a84" // docstringのコメントの色
+                    "foreground": "#107a84"
                 }
             }
         ]
@@ -151,7 +135,9 @@
         "，": true,
         "．": true
     },
+    "editor.unicodeHighlight.ambiguousCharacters": false,
     "editor.wordWrap": "on",
+    "explorer.compactFolders": false,
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "explorer.confirmPasteNative": false,
@@ -159,19 +145,33 @@
     "files.associations": {
         "*.erb": "html"
     },
-    "git.autofetch": true,
+    "files.autoGuessEncoding": true,
+    "files.candidateGuessEncodings": [
+        "utf8",
+        "shiftjis",
+        "eucjp"
+    ],
+    "git-graph.date.format": "ISO Date & Time",
+    "git.autofetch": "all",
     "git.confirmSync": false,
     "git.mergeEditor": false,
     "git.openRepositoryInParentFolders": "never",
+    "git.pruneOnFetch": true,
+    "git.suggestSmartCommit": false,
+    "github.copilot.enable": {
+        "*": true,
+        "markdown": true
+    },
+    "github.copilot.nextEditSuggestions.extendedRange": true,
     "gitlens.advanced.messages": {
         "suppressGitMissingWarning": true
     },
+    "gitlens.ai.model": "vscode",
+    "gitlens.ai.vscode.model": "copilot:gpt-4.1",
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false,
     "gitlens.defaultGravatarsStyle": "wavatar",
     "javascript.updateImportsOnFileMove.enabled": "always",
-    "jupyter.askForKernelRestart": false,
-    "jupyter.enableExtendedPythonKernelCompletions": true,
     "latex-workshop.formatting.latex": "latexindent",
     "latex-workshop.intellisense.package.enabled": true,
     "latex-workshop.latex.autoClean.run": "onBuilt",
@@ -294,7 +294,7 @@
         },
         {
             "args": [
-                "--kanji=utf8",
+                "-kanji=utf8",
                 "-synctex=1",
                 "-interaction=nonstopmode",
                 "-halt-on-error",
@@ -369,50 +369,52 @@
         "~/.dotfiles/templates/github-markdown.css"
     ],
     "markdown-pdf.stylesRelativePathFile": true,
+    "markdown-preview-enhanced.previewTheme": "one-dark.css",
     "markdown.extension.print.theme": "dark",
     "markdown.extension.tableFormatter.normalizeIndentation": true,
+    "markdown.extension.toc.updateOnSave": false,
     "markdown.validate.duplicateLinkDefinitions.enabled": "ignore",
-    "markdownlint.focusMode": true,
-    "markdownlint.run": "onSave",
     "notebook.cellToolbarLocation": {
         "default": "right",
         "jupyter-notebook": "left"
     },
+    "notebook.codeActionsOnSave": {
+        "notebook.source.fixAll": "never",
+        "notebook.source.organizeImports": "explicit"
+    },
+    "notebook.formatOnSave.enabled": true,
     "oneDarkPro.italic": false,
     "pasteImage.defaultName": "YMMDD_HHmmss",
     "pasteImage.path": "${currentFileDir}/images",
     "prettier.resolveGlobalModules": true,
+    "python.analysis.autoImportCompletions": false,
     "python.languageServer": "None",
     "python.terminal.activateEnvInCurrentTerminal": true,
     "python.terminal.activateEnvironment": false,
     "redhat.telemetry.enabled": false,
-    "remote.autoForwardPortsSource": "hybrid",
-    "remote.SSH.remotePlatform": {
-        "daphne": "macOS",
-        "hestia": "linux",
-        "lab_amagi": "linux",
-        "qdoga-dr640x30": "linux",
-        "qdoga-ws1": "linux",
-        "vivy": "linux",
-        "voyager": "linux",
-        "lab": "linux",
-        "lab_taiho": "linux",
-        "lab_shokaku": "linux",
-        "lab_hiyou": "linux",
-        "lab_hiryu": "linux",
-        "lab_zuikaku": "linux",
-        "qdoga-dr430x28": "linux"
-    },
+    "remote.SSH.lockfilesInTmp": true,
+    "scm.alwaysShowRepositories": true,
+    "scm.compactFolders": false,
+    "scm.defaultViewMode": "tree",
+    "scm.inputFontFamily": "editor",
+    "search.showLineNumbers": true,
     "security.workspace.trust.untrustedFiles": "open",
-    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
     "terminal.integrated.scrollback": 10000,
-    "terminal.integrated.shellIntegration.enabled": true,
     "terminal.integrated.tabs.enabled": true,
+    "terminal.integrated.tabs.location": "left",
+    "text-tables.showStatus": false,
     "trailing-spaces.backgroundColor": "rgba(47,52,65,0.3)",
+    "ty.completions.autoImport": false,
+    "ty.configuration": {
+        "rules": {
+            "all": "warn"
+        }
+    },
     "vsicons.dontShowNewVersionMessage": true,
-    "window.commandCenter": true,
+    "window.commandCenter": false,
+    "window.customTitleBarVisibility": "auto",
     "workbench.colorCustomizations": {
-        // Tokyo Night Highlight
         "[Tokyo Night]": {
             "activityBar.foreground": "#bdc7f0",
             "activityBar.inactiveForeground": "#787c99",
@@ -420,7 +422,6 @@
             "breadcrumb.focusForeground": "#bdc7f0",
             "breadcrumb.foreground": "#959cbd",
             "dropdown.foreground": "#959cbd",
-            "editorCodeLens.foreground": "#7982a9",
             "foreground": "#959cbd",
             "gitDecoration.ignoredResourceForeground": "#696d87",
             "input.foreground": "#959cbd",
@@ -438,26 +439,26 @@
             "sideBar.foreground": "#959cbd",
             "statusBar.foreground": "#bdc7f0",
             "tab.activeForeground": "#bdc7f0",
-            "tab.inactiveForeground": "#959cbd",
-            "editorIndentGuide.activeBackground1": "#00507b"
+            "tab.inactiveForeground": "#959cbd"
         }
     },
     "workbench.colorTheme": "Tokyo Night",
+    "workbench.editor.closeOnFileDelete": true,
     "workbench.editor.labelFormat": "short",
+    "workbench.editor.scrollToSwitchTabs": true,
     "workbench.editor.splitInGroupLayout": "vertical",
+    "workbench.editor.wrapTabs": false,
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook",
+        "*.pdf": "latex-workshop-pdf-hook"
     },
-    "workbench.editorLargeFileConfirmation": 100,
+    "workbench.editorLargeFileConfirmation": 30,
     "workbench.iconTheme": "vscode-icons",
+    "workbench.list.smoothScrolling": true,
     "workbench.preferredDarkColorTheme": "One Dark Pro Darker",
     "workbench.startupEditor": "none",
-    "githubPullRequests.terminalLinksHandler": "github",
-    "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "cursor.composer.usageSummaryDisplay": "always",
-    "zenMode.fullScreen": false,
-    "zenMode.hideLineNumbers": false,
-    "zenMode.hideStatusBar": false
+    "workbench.tree.indent": 16,
+    "workbench.tree.renderIndentGuides": "always",
+    "workbench.view.alwaysShowHeaderActions": true,
+    "workbench.secondarySideBar.defaultVisibility": "hidden"
 }
