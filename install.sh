@@ -149,6 +149,7 @@ ln -snfv "$DOTPATH/config/ai-agents/codex/config.toml" "$HOME/.codex/config.toml
 ln -snfv "$DOTPATH/config/ai-agents/codex/prompts" "$HOME/.codex/prompts"
 for skill_dir in "$CODEX_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")
+    rm -rf "$CODEX_SKILLS_TARGET_DIR/$skill_name"
     ln -snfv "$skill_dir" "$CODEX_SKILLS_TARGET_DIR/$skill_name"
 done
 
