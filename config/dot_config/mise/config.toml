@@ -1,10 +1,9 @@
 [tools]
 # lang
 go = "latest"
-node = "lts"
 rust = "latest"
 cmake = "latest"
-# package manager
+node = "lts"
 bun = "latest"
 pnpm = "latest"
 # cli
@@ -23,18 +22,20 @@ zoxide = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
 "github:d-kuro/gwq" = "latest"
 "github:WGUNDERWOOD/tex-fmt" = "latest"
-# tool
+# tools
 "aqua:neovim/neovim" = "latest"
 tree-sitter = "latest"
 starship = "latest"
 git-lfs = "latest"
+tmux = "latest"
 yazi = "latest"
 # ai
 gemini-cli = "latest"
 codex = "latest"
 opencode = "latest"
 claude-code = "latest"
-tmux = "latest"
+"npm:@github/copilot" = "latest"
+ollama = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []

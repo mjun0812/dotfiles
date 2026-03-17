@@ -9,7 +9,9 @@ brew install \
     ninja \
     cmake \
     tree \
-    subversion
+    subversion \
+    mactop \
+    htop
 
 brew install --cask \
     nikitabobko/tap/aerospace \
@@ -29,4 +31,6 @@ brew install --cask \
     cursor \
     visual-studio-code \
     notion \
-    obsidian
+    obsidian \
+    ollama-app \
+    nani
