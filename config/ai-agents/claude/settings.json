@@ -89,8 +89,8 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bunx -y ccstatusline@latest",
-    "padding": 0
+    "padding": 0,
+    "command": "~/.claude/statusline.py"
   },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,

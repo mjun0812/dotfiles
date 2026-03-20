@@ -35,7 +35,6 @@ codex = "latest"
 opencode = "latest"
 claude-code = "latest"
 "npm:@github/copilot" = "latest"
-ollama = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
