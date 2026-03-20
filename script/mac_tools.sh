@@ -33,4 +33,5 @@ brew install --cask \
     notion \
     obsidian \
     ollama-app \
-    nani
+    nani \
+    deepl

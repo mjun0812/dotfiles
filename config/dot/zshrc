@@ -92,3 +92,5 @@ fi
 # powerlevel10k
 source ~/.p10k.zsh
 (( ! ${+functions[p10k]} )) || p10k finalize
+
+source "$HOME/.local//bin/env"
