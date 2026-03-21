@@ -4,6 +4,9 @@
 import json
 import sys
 
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+
 data = json.load(sys.stdin)
 
 BRAILLE = " ⣀⣄⣤⣦⣶⣷⣿"
