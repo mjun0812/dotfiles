@@ -7,7 +7,6 @@ alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 alias emacs='emacs -nw'
 alias vim='nvim'
 
-# Alternative commands
 if command -v bat > /dev/null 2>&1; then
     alias cat="bat --style=plain --paging=never --theme=OneHalfDark"
     alias less="bat --style=plain --paging=always --theme=OneHalfDark"
@@ -41,16 +40,16 @@ alias history='noglob history'
 alias rsync='noglob rsync'
 alias scp='noglob scp'
 
+# Clipboard for macOS
 alias pbc='pbcopy'
 alias pbp='pbpaste'
 
-# Resource Usage
+# Disk Usage
 alias df='df -kh'
 alias du='du -kh'
 
-alias claude="claude --mcp-config=${HOME}/.claude/mcp.json"
-
 # Claude Code
+alias claude="claude --mcp-config=${HOME}/.claude/mcp.json"
 alias cc-commit='command claude --model=haiku /git:commit'
 alias cc-commit-ja='command claude --model=haiku /git:commit ja'
 
@@ -70,7 +69,23 @@ alias copilot-commit-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/git/
 alias aicommit='cc-commit'
 alias aicommit-ja='cc-commit-ja'
 
-# cd repository alias
+# [ctrl + f] cd zoxide alias
+function fzf-zoxide-cd() {
+    local dir
+    # zoxide の履歴一覧を取得し、fzf に渡して選択させる
+    dir=$(zoxide query -l | fzf --height=50% --layout=reverse --info=inline --prompt="cd > ")
+
+    # ディレクトリが選択された場合のみ cd で移動
+    if [[ -n "$dir" ]]; then
+        cd "$dir"
+        zle accept-line
+        zle .reset-prompt
+    fi
+}
+zle -N fzf-zoxide-cd
+bindkey '^f' fzf-zoxide-cd
+
+# [ctrl + j] cd repository alias
 function cd_repo_ghq_fzf() {
     local ghq_root=$(ghq root)
     local repo_path=$(ghq list | fzf --preview "eza -l -g -a --icons $ghq_root/{} | awk '{print \$8\" \"\$9}'")
@@ -87,7 +102,7 @@ function cd_repo_ghq_fzf() {
     fi
 }
 zle -N cd_repo_ghq_fzf
-bindkey '^f' cd_repo_ghq_fzf
+bindkey '^j' cd_repo_ghq_fzf
 alias cd_repo='cd_repo_ghq_fzf'
 
 # cd git worktree with gwq

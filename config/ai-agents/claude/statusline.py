@@ -48,9 +48,8 @@ def fmt(label, pct):
 model = data.get("model", {}).get("display_name", "Claude")
 parts = [model]
 
-ctx = data.get("context_window", {}).get("used_percentage")
-if ctx is not None:
-    parts.append(fmt("ctx", ctx))
+ctx = data.get("context_window", {}).get("used_percentage", 0)
+parts.append(fmt("ctx", ctx))
 
 five = data.get("rate_limits", {}).get("five_hour", {}).get("used_percentage")
 if five is not None:
