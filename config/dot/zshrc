@@ -35,6 +35,8 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.venv/bin:$PATH"
 
 # bun
+export BUN_INSTALL_BIN="$HOME/.bun/bin"
+export BUN_INSTALL_GLOBAL_DIR="$HOME/.bun/install/global"
 export PATH="$HOME/.bun/bin:$PATH"
 
 # pnpm
@@ -54,13 +56,6 @@ fi
 export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
 export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 
-# eza
-export EZA_CONFIG_DIR="$HOME/.config/eza"
-
-# zoxide
-if [[ "$CLAUDECODE" != "1" ]]; then
-    command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
-fi
 
 # mise
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
@@ -90,8 +85,15 @@ fi
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-
 source "$HOME/.local/bin/env"
+
+# eza
+export EZA_CONFIG_DIR="$HOME/.config/eza"
+
+# zoxide
+if [[ "$CLAUDECODE" != "1" ]]; then
+    command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
+fi
 
 # powerlevel10k
 source ~/.p10k.zsh
