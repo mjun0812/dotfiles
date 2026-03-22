@@ -57,6 +57,11 @@ export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 # eza
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 
+# zoxide
+if [[ "$CLAUDECODE" != "1" ]]; then
+    command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
+fi
+
 # mise
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 
@@ -81,16 +86,13 @@ fi
 if command -v docker >/dev/null 2>&1; then
     source <(docker completion zsh)
 fi
-if [[ "$CLAUDECODE" != "1" ]]; then
-    command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
-fi
 
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
+source "$HOME/.local/bin/env"
+
 # powerlevel10k
 source ~/.p10k.zsh
 (( ! ${+functions[p10k]} )) || p10k finalize
-
-source "$HOME/.local//bin/env"
