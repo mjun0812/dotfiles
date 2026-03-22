@@ -34,4 +34,6 @@ brew install --cask \
     obsidian \
     ollama-app \
     nani \
-    deepl
+    deepl \
+    chatgpt \
+    claude
