@@ -20,7 +20,7 @@
       "editor.defaultFormatter": "ms-vscode.cpptools"
    },
    "[dockercompose]": {
-      "editor.defaultFormatter": "redhat.vscode-yaml"
+      "editor.defaultFormatter": "oxc.oxc-vscode"
    },
    "[html]": {
       "editor.defaultFormatter": "vscode.html-language-features"
@@ -39,7 +39,9 @@
       "files.encoding": "utf8"
    },
    "[markdown]": {
-      "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+      "editor.defaultFormatter": "oxc.oxc-vscode",
+      "editor.formatOnSave": true,
+      "editor.formatOnSaveMode": "file",
       "editor.snippetSuggestions": "top",
       "editor.wordWrap": "on"
    },
