@@ -85,7 +85,6 @@ fi
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-source "$HOME/.local/bin/env"
 
 # eza
 export EZA_CONFIG_DIR="$HOME/.config/eza"
