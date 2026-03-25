@@ -66,9 +66,6 @@
       "Bash(cat /tmp:*)",
       "Bash(ls /tmp:*)"
     ],
-    "additionalDirectories": [
-      "/tmp"
-    ],
     "deny": [
       "Read(.env)",
       "Read(~/.ssh/**)",
@@ -83,6 +80,9 @@
       "Bash(gh issue close:*)",
       "Bash(gh pr close:*)",
       "Bash(gh pr merge:*)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   },
   "hooks": {
@@ -132,5 +132,6 @@
     "clangd-lsp@claude-plugins-official": true
   },
   "language": "japanese",
-  "plansDirectory": "./.claude/plans"
+  "plansDirectory": "./.claude/plans",
+  "skipDangerousModePermissionPrompt": true
 }
