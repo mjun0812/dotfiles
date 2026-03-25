@@ -36,4 +36,5 @@ brew install --cask \
     nani \
     deepl \
     chatgpt \
-    claude
+    claude \
+    azookey

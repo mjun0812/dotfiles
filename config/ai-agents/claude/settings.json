@@ -89,8 +89,8 @@
   },
   "statusLine": {
     "type": "command",
-    "padding": 0,
-    "command": "~/.claude/statusline.py"
+    "command": "~/.claude/statusline.py",
+    "padding": 0
   },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
