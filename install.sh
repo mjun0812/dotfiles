@@ -143,6 +143,7 @@ CODEX_SKILLS_TARGET_DIR="$HOME/.codex/skills"
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
 cp -aLf "$HOME/.codex/config.toml" "$DOTPATH/.backup/codex_config.toml" && rm -rf "$HOME/.codex/config.toml"
 rm -rf "$DOTPATH/.backup/codex_prompts" && cp -aLf "$HOME/.codex/prompts" "$DOTPATH/.backup/codex_prompts" && rm -rf "$HOME/.codex/prompts"
+rm -rf $CODEX_SKILLS_TARGET_DIR
 mkdir -p "$HOME/.codex"
 mkdir -p "$CODEX_SKILLS_TARGET_DIR"
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
