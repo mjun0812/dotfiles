@@ -7,17 +7,16 @@ return {
     build = ":TSUpdate",
     config = function()
       local ts = require("nvim-treesitter")
-      ts.setup({
-        install_dir = vim.fs.joinpath(vim.fn.stdpath("data"), "treesitter"),
-      })
+      ts.setup()
 
+      -- FileType / buftype による除外リスト
       local ignore_ft = {
         help = true,
         fern = true,
-        TelescopePrompt = true,
-        TelescopeResults = true,
         lazy = true,
         toggleterm = true,
+        TelescopePrompt = true,
+        TelescopeResults = true,
       }
       local ignore_bt = {
         terminal = true,
@@ -26,156 +25,111 @@ return {
         acwrite = true,
         quickfix = true,
       }
-      local ignore_lang = {
-        -- comment = true,
-        
+
+      local ensure_installed = {
+        "markdown_inline",
+        "bash",
+        "python",
+        "lua",
+        "json",
+        "yaml",
+        "toml",
+        "html",
+        "css",
+        "javascript",
+        "typescript",
+        "go",
+        "rust",
+        "c",
+        "cpp",
+        "java",
+        "dockerfile",
+        "sql",
+        "vim",
+        "regex",
       }
 
-      local function should_ignore(buf, ft, lang)
-        local bt = vim.bo[buf].buftype
-        if ignore_bt[bt] then
-          return true
-        end
+      local installing = {} ---@type table<string, boolean>
 
-        if ignore_ft[ft] then
-          return true
-        end
-
-        if ignore_lang[lang] then
-          return true
-        end
-
-        return false
-      end
-
-      -- state
-      local installed = {}   ---@type table<string, boolean>
-      local installing = {}  ---@type table<string, boolean>
-      local pending = {}     ---@type table<string, table<number, true>>  -- lang -> { bufnr = true, ... }
-      local polling = {}     ---@type table<string, boolean>
-
-      -- utils -------------------------------------------------------------
-
-      local function buf_valid(buf)
-        return buf and vim.api.nvim_buf_is_valid(buf)
-      end
-
+      --- runtimepath 上にパーサーが存在するか確認
       local function has_parser(lang)
-        -- runtimepath 上に parser/{lang}.* が見つかればOK
         return #vim.api.nvim_get_runtime_file(("parser/%s.*"):format(lang), false) > 0
       end
 
-      local function seed_installed_from_rtp()
-        for _, path in ipairs(vim.api.nvim_get_runtime_file("parser/*.*", true)) do
-          local fname = vim.fn.fnamemodify(path, ":t") -- e.g. lua.so / python.wasm
-          local lang = fname:match("^(.+)%.")
-          if lang and lang ~= "" then
-            installed[lang] = true
-          end
+      --- バッファに treesitter を適用
+      local function attach(buf, lang)
+        if not vim.api.nvim_buf_is_valid(buf) then
+          return
         end
-      end
-
-      local function attach_treesitter(buf, lang)
-        if not buf_valid(buf) then return end
-
-        -- attach（失敗しても落とさない）
         pcall(vim.treesitter.start, buf, lang)
-
-        -- indent（あなたの元の方針を維持）
         vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
       end
 
-      local function ensure_install_started(lang)
-        if installed[lang] or installing[lang] or has_parser(lang) then
-          installed[lang] = installed[lang] or has_parser(lang)
+      --- パーサーのインストール完了をポーリングで待ち、完了後に attach する
+      local function wait_and_attach(buf, lang)
+        local tries = 0
+        local function poll()
+          if has_parser(lang) then
+            installing[lang] = nil
+            vim.notify(("TS parser ready: %s"):format(lang), vim.log.levels.INFO)
+            attach(buf, lang)
+            return
+          end
+          tries = tries + 1
+          if tries < 60 then
+            vim.defer_fn(poll, 200)
+          end
+        end
+        vim.defer_fn(poll, 200)
+      end
+
+      --- パーサーが未インストールなら自動インストールを開始
+      local function auto_install(buf, lang)
+        if installing[lang] then
           return
         end
+        installing[lang] = true
+        vim.notify(("Installing TS parser: %s"):format(lang), vim.log.levels.INFO)
 
         local ok = pcall(ts.install, { lang }, { summary = false })
-        if ok then
-          installing[lang] = true
-          vim.notify(("Installing TS parser: %s"):format(lang), vim.log.levels.INFO)
-        else
-          vim.notify(("Failed to start TS install: %s"):format(lang), vim.log.levels.WARN)
-        end
-      end
-
-      local function flush_pending(lang)
-        local bufs = pending[lang]
-        if not bufs then return end
-
-        for buf, _ in pairs(bufs) do
-          attach_treesitter(buf, lang)
-        end
-        pending[lang] = nil
-      end
-
-      local function start_polling(lang)
-        if polling[lang] then return end
-        polling[lang] = true
-
-        local tries = 0
-        local function tick()
-          -- 完了判定
-          if has_parser(lang) then
-            installed[lang] = true
-            installing[lang] = nil
-            polling[lang] = nil
-
-            vim.notify(("TS parser ready: %s"):format(lang), vim.log.levels.INFO)
-            flush_pending(lang)
-            return
-          end
-
-          tries = tries + 1
-          if tries >= 60 then -- 60 * 200ms = 12秒で打ち切り（お好みで調整）
-            polling[lang] = nil
-            return
-          end
-
-          vim.defer_fn(tick, 200)
-        end
-
-        vim.defer_fn(tick, 200)
-      end
-
-      local function request_parser_for_buffer(buf, ft)
-        if not ft or ft == "" then return end
-
-        local lang = vim.treesitter.language.get_lang(ft) or ft
-        if should_ignore(buf, ft, lanf) then
+        if not ok then
+          installing[lang] = nil
           return
         end
 
-        -- すでに利用可能なら即 attach
-        if installed[lang] or has_parser(lang) then
-          installed[lang] = true
-          attach_treesitter(buf, lang)
-          return
-        end
-
-        -- まだなら「待ち行列」に追加して、インストール開始＆監視
-        pending[lang] = pending[lang] or {}
-        pending[lang][buf] = true
-
-        ensure_install_started(lang)
-        start_polling(lang)
+        wait_and_attach(buf, lang)
       end
 
-      -- init --------------------------------------------------------------
-
-      seed_installed_from_rtp()
+      -- ensure_installed のパーサーを自動インストール
+      for _, lang in ipairs(ensure_installed) do
+        if not has_parser(lang) then
+          pcall(ts.install, { lang }, { summary = false })
+        end
+      end
 
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("my-treesitter", { clear = true }),
         callback = function(args)
-          request_parser_for_buffer(args.buf, args.match)
+          local ft = args.match
+          if not ft or ft == "" then
+            return
+          end
+          if ignore_ft[ft] or ignore_bt[vim.bo[args.buf].buftype] then
+            return
+          end
+
+          local lang = vim.treesitter.language.get_lang(ft) or ft
+          if has_parser(lang) then
+            attach(args.buf, lang)
+          else
+            auto_install(args.buf, lang)
+          end
         end,
       })
-    end
+    end,
   },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     branch = "main",
-  }
+  },
 }
