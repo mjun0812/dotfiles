@@ -59,8 +59,46 @@ alias gemini-commit='command gemini -p "/aicommit en" -y --model=${GEMINI_MODEL}
 alias gemini-commit-ja='command gemini -p "/aicommit ja" -y --model=${GEMINI_MODEL}'
 
 # Codex
-alias codex-commit='command codex exec --full-auto "/prompts:aicommit"'
-alias codex-commit-ja='command codex exec --full-auto "/prompts:aicommit ja"'
+CODEX_COMMIT_MODEL="gpt-5.4-mini"
+function _codex_commit() {
+    emulate -L zsh
+
+    local language="$1"
+    local prompt="\$git-commit ${language}"
+    local output_file
+    local log_file
+
+    output_file=$(mktemp) || return 1
+    log_file=$(mktemp) || {
+        rm -f "$output_file"
+        return 1
+    }
+
+    if command codex exec \
+        --dangerously-bypass-approvals-and-sandbox \
+        -m "${CODEX_COMMIT_MODEL}" \
+        -c model_reasoning_effort=low \
+        -c allow_login_shell=false \
+        -o "$output_file" \
+        "$prompt" > "$log_file" 2>&1; then
+        cat "$output_file"
+    else
+        if [[ -s "$output_file" ]]; then
+            cat "$output_file"
+            printf '\n'
+        fi
+
+        printf 'codex-commit failed; showing condensed log:\n' >&2
+        grep -vE 'failed to record rollout items|failed to renew cache TTL|could not update PATH' "$log_file" | tail -n 40 >&2
+
+        rm -f "$output_file" "$log_file"
+        return 1
+    fi
+
+    rm -f "$output_file" "$log_file"
+}
+function codex-commit() { _codex_commit en }
+function codex-commit-ja() { _codex_commit ja }
 
 # Copilot-cli
 alias copilot-commit='copilot -i "~/.dotfiles/config/cfg/claude/commands/git/commit.md に書かれたTaskを実行してください。言語はEnglishです。"'
