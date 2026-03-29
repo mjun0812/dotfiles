@@ -56,7 +56,6 @@ fi
 export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
 export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 
-
 # mise
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 
@@ -97,3 +96,5 @@ fi
 # powerlevel10k
 source ~/.p10k.zsh
 (( ! ${+functions[p10k]} )) || p10k finalize
+
+. "$HOME/.local/share/../bin/env"
