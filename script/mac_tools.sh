@@ -11,7 +11,9 @@ brew install \
     tree \
     subversion \
     mactop \
-    htop
+    htop \
+    neofetch \
+    swiftlint
 
 brew install --cask \
     nikitabobko/tap/aerospace \

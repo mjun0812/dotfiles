@@ -14,7 +14,7 @@ return {
         event = { "BufReadPre", "BufNewFile" },
         config = true,
         opts = {
-            ensure_installed = { "copilot", "lua_ls", "ruff", "ty" },
+            ensure_installed = { "copilot", "lua_ls", "ruff", "ty", "oxfmt" },
         },
         keys = {
             { "<C-space>", "<cmd>lua vim.lsp.completion.get()  <CR>", mode = "i" },
