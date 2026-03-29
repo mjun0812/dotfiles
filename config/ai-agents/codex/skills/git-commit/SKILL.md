@@ -1,31 +1,32 @@
 ---
 name: git-commit
-description: Commit current staged changes with an AI-generated Conventional Commits message in the specified language.
+description: 指定した言語で、AI が Conventional Commits 形式のコミットメッセージを生成して現在のステージ済み変更をコミットする。
 ---
 
 # git commit
 
-Commit current staged changes with AI-generated commit message in the specified language.
+指定した言語で現在のステージ済み変更をコミットします。
 
 ## Arguments
 
-- `language`: Language for commit message (e.g., "ja", "en"). Default: "English"
+- `language`: コミットメッセージの言語（例: `ja`, `en`）。デフォルトは `English`。
 
-## Context
+## Contexts
 
-- Current git status: !`git status --short`
-- Current staged summary: !`git diff --cached --stat && printf '\n---\n' && git diff --cached --name-only`
-- Recent commits: !`git log -5 --oneline`
+- ステージングされた変更: `git diff --cached`
+- Git ステータス: `git status`
+- 現在のブランチ: `git branch --show-current`
+- 最近のコミット: `git log -10 --oneline`
 
-## Task
+## Tasks
 
-1. If no staged changes exist, prompt the user to stage changes first.
-2. Start from the staged summary above. Inspect full or per-file diffs only when the summary is not enough to determine an accurate commit message.
-3. Generate a commit message following Conventional Commits format:
-   - First line: `<type>: <description>` (no scope)
-   - Second line: blank
-   - Third line onwards: bullet points describing changes
-4. Use a standard Conventional Commits type such as `feat`, `fix`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, or `style`.
-5. Do not use Markdown formatting in the commit message. Never include backticks.
-6. **IMPORTANT: The commit message MUST be written in `$ARGUMENTS` language (default: English).** Always write the actual message in the specified language.
-7. Commit safely in a way that preserves newlines and avoids shell interpolation issues. Prefer `git commit --file=-` with stdin over embedding the full message inside double quotes.
+1. ステージングされた変更、ブランチ、最近のコミットを確認してください。
+2. ステージ済み変更が存在しない場合は、先に変更をステージするようユーザーに促してください。
+3. Conventional Commits 形式に従ってコミットメッセージを生成してください。
+   - **重要: コミットメッセージは必ず `$ARGUMENTS` で指定された言語（デフォルト: English）で書いてください。**
+     実際のコミットメッセージ本文は、必ず指定された言語で記述してください。
+   - 1 行目: `<type>: <description>`（scope なし）
+   - 2 行目: 空行
+   - 3 行目以降: 変更内容を箇条書きで記述
+4. 生成したメッセージを使用して `git commit -m "<コミットメッセージ>"` を実行し、変更をコミットしてください。
+5. 最後に、生成されたコミットメッセージの全文を表示して、ユーザーに知らせてください。
