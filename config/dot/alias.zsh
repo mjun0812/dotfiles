@@ -50,8 +50,8 @@ alias du='du -kh'
 
 # Claude Code
 alias claude="claude --mcp-config=${HOME}/.claude/mcp.json"
-alias cc-commit='command claude --model=haiku /git:commit'
-alias cc-commit-ja='command claude --model=haiku /git:commit ja'
+alias cc-commit='command claude --model=haiku -p "/git:commit"'
+alias cc-commit-ja='command claude --model=haiku -p "/git:commit ja"'
 
 # Gemini-cli
 GEMINI_MODEL="gemini-3-flash-preview"
@@ -59,8 +59,8 @@ alias gemini-commit='command gemini -p "/aicommit en" -y --model=${GEMINI_MODEL}
 alias gemini-commit-ja='command gemini -p "/aicommit ja" -y --model=${GEMINI_MODEL}'
 
 # Codex
-alias codex-commit='command codex "/prompts:aicommit"'
-alias codex-commit-ja='command codex "/prompts:aicommit ja"'
+alias codex-commit='command codex exec --full-auto "/prompts:aicommit"'
+alias codex-commit-ja='command codex exec --full-auto "/prompts:aicommit ja"'
 
 # Copilot-cli
 alias copilot-commit='copilot -i "~/.dotfiles/config/cfg/claude/commands/git/commit.md に書かれたTaskを実行してください。言語はEnglishです。"'
