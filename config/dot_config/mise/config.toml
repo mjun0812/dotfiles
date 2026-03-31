@@ -36,6 +36,7 @@ opencode = "latest"
 claude-code = "latest"
 "npm:@github/copilot" = "latest"
 shfmt = "latest"
+actionlint = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []

@@ -97,4 +97,3 @@ fi
 source ~/.p10k.zsh
 (( ! ${+functions[p10k]} )) || p10k finalize
 
-. "$HOME/.local/share/../bin/env"
