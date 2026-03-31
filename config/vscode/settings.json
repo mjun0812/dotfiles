@@ -83,7 +83,7 @@
       "editor.defaultFormatter": "DotJoshJohnson.xml"
    },
    "[yaml]": {
-      "editor.defaultFormatter": "redhat.vscode-yaml"
+      "editor.defaultFormatter": "oxc.oxc-vscode"
    },
    "C_Cpp.clang_format_fallbackStyle": "Google",
    "C_Cpp.formatting": "clangFormat",
