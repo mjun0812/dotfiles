@@ -13,6 +13,14 @@ Briefly describe the target feature, file, function, etc.
 e.g., No tests exist, coverage is low, edge cases are missing, etc.
 -->
 
+## 📌 Considerations & Research
+
+<!--
+- Points to investigate or confirm before/during test implementation
+- Test environment or infrastructure concerns
+- Dependencies or areas that may affect test reliability
+-->
+
 ## Acceptance Criteria
 
 - [ ] All tests pass

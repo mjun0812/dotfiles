@@ -22,6 +22,14 @@ assignees: ''
 3. Error occurs
 -->
 
+## 📌 Considerations & Research
+
+<!--
+- Points to investigate or confirm before/during the fix
+- Potential impacts on other functionality
+- Related issues or areas that may need attention
+-->
+
 ---
 
 <!-- The following is optional. The more information provided, the faster and more accurately we can fix it. -->

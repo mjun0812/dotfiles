@@ -17,6 +17,14 @@ assignees: ''
 - Display an error message if the input is invalid
 -->
 
+## 📌 Considerations & Research
+
+<!--
+- Points to investigate or confirm before/during implementation
+- Potential impacts on existing functionality
+- Security, performance, or compatibility concerns
+-->
+
 ## Acceptance Criteria
 
 <!-- Describe the conditions that define when this feature is "done" using bullet points or a checklist.
