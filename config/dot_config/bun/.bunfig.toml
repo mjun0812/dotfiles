@@ -1,0 +1,3 @@
+[install]
+# 1 week in seconds
+minimumReleaseAge = 604800
