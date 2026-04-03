@@ -12,7 +12,10 @@ brew install \
     subversion \
     mactop \
     htop \
-    neofetch \
+    neofetch
+
+# Xcodeが入っているときのみインストール可能
+brew install \
     swiftlint
 
 brew install --cask \

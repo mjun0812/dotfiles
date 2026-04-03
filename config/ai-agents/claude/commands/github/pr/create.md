@@ -17,9 +17,9 @@ context: fork
 
 ## Context
 
-- 現在のbranch: !`git branch --show-current`
-- default branch: !`gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`
-- 既存のPR: !`gh pr view --json url,state 2>/dev/null || echo "none"`
+- 現在のbranch: `git branch --show-current`
+- default branch: `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`
+- 既存のPR: `gh pr view --json url,state 2>/dev/null || echo "none"`
 - Conventional Commits specification: `~/.dotfiles/doc/templates/conventional_commits.md`
 
 ## Task
