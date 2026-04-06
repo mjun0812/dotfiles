@@ -1,0 +1,72 @@
+[user]
+  name="Junya Morioka"
+  email=mjun@mjunya.com
+
+[pull]
+  rebase=false
+
+[core]
+  pager = delta
+  editor=vim
+  ignorecase=false
+
+[init]
+   defaultBranch=main
+
+[color]
+  ui = true
+
+[fetch]
+  prune = true
+
+[push]
+  autoSetupRemote = true
+
+[merge]
+  conflictStyle = zdiff3
+
+[interactive]
+  diffFilter = delta --color-only
+
+[tag]
+  sort = -v:refname
+
+[alias]
+  aicommit = !claude --model=haiku '/git:commit'
+  aicommit-ja = !claude --model=haiku '/git:commit ja'
+  prune-branch = !git fetch -p && git branch --merged | grep -v '*' | xargs git branch -d
+
+[filter "lfs"]
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f
+
+[ghq]
+  root = ~/workspace
+
+[ghq "https://github.com/mjun0812/"]
+  root = ~/workspace
+
+[delta]
+  navigate = true
+  dark = true
+  side-by-side = true
+  line-numbers = true
+
+[include]
+  path = ~/.gitconfig.local
+
+# change name and email in specific directory
+# [includeIf "gitdir:~/hoge/"]
+#   path = ~/.gitconfig-hoge
+#
+#  ~/.gitconfig-hoge >
+# [user]
+#   name = Junya Morioka
+#   email = mjun@hoge.com
+
+# change remote url in specific directory
+# [url "github_hoge:jmorioka-hoge/"]
+# [url "<ssh name>:<username>/"]
+#     insteadOf = git@github.com:<username>/
