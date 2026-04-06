@@ -50,8 +50,16 @@ alias du='du -kh'
 
 # Claude Code
 alias claude="claude --mcp-config=${HOME}/.claude/mcp.json"
-alias cc-commit='command claude --model=haiku -p "/git:commit"'
-alias cc-commit-ja='command claude --model=haiku -p "/git:commit ja"'
+CC_COMMIT_MODEL="haiku"
+CC_COMMIT_ALLOWED_TOOLS="Bash(git status:*),Bash(git add:*),Bash(git log:*),Bash(git branch:*),Bash(git diff:*),Bash(git commit:*),Read(~/.dotfiles/doc/templates/conventional_commits.md)"
+alias cc-commit='command claude \
+    --model=${CC_COMMIT_MODEL} \
+    --allowedTools "${CC_COMMIT_ALLOWED_TOOLS}" \
+    -p "/git:commit"'
+alias cc-commit-ja='command claude \
+    --model=${CC_COMMIT_MODEL} \
+    --allowedTools "${CC_COMMIT_ALLOWED_TOOLS}" \
+    -p "/git:commit ja"'
 
 # Gemini-cli
 GEMINI_MODEL="gemini-3-flash-preview"

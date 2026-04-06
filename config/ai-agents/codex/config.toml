@@ -1,3 +1,4 @@
+# dotfiles-managed:start
 #:schema https://developers.openai.com/codex/config-schema.json
 
 model = "gpt-5.4"
@@ -12,20 +13,29 @@ approvals_reviewer = "user"
 [features]
 collaboration_modes = true
 shell_snapshot = true
+multi_agent = true
 
 [sandbox_workspace_write]
-writable_roots = [
-    "/Users/mjun/.cache",
-    "/Users/mjun/.local/share",
-    "/home/mjun/.cache",
-    "/home/mjun/.local/share",
-]
+writable_roots = ["~/.cache", "~/.local/share"]
 network_access = true
 exclude_tmpdir_env_var = false
 exclude_slash_tmp = false
 
 [shell_environment_policy]
 inherit = "all"
+
+[notice]
+hide_rate_limit_model_nudge = true
+
+[tui]
+status_line = [
+    "model-with-reasoning",
+    "context-used",
+    "used-tokens",
+    "weekly-limit",
+    "five-hour-limit",
+    "current-dir",
+]
 
 [mcp_servers.chrome-devtools]
 command = "bunx"
@@ -35,8 +45,12 @@ args = ["chrome-devtools-mcp@latest"]
 command = "bunx"
 args = ["@drawio/mcp@latest"]
 
-[notice]
-hide_rate_limit_model_nudge = true
-
 [plugins."github@openai-curated"]
 enabled = true
+# dotfiles-managed:end
+
+[projects."/Users/mjun/.dotfiles"]
+trust_level = "trusted"
+
+[projects."/home/mjun/.dotfiles"]
+trust_level = "trusted"
