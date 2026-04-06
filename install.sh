@@ -140,15 +140,21 @@ ln -snfv "$DOTPATH/config/ai-agents/claude/statusline.py" "$HOME/.claude/statusl
 log_section "Setting up Codex..."
 CODEX_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/codex/skills"
 CODEX_SKILLS_TARGET_DIR="$HOME/.codex/skills"
-cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
-cp -aLf "$HOME/.codex/config.toml" "$DOTPATH/.backup/codex_config.toml" && rm -rf "$HOME/.codex/config.toml"
-rm -rf "$DOTPATH/.backup/codex_prompts" && cp -aLf "$HOME/.codex/prompts" "$DOTPATH/.backup/codex_prompts" && rm -rf "$HOME/.codex/prompts"
-rm -rf $CODEX_SKILLS_TARGET_DIR
+CODEX_CONFIG_TEMPLATE="$DOTPATH/config/ai-agents/codex/config.toml"
+CODEX_CONFIG_TARGET="$HOME/.codex/config.toml"
 mkdir -p "$HOME/.codex"
-mkdir -p "$CODEX_SKILLS_TARGET_DIR"
+# Copy or rewrite config.toml
+if [ -e "$CODEX_CONFIG_TARGET" ] || [ -L "$CODEX_CONFIG_TARGET" ]; then
+    python3 "$DOTPATH/script/rewrite_config.py" "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
+else
+    cp "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
+fi
+# Copy AGENTS.md
+cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
-ln -snfv "$DOTPATH/config/ai-agents/codex/config.toml" "$HOME/.codex/config.toml"
-ln -snfv "$DOTPATH/config/ai-agents/codex/prompts" "$HOME/.codex/prompts"
+# Copy skills
+rm -rf $CODEX_SKILLS_TARGET_DIR
+mkdir -p "$CODEX_SKILLS_TARGET_DIR"
 for skill_dir in "$CODEX_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")
     rm -rf "$CODEX_SKILLS_TARGET_DIR/$skill_name"
