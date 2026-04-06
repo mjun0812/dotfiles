@@ -1,0 +1,42 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+model = "gpt-5.4"
+model_reasoning_effort = "xhigh"
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "live"
+allow_login_shell = true
+approvals_reviewer = "user"
+
+[features]
+collaboration_modes = true
+shell_snapshot = true
+
+[sandbox_workspace_write]
+writable_roots = [
+    "/Users/mjun/.cache",
+    "/Users/mjun/.local/share",
+    "/home/mjun/.cache",
+    "/home/mjun/.local/share",
+]
+network_access = true
+exclude_tmpdir_env_var = false
+exclude_slash_tmp = false
+
+[shell_environment_policy]
+inherit = "all"
+
+[mcp_servers.chrome-devtools]
+command = "bunx"
+args = ["chrome-devtools-mcp@latest"]
+
+[mcp_servers.drawio]
+command = "bunx"
+args = ["@drawio/mcp@latest"]
+
+[notice]
+hide_rate_limit_model_nudge = true
+
+[plugins."github@openai-curated"]
+enabled = true
