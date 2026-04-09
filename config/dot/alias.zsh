@@ -50,26 +50,16 @@ alias du='du -kh'
 
 # Claude Code
 alias claude="claude --mcp-config=${HOME}/.claude/mcp.json"
-CC_COMMIT_MODEL="haiku"
-CC_COMMIT_ALLOWED_TOOLS="Bash(git status:*),Bash(git add:*),Bash(git log:*),Bash(git branch:*),Bash(git diff:*),Bash(git commit:*),Read(~/.dotfiles/doc/templates/conventional_commits.md)"
-alias cc-commit='command claude \
-    --model=${CC_COMMIT_MODEL} \
-    --allowedTools "${CC_COMMIT_ALLOWED_TOOLS}" \
-    -p "/git:commit"'
-alias cc-commit-ja='command claude \
-    --model=${CC_COMMIT_MODEL} \
-    --allowedTools "${CC_COMMIT_ALLOWED_TOOLS}" \
-    -p "/git:commit ja"'
+alias cc-commit='command claude --model=sonnet --dangerously-skip-permissions -p "/git:commit en"'
+alias cc-commit-ja='command claude --model=sonnet --dangerously-skip-permissions -p "/git:commit ja"'
 
 # Gemini-cli
-GEMINI_MODEL="gemini-3-flash-preview"
-alias gemini-commit='command gemini -p "/aicommit en" -y --model=${GEMINI_MODEL}'
-alias gemini-commit-ja='command gemini -p "/aicommit ja" -y --model=${GEMINI_MODEL}'
+alias gemini-commit='command gemini -p "/aicommit en" -y --model=gemini-3-flash-preview'
+alias gemini-commit-ja='command gemini -p "/aicommit ja" -y --model=gemini-3-flash-preview'
 
 # Codex
-CODEX_COMMIT_MODEL="gpt-5.4-mini"
-alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox -m ${CODEX_COMMIT_MODEL} -c model_reasoning_effort=low "\$git-commit en"'
-alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox -m ${CODEX_COMMIT_MODEL} -c model_reasoning_effort=low "\$git-commit ja"'
+alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "\$git-commit en"'
+alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "\$git-commit ja"'
 
 # Copilot-cli
 alias copilot-commit='copilot -i "~/.dotfiles/config/cfg/claude/commands/git/commit.md に書かれたTaskを実行してください。言語はEnglishです。"'
