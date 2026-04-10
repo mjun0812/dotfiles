@@ -50,8 +50,8 @@ alias du='du -kh'
 
 # Claude Code
 alias claude="claude --mcp-config=${HOME}/.claude/mcp.json"
-alias cc-commit='command claude --model=sonnet --dangerously-skip-permissions -p "/git:commit en"'
-alias cc-commit-ja='command claude --model=sonnet --dangerously-skip-permissions -p "/git:commit ja"'
+alias cc-commit='command claude --model=haiku --dangerously-skip-permissions -p "/git:commit en"'
+alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions -p "/git:commit ja"'
 
 # Gemini-cli
 alias gemini-commit='command gemini -p "/aicommit en" -y --model=gemini-3-flash-preview'
