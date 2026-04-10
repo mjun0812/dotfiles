@@ -1,82 +1,82 @@
 ---
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 argument-hint: [--rebase | --merge]
-description: Detect and resolve merge conflicts in the current PR.
+description: 現在のPRのマージコンフリクトを検出して解消する。
 context: fork
 ---
 
-# Fix Merge Conflicts
+# マージコンフリクトの修正
 
-## Arguments
+## 引数
 
-- `--rebase`: Use rebase strategy to resolve conflicts (optional)
-- `--merge`: Use merge strategy to resolve conflicts (optional, default)
+- `--rebase`: rebase戦略でコンフリクトを解消（任意）
+- `--merge`: merge戦略でコンフリクトを解消（任意、デフォルト）
 
-## Context
+## コンテキスト
 
-- Current branch: !`git branch --show-current`
-- Base branch: !`gh pr view --json baseRefName --jq .baseRefName 2>/dev/null || echo "main"`
-- PR title: !`gh pr view --json title --jq '.title' 2>/dev/null`
-- PR body: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
-- Merge status: !`gh pr view --json mergeable,mergeStateStatus --jq '"\(.mergeable) - \(.mergeStateStatus)"' 2>/dev/null || echo "unknown"`
-- Conflict files: !`git diff --name-only --diff-filter=U 2>/dev/null || echo "none"`
+- 現在のブランチ: !`git branch --show-current`
+- ベースブランチ: !`gh pr view --json baseRefName --jq .baseRefName 2>/dev/null || echo "main"`
+- PRタイトル: !`gh pr view --json title --jq '.title' 2>/dev/null`
+- PR本文: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
+- マージステータス: !`gh pr view --json mergeable,mergeStateStatus --jq '"\(.mergeable) - \(.mergeStateStatus)"' 2>/dev/null || echo "unknown"`
+- コンフリクトファイル: !`git diff --name-only --diff-filter=U 2>/dev/null || echo "none"`
 
-## Task
+## タスク
 
-0. **Pre-checks**:
-   - Verify a PR exists for the current branch
-   - Check merge status: `gh pr view --json mergeable --jq '.mergeable'`
-   - If `MERGEABLE`, report "No conflicts detected" (in detected language) and exit
-   - If `UNKNOWN`, fetch latest and re-check
+0. **事前チェック**:
+   - 現在のブランチにPRが存在することを確認
+   - マージステータスを確認: `gh pr view --json mergeable --jq '.mergeable'`
+   - `MERGEABLE` の場合、「コンフリクトは検出されませんでした」と報告（検出された言語で）して終了
+   - `UNKNOWN` の場合、最新を取得して再確認
 
-1. **Detect PR language**:
-   - Analyze the PR title and body to detect the language (e.g., Japanese, English)
-   - **IMPORTANT**: All commit messages and reports MUST be written in this detected language
-   - If language is ambiguous, default to English
+1. **PR言語の検出**:
+   - PRのタイトルと本文を分析して言語を検出する（例: 日本語、英語）
+   - **重要**: すべてのコミットメッセージと報告は検出された言語で記述すること
+   - 言語が曖昧な場合は英語をデフォルトとする
 
-2. **Fetch latest changes**:
-   - Fetch from origin: `git fetch origin`
-   - Identify base branch: `gh pr view --json baseRefName --jq '.baseRefName'`
+2. **最新の変更を取得**:
+   - originからfetch: `git fetch origin`
+   - ベースブランチを特定: `gh pr view --json baseRefName --jq '.baseRefName'`
 
-3. **Start conflict resolution**:
-   - If `--rebase` flag or user prefers rebase:
+3. **コンフリクト解消の開始**:
+   - `--rebase` フラグまたはユーザーがrebaseを希望する場合:
      - `git rebase origin/<base-branch>`
-   - Otherwise (default merge):
+   - それ以外（デフォルトはmerge）:
      - `git merge origin/<base-branch>`
 
-4. **Identify conflicting files**:
-   - List conflicts: `git diff --name-only --diff-filter=U`
-   - For each file, show conflict regions
+4. **コンフリクトファイルの特定**:
+   - コンフリクト一覧: `git diff --name-only --diff-filter=U`
+   - 各ファイルのコンフリクト領域を表示
 
-5. **Resolve each conflict**:
-   - For each conflicting file:
-     - Display the conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`)
-     - Analyze both versions:
-       - **HEAD (ours)**: Changes from current branch
-       - **theirs**: Changes from base branch
-     - Determine the correct resolution:
-       - Keep ours
-       - Keep theirs
-       - Combine both changes
-       - Write new implementation
-     - Apply the resolution
-     - Explain the reasoning (in detected language)
+5. **各コンフリクトの解消**:
+   - 各コンフリクトファイルについて:
+     - コンフリクトマーカー（`<<<<<<<`, `=======`, `>>>>>>>`）を表示
+     - 両方のバージョンを分析:
+       - **HEAD (ours)**: 現在のブランチの変更
+       - **theirs**: ベースブランチの変更
+     - 正しい解消方法を判断:
+       - 自分側を採用
+       - 相手側を採用
+       - 両方の変更を統合
+       - 新しい実装を記述
+     - 解消を適用
+     - 判断理由を説明（検出された言語で）
 
-6. **Mark as resolved**:
-   - Stage resolved files: `git add <resolved-files>`
-   - If rebasing: `git rebase --continue`
-   - If merging, commit with message in detected language:
-     - English: `merge: resolve conflicts with <base-branch>`
-     - Japanese: `merge: <base-branch>とのコンフリクトを解消`
+6. **解消済みとしてマーク**:
+   - 解消したファイルをステージング: `git add <resolved-files>`
+   - rebaseの場合: `git rebase --continue`
+   - mergeの場合、検出された言語でコミットメッセージを記述:
+     - 英語: `merge: resolve conflicts with <base-branch>`
+     - 日本語: `merge: <base-branch>とのコンフリクトを解消`
 
-7. **Push changes**:
-   - If rebasing: `git push --force-with-lease`
-   - If merging: `git push`
-   - Warn user before force push (in detected language)
+7. **変更をプッシュ**:
+   - rebaseの場合: `git push --force-with-lease`
+   - mergeの場合: `git push`
+   - force push前にユーザーに警告（検出された言語で）
 
-8. **Return the result** (in detected language):
+8. **結果を返す**（検出された言語で）:
 
-## English Format
+## 英語フォーマット
 
 ```markdown
 ## Conflict Resolution Summary
@@ -94,7 +94,7 @@ context: fork
 - Force push required: Yes / No
 ```
 
-## Japanese Format (日本語)
+## 日本語フォーマット
 
 ```markdown
 ## コンフリクト解消サマリー
@@ -112,9 +112,9 @@ context: fork
 - Force pushが必要: はい / いいえ
 ```
 
-## Notes
+## 注意事項
 
-- For complex conflicts (large files, architectural changes), show the conflict and ask for guidance
-- Always use `--force-with-lease` instead of `--force` for safety
-- If rebase results in many conflicts, consider aborting and using merge instead
-- After resolution, suggest running tests to verify nothing is broken
+- 複雑なコンフリクト（大きなファイル、アーキテクチャの変更）の場合は、コンフリクトを表示してユーザーに判断を求める
+- 安全のため、`--force` ではなく常に `--force-with-lease` を使用する
+- rebaseでコンフリクトが多発する場合は、中止してmergeの使用を検討する
+- 解消後、問題がないことを確認するためにテストの実行を提案する

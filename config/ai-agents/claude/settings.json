@@ -70,7 +70,6 @@
     ],
     "ask": [
       "Bash(rm *)",
-      "Bash(git commit *)",
       "Bash(git push *)",
       "Bash(gh pr create *)",
       "Bash(gh issue create *)",
@@ -126,7 +125,16 @@
     "code-simplifier@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-    "clangd-lsp@claude-plugins-official": true
+    "clangd-lsp@claude-plugins-official": true,
+    "codex@openai-codex": true
+  },
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
   },
   "language": "japanese",
   "plansDirectory": "./.claude/plans",
