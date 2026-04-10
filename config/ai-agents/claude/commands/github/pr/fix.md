@@ -1,72 +1,72 @@
 ---
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), SlashCommand
 argument-hint: [PR number] [--reply]
-description: Auto-detect and fix all PR issues (conflicts, CI failures, review comments).
+description: PRの全問題（コンフリクト、CI失敗、レビューコメント）を自動検出して修正する。
 context: fork
 ---
 
-# Fix All PR Issues
+# PR の全問題を修正
 
-## Arguments
+## 引数
 
-- `PR number`: PR number to fix (optional, defaults to PR for current branch)
-- `--reply`: Post reply comments to GitHub after addressing (optional)
+- `PR number`: 修正するPR番号（任意、デフォルトは現在のブランチのPR）
+- `--reply`: 対応後にGitHubにリプライコメントを投稿（任意）
 
-## Context
+## コンテキスト
 
-- Current branch: !`git branch --show-current`
-- Current PR: !`gh pr view --json number,url,mergeable,mergeStateStatus 2>/dev/null || echo "No PR found"`
-- PR title: !`gh pr view --json title --jq '.title' 2>/dev/null`
-- PR body: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
-- CI status: !`gh pr checks --json name,state,conclusion 2>/dev/null || echo "No checks"`
-- Pending reviews: !`gh pr view --json reviews --jq '[.reviews[] | select(.state == "CHANGES_REQUESTED")] | length' 2>/dev/null || echo "0"`
+- 現在のブランチ: !`git branch --show-current`
+- 現在のPR: !`gh pr view --json number,url,mergeable,mergeStateStatus 2>/dev/null || echo "No PR found"`
+- PRタイトル: !`gh pr view --json title --jq '.title' 2>/dev/null`
+- PR本文: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
+- CIステータス: !`gh pr checks --json name,state,conclusion 2>/dev/null || echo "No checks"`
+- 保留中のレビュー: !`gh pr view --json reviews --jq '[.reviews[] | select(.state == "CHANGES_REQUESTED")] | length' 2>/dev/null || echo "0"`
 
-## Task
+## タスク
 
-This command orchestrates three sub-commands to fix all PR issues in the correct order.
+このコマンドは3つのサブコマンドを正しい順序でオーケストレーションし、PRの全問題を修正する。
 
-0. **Pre-checks**:
-   - If PR number is provided in $ARGUMENTS, use that PR
-   - Otherwise, use the PR associated with the current branch
-   - If no PR exists, abort with an error message
-   - Display initial PR status summary
+0. **事前チェック**:
+   - $ARGUMENTS にPR番号が指定されている場合はそのPRを使用
+   - そうでなければ、現在のブランチに紐づくPRを使用
+   - PRが存在しない場合はエラーメッセージを表示して中止
+   - PRの初期ステータスサマリーを表示
 
-1. **Detect PR language**:
-   - Analyze the PR title and body to detect the language (e.g., Japanese, English)
-   - **IMPORTANT**: All reports and summaries MUST be written in this detected language
-   - Sub-commands will also use the same language (they detect independently)
-   - If language is ambiguous, default to English
+1. **PR言語の検出**:
+   - PRのタイトルと本文を分析して言語を検出する（例: 日本語、英語）
+   - **重要**: すべての報告とサマリーは検出された言語で記述すること
+   - サブコマンドも同じ言語を使用する（各サブコマンドが独立して検出）
+   - 言語が曖昧な場合は英語をデフォルトとする
 
-2. **Step 1: Check and fix conflicts**:
-   - Check merge status: `gh pr view --json mergeable --jq '.mergeable'`
-   - If `CONFLICTING`:
-     - Execute `/pr:fix-conflicts`
-     - Wait for completion
-     - Verify conflicts are resolved
-   - If `MERGEABLE`: Skip to next step
-   - Report status in detected language
+2. **ステップ1: コンフリクトの確認と修正**:
+   - マージステータスを確認: `gh pr view --json mergeable --jq '.mergeable'`
+   - `CONFLICTING` の場合:
+     - `/pr:fix-conflicts` を実行
+     - 完了を待つ
+     - コンフリクトが解消されたことを確認
+   - `MERGEABLE` の場合: 次のステップへスキップ
+   - 検出された言語でステータスを報告
 
-3. **Step 2: Check and fix CI failures**:
-   - Check CI status: `gh pr checks`
-   - If any checks failed:
-     - Execute `/github:fix-ci`
-     - Wait for completion
-     - Note: CI will re-run after push
-   - If all checks pass: Skip to next step
-   - If checks still running: Report status and continue
-   - Report status in detected language
+3. **ステップ2: CI失敗の確認と修正**:
+   - CIステータスを確認: `gh pr checks`
+   - 失敗したチェックがある場合:
+     - `/github:fix-ci` を実行
+     - 完了を待つ
+     - 注意: プッシュ後にCIが再実行される
+   - すべてのチェックが成功している場合: 次のステップへスキップ
+   - チェックがまだ実行中の場合: ステータスを報告して続行
+   - 検出された言語でステータスを報告
 
-4. **Step 3: Check and respond to review comments**:
-   - Check for pending review comments: `gh pr view --json reviews,comments`
-   - If there are unaddressed comments:
-     - Execute `/pr:respond-comment --reply`
-     - Wait for completion
-   - If no pending comments: Skip
-   - Report status in detected language
+4. **ステップ3: レビューコメントの確認と対応**:
+   - 保留中のレビューコメントを確認: `gh pr view --json reviews,comments`
+   - 未対応のコメントがある場合:
+     - `/pr:respond-comment --reply` を実行
+     - 完了を待つ
+   - 保留中のコメントがない場合: スキップ
+   - 検出された言語でステータスを報告
 
-5. **Final summary** (in detected language):
+5. **最終サマリー**（検出された言語で）:
 
-### English Format
+### 英語フォーマット
 
 ```markdown
 ## PR Fix Summary
@@ -92,7 +92,7 @@ This command orchestrates three sub-commands to fix all PR issues in the correct
 - `ghi9012` - fix: address review comments
 ```
 
-### Japanese Format (日本語)
+### 日本語フォーマット
 
 ```markdown
 ## PR修正サマリー
@@ -118,9 +118,9 @@ This command orchestrates three sub-commands to fix all PR issues in the correct
 - `ghi9012` - fix: レビューコメントに対応
 ```
 
-## Notes
+## 注意事項
 
-- Each step is executed only if issues are detected
-- If a step fails, subsequent steps may still be attempted
-- User confirmation is requested before major changes
-- Progress is reported after each step in the detected language
+- 各ステップは問題が検出された場合のみ実行される
+- あるステップが失敗しても、後続のステップは実行を試みる
+- 大きな変更の前にはユーザーに確認を求める
+- 各ステップの完了後に検出された言語で進捗を報告する

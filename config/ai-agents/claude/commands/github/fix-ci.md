@@ -1,109 +1,109 @@
 ---
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 argument-hint: [PR number] [--no-commit]
-description: Check CI status for a repository or PR, analyze failures, and fix issues automatically.
+description: CIのステータスを確認し、失敗を分析して自動修正する。
 context: fork
 ---
 
-# Check CI Status and Fix Failures
+# CI ステータス確認と失敗修正
 
-## Arguments
+## 引数
 
-- `PR number`: PR number to check (optional)
-- `--no-commit`: Skip committing and pushing after fixing (optional)
+- `PR number`: 確認するPR番号（任意）
+- `--no-commit`: 修正後のコミットとプッシュをスキップ（任意）
 
-## Context
+## コンテキスト
 
-- Current branch: `git branch --show-current`
-- Current PR: `gh pr view --json number,url 2>/dev/null || echo "No PR found"`
-- PR title: `gh pr view --json title --jq '.title' 2>/dev/null`
-- PR body: `gh pr view --json body --jq '.body' 2>/dev/null | head -30`
-- CI status: `gh pr checks 2>/dev/null || echo "No checks found"`
+- 現在のブランチ: `git branch --show-current`
+- 現在のPR: `gh pr view --json number,url 2>/dev/null || echo "No PR found"`
+- PRタイトル: `gh pr view --json title --jq '.title' 2>/dev/null`
+- PR本文: `gh pr view --json body --jq '.body' 2>/dev/null | head -30`
+- CIステータス: `gh pr checks 2>/dev/null || echo "No checks found"`
 
-## Task
+## タスク
 
-### Phase 0: Pre-checks and Mode Detection
+### Phase 0: 事前チェックとモード検出
 
-Determine the operation mode:
+動作モードを判定する:
 
-1. **If PR number is provided in $ARGUMENTS**: Use PR mode with that PR
-2. **If no PR number but current branch has an associated PR**: Use PR mode with that PR
-3. **If no PR exists**: Use Repository mode (no commit/push at the end)
+1. **$ARGUMENTS にPR番号が指定されている場合**: そのPRを使用するPRモード
+2. **PR番号の指定はないが、現在のブランチにPRが紐づいている場合**: そのPRを使用するPRモード
+3. **PRが存在しない場合**: リポジトリモード（最後にコミット/プッシュしない）
 
-Store the detected mode for later phases.
+検出したモードを以降のPhaseで使用するために保持する。
 
-### Phase 1: Detect Language (PR mode only)
+### Phase 1: 言語検出（PRモードのみ）
 
-- Analyze the PR title and body to detect the language (e.g., Japanese, English)
-- **IMPORTANT**: All commit messages MUST be written in this detected language
-- If language is ambiguous, default to English
+- PRのタイトルと本文を分析して言語を検出する（例: 日本語、英語）
+- **重要**: すべてのコミットメッセージは検出された言語で記述すること
+- 言語が曖昧な場合は英語をデフォルトとする
 
-### Phase 2: Check CI Status
+### Phase 2: CIステータスの確認
 
-- Run `gh pr checks` to get all check statuses
-- If all checks pass, report success (in detected language for PR mode) and exit
-- If checks are still running, report status and ask user whether to wait or proceed
+- `gh pr checks` ですべてのチェックステータスを取得
+- すべてのチェックが成功している場合、成功を報告（PRモードでは検出された言語で）して終了
+- チェックがまだ実行中の場合、ステータスを報告し、待つか続行するかユーザーに確認
 
-### Phase 3: Identify Failed Checks
+### Phase 3: 失敗したチェックの特定
 
-- List all failed checks with their names
-- Get the workflow run IDs: `gh run list --branch <branch> --json databaseId,name,status,conclusion`
+- 失敗したすべてのチェックを名前付きで一覧表示
+- ワークフロー実行IDを取得: `gh run list --branch <branch> --json databaseId,name,status,conclusion`
 
-### Phase 4: Retrieve Error Logs
+### Phase 4: エラーログの取得
 
-- For each failed check, get detailed logs: `gh run view <run-id> --log-failed`
-- Parse the logs to identify:
-  - Error type (test failure, lint error, build error, type error, etc.)
-  - Affected files and line numbers
-  - Error messages
+- 失敗した各チェックについて、詳細ログを取得: `gh run view <run-id> --log-failed`
+- ログを解析して以下を特定:
+  - エラータイプ（テスト失敗、リントエラー、ビルドエラー、型エラー等）
+  - 影響を受けるファイルと行番号
+  - エラーメッセージ
 
-### Phase 5: Analyze and Categorize Errors
+### Phase 5: エラーの分析と分類
 
-- **Test failures**: Identify failing test cases and assertions
-- **Lint errors**: Identify style violations and their locations
-- **Build errors**: Identify compilation or bundling issues
-- **Type errors**: Identify type mismatches and their locations
-- **Other**: Categorize any other error types
+- **テスト失敗**: 失敗したテストケースとアサーションを特定
+- **リントエラー**: スタイル違反とその箇所を特定
+- **ビルドエラー**: コンパイルまたはバンドルの問題を特定
+- **型エラー**: 型の不一致とその箇所を特定
+- **その他**: その他のエラータイプを分類
 
-### Phase 6: Fix the Issues
+### Phase 6: 問題の修正
 
-- For each identified issue:
-  - Navigate to the affected file
-  - Apply the appropriate fix
-  - Verify the fix doesn't break other functionality
-- If a fix is unclear or risky, ask user for confirmation
+- 特定された各問題について:
+  - 対象ファイルに移動
+  - 適切な修正を適用
+  - 修正が他の機能を壊さないことを確認
+- 修正が不明確またはリスクがある場合は、ユーザーに確認を求める
 
-### Phase 7: Commit and Push (PR mode only, unless --no-commit)
+### Phase 7: コミットとプッシュ（PRモードのみ、--no-commit を除く）
 
-**Skip this phase if**:
+**以下の場合はこのPhaseをスキップ**:
 
-- Running in Repository mode
-- `--no-commit` flag is provided
+- リポジトリモードで実行中
+- `--no-commit` フラグが指定されている
 
-**Execute**:
+**実行内容**:
 
-- Stage all changes: `git add -A`
-- Commit with message in detected language:
-  - English: `fix: resolve CI failures - <brief description>`
-  - Japanese: `fix: CI失敗を修正 - <簡潔な説明>`
-- Push to remote: `git push`
+- すべての変更をステージング: `git add -A`
+- 検出された言語でコミットメッセージを記述:
+  - 英語: `fix: resolve CI failures - <brief description>`
+  - 日本語: `fix: CI失敗を修正 - <簡潔な説明>`
+- リモートにプッシュ: `git push`
 
-### Phase 8: Verify and Report
+### Phase 8: 検証と報告
 
-**PR mode**:
+**PRモード**:
 
-- Report that changes have been pushed (in detected language)
-- Note that CI will re-run automatically
-- Suggest running `/github:fix-ci` again after CI completes to verify
+- 変更がプッシュされたことを報告（検出された言語で）
+- CIが自動的に再実行されることを通知
+- 確認のためCI完了後に `/github:fix-ci` を再実行することを提案
 
-**Repository mode**:
+**リポジトリモード**:
 
-- Report what was fixed
-- Note that user should commit and push manually if satisfied
+- 修正内容を報告
+- 問題なければユーザーが手動でコミットとプッシュすることを案内
 
-## Notes
+## 注意事項
 
-- If multiple CIs fail, fix them in dependency order (e.g., build before test)
-- For flaky tests, report the suspicion and suggest re-running
-- For environment-related failures (missing secrets, permissions), report that manual intervention is needed
-- If the same CI fails repeatedly, suggest investigating the root cause
+- 複数のCIが失敗した場合、依存関係の順序で修正する（例: ビルド → テスト）
+- フレーキーテストの疑いがある場合は、その旨を報告し再実行を提案
+- 環境関連の失敗（シークレット不足、権限等）の場合は、手動対応が必要であることを報告
+- 同じCIが繰り返し失敗する場合は、根本原因の調査を提案
