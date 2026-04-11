@@ -62,6 +62,9 @@ command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 # sheldon
 command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 
+# Vite+ bin (https://viteplus.dev)
+. "$HOME/.vite-plus/env"
+
 # ######### zsh completion ##########
 if [ -d ~/.zsh/completions ]; then
   fpath=(~/.zsh/completions $fpath)
