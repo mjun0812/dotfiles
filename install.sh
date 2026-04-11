@@ -67,6 +67,7 @@ bun install -g \
     typescript-language-server \
     typescript \
     oxfmt
+$DOTPATH/script/install_vp.sh
 
 ################ [Python] ################
 log_section "Setting up Python..."

@@ -13,3 +13,4 @@ fi
 
 # If you want to see the profile, uncomment the following line
 # zmodload zsh/zprof && zprof
+
