@@ -42,4 +42,5 @@ brew install --cask \
     deepl \
     chatgpt \
     claude \
-    azookey
+    azookey \
+    homerow
