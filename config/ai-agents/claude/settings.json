@@ -79,7 +79,8 @@
     ],
     "additionalDirectories": [
       "/tmp"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "hooks": {
     "PostToolUse": [
@@ -137,7 +138,8 @@
     }
   },
   "language": "japanese",
+  "effortLevel": "xhigh",
   "plansDirectory": "./.claude/plans",
   "skipDangerousModePermissionPrompt": true,
-  "effortLevel": "xhigh"
+  "skipAutoPermissionPrompt": true
 }
