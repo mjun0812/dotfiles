@@ -35,6 +35,7 @@ status_line = [
     "weekly-limit",
     "five-hour-limit",
     "current-dir",
+    "git-branch",
 ]
 
 [mcp_servers.chrome-devtools]
