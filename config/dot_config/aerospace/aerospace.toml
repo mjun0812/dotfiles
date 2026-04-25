@@ -4,6 +4,9 @@ config-version = 2
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = []
 
+# ワークスペース切り替え時にHammerspoonへ番号を渡してHUDを表示する
+exec-on-workspace-change = ['/bin/bash', '-c', 'open -g "hammerspoon://aerospace-workspace?ws=${AEROSPACE_FOCUSED_WORKSPACE}"']
+
 # Start AeroSpace at login
 start-at-login = true
 
