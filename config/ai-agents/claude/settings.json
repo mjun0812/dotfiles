@@ -138,5 +138,6 @@
   },
   "language": "japanese",
   "plansDirectory": "./.claude/plans",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "effortLevel": "xhigh"
 }
