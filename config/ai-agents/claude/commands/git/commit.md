@@ -2,13 +2,13 @@
 name: commit
 allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Bash(git status:*), Bash(git add:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
 argument-hint: [language]
-description: AIが生成したコミットメッセージを使用して、ステージングされた変更をコミットします。
+description: このSkillはgit commitをする際に使用します。AIが生成したコミットメッセージを使用して、現在の変更をコミットします。
 context: fork
 ---
 
 # git commit
 
-AIが生成したコミットメッセージを使用して、ステージングされた変更をコミットします。
+AIが生成したコミットメッセージを使用して、現在の変更をコミットします。
 
 ## 引数
 
@@ -17,6 +17,7 @@ AIが生成したコミットメッセージを使用して、ステージング
 ## コンテキスト
 
 - ステージングされた変更: !`git diff --cached`
+- 未ステージングの変更: !`git diff`
 - Git ステータス: !`git status`
 - 現在のブランチ: !`git branch --show-current`
 - 最近のコミット: !`git log -10 --oneline`
@@ -24,7 +25,7 @@ AIが生成したコミットメッセージを使用して、ステージング
 
 ## タスク
 
-1. ステージングされた変更がない場合は、先に変更をステージングするようユーザーに促してください。
+1. ステージングされた変更がない場合は、現在の変更を確認して適切な単位でステージングしてください。
 2. Conventional Commits 形式に従ったコミットメッセージを生成してください:
    - 1行目: `<type>: <description>`（スコープなし）
    - 2行目: 空行
