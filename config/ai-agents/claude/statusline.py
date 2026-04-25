@@ -25,7 +25,7 @@ def gradient(pct):
         return f"\033[38;2;255;{max(g, 0)};60m"
 
 
-def braille_bar(pct, width=8):
+def braille_bar(pct, width=6):
     pct = min(max(pct, 0), 100)
     level = pct / 100
     bar = ""
