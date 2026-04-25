@@ -2,6 +2,8 @@
 """Pattern 5: Braille dots - dotted progress bar using braille characters"""
 
 import json
+import os
+import subprocess
 import sys
 
 if sys.platform == "win32":
@@ -45,6 +47,51 @@ def fmt(label, pct):
     return f"{DIM}{label}{R} {gradient(pct)}{braille_bar(pct)}{R} {p}%"
 
 
+def short_path(path, max_len=30):
+    home = os.path.expanduser("~")
+    if path == home:
+        return "~"
+    if path.startswith(home + os.sep):
+        path = "~" + path[len(home) :]
+    if len(path) <= max_len:
+        return path
+    parts = path.split(os.sep)
+    if len(parts) <= 2:
+        return os.path.basename(path) or path
+    head, tail = parts[0], parts[-1]
+    shortened = os.sep.join(
+        [head] + [p[:1] for p in parts[1:-1] if p] + [tail]
+    )
+    if len(shortened) <= max_len:
+        return shortened
+    return tail or path
+
+
+def git_branch(cwd):
+    try:
+        result = subprocess.run(
+            ["git", "symbolic-ref", "--short", "HEAD"],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            timeout=1,
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            timeout=1,
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except (subprocess.SubprocessError, OSError):
+        pass
+    return None
+
+
 model = data.get("model", {}).get("display_name", "Claude")
 parts = [model]
 
@@ -58,5 +105,12 @@ if five is not None:
 week = data.get("rate_limits", {}).get("seven_day", {}).get("used_percentage")
 if week is not None:
     parts.append(fmt("7d", week))
+
+cwd = data.get("workspace", {}).get("current_dir") or data.get("cwd")
+if cwd:
+    parts.append(f"{DIM}{R} {short_path(cwd)}")
+    branch = git_branch(cwd)
+    if branch:
+        parts.append(f"{DIM}{R} {branch}")
 
 print(f" {DIM}│{R} ".join(parts), end="")
