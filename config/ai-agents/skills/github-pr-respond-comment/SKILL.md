@@ -1,8 +1,7 @@
 ---
+name: github-pr-respond-comment
+description: PRのレビューコメントを確認し、対応・返信するSkill。
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
-argument-hint: [PR number] [--reply]
-description: PRのレビューコメントを確認し、対応・返信する。
-context: fork
 ---
 
 # レビューコメントへの対応
@@ -14,16 +13,18 @@ context: fork
 
 ## コンテキスト
 
-- 現在のブランチ: !`git branch --show-current`
-- 現在のPR: !`gh pr view --json number,url,reviewDecision 2>/dev/null || echo "No PR found"`
-- PRタイトル: !`gh pr view --json title --jq '.title' 2>/dev/null`
-- PR本文: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
-- 保留中のレビュー: !`gh pr view --json reviews --jq '.reviews | map(select(.state != "APPROVED")) | length' 2>/dev/null || echo "0"`
+以下を取得してから作業を開始してください。
+
+- 現在のブランチ: `git branch --show-current`
+- 現在のPR: `gh pr view --json number,url,reviewDecision 2>/dev/null || echo "No PR found"`
+- PRタイトル: `gh pr view --json title --jq '.title' 2>/dev/null`
+- PR本文: `gh pr view --json body --jq '.body' 2>/dev/null | head -30`
+- 保留中のレビュー: `gh pr view --json reviews --jq '.reviews | map(select(.state != "APPROVED")) | length' 2>/dev/null || echo "0"`
 
 ## タスク
 
 0. **事前チェック**:
-   - $ARGUMENTS にPR番号が指定されている場合はそのPRを使用
+   - 引数にPR番号が指定されている場合はそのPRを使用
    - そうでなければ、現在のブランチに紐づくPRを使用
    - PRが存在しない場合はエラーメッセージを表示して中止
 

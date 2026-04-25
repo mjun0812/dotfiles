@@ -1,8 +1,7 @@
 ---
+name: github-issue-create
+description: ユーザーから情報を収集してGitHub Issueを作成するSkill。
 allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*), Read
-argument-hint: [language] [--label <name>] [--assignee <username>]
-description: ユーザーから情報を収集してGitHub Issueを作成する
-context: fork
 ---
 
 # Create GitHub Issue
@@ -17,9 +16,11 @@ context: fork
 
 ## Context
 
-- リポジトリ情報: !`gh repo view --json name,owner --jq '.owner.login + "/" + .name'`
-- 利用可能なラベル: !`gh label list --limit 50 --json name --jq '.[].name' 2>/dev/null || echo "none"`
-- リポジトリ内Issueテンプレート: !`ls .github/ISSUE_TEMPLATE/ 2>/dev/null || echo "none"`
+以下を取得してから作業を開始してください。
+
+- リポジトリ情報: `gh repo view --json name,owner --jq '.owner.login + "/" + .name'`
+- 利用可能なラベル: `gh label list --limit 50 --json name --jq '.[].name' 2>/dev/null || echo "none"`
+- リポジトリ内Issueテンプレート: `ls .github/ISSUE_TEMPLATE/ 2>/dev/null || echo "none"`
 
 ## Issue Templates
 
@@ -75,8 +76,8 @@ context: fork
    gh issue create --title "<title>" --body "<body>" [--label <name>] [--assignee <username>]
    ```
    - テンプレートのフロントマターに含まれるラベルをデフォルトとして使用
-   - `--label` が $ARGUMENTS で指定された場合は、追加でそのラベルを付与
-   - `--assignee` が $ARGUMENTS で指定された場合は、その担当者を割り当て
+   - `--label` がユーザーから指定された場合は、追加でそのラベルを付与
+   - `--assignee` がユーザーから指定された場合は、その担当者を割り当て
 
 7. **結果の報告**:
    - 作成されたIssueのURLを表示

@@ -1,8 +1,7 @@
 ---
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), SlashCommand
-argument-hint: [PR number] [--reply]
-description: PRの全問題（コンフリクト、CI失敗、レビューコメント）を自動検出して修正する。
-context: fork
+name: github-pr-fix
+description: PRの全問題（コンフリクト、CI失敗、レビューコメント）を自動検出して修正するSkill。
+allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 ---
 
 # PR の全問題を修正
@@ -14,19 +13,21 @@ context: fork
 
 ## コンテキスト
 
-- 現在のブランチ: !`git branch --show-current`
-- 現在のPR: !`gh pr view --json number,url,mergeable,mergeStateStatus 2>/dev/null || echo "No PR found"`
-- PRタイトル: !`gh pr view --json title --jq '.title' 2>/dev/null`
-- PR本文: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
-- CIステータス: !`gh pr checks --json name,state,conclusion 2>/dev/null || echo "No checks"`
-- 保留中のレビュー: !`gh pr view --json reviews --jq '[.reviews[] | select(.state == "CHANGES_REQUESTED")] | length' 2>/dev/null || echo "0"`
+以下を取得してから作業を開始してください。
+
+- 現在のブランチ: `git branch --show-current`
+- 現在のPR: `gh pr view --json number,url,mergeable,mergeStateStatus 2>/dev/null || echo "No PR found"`
+- PRタイトル: `gh pr view --json title --jq '.title' 2>/dev/null`
+- PR本文: `gh pr view --json body --jq '.body' 2>/dev/null | head -30`
+- CIステータス: `gh pr checks --json name,state,conclusion 2>/dev/null || echo "No checks"`
+- 保留中のレビュー: `gh pr view --json reviews --jq '[.reviews[] | select(.state == "CHANGES_REQUESTED")] | length' 2>/dev/null || echo "0"`
 
 ## タスク
 
-このコマンドは3つのサブコマンドを正しい順序でオーケストレーションし、PRの全問題を修正する。
+このSkillは3つのサブSkillを正しい順序でオーケストレーションし、PRの全問題を修正する。
 
 0. **事前チェック**:
-   - $ARGUMENTS にPR番号が指定されている場合はそのPRを使用
+   - 引数にPR番号が指定されている場合はそのPRを使用
    - そうでなければ、現在のブランチに紐づくPRを使用
    - PRが存在しない場合はエラーメッセージを表示して中止
    - PRの初期ステータスサマリーを表示
@@ -34,13 +35,13 @@ context: fork
 1. **PR言語の検出**:
    - PRのタイトルと本文を分析して言語を検出する（例: 日本語、英語）
    - **重要**: すべての報告とサマリーは検出された言語で記述すること
-   - サブコマンドも同じ言語を使用する（各サブコマンドが独立して検出）
+   - 各サブSkillも同じ言語を使用する（各サブSkillが独立して検出）
    - 言語が曖昧な場合は英語をデフォルトとする
 
 2. **ステップ1: コンフリクトの確認と修正**:
    - マージステータスを確認: `gh pr view --json mergeable --jq '.mergeable'`
    - `CONFLICTING` の場合:
-     - `/pr:fix-conflicts` を実行
+     - `github-pr-fix-conflicts` skill を実行
      - 完了を待つ
      - コンフリクトが解消されたことを確認
    - `MERGEABLE` の場合: 次のステップへスキップ
@@ -49,7 +50,7 @@ context: fork
 3. **ステップ2: CI失敗の確認と修正**:
    - CIステータスを確認: `gh pr checks`
    - 失敗したチェックがある場合:
-     - `/github:fix-ci` を実行
+     - `github-fix-ci` skill を実行
      - 完了を待つ
      - 注意: プッシュ後にCIが再実行される
    - すべてのチェックが成功している場合: 次のステップへスキップ
@@ -59,7 +60,7 @@ context: fork
 4. **ステップ3: レビューコメントの確認と対応**:
    - 保留中のレビューコメントを確認: `gh pr view --json reviews,comments`
    - 未対応のコメントがある場合:
-     - `/pr:respond-comment --reply` を実行
+     - `github-pr-respond-comment` skill を `--reply` オプション付きで実行
      - 完了を待つ
    - 保留中のコメントがない場合: スキップ
    - 検出された言語でステータスを報告
