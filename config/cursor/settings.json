@@ -163,6 +163,7 @@
         "markdown": true
     },
     "github.copilot.nextEditSuggestions.extendedRange": true,
+    "githubPullRequests.focusedMode": "off",
     "gitlens.advanced.messages": {
         "suppressGitMissingWarning": true
     },
