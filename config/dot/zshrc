@@ -33,6 +33,8 @@ fi
 [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.venv/bin:$PATH"
+# uv/cargo-dist 系インストーラに rc ファイルを書き換えさせない
+export INSTALLER_NO_MODIFY_PATH=1
 
 # bun
 export BUN_INSTALL_BIN="$HOME/.bun/bin"
@@ -63,7 +65,7 @@ command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 
 # Vite+ bin (https://viteplus.dev)
-. "$HOME/.vite-plus/env"
+[ -f "$HOME/.vite-plus/env" ] && . "$HOME/.vite-plus/env"
 
 # ######### zsh completion ##########
 if [ -d ~/.zsh/completions ]; then
@@ -99,4 +101,3 @@ fi
 # powerlevel10k
 source ~/.p10k.zsh
 (( ! ${+functions[p10k]} )) || p10k finalize
-
