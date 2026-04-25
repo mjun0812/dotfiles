@@ -1,8 +1,7 @@
 ---
+name: github-fix-ci
+description: CIのステータスを確認し、失敗を分析して自動修正するSkill。
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
-argument-hint: [PR number] [--no-commit]
-description: CIのステータスを確認し、失敗を分析して自動修正する。
-context: fork
 ---
 
 # CI ステータス確認と失敗修正
@@ -13,6 +12,8 @@ context: fork
 - `--no-commit`: 修正後のコミットとプッシュをスキップ（任意）
 
 ## コンテキスト
+
+以下を取得してから作業を開始してください。
 
 - 現在のブランチ: `git branch --show-current`
 - 現在のPR: `gh pr view --json number,url 2>/dev/null || echo "No PR found"`
@@ -26,7 +27,7 @@ context: fork
 
 動作モードを判定する:
 
-1. **$ARGUMENTS にPR番号が指定されている場合**: そのPRを使用するPRモード
+1. **PR番号が指定されている場合**: そのPRを使用するPRモード
 2. **PR番号の指定はないが、現在のブランチにPRが紐づいている場合**: そのPRを使用するPRモード
 3. **PRが存在しない場合**: リポジトリモード（最後にコミット/プッシュしない）
 
@@ -94,7 +95,7 @@ context: fork
 
 - 変更がプッシュされたことを報告（検出された言語で）
 - CIが自動的に再実行されることを通知
-- 確認のためCI完了後に `/github:fix-ci` を再実行することを提案
+- 確認のためCI完了後に再実行することを提案
 
 **リポジトリモード**:
 

@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*)
-argument-hint: [PR number]
+name: github-pr-review
 description: GitHubのpull request(PR)のコードレビューを行うSkill。5つの専門レビュアーagentを並列実行し、統合レビューレポートとインラインコメントを生成する。
+allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*)
 ---
 
 # Pull Request Review（オーケストレーション）
@@ -17,7 +17,7 @@ description: GitHubのpull request(PR)のコードレビューを行うSkill。5
 ### Phase 1: 事前チェック + PR情報収集
 
 1. **事前チェック**:
-   - `$ARGUMENTS` にPR番号が指定されている場合は `gh pr view <number>` を使用
+   - 引数にPR番号が指定されている場合は `gh pr view <number>` を使用
    - 指定がない場合は現在のブランチに紐づくPRを使用
    - PRが存在しない場合はエラーメッセージを表示して中断
 

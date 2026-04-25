@@ -1,9 +1,7 @@
 ---
-name: squash
+name: git-squash
+description: 現在のbranchのcommitをsquash・整理するSkill。言語指定可能。
 allowed-tools: Bash(git:*), Bash(gh:*)
-argument-hint: [language] [--one | --auto] [--message <commit message>]
-description: 現在のbranchのcommitをsquash・整理する。言語指定可能。
-context: fork
 ---
 
 # Squash Commits
@@ -20,9 +18,11 @@ context: fork
 
 ## Context
 
-- 現在のbranch: !`git branch --show-current`
-- base branch: !`gh pr view --json baseRefName --jq .baseRefName 2>/dev/null || git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | grep -o '[^/]*$' || echo "main"`
-- PRタイトル: !`gh pr view --json title --jq '.title' 2>/dev/null || echo "none"`
+以下を取得してから作業を開始してください。
+
+- 現在のbranch: `git branch --show-current`
+- base branch: `gh pr view --json baseRefName --jq .baseRefName 2>/dev/null || git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | grep -o '[^/]*$' || echo "main"`
+- PRタイトル: `gh pr view --json title --jq '.title' 2>/dev/null || echo "none"`
 
 ## Task
 
@@ -104,7 +104,7 @@ context: fork
 
 - **`--message` 指定時**: 指定されたメッセージをそのまま使用
 - **未指定時**: 以下のルールで生成:
-  - `$ARGUMENTS` の `language` で指定された言語で記述（デフォルト: English）
+  - ユーザーが指定した言語で記述（デフォルト: English）
   - Conventional Commits形式に従う:
 
   ```

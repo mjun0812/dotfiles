@@ -50,8 +50,8 @@ alias du='du -kh'
 
 # Claude Code
 alias claude="claude --mcp-config=${HOME}/.claude/mcp.json"
-alias cc-commit='command claude --model=haiku --dangerously-skip-permissions -p "/git:commit en"'
-alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions -p "/git:commit ja"'
+alias cc-commit='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit en"'
+alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit ja"'
 
 # Gemini-cli
 alias gemini-commit='command gemini -p "/aicommit en" -y --model=gemini-3-flash-preview --skip-trust'
@@ -62,8 +62,8 @@ alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbo
 alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "\$git-commit ja"'
 
 # Copilot-cli
-alias copilot-commit='copilot -i "~/.dotfiles/config/cfg/claude/commands/git/commit.md に書かれたTaskを実行してください。言語はEnglishです。"'
-alias copilot-commit-ja='copilot -i "~/.dotfiles/config/cfg/claude/commands/git/commit.md に書かれたTaskを実行してください。言語はJapaneseです。"'
+alias copilot-commit='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はEnglishです。"'
+alias copilot-commit-ja='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はJapaneseです。"'
 
 # ai commands alias
 alias aicommit='cc-commit'

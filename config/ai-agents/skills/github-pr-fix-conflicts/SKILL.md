@@ -1,8 +1,7 @@
 ---
+name: github-pr-fix-conflicts
+description: 現在のPRのマージコンフリクトを検出して解消するSkill。
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
-argument-hint: [--rebase | --merge]
-description: 現在のPRのマージコンフリクトを検出して解消する。
-context: fork
 ---
 
 # マージコンフリクトの修正
@@ -14,12 +13,14 @@ context: fork
 
 ## コンテキスト
 
-- 現在のブランチ: !`git branch --show-current`
-- ベースブランチ: !`gh pr view --json baseRefName --jq .baseRefName 2>/dev/null || echo "main"`
-- PRタイトル: !`gh pr view --json title --jq '.title' 2>/dev/null`
-- PR本文: !`gh pr view --json body --jq '.body' 2>/dev/null | head -30`
-- マージステータス: !`gh pr view --json mergeable,mergeStateStatus --jq '"\(.mergeable) - \(.mergeStateStatus)"' 2>/dev/null || echo "unknown"`
-- コンフリクトファイル: !`git diff --name-only --diff-filter=U 2>/dev/null || echo "none"`
+以下を取得してから作業を開始してください。
+
+- 現在のブランチ: `git branch --show-current`
+- ベースブランチ: `gh pr view --json baseRefName --jq .baseRefName 2>/dev/null || echo "main"`
+- PRタイトル: `gh pr view --json title --jq '.title' 2>/dev/null`
+- PR本文: `gh pr view --json body --jq '.body' 2>/dev/null | head -30`
+- マージステータス: `gh pr view --json mergeable,mergeStateStatus --jq '"\(.mergeable) - \(.mergeStateStatus)"' 2>/dev/null || echo "unknown"`
+- コンフリクトファイル: `git diff --name-only --diff-filter=U 2>/dev/null || echo "none"`
 
 ## タスク
 
