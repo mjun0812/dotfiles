@@ -88,11 +88,6 @@ for tool in "${UV_TOOLS[@]}"; do
 done
 cd $DOTPATH
 
-################ [Sheldon] ################
-log_section "Setting up Sheldon..."
-$DOTPATH/script/install_sheldon.sh
-source "$HOME/.zshrc"
-
 ################ [VSCode] ################
 log_section "Setting up VSCode..."
 if [ "$(uname -s)" = "Darwin" ]; then
