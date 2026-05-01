@@ -38,6 +38,9 @@ status_line = [
     "git-branch",
 ]
 
+[tui.keymap.editor]
+insert_newline = ["ctrl-j", "ctrl-m", "enter", "shift-enter", "alt-enter"]
+
 [mcp_servers.chrome-devtools]
 command = "bunx"
 args = ["chrome-devtools-mcp@latest"]
