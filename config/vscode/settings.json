@@ -403,6 +403,7 @@
    "search.showLineNumbers": true,
    "security.workspace.trust.untrustedFiles": "open",
    "terminal.integrated.enableMultiLinePasteWarning": "never",
+   "terminal.integrated.mouseWheelScrollSensitivity": 3,
    "terminal.integrated.scrollback": 10000,
    "terminal.integrated.tabs.enabled": true,
    "terminal.integrated.tabs.location": "left",
@@ -465,6 +466,5 @@
    "workbench.startupEditor": "none",
    "workbench.tree.indent": 16,
    "workbench.tree.renderIndentGuides": "always",
-   "workbench.view.alwaysShowHeaderActions": true,
-   "oxc.path.oxfmt": "/home/mjun/.bun/bin/oxfmt"
+   "workbench.view.alwaysShowHeaderActions": true
 }
