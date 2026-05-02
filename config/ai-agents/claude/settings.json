@@ -77,10 +77,10 @@
       "Bash(gh pr close *)",
       "Bash(gh pr merge *)"
     ],
+    "defaultMode": "auto",
     "additionalDirectories": [
       "/tmp"
-    ],
-    "defaultMode": "auto"
+    ]
   },
   "hooks": {
     "PostToolUse": [
@@ -127,7 +127,8 @@
     "typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "clangd-lsp@claude-plugins-official": true,
-    "codex@openai-codex": true
+    "codex@openai-codex": true,
+    "skill-creator@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
