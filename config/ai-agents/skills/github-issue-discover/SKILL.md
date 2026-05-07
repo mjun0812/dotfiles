@@ -1,6 +1,6 @@
 ---
 name: github-issue-discover
-description: 現在のリポジトリをスキャンしてissue化すべき事項を自動発見し、既存issueとの重複を除いた上でユーザーに承認を取って一括起票するSkill。ドキュメント・ToDoリスト・コード内TODOコメント・CI/設定の不整合・テスト不足・コード品質上の問題を横断的に探す。ユーザーが「issueを洗い出して」「TODOを起票して」「リポジトリの宿題をissue化」「未対応事項をissueにして」のように依頼したら必ずこのSkillを使うこと。
+description: 現在のリポジトリをスキャンしてissue化すべき事項を自動発見し、既存issueとの重複を除いた上でユーザーに承認を取って一括起票するSkill。`--auto`指定時は承認を省略してsecurity以外を全自動で起票する。ドキュメント・ToDoリスト・コード内TODOコメント・CI/設定の不整合・テスト不足・コード品質上の問題を横断的に探す。ユーザーが「issueを洗い出して」「TODOを起票して」「リポジトリの宿題をissue化」「未対応事項をissueにして」「自動でissue起こして」のように依頼したら必ずこのSkillを使うこと。
 allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(find:*), Bash(rg:*), Bash(grep:*), Bash(wc:*), Bash(head:*), Bash(tail:*), Read, Glob, Grep, AskUserQuestion, Skill(github-issue-create)
 ---
 
@@ -14,12 +14,28 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(find:*), B
 - `--scope <list>`: スキャン範囲を絞る。カンマ区切りで `docs,todos,ci,tests,code` から選ぶ。未指定なら全範囲
 - `--max <N>`: 提示する候補の最大数。デフォルト: `15`（一度に多すぎると承認作業が重い）
 - `--dry-run`: 候補抽出と提示までで停止し、issueは作成しない
+- `--auto`: Phase 5のユーザー承認をスキップし、抽出された候補を全件 `github-issue-create` に委譲して自動起票する。**ただしセーフガードあり**（後述）。`--dry-run` と併用された場合は `--dry-run` が優先される
 
 ## Why this skill exists
 
 リポジトリには「READMEの未着手項目」「TODOコメント」「テスト不足」「設定の古さ」など、誰も起票していないが本来issueにすべき事項が潜んでいる。人手で洗い出すのは骨が折れるため、機械的にスキャンして候補化し、人は採否の判断だけを行う、という分業にする。
 
 このskillの責務は **発見と提示** であって、自動で全件作成することではない。雑なissueを大量に作るのは負債でしかないので、ユーザー承認を必ず挟む。
+
+## Modes
+
+- **対話モード（デフォルト）**: `--auto` 未指定。Phase 5でユーザー承認を取ってからPhase 6で起票する
+- **自動モード**: `--auto` 指定。Phase 5の承認をスキップして起票に進む。CIや定期メンテで起動する想定
+
+### 自動モードのセーフガード
+
+`--auto` でも以下は **必ずユーザー確認を取る**（または対象から除外する）。雑なissueを大量に作る方が負債になるため、自動モードでも安全側に倒す。
+
+- **セキュリティ関連候補（kind: security）**: シークレット漏洩疑いを含むissueは、本文に証拠（ファイル:行）を載せた瞬間にpublic repoでは漏洩を広げかねない。`--auto` でもこの種の候補は **必ずユーザー確認** を取り、private repo判定もし直す
+- **`--max` の上限**: `--auto` でも `--max` を超える候補は打ち切る。デフォルト15を超えて自動起票したいなら明示的に `--max` を上げる必要がある
+- **重複排除（Phase 3）**: `--auto` でも必ず実行する。スキップしない
+
+`--dry-run` と `--auto` が両方指定された場合は `--dry-run` を優先する（提示のみで停止）。
 
 ## Phases
 
@@ -179,7 +195,9 @@ rg -n --no-heading -i -e '\bTODO\b' -e '\bFIXME\b' -e '\bXXX\b' -e '\bHACK\b' \
 
 ### Phase 5: ユーザーへの一覧提示と承認
 
-整形済み候補を **Markdown一覧** で提示する。各候補に番号、kind、タイトル、根拠（ファイル:行）の1行サマリを付ける。
+`--auto` が指定されていれば、上記セーフガード（自動モードのセーフガード節）を適用した上で、提示も承認も省略して **Phase 6 に直行** する。security候補が混じっている場合はその候補だけPhase 5を通常モードで実行（残りの候補は自動）し、ユーザーに security 候補の採否だけ確認する。
+
+`--auto` 未指定の場合、整形済み候補を **Markdown一覧** で提示する。各候補に番号、kind、タイトル、根拠（ファイル:行）の1行サマリを付ける。
 
 ```
 ## issue候補 (N件)
@@ -248,6 +266,8 @@ Skill(github-issue-create) args="ja --template <task|feature_request|bug_report|
 
 総候補数: N+M+K+L 件
 ```
+
+`--auto` で実行した場合、`Mode: auto` の旨と、security候補の有無（あればその扱い）も最終レポートに明記する。
 
 URLはMarkdownリンクではなく素のURL（クリックできる端末向け）で提示する。
 
