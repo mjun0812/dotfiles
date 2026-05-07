@@ -122,7 +122,17 @@ rm -f "$CURSOR_USER_DIR/settings.json" "$CURSOR_USER_DIR/keybindings.json"
 ln -snfv "$DOTPATH/config/cursor/settings.json" "$CURSOR_USER_DIR/settings.json"
 ln -snfv "$DOTPATH/config/cursor/keybindings.json" "$CURSOR_USER_DIR/keybindings.json"
 
+################ [Shared Agent Skills] ################
+log_section "Setting up shared agent skills..."
 AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
+cp -aLf "$HOME/.agents/skills" "$DOTPATH/.backup/agents_skills" 2>/dev/null || true
+rm -rf "$HOME/.agents/skills"
+mkdir -p "$HOME/.agents/skills"
+for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
+    skill_name=$(basename "$skill_dir")
+    ln -snfv "$skill_dir" "$HOME/.agents/skills/$skill_name"
+done
+
 ################ [Claude Code] ################
 log_section "Setting up Claude Code..."
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
