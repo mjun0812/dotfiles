@@ -17,9 +17,17 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Ba
 ### Phase 1: 事前チェック + PR情報収集
 
 1. **事前チェック**:
-   - 引数にPR番号が指定されている場合は `gh pr view <number>` を使用
-   - 指定がない場合は現在のブランチに紐づくPRを使用
-   - PRが存在しない場合はエラーメッセージを表示して中断
+   - **引数にPR番号が指定されている場合**: `gh pr view <number>` で対象PRを取得する
+   - **引数なしで，現在のブランチに紐づく open PR が存在する場合**: そのPRをそのまま使用する（確認なし）
+     - 判定方法: `gh pr view --json number,state 2>/dev/null` の終了コードと `state == "OPEN"` で判断する
+   - **引数なしで，現在のブランチに紐づく open PR が存在しない場合**: AskUserQuestion でユーザーに対象PRを確認する
+     - `gh pr list --state open --json number,title,headRefName,author --limit 20 --jq 'sort_by(.number) | reverse'` で最新の open PR 一覧を取得する
+     - 取得した上位 PR を AskUserQuestion の選択肢として提示する（label例: `#123 Fix auth bug (feature/auth-fix)`）
+       - 1件のみの場合: そのPRと「キャンセル」の2択
+       - 2-3件: そのまま選択肢に並べる
+       - 4件以上: 最新3件を提示し，4つ目は「キャンセル」（ユーザーは "Other" で任意のPR番号を直接入力できる）
+     - open PR が0件の場合はエラーメッセージを表示して中断する
+     - ユーザーが「キャンセル」を選択した場合は中断する
 
 2. **PR情報を収集する**:
    - PRメタデータの取得: `gh pr view <number> --json title,body,baseRefName,headRefName,author,additions,deletions,changedFiles`
