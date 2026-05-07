@@ -153,6 +153,30 @@ for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     ln -snfv "$skill_dir" "$HOME/.claude/skills/$skill_name"
 done
 
+################ [Claude Code Plugins] ################
+log_section "Setting up Claude Code plugins..."
+if command -v claude >/dev/null 2>&1; then
+    CLAUDE_SETTINGS_JSON="$DOTPATH/config/ai-agents/claude/settings.json"
+
+    # Add custom marketplaces declared in extraKnownMarketplaces
+    jq -r '.extraKnownMarketplaces // {} | to_entries[] | "\(.key)\t\(.value.source.repo)"' \
+        "$CLAUDE_SETTINGS_JSON" | while IFS=$'\t' read -r mp_name mp_repo; do
+        [ -z "$mp_name" ] && continue
+        if ! claude plugin marketplace list 2>/dev/null | grep -q "$mp_name"; then
+            claude plugin marketplace add "$mp_repo" || true
+        fi
+    done
+
+    # Install plugins enabled in enabledPlugins (user scope, idempotent)
+    jq -r '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key' \
+        "$CLAUDE_SETTINGS_JSON" | while IFS= read -r plugin; do
+        [ -z "$plugin" ] && continue
+        claude plugin install "$plugin" -s user || true
+    done
+else
+    echo "claude command not found; skipping plugin setup"
+fi
+
 ################ [Codex] ################
 log_section "Setting up Codex..."
 CODEX_CONFIG_TEMPLATE="$DOTPATH/config/ai-agents/codex/config.toml"
