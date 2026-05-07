@@ -13,6 +13,19 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*), Re
 - `language`: Issueのタイトルと本文の言語（例: "ja", "en"）。デフォルト: "en"
 - `--label <name>`: ラベルを追加（任意、複数指定可）
 - `--assignee <username>`: 担当者を割り当て（任意、複数指定可）
+- `--title <title>`: タイトルを直接指定（指定時はタイトルの対話入力をスキップ）
+- `--body <body>`: 本文を直接指定（指定時は本文の対話入力をスキップ）
+- `--template <name>`: 使用するテンプレートを直接指定（`feature_request` / `bug_report` / `task` / `test`）。指定時はIssue種別の対話確認をスキップ
+- `--no-confirm`: 最終確認の対話もスキップしてそのまま作成する（`--title` / `--body` 併用前提。`github-issue-discover` のような自動化skillから呼ばれる際に使う）
+
+## Modes
+
+このskillは2つのモードで動作する。
+
+- **対話モード（デフォルト）**: 引数の `--title` / `--body` / `--template` がいずれも未指定の通常起動。ユーザーから情報を逐次収集して作成する
+- **委譲モード**: `--title` / `--body` / `--template` が事前に渡された起動。対応する対話ステップは飛ばし、提示と確認だけ行う。`--no-confirm` 併用時は最終確認も省略して即作成する
+
+委譲モードは主に `github-issue-discover` から「リポジトリスキャン結果を下書きとして渡し、Issue化する」目的で使う。委譲側で既に承認を取っているケースが多いので、`--no-confirm` で確認も省略できる設計にしている。
 
 ## Context
 
@@ -40,7 +53,7 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*), Re
 
 ## Task
 
-1. **Issue種別の確認**: AskUserQuestion を使用して、作成するIssueの種類を確認する。各選択肢の description にはテンプレートの `about` フィールドの内容を使用する：
+1. **Issue種別の確認**: 引数 `--template <name>` が指定されていればそれを採用してこのステップは飛ばす。未指定なら AskUserQuestion を使用して、作成するIssueの種類を確認する。各選択肢の description にはテンプレートの `about` フィールドの内容を使用する：
    - ✨ 機能追加 (Feature Request) — Propose a new feature or improvement
    - 🐛 バグ報告 (Bug Report) — Report a bug or issue
    - 📝 タスク (Task) — Work that doesn't fit the above categories
@@ -52,11 +65,11 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*), Re
      - 英語（`language` が "en" または未指定）: `doc/templates/ISSUE_TEMPLATE/` から読み込む
      - 日本語（`language` が "ja"）: `doc/templates/ISSUE_TEMPLATE_JA/` から読み込む
 
-3. **情報の収集**: AskUserQuestion を使用して、ユーザーにIssueの概要を自由入力で記述してもらう：
+3. **情報の収集**: 引数 `--title` と `--body` が両方とも指定されていればこのステップは飛ばす。未指定なら AskUserQuestion を使用して、ユーザーにIssueの概要を自由入力で記述してもらう：
    - 「どのようなIssueを作成しますか？自由に記述してください」と質問する
    - ユーザーは背景、目的、詳細などを自由に記述できる
 
-4. **タイトルと本文の提案**: ユーザーの入力を元に、テンプレートに沿った形でタイトルと本文を生成し、ユーザーに提示する：
+4. **タイトルと本文の生成**: 引数で `--title` `--body` が両方与えられていればそれをそのまま採用してステップ5の確認に進む。未指定の場合は、ステップ3のユーザー入力を元にテンプレートに沿った形でタイトルと本文を生成する：
    - テンプレートのフロントマターから以下を抽出する：
      - `labels`: デフォルトラベルとして使用（例: `labels: enhancement`, `labels: bug`, `labels: test`）
      - `about`: Issue種別の補足説明として活用
@@ -66,10 +79,9 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*), Re
      - **Task**: 背景と目的→「Background, Purpose & Summary」、完了基準→「Acceptance Criteria」
      - **Test**: 対象と目的→「Summary & Purpose」、完了基準→「Acceptance Criteria」、テストケース→「Test Scenarios to Implement」
    - ユーザー入力から情報が不足しているセクションは、コメントプレースホルダーを残すのではなくセクション自体を省略する
-   - 生成したタイトルと本文をユーザーに提示し、確認または修正を求める
    - 最終的なIssue本文からはフロントマターを除去する
 
-5. **確認と修正**: ユーザーが提案内容を確認し、必要に応じて修正を依頼できるようにする
+5. **確認と修正**: `--no-confirm` が指定されていればこのステップは飛ばす。未指定なら、生成したタイトルと本文をユーザーに提示し、必要に応じて修正を依頼できるようにする
 
 6. **Issueの作成**:
    ```
