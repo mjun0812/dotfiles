@@ -49,6 +49,10 @@ args = ["chrome-devtools-mcp@latest"]
 command = "bunx"
 args = ["@drawio/mcp@latest"]
 
+[mcp_servers.playwright]
+command = "bunx"
+args = ["@playwright/mcp@latest"]
+
 [plugins."github@openai-curated"]
 enabled = true
 # dotfiles-managed:end
