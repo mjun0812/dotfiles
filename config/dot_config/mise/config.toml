@@ -38,6 +38,7 @@ claude-code = "latest"
 shfmt = "latest"
 actionlint = "latest"
 sheldon = "latest"
+chezmoi = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
