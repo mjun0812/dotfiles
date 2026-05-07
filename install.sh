@@ -145,7 +145,7 @@ ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.claude/CLAUDE.md"
 ln -snfv "$DOTPATH/config/ai-agents/claude/settings.json" "$HOME/.claude/settings.json"
 ln -snfv "$DOTPATH/config/ai-agents/claude/mcp.json" "$HOME/.claude/mcp.json"
 ln -snfv "$DOTPATH/config/ai-agents/claude/statusline.py" "$HOME/.claude/statusline.py"
-# Skills (shared with Codex / Gemini)
+# Skills
 rm -rf "$HOME/.claude/skills"
 mkdir -p "$HOME/.claude/skills"
 for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
@@ -176,7 +176,7 @@ for agent_file in "$CODEX_AGENTS_SOURCE_DIR"/*.toml(N); do
     agent_name=$(basename "$agent_file")
     ln -snfv "$agent_file" "$HOME/.codex/agents/$agent_name"
 done
-# Skills (shared with Claude / Gemini)
+# Skills
 cp -aLf "$HOME/.codex/skills" "$DOTPATH/.backup/codex_skills" 2>/dev/null || true
 rm -rf "$HOME/.codex/skills"
 mkdir -p "$HOME/.codex/skills"
@@ -195,10 +195,3 @@ mkdir -p "$HOME/.gemini"
 ln -snfv "$DOTPATH/config/ai-agents/gemini/commands" "$HOME/.gemini/commands"
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.gemini/GEMINI.md"
 ln -snfv "$DOTPATH/config/ai-agents/gemini/settings.json" "$HOME/.gemini/settings.json"
-# Skills (shared with Claude / Codex)
-rm -rf "$HOME/.gemini/skills"
-mkdir -p "$HOME/.gemini/skills"
-for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
-    skill_name=$(basename "$skill_dir")
-    ln -snfv "$skill_dir" "$HOME/.gemini/skills/$skill_name"
-done
