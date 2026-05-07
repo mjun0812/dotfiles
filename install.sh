@@ -157,6 +157,15 @@ fi
 # AGENTS.md
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
+# Custom agents
+CODEX_AGENTS_SOURCE_DIR="$DOTPATH/config/ai-agents/codex/agents"
+cp -aLf "$HOME/.codex/agents" "$DOTPATH/.backup/codex_agents" 2>/dev/null || true
+rm -rf "$HOME/.codex/agents"
+mkdir -p "$HOME/.codex/agents"
+for agent_file in "$CODEX_AGENTS_SOURCE_DIR"/*.toml(N); do
+    agent_name=$(basename "$agent_file")
+    ln -snfv "$agent_file" "$HOME/.codex/agents/$agent_name"
+done
 # Skills (shared with Claude / Gemini)
 cp -aLf "$HOME/.codex/skills" "$DOTPATH/.backup/codex_skills" 2>/dev/null || true
 rm -rf "$HOME/.codex/skills"
