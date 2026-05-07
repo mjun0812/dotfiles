@@ -69,6 +69,12 @@ bun install -g \
     oxfmt
 $DOTPATH/script/install_vp.sh
 
+################ [Playwright Browsers] ################
+log_section "Setting up Playwright browsers..."
+if command -v bunx >/dev/null 2>&1; then
+    bunx playwright install chromium
+fi
+
 ################ [Python] ################
 log_section "Setting up Python..."
 $DOTPATH/script/install_uv.sh
