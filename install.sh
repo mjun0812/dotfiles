@@ -152,6 +152,15 @@ for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")
     ln -snfv "$skill_dir" "$HOME/.claude/skills/$skill_name"
 done
+# Agents
+CLAUDE_AGENTS_SOURCE_DIR="$DOTPATH/config/ai-agents/claude/agents"
+cp -aLf "$HOME/.claude/agents" "$DOTPATH/.backup/claude_agents" 2>/dev/null || true
+rm -rf "$HOME/.claude/agents"
+mkdir -p "$HOME/.claude/agents"
+for agent_file in "$CLAUDE_AGENTS_SOURCE_DIR"/*.md(N); do
+    agent_name=$(basename "$agent_file")
+    ln -snfv "$agent_file" "$HOME/.claude/agents/$agent_name"
+done
 
 ################ [Claude Code Plugins] ################
 log_section "Setting up Claude Code plugins..."
