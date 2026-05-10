@@ -34,7 +34,7 @@
 [alias]
   aicommit = !claude --model=haiku '/git:commit'
   aicommit-ja = !claude --model=haiku '/git:commit ja'
-  prune-branch = !git fetch -p && git branch --merged | grep -v '*' | xargs git branch -d
+  prune-branch = "!f() { git fetch -p && git branch -vv | awk '/: gone]/{ if ($1 != \"*\" && $1 != \"+\") print $1 }' | while read -r branch; do git branch -D \"$branch\"; done; }; f"
 
 [filter "lfs"]
   smudge = git-lfs smudge -- %f
