@@ -7,7 +7,7 @@ My Linux/macOS dotfiles.
 require git, zsh, curl
 
 ```bash
-git clone --recursive git@github.com:mjun0812/dotfiles.git ~/.dotfiles
+git clone git@github.com:mjun0812/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
 ```
