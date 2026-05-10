@@ -195,3 +195,4 @@ Custom Raycast scripts are available in `script/raycast/`:
 | `toggle_aerospace_float.sh` | Toggle floating layout and center window |
 | `new_chrome.sh`             | Open new Chrome window in current space  |
 | `new_safari.sh`             | Open new Safari window in current space  |
+| `new_wezterm.sh`            | Open new WezTerm window                  |
