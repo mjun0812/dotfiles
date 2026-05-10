@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Run install script
         run: |
@@ -126,7 +126,7 @@ jobs:
           echo "testuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: dotfiles
 
