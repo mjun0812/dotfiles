@@ -176,11 +176,14 @@ See [doc/aerospace.md](doc/aerospace.md) for AeroSpace window manager configurat
 
 ## Hammerspoon
 
+See [doc/hammerspoon.md](doc/hammerspoon.md) for Hammerspoon configuration and URL schemes.
+
 Hammerspoon is used for window management features that AeroSpace cannot handle natively.
 
 Currently configured features:
 
 - Center window on screen via URL scheme (`hammerspoon://center`)
+- AeroSpace workspace HUD via URL scheme (`hammerspoon://aerospace-workspace?ws=<num>`)
 
 ## Raycast Scripts
 
