@@ -58,8 +58,8 @@ alias gemini-commit='command gemini -p "/aicommit en" -y --model=gemini-3-flash-
 alias gemini-commit-ja='command gemini -p "/aicommit ja" -y --model=gemini-3-flash-preview --skip-trust'
 
 # Codex
-alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "\$git-commit en"'
-alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "\$git-commit ja"'
+alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って英語でコミットしてください。"'
+alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って日本語でコミットしてください。"'
 
 # Copilot-cli
 alias copilot-commit='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はEnglishです。"'
