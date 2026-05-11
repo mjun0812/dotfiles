@@ -1,29 +1,34 @@
-# <img src="<reviewer-icon-url>" alt="<reviewer-name> Icon" width="32" height="32" style="vertical-align:middle; margin-right:8px;" /> <reviewer-name> Review Pull Request
+# <reviewer-name> プルリクエストレビュー
 
-## Summary(概要)
+## 概要
 
-<!-- 1-2 sentence summary of what this PR does -->
+<!-- このプルリクエストの変更内容を要約 -->
 
-## Verdict(判定)
+## 判定
 
 <!-- APPROVE / REQUEST_CHANGES -->
 
-## Good Points(良い点)
+## 要修正
 
-- <!-- Positive aspects of the implementation -->
+- `ファイルパス:行番号` - [カテゴリ] 問題の説明
+  - 影響: <!-- ユーザー影響，セキュリティリスク，データ破壊リスク，回帰など -->
+  - 根拠: <!-- 指摘を裏付ける具体的なコード挙動，制御フロー，検証不足など -->
+  - 推奨対応: <!-- 問題を解消するための具体的な修正方針 -->
+  - 確信度: 高
+  - ブロック理由: <!-- バグ / セキュリティ / データ破壊 / 回帰 / 公開APIの破壊的変更 / 要件未達 -->
 
-## Must Fix(要修正)
+## 修正推奨
 
-- `filename:line` - [category] Description of the issue
+- `ファイルパス:行番号` - [カテゴリ] 修正内容の説明
+  - 影響: <!-- 保守性，テスト容易性，パフォーマンス，ドキュメント，将来リスクなどへの影響 -->
+  - 根拠: <!-- 指摘を裏付ける具体的なコード挙動やリポジトリ上の文脈 -->
+  - 推奨対応: <!-- ブロックしない範囲の具体的な改善案 -->
+  - 確信度: <!-- 高 / 中 -->
 
-## Should Fix(修正推奨)
+## 質問
 
-- `filename:line` - [category] Description of the suggestion
-
-## Suggestion(提案・質問)
-
-<!-- 質問や改善提案などがあれば記載してください -->
+<!-- このプルリクエストの判断に必要な確認事項があれば記載。任意提案は含めない -->
 
 ---
 
-Reviewed by <reviewer-name> at `<short-sha>`
+<reviewer-name> が `<short-sha>` をレビュー
