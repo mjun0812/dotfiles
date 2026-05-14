@@ -33,9 +33,6 @@ USE_OSC=$([[ "$FORCE_MODE" == "osc" || ( "$FORCE_MODE" == "auto" && ( -n "${SSH_
 
 # Handle OSC notification
 if [[ "$USE_OSC" == "true" ]]; then
-  # Check TTY access
-  [[ -t 1 ]] || [[ -e /dev/tty ]] || exit 0
-
   # Sanitize title and message: remove control chars and replace ';'
   SAFE_TITLE="$(printf '%s' "$TITLE" | LC_ALL=C tr -d '\000-\010\013-\037\177' | sed 's/;/,/g')"
   SAFE_MESSAGE="$(printf '%s' "$MESSAGE" | LC_ALL=C tr -d '\000-\010\013-\037\177' | sed 's/;/,/g')"
@@ -66,14 +63,12 @@ if [[ "$USE_OSC" == "true" ]]; then
     OSC_PAYLOAD="$(printf '\033Ptmux;\033%s\033\\' "$OSC_PAYLOAD")"
   fi
 
-  # Determine output target
+  # Determine output target. Fall through to native notifications if OSC cannot be delivered.
   if [[ -t 1 ]]; then
-    printf '%b' "$OSC_PAYLOAD"
-  else
-    printf '%b' "$OSC_PAYLOAD" > /dev/tty
+    printf '%b' "$OSC_PAYLOAD" && exit 0
+  elif [[ -e /dev/tty ]] && printf '%b' "$OSC_PAYLOAD" 2>/dev/null > /dev/tty; then
+    exit 0
   fi
-
-  exit 0
 fi
 
 # ################ Native notification ################
