@@ -143,5 +143,7 @@
   "effortLevel": "xhigh",
   "plansDirectory": "./.claude/plans",
   "skipDangerousModePermissionPrompt": true,
-  "skipAutoPermissionPrompt": true
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "remoteControlAtStartup": true
 }
