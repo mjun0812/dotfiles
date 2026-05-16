@@ -14,6 +14,7 @@ approvals_reviewer = "user"
 collaboration_modes = true
 shell_snapshot = true
 multi_agent = true
+remote_control = true
 
 [sandbox_workspace_write]
 writable_roots = ["~/.cache", "~/.local/share"]

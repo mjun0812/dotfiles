@@ -22,6 +22,15 @@
    "[dockercompose]": {
       "editor.defaultFormatter": "oxc.oxc-vscode"
    },
+   "[go]": {
+      "editor.codeActionsOnSave": {
+         "source.organizeImports": "explicit"
+      },
+      "editor.formatOnSave": true
+   },
+   "[gotmpl]": {
+      "editor.semanticHighlighting.enabled": true
+   },
    "[html]": {
       "editor.defaultFormatter": "vscode.html-language-features"
    },
@@ -145,7 +154,9 @@
    "explorer.confirmPasteNative": false,
    "explorer.sortOrder": "type",
    "files.associations": {
-      "*.erb": "html"
+      "*.erb": "html",
+      "*.gohtml": "gotmpl",
+      "*.tmpl": "gotmpl"
    },
    "files.autoGuessEncoding": true,
    "files.candidateGuessEncodings": [
@@ -176,6 +187,19 @@
    "gitlens.defaultGravatarsStyle": "wavatar",
    "go.alternateTools": {
       "go": "~/.local/share/mise/shims/go"
+   },
+   "go.formatTool": "gofumpt",
+   "go.lintFlags": [
+      "--fast"
+   ],
+   "go.lintTool": "golangci-lint",
+   "gopls": {
+      "templateExtensions": [
+         "tmpl",
+         "gohtml",
+         "gotmpl"
+      ],
+      "ui.semanticTokens": true
    },
    "js/ts.updateImportsOnFileMove.enabled": "always",
    "latex-workshop.formatting.latex": "tex-fmt",
