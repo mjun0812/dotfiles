@@ -52,6 +52,11 @@
       "Bash(awk *)",
       "Bash(curl *)",
       "Bash(xargs *)",
+      "Bash(bash *)",
+      "Bash(test *)",
+      "Bash(rm /tmp/**)",
+      "Bash(rm -f /tmp/**)",
+      "Bash(rm -rf /tmp/**)",
       "Skill",
       "WebFetch",
       "WebSearch",
@@ -66,10 +71,15 @@
     "deny": [
       "Read(.env)",
       "Read(~/.ssh/**)",
-      "Read(~/.aws/**)"
+      "Read(~/.aws/**)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/)",
+      "Bash(rm -rf ~/*)",
+      "Bash(rm -rf $HOME/**)"
     ],
     "ask": [
-      "Bash(rm *)",
       "Bash(git push *)",
       "Bash(gh pr create *)",
       "Bash(gh issue create *)",
