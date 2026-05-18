@@ -1,7 +1,7 @@
 ---
 name: github-pr-respond-comment
 description: PRのレビューコメントを確認し、対応・返信するSkill。
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
+allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*), Bash(mktemp:*), Write
 ---
 
 # レビューコメントへの対応
@@ -150,8 +150,18 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Ba
 
 9. **リプライの投稿**（`--reply` フラグが指定されている場合）:
    - 検出された言語でリプライを記述
-   - 各コメントに対して以下でリプライを投稿:
-     `gh api repos/{owner}/{repo}/pulls/<number>/comments/<comment-id>/replies -f body="<reply>"`
+   - 各コメントごとに、リプライ本文を先にMarkdownファイルへ書き出す（例: `/tmp/pr-reply-<comment-id>.md`）
+   - `jq --rawfile` でリプライ本文ファイルからJSON payloadを作成し、`gh api --input` で投稿する:
+
+     ```bash
+     jq -n --rawfile body /tmp/pr-reply-<comment-id>.md '{body: $body}' > /tmp/pr-reply-<comment-id>.json
+     gh api \
+       -X POST \
+       repos/{owner}/{repo}/pulls/<number>/comments/<comment-id>/replies \
+       --input /tmp/pr-reply-<comment-id>.json
+     ```
+
+   - `gh api ... -f body="<reply>"` のように本文を直接コマンド引数へ埋め込むことは禁止
    - リプライの内容はアクションに応じて変わる:
      - **採用・実装済み**: 変更内容 + コミット参照
      - **議論が必要**: 自分の見解 + 根拠 + 質問
