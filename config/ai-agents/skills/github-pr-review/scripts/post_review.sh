@@ -14,9 +14,15 @@
 #
 # Comments JSON shape (array):
 #   [
-#     {"path": "src/foo.ts", "line": 42, "body": "..."},
+#     {"path": "src/foo.ts", "line": 42, "body": "...", "side": "RIGHT"},
 #     ...
 #   ]
+#
+# - "side" is optional. Default is "RIGHT" (post-change). Use "LEFT" to comment
+#   on a deleted line in the original file.
+# - Comments whose (path, line, side) is not part of the PR diff are demoted to
+#   the review body under a dedicated section instead of being posted inline,
+#   so that a single invalid entry does not fail the whole review.
 #
 # On success, prints the PR HTML URL to stdout.
 
@@ -74,9 +80,89 @@ if [[ -n "$DISMISS_REVIEW_ID" ]]; then
     -f message="$DISMISS_MESSAGE" >/dev/null
 fi
 
-# Build the request payload via jq so the body is properly escaped.
 PAYLOAD_FILE=$(mktemp)
-trap 'rm -f "$PAYLOAD_FILE"' EXIT
+PR_FILES_FILE=$(mktemp)
+SPLIT_FILE=$(mktemp)
+VALID_COMMENTS_FILE=$(mktemp)
+INVALID_COMMENTS_FILE=$(mktemp)
+SUPP_BODY_FILE=$(mktemp)
+trap 'rm -f "$PAYLOAD_FILE" "$PR_FILES_FILE" "$SPLIT_FILE" "$VALID_COMMENTS_FILE" "$INVALID_COMMENTS_FILE" "$SUPP_BODY_FILE"' EXIT
+
+# Preflight: split inline comments into (valid, invalid) by checking whether
+# (path, line, side) is part of the PR diff. Invalid entries are demoted to
+# the review body under "inline 化できなかった指摘 / Comments that could not be inlined".
+if [[ -n "$COMMENTS_FILE" ]]; then
+  gh api "repos/${REPO}/pulls/${PR}/files" --paginate > "$PR_FILES_FILE"
+
+  jq --slurpfile comments "$COMMENTS_FILE" '
+    def parse_patch:
+      if . == null or . == "" then []
+      else
+        split("\n")
+        | reduce .[] as $l (
+            {old: 0, new: 0, lines: []};
+            if ($l | test("^@@ -[0-9]+")) then
+              ($l | capture("@@ -(?<os>[0-9]+)(,[0-9]+)? \\+(?<ns>[0-9]+)(,[0-9]+)? @@")) as $h
+              | .old = ($h.os | tonumber)
+              | .new = ($h.ns | tonumber)
+            elif ($l | startswith("+++")) or ($l | startswith("---")) or ($l | startswith("\\")) then
+              .
+            elif ($l | startswith("+")) then
+              .lines += [{line: .new, side: "RIGHT"}]
+              | .new += 1
+            elif ($l | startswith("-")) then
+              .lines += [{line: .old, side: "LEFT"}]
+              | .old += 1
+            else
+              .lines += [{line: .new, side: "RIGHT"}, {line: .old, side: "LEFT"}]
+              | .new += 1
+              | .old += 1
+            end
+          )
+        | .lines
+      end;
+
+    (
+      [ .[] | (.patch // "") as $p | .filename as $f | ($p | parse_patch) | map(. + {path: $f}) ]
+      | flatten
+      | map("\(.path):\(.line):\(.side)")
+      | unique
+    ) as $valid_set
+    |
+    ( $comments[0] | map(. + {_key: "\(.path):\(.line):\(.side // "RIGHT")"}) ) as $annotated
+    | {
+        valid:   [ $annotated[] | . as $c | select($valid_set | index($c._key) != null) | del(._key) ],
+        invalid: [ $annotated[] | . as $c | select($valid_set | index($c._key) == null) | del(._key) ]
+      }
+  ' "$PR_FILES_FILE" > "$SPLIT_FILE"
+
+  jq '.valid'   "$SPLIT_FILE" > "$VALID_COMMENTS_FILE"
+  jq '.invalid' "$SPLIT_FILE" > "$INVALID_COMMENTS_FILE"
+
+  INVALID_COUNT=$(jq 'length' "$INVALID_COMMENTS_FILE")
+  VALID_COUNT=$(jq 'length'   "$VALID_COMMENTS_FILE")
+
+  if [[ "$INVALID_COUNT" -gt 0 ]]; then
+    echo "Warning: ${INVALID_COUNT} inline comment(s) target lines not in the PR diff; demoting them to the review body." >&2
+    {
+      cat "$BODY_FILE"
+      printf '\n\n---\n\n'
+      printf '### inline 化できなかった指摘 / Comments that could not be inlined\n\n'
+      printf '以下の指摘は，対象行が PR の diff に含まれていないため inline コメントとして投稿できませんでした。\n'
+      printf 'The following comments could not be posted inline because the target lines are not part of the PR diff:\n\n'
+      jq -r '.[] | "- `\(.path):\(.line)\(if (.side // "RIGHT") != "RIGHT" then " (side=\(.side))" else "" end)`\n\n\(.body)\n"' "$INVALID_COMMENTS_FILE"
+    } > "$SUPP_BODY_FILE"
+    BODY_FILE="$SUPP_BODY_FILE"
+  fi
+
+  if [[ "$VALID_COUNT" -eq 0 ]]; then
+    COMMENTS_FILE=""
+  else
+    COMMENTS_FILE="$VALID_COMMENTS_FILE"
+  fi
+fi
+
+# Build the request payload via jq so the body is properly escaped.
 
 if [[ -n "$COMMENTS_FILE" ]]; then
   jq -n \
