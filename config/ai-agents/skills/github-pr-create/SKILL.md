@@ -1,7 +1,7 @@
 ---
 name: github-pr-create
 description: Pull Requestを作成するSkill。現在のbranchからpull requestを作成する。言語指定可能。
-allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
+allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Write, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(mktemp:*)
 ---
 
 # Pull Request 作成
@@ -113,15 +113,21 @@ allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Ba
 
 ### 7. Pull Requestの作成
 
-```bash
-gh pr create \
-  --base <base-branch> \
-  --title "<PR Title>" \
-  --body "<PR Description>" \
-  [--draft] \
-  [--reviewer <username>] \
-  [--label <name>]
-```
+1. 生成したPR説明文は、先にMarkdownファイルへ書き出す:
+   - 例: `/tmp/pr-create-body.md`
+   - `--body "<PR Description>"` のように本文を直接コマンド引数へ埋め込むことは禁止
+   - 複数行本文、Markdown、引用符、バッククォート、絵文字を安全に渡すため、必ず `--body-file` を使う
+2. PRを作成する:
+
+   ```bash
+   gh pr create \
+     --base <base-branch> \
+     --title "<PR Title>" \
+     --body-file /tmp/pr-create-body.md \
+     [--draft] \
+     [--reviewer <username>] \
+     [--label <name>]
+   ```
 
 ### 8. 結果の表示
 
@@ -147,7 +153,9 @@ gh pr create \
    - **pushのみ**: 新しいcommitをpushするだけでPRの内容は変更しない
    - **中止**: 何もしない
 3. 更新する場合:
-   - `gh pr edit <number> --title "<new title>" --body "<new body>"` で更新
+   - 再生成したPR本文をMarkdownファイルへ書き出す（例: `/tmp/pr-edit-body.md`）
+   - `gh pr edit <number> --title "<new title>" --body-file /tmp/pr-edit-body.md` で更新
+   - `--body "<new body>"` のように本文を直接コマンド引数へ埋め込むことは禁止
    - 必要に応じて `--add-reviewer`, `--add-label` で追加
 4. 更新結果を表示
 
