@@ -8,6 +8,12 @@
       ],
       "env": {}
     },
+    "context7": {
+      "command": "bunx",
+      "args": [
+        "@upstash/context7-mcp@latest"
+      ]
+    },
     "drawio": {
       "command": "bunx",
       "args": [
