@@ -110,7 +110,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/notify.sh --osc 'Claude Code' '入力を待っています 📝'"
+            "command": "~/.dotfiles/script/notify-claude-hook.sh notification"
           }
         ]
       }
@@ -121,7 +121,29 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/notify.sh --osc 'Claude Code' 'タスクが完了しました ✅'"
+            "command": "~/.dotfiles/script/notify-claude-hook.sh stop"
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/notify-claude-hook.sh stop_failure"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "bypass_permissions_disabled",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/notify-claude-hook.sh session_end"
           }
         ]
       }
