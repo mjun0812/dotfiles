@@ -57,6 +57,21 @@ args = ["@playwright/mcp@latest"]
 
 [plugins."github@openai-curated"]
 enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
 # dotfiles-managed:end
 
 [projects."/Users/mjun/.dotfiles"]
