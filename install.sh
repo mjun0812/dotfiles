@@ -167,6 +167,11 @@ log_section "Setting up Claude Code plugins..."
 if command -v claude >/dev/null 2>&1; then
     CLAUDE_SETTINGS_JSON="$DOTPATH/config/ai-agents/claude/settings.json"
 
+    # Ensure the built-in official marketplace is registered (missing on fresh installs)
+    if ! claude plugin marketplace list 2>/dev/null | grep -q "claude-plugins-official"; then
+        claude plugin marketplace add "anthropics/claude-plugins-official" || true
+    fi
+
     # Add custom marketplaces declared in extraKnownMarketplaces
     jq -r '.extraKnownMarketplaces // {} | to_entries[] | "\(.key)\t\(.value.source.repo)"' \
         "$CLAUDE_SETTINGS_JSON" | while IFS=$'\t' read -r mp_name mp_repo; do
@@ -175,6 +180,9 @@ if command -v claude >/dev/null 2>&1; then
             claude plugin marketplace add "$mp_repo" || true
         fi
     done
+
+    # Refresh marketplace indexes so plugin lookups don't fail on stale cache
+    claude plugin marketplace update || true
 
     # Install plugins enabled in enabledPlugins (user scope, idempotent)
     jq -r '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key' \
