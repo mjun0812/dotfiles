@@ -9,8 +9,10 @@ set -euo pipefail
 #
 # Usage:
 #   ./notify.sh "TITLE" "MESSAGE"
-#   ./notify.sh --osc "TITLE" "MESSAGE"    # force OSC
-#   ./notify.sh --native "TITLE" "MESSAGE" # force native (ignore SSH)
+#   ./notify.sh --osc "TITLE" "MESSAGE"      # force OSC, write to terminal/dev-tty
+#   ./notify.sh --native "TITLE" "MESSAGE"   # force native (ignore SSH)
+#   ./notify.sh --emit-osc "TITLE" "MESSAGE" # print raw OSC payload to stdout only
+#                                            # (for Claude Code terminalSequence; no terminal/native output)
 
 # Parse force mode flag
 FORCE_MODE="auto"
@@ -23,13 +25,17 @@ case "${1:-}" in
     FORCE_MODE="native"
     shift
     ;;
+  --emit-osc)
+    FORCE_MODE="emit"
+    shift
+    ;;
 esac
 
 TITLE="${1:-Claude Code}"
 MESSAGE="${2:-Notification}"
 
 # Determine if we should use OSC notification
-USE_OSC=$([[ "$FORCE_MODE" == "osc" || ( "$FORCE_MODE" == "auto" && ( -n "${SSH_CONNECTION:-}" || -n "${SSH_CLIENT:-}" || -n "${SSH_TTY:-}" ) ) ]] && printf 'true' || printf 'false')
+USE_OSC=$([[ "$FORCE_MODE" == "osc" || "$FORCE_MODE" == "emit" || ( "$FORCE_MODE" == "auto" && ( -n "${SSH_CONNECTION:-}" || -n "${SSH_CLIENT:-}" || -n "${SSH_TTY:-}" ) ) ]] && printf 'true' || printf 'false')
 
 # Handle OSC notification
 if [[ "$USE_OSC" == "true" ]]; then
@@ -61,6 +67,15 @@ if [[ "$USE_OSC" == "true" ]]; then
   # Wrap in tmux passthrough if inside tmux
   if [[ -n "${TMUX:-}" ]]; then
     OSC_PAYLOAD="$(printf '\033Ptmux;\033%s\033\\' "$OSC_PAYLOAD")"
+  fi
+
+  # In emit mode, print the raw OSC payload to stdout only and exit. The caller
+  # (notify-claude-hook.sh) wraps it into a Claude Code terminalSequence so that
+  # Claude Code itself writes the sequence to the terminal. Do not write to the
+  # terminal directly nor fall back to native notifications here.
+  if [[ "$FORCE_MODE" == "emit" ]]; then
+    printf '%b' "$OSC_PAYLOAD"
+    exit 0
   fi
 
   # Determine output target. Fall through to native notifications if OSC cannot be delivered.
