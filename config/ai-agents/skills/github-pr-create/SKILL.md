@@ -10,8 +10,18 @@ allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Wr
 
 - `language`: PRのタイトルと説明文の言語（例: "ja", "en"）。デフォルト: "English"
 - `--draft`: draft PRとして作成（任意）
+- `--auto`: 既存PR・大規模PR・commit品質チェックの確認を省略し、警告を記録して続行する（任意）
 - `--reviewer <username>`: reviewerを指定（任意、複数指定可）
 - `--label <name>`: labelを追加（任意、複数指定可）
+
+## Modes
+
+- **通常モード**: リスクや運用判断が必要な箇所ではユーザーに確認する
+- **自動モード（`--auto`）**: 既存PR・大規模PR・commit品質チェックではユーザー確認を行わず、警告をPR本文または最終レポートに記録して続行する
+  - 既存PRがある場合は、pushのみを既定動作とする
+  - commit品質チェックに該当した場合は、整理せず続行し、検出内容をPR本文の `Notes` または最終レポートに記載する
+  - 大規模PRの場合は、分割提案を最終レポートに記載するだけでPR作成を続行する
+  - `git push --force-with-lease` が必要なdiverge状態は、自動モードでもユーザー確認を維持する
 
 ## Context
 
@@ -39,7 +49,8 @@ allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Wr
      - `fixup!`, `squash!`, `wip`, `WIP` を含むcommitがある
      - 空のcommitメッセージがある
      - commitが多数（目安: 10個超）
-   - 該当する場合、`git-squash` skill でcommitを整理するか確認:
+   - `--auto` 指定時: ユーザー確認は行わず、検出内容を警告として記録してPR作成を続行
+   - `--auto` 未指定で該当する場合、`git-squash` skill でcommitを整理するか確認:
      - ユーザーが整理を選択 → PR作成を中止し、`git-squash` skill の実行を案内
      - ユーザーが続行を選択 → そのままPR作成を続行
 
@@ -66,7 +77,9 @@ allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Wr
 - commitの一覧: `git log --oneline origin/<base-branch>..HEAD`
 - 詳細な差分: `git log -p origin/<base-branch>..HEAD`
   - **注意**: 差分が大きい場合（目安: 500行超）は `git diff --stat` の結果を中心に使い、個別ファイルの差分は必要に応じて `git diff origin/<base-branch>..HEAD -- <file>` で確認する
-- **差分規模の警告**: 変更が大規模（目安: 変更ファイル20個超 or 差分500行超）の場合、PRの分割を提案する（ユーザーが続行を選べばそのまま進む）
+- **差分規模の警告**: 変更が大規模（目安: 変更ファイル20個超 or 差分500行超）の場合:
+  - `--auto` 指定時: PRの分割提案を最終レポートに記載し、PR作成は続行
+  - `--auto` 未指定時: PRの分割を提案する（ユーザーが続行を選べばそのまま進む）
 
 ### 4. PR templateの確認
 
@@ -148,16 +161,20 @@ allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Wr
 既存のPRが検出された場合:
 
 1. 現在のPR情報を表示: `gh pr view --json title,body,url,state,labels,reviewers`
-2. ユーザーに以下の選択肢を提示:
+2. `--auto` 指定時:
+   - ユーザー確認は行わず、pushのみ実行する
+   - タイトル・説明文は更新しない
+   - 既存PRを変更しなかったことを最終レポートに記載する
+3. `--auto` 未指定時、ユーザーに以下の選択肢を提示:
    - **タイトル・説明文を再生成して更新**: 最新のcommitに基づいてタイトル・本文を再生成し `gh pr edit` で更新
    - **pushのみ**: 新しいcommitをpushするだけでPRの内容は変更しない
    - **中止**: 何もしない
-3. 更新する場合:
+4. 更新する場合:
    - 再生成したPR本文をMarkdownファイルへ書き出す（例: `/tmp/pr-edit-body.md`）
    - `gh pr edit <number> --title "<new title>" --body-file /tmp/pr-edit-body.md` で更新
    - `--body "<new body>"` のように本文を直接コマンド引数へ埋め込むことは禁止
    - 必要に応じて `--add-reviewer`, `--add-label` で追加
-4. 更新結果を表示
+5. 更新結果を表示
 
 ---
 

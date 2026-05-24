@@ -170,6 +170,31 @@ For terminal color schemes.
 
 See [doc/nvim.md](doc/nvim.md) for Neovim configuration and keyboard shortcuts.
 
+## VSCode
+
+VS Code extensions are managed in `config/vscode/extensions.txt`.
+
+`install.sh` runs `script/install-vscode-extensions.sh`, which installs missing extensions only and does not uninstall local extensions.
+
+To synchronize the installed extensions exactly with `config/vscode/extensions.txt`, run:
+
+```bash
+script/sync-vscode-extensions.sh
+```
+
+You can pass another extension list:
+
+```bash
+script/sync-vscode-extensions.sh path/to/extensions.txt
+```
+
+Use `--dry-run` to preview installs and uninstalls without changing VS Code:
+
+```bash
+script/sync-vscode-extensions.sh --dry-run
+script/sync-vscode-extensions.sh --dry-run path/to/extensions.txt
+```
+
 ## AeroSpace
 
 See [doc/aerospace.md](doc/aerospace.md) for AeroSpace window manager configuration and keyboard shortcuts.

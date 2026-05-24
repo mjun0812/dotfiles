@@ -81,8 +81,6 @@
     ],
     "ask": [
       "Bash(git push *)",
-      "Bash(gh pr create *)",
-      "Bash(gh issue create *)",
       "Bash(gh issue close *)",
       "Bash(gh pr close *)",
       "Bash(gh pr merge *)"
