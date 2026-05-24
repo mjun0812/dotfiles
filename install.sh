@@ -107,6 +107,7 @@ mkdir -p "$VSCODE_USER_DIR"
 rm -f "$VSCODE_USER_DIR/settings.json" "$VSCODE_USER_DIR/keybindings.json"
 ln -snfv "$DOTPATH/config/vscode/settings.json" "$VSCODE_USER_DIR/settings.json"
 ln -snfv "$DOTPATH/config/vscode/keybindings.json" "$VSCODE_USER_DIR/keybindings.json"
+"$DOTPATH/script/install-vscode-extensions.sh"
 
 ################ [Cursor] ################
 log_section "Setting up Cursor..."
