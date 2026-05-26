@@ -134,6 +134,9 @@ config.colors = {
     },
 }
 
+-- tmuxなどのマウスレポーティング有効アプリでもCmd+クリックを横取りする
+config.bypass_mouse_reporting_modifiers = 'CMD'
+
 -- mouse bindings
 config.mouse_bindings = {
     -- Ctrl-click will open the link under the mouse cursor
