@@ -57,6 +57,9 @@
       "Bash(rm /tmp/**)",
       "Bash(rm -f /tmp/**)",
       "Bash(rm -rf /tmp/**)",
+      "Bash(rm /private/tmp/**)",
+      "Bash(rm -f /private/tmp/**)",
+      "Bash(rm -rf /private/tmp/**)",
       "Skill",
       "WebFetch",
       "WebSearch",
@@ -66,7 +69,10 @@
       "Write(./.claude/plans/**)",
       "Read(/tmp/**)",
       "Edit(/tmp/**)",
-      "Write(/tmp/**)"
+      "Write(/tmp/**)",
+      "Read(/private/tmp/**)",
+      "Edit(/private/tmp/**)",
+      "Write(/private/tmp/**)"
     ],
     "deny": [
       "Read(.env)",
@@ -87,7 +93,8 @@
     ],
     "defaultMode": "auto",
     "additionalDirectories": [
-      "/tmp"
+      "/tmp",
+      "/private/tmp"
     ]
   },
   "hooks": {
