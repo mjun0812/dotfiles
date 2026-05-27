@@ -18,7 +18,7 @@ multi_agent = true
 remote_control = true
 
 [sandbox_workspace_write]
-writable_roots = ["~/.cache", "~/.local/share", "/tmp"]
+writable_roots = ["~/.cache", "~/.local/share", "/tmp", "/private/tmp"]
 network_access = true
 exclude_tmpdir_env_var = false
 exclude_slash_tmp = false
