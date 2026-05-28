@@ -18,3 +18,10 @@ path=(
   $path
 )
 
+if [[ ! -o interactive ]] && command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh --shims)"
+fi
+
+# >>> Codex installer >>>
+export PATH="/Users/mjun/.local/bin:$PATH"
+# <<< Codex installer <<<

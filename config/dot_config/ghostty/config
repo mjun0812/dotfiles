@@ -1,14 +1,14 @@
-foreground = #EAEAEA
+theme = TokyoNight Night
+font-family = RobotoMonoJP
+font-size = 12
+adjust-cell-width = -1
+
+foreground = EAEAEA
 
 background = #000000
 background-blur = true
 background-opacity = 0.7
 background-blur-radius = 30
-
-theme = tokyonight
-font-family = RobotoMonoJP
-font-size = 12
-adjust-cell-width = -1
 
 cursor-color = #4AA5F8
 cursor-style = block
@@ -37,7 +37,7 @@ palette = 3=#F6CD45
 palette = 4=#4AA5F8
 palette = 5=#EB576A
 palette = 6=#84CFF6
-palette = 7=#EAEAEA
+palette = 7=#EAEAFF
 palette = 8=#7B7B7B
 palette = 9=#EB6049
 palette = 10=#7DD981
