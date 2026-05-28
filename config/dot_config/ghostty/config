@@ -24,12 +24,12 @@ window-height = 30
 window-width = 110
 window-padding-balance = true
 window-inherit-working-directory = false
-window-colorspace = display-p3
 
 confirm-close-surface = false
 quit-after-last-window-closed = false
 
 # Color(Display-P3)
+window-colorspace = display-p3
 palette = 0=#000000
 palette = 1=#EB6049
 palette = 2=#7DD981
