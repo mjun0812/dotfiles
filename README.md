@@ -64,6 +64,7 @@ Apps installed via Homebrew Cask.
 | balenaEtcher       | USB flash tool                |
 | BetterTouchTool    | Input device customization    |
 | Clipy              | Clipboard manager             |
+| cmux               | Terminal emulator             |
 | Ghostty            | Terminal emulator             |
 | Hammerspoon        | macOS automation              |
 | Inkscape           | Vector graphics editor        |
