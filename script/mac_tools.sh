@@ -44,3 +44,6 @@ brew install --cask \
     claude \
     azookey \
     homerow
+
+brew tap manaflow-ai/cmux
+brew install --cask cmux
