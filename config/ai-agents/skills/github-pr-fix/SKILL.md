@@ -9,7 +9,8 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Ba
 ## 引数
 
 - `PR number`: 修正するPR番号（任意、デフォルトは現在のブランチのPR）
-- `--reply`: レビューコメントへの対応後にGitHubへリプライを投稿する（任意）
+
+レビューコメントへの対応後は**常に**GitHubへリプライを投稿する。
 
 ## コンテキスト
 
@@ -32,7 +33,6 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Ba
    - PR番号が指定されている場合はそのPRを使用
    - そうでなければ、現在のブランチに紐づくPRを使用
    - PRが存在しない場合はエラーメッセージを表示して中止
-   - `--reply` の有無を保持して Phase 3 で `github-pr-respond-comment` に伝播する
 2. `owner/repo` を取得: `gh repo view --json owner,name --jq '"\(.owner.login)/\(.name)"'`
 3. PRの初期ステータスサマリーを表示
 
@@ -107,8 +107,7 @@ Phase 2-2 で失敗チェックがある場合のみ:
 
 Phase 2-3 で未解決スレッドがある場合のみ:
 
-- `github-pr-respond-comment` Skill を実行
-- **`--reply` が Phase 0 で指定されていた場合は `--reply` をそのまま伝播する**
+- `github-pr-respond-comment` Skill を実行（同Skillはレビューコメントへのリプライを常に投稿する）
 - 完了後、再度 `fetch_review_threads.sh --only-unresolved` で未解決スレッド数の差分を取って報告する
 - 検出された言語でステータスを報告する
 
@@ -174,5 +173,5 @@ Phase 2-3 で未解決スレッドがある場合のみ:
 - あるステップが失敗しても、後続のステップは実行を試みる
 - 大きな変更の前にはユーザーに確認を求める
 - 各ステップの完了後に検出された言語で進捗を報告する
-- `--reply` フラグは Phase 3 Step 3 でサブSkillに**必ず**伝播する（フラグの有無に応じてリプライ投稿の挙動が変わるため）
+- レビューコメントへの対応時は、`github-pr-respond-comment` に常にリプライを投稿させる（Phase 3 Step 3）
 - レビューコメントの未解決判定は `fetch_review_threads.sh --only-unresolved` を使う。`gh pr view --json reviews` の state ベースの判定は `COMMENTED` 状態に紛れる未解決スレッドを取りこぼすので使わない
