@@ -1,9 +1,13 @@
+-- コマンドライン(`hs` CLI)からHammerspoonを操作できるようにIPCを有効化する。
+-- これによりターミナルから `hs -c "hs.reload()"` 等でリロードや実行が可能になる。
+require("hs.ipc")
+
 -- URLで呼べる「中央寄せ」
 hs.urlevent.bind("center", function()
     local win = hs.window.focusedWindow()
     if not win then return end
     win:centerOnScreen(nil, true) -- trueで画面外(ドック下など)に行きにくくする
-  end)
+end)
 
 -- AeroSpace workspace HUD
 -- フォーカス中のAeroSpaceワークスペース番号を画面中央下部に一時表示する。
@@ -77,3 +81,5 @@ end
 hs.urlevent.bind("aerospace-workspace", function(_, params)
     showAeroSpaceWorkspaceHUD(params and params["ws"])
 end)
+
+require("chrome_vertical_tab_sidebar_toggle")
