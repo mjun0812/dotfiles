@@ -1,7 +1,7 @@
 theme = TokyoNight Night
 font-family = RobotoMonoJP
 font-size = 12
-adjust-cell-width = -1
+adjust-cell-width = 0
 
 foreground = EAEAEA
 
