@@ -179,7 +179,7 @@
     }
   },
   "language": "japanese",
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "plansDirectory": "./.claude/plans",
   "skipDangerousModePermissionPrompt": true,
   "remoteControlAtStartup": true,
