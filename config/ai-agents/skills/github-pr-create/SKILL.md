@@ -14,6 +14,8 @@ allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Wr
 - `--reviewer <username>`: reviewerを指定（任意、複数指定可）
 - `--label <name>`: labelを追加（任意、複数指定可）
 
+PRの担当者(assignee)は**常に** `@me`（自分）に設定される。
+
 ## Modes
 
 - **通常モード**: リスクや運用判断が必要な箇所ではユーザーに確認する
@@ -137,10 +139,13 @@ allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Wr
      --base <base-branch> \
      --title "<PR Title>" \
      --body-file /tmp/pr-create-body.md \
+     --assignee @me \
      [--draft] \
      [--reviewer <username>] \
      [--label <name>]
    ```
+
+   - `--assignee @me` を**必ず**付与し、PRの担当者を自分（PR作成者）に設定する
 
 ### 8. 結果の表示
 
@@ -150,6 +155,7 @@ allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Wr
 - タイトル
 - base branch → head branch
 - 関連Issue（検出された場合）
+- assignee（`@me`）
 - reviewer（指定された場合）
 - label（指定された場合）
 - 変更の概要（ファイル数、追加行数、削除行数）
@@ -160,7 +166,8 @@ allowed-tools: Read(~/.dotfiles/doc/templates/conventional_commits.md), Read, Wr
 
 既存のPRが検出された場合:
 
-1. 現在のPR情報を表示: `gh pr view --json title,body,url,state,labels,reviewers`
+0. **担当者の確認**: PRの担当者に自分が含まれていなければ `gh pr edit <number> --add-assignee @me` で自分を追加する（更新・pushのみ・`--auto` のいずれの場合も実行する）
+1. 現在のPR情報を表示: `gh pr view --json title,body,url,state,labels,reviewers,assignees`
 2. `--auto` 指定時:
    - ユーザー確認は行わず、pushのみ実行する
    - タイトル・説明文は更新しない
