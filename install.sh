@@ -127,10 +127,15 @@ ln -snfv "$DOTPATH/config/cursor/keybindings.json" "$CURSOR_USER_DIR/keybindings
 log_section "Setting up shared agent skills..."
 AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
 cp -aLf "$HOME/.agents/skills" "$DOTPATH/.backup/agents_skills" 2>/dev/null || true
-rm -rf "$HOME/.agents/skills"
 mkdir -p "$HOME/.agents/skills"
+# Drop broken symlinks whose source skill was removed from the repo.
+for entry in "$HOME/.agents/skills"/*(@N); do
+    [ -e "$entry" ] || rm -f "$entry"
+done
+# Remove only the skills we manage, then relink (keeps locally-added skills).
 for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")
+    rm -rf "$HOME/.agents/skills/$skill_name"
     ln -snfv "$skill_dir" "$HOME/.agents/skills/$skill_name"
 done
 
@@ -147,10 +152,15 @@ ln -snfv "$DOTPATH/config/ai-agents/claude/settings.json" "$HOME/.claude/setting
 ln -snfv "$DOTPATH/config/ai-agents/claude/mcp.json" "$HOME/.claude/mcp.json"
 ln -snfv "$DOTPATH/config/ai-agents/claude/statusline.py" "$HOME/.claude/statusline.py"
 # Skills
-rm -rf "$HOME/.claude/skills"
 mkdir -p "$HOME/.claude/skills"
+# Drop broken symlinks whose source skill was removed from the repo.
+for entry in "$HOME/.claude/skills"/*(@N); do
+    [ -e "$entry" ] || rm -f "$entry"
+done
+# Remove only the skills we manage, then relink (keeps locally-added skills).
 for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")
+    rm -rf "$HOME/.claude/skills/$skill_name"
     ln -snfv "$skill_dir" "$HOME/.claude/skills/$skill_name"
 done
 # Agents
@@ -220,10 +230,15 @@ for agent_file in "$CODEX_AGENTS_SOURCE_DIR"/*.toml(N); do
 done
 # Skills
 cp -aLf "$HOME/.codex/skills" "$DOTPATH/.backup/codex_skills" 2>/dev/null || true
-rm -rf "$HOME/.codex/skills"
 mkdir -p "$HOME/.codex/skills"
+# Drop broken symlinks whose source skill was removed from the repo.
+for entry in "$HOME/.codex/skills"/*(@N); do
+    [ -e "$entry" ] || rm -f "$entry"
+done
+# Remove only the skills we manage, then relink (keeps locally-added skills).
 for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")
+    rm -rf "$HOME/.codex/skills/$skill_name"
     ln -snfv "$skill_dir" "$HOME/.codex/skills/$skill_name"
 done
 
