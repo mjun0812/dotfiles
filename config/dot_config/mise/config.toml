@@ -45,3 +45,5 @@ pipx.uvx = true
 npm.package_manager = "bun"
 # Set registry_url for fetch latest version
 aqua.registry_url = "https://github.com/aquaproj/aqua-registry"
+aqua.registry_cache_ttl = "1d"
+aqua.baked_registry = true
