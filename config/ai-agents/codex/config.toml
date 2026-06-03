@@ -17,6 +17,10 @@ shell_snapshot = true
 multi_agent = true
 remote_control = true
 
+[agents]
+max_threads = 16
+max_depth = 4
+
 [sandbox_workspace_write]
 writable_roots = ["~/.cache", "~/.local/share", "/tmp", "/private/tmp"]
 network_access = true
