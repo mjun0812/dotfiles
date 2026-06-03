@@ -54,6 +54,9 @@ mise install
 mise reshim
 source "$HOME/.zshrc"
 
+################ [Zsh Completion Update] ################
+$DOTPATH/script/update_completions.sh
+
 ################ [yazi] ################
 ya pkg add yazi-rs/plugins:mime-ext
 
