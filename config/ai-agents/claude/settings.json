@@ -183,6 +183,7 @@
     }
   },
   "language": "japanese",
+  "alwaysThinkingEnabled": false,
   "effortLevel": "high",
   "plansDirectory": "./.claude/plans",
   "skipDangerousModePermissionPrompt": true,
@@ -191,5 +192,5 @@
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "alwaysThinkingEnabled": false
+  "tui": "fullscreen"
 }
