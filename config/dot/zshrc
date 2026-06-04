@@ -61,6 +61,9 @@ export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 # mise
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 
+# aqua
+export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME:-$HOME/.config}/aquaproj-aqua/aqua.yaml"
+
 # sheldon
 command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 

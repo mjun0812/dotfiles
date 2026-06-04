@@ -1,0 +1,5 @@
+registries:
+  - type: standard
+    ref: v4.520.1 # aquaproj/aqua-registry
+
+packages: []
