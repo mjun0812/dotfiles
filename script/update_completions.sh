@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 
 DOTPATH=$(cd $(dirname $0)/.. && pwd)
-COMPLETIONS_DIR="$DOTPATH/config/completions"
+COMPLETIONS_DIR="$DOTPATH/config/dot_config/zsh_completions"
+mkdir -p "$COMPLETIONS_DIR"
 
 print -P "%F{blue}%B==> %f%b%F{white}%BUpdating zsh completions...%f%b"
 
