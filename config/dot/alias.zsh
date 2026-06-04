@@ -65,6 +65,10 @@ alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-san
 alias copilot-commit='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はEnglishです。"'
 alias copilot-commit-ja='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はJapaneseです。"'
 
+# Antigravity-cli (agy)
+alias agy-commit='command agy --dangerously-skip-permissions --model="Gemini 3.5 Flash (Low)" -p "/git-commit en"'
+alias agy-commit-ja='command agy --dangerously-skip-permissions --model="Gemini 3.5 Flash (Low)" -p "/git-commit ja"'
+
 # ai commands alias
 alias aicommit='cc-commit'
 alias aicommit-ja='cc-commit-ja'
