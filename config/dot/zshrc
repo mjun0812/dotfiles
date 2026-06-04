@@ -91,3 +91,7 @@ fi
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
+# Always exit zshrc with success so callers running under `set -e`
+# (e.g. CI `sh -e` jobs) don't fail when optional `~/.zshrc.local` is absent.
+true

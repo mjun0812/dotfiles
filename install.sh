@@ -56,7 +56,9 @@ ya pkg add yazi-rs/plugins:mime-ext
 
 ################ [Node] ################
 log_section "Setting up Node..."
-bun install -g \
+# md-to-pdf depends on puppeteer; skip the bundled Chromium download because
+# Playwright is installed separately below (and CI containers lack `unzip`).
+PUPPETEER_SKIP_DOWNLOAD=1 bun install -g \
     neovim \
     md-to-pdf@latest \
     pyright \
@@ -68,8 +70,10 @@ $DOTPATH/script/install_vp.sh
 
 ################ [Playwright Browsers] ################
 log_section "Setting up Playwright browsers..."
+# Playwright currently has no prebuilt chromium for some newer Ubuntu releases
+# (e.g. 26.04 used by GitHub Actions runners); don't fail the whole install.
 if command -v bunx >/dev/null 2>&1; then
-    bunx playwright install chromium
+    bunx playwright install chromium || echo "playwright chromium install skipped (unsupported platform)"
 fi
 
 ################ [Python] ################
