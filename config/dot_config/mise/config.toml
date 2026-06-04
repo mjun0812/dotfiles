@@ -38,6 +38,7 @@ actionlint = "latest"
 sheldon = "latest"
 chezmoi = "latest"
 kubectl = "latest"
+aqua = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
@@ -47,3 +48,4 @@ npm.package_manager = "bun"
 aqua.registry_url = "https://github.com/aquaproj/aqua-registry"
 aqua.registry_cache_ttl = "1d"
 aqua.baked_registry = true
+trusted_config_paths = ["/"]
