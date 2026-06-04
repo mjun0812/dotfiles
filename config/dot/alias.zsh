@@ -54,8 +54,8 @@ alias cc-commit='command claude --model=haiku --dangerously-skip-permissions -p 
 alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit ja"'
 
 # Gemini-cli
-alias gemini-commit='command gemini -p "/aicommit en" -y --model=gemini-3-flash-preview --skip-trust'
-alias gemini-commit-ja='command gemini -p "/aicommit ja" -y --model=gemini-3-flash-preview --skip-trust'
+alias gemini-commit='command gemini -p "/aicommit en" -y --model=gemini-3.1-flash-lite --skip-trust'
+alias gemini-commit-ja='command gemini -p "/aicommit ja" -y --model=gemini-3.1-flash-lite --skip-trust'
 
 # Codex
 alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って英語でコミットしてください。"'
