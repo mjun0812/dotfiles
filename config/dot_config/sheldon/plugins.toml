@@ -9,8 +9,22 @@ fzf-source = "source <(fzf --zsh)"
 github = "romkatv/zsh-defer"
 apply = ["source"]
 
+# [plugins.starship]
+# inline = 'command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"'
+
+[plugins.powerlevel10k-instant-prompt]
+inline = """
+if [[ -r "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+"""
+
 [plugins.powerlevel10k]
 github = "romkatv/powerlevel10k"
+hooks.post = """
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+(( ! ${+functions[p10k]} )) || p10k finalize
+"""
 
 [plugins.fzf]
 github = 'junegunn/fzf'

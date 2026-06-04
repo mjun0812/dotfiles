@@ -40,13 +40,6 @@ for d in "$DOTPATH"/config/dot_config/*; do
     ln -snfv "$d" "$CONFIG_DIR/$app"
 done
 
-################ [Zsh Completions] ################
-log_section "Setting up Zsh Completions..."
-cp -aLf "$HOME/.zsh/completions" "$DOTPATH/.backup/zsh_completions" 2>/dev/null || true
-rm -rf "$HOME/.zsh/completions"
-mkdir -p "$HOME/.zsh"
-ln -snfv "$DOTPATH/config/completions" "$HOME/.zsh/completions"
-
 ################ [mise] ################
 log_section "Setting up mise..."
 $DOTPATH/script/install_mise.sh
