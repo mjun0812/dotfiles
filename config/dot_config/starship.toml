@@ -1,66 +1,169 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
 format = """
 $username\
 $hostname\
 $os\
+$python\
 [](fg:black bg:blue)\
 $directory\
 [](fg:blue bg:green)\
 $git_branch\
+$git_commit\
+$git_state\
 $git_status\
 \n\
 $character"""
 
+right_format = """
+$jobs\
+$kubernetes\
+$terraform\
+$aws\
+$azure\
+$gcloud\
+$nix_shell\
+$time"""
+
 add_newline = false
+command_timeout = 500
 
 [username]
-style_user = 'fg:white bg:black'
-style_root = 'fg:white bg:black'
-format = '[ $user]($style)'
+style_user = "fg:white bg:black"
+style_root = "fg:white bg:black"
+format = "[ $user]($style)"
 disabled = false
 show_always = true
 
 [hostname]
 ssh_only = false
-format = '[@](fg:white bg:black)[$hostname]($style)'
-style = 'fg:white bg:black'
+format = "[@](fg:white bg:black)[$hostname]($style)"
+style = "fg:white bg:black"
 disabled = false
 
-[character]
-success_symbol = "[❯](fg:76)"
-error_symbol = "[❯](fg:196)"
+[os]
+format = "[ $symbol ]($style)"
+style = "fg:white bg:black"
+disabled = false
+
+[python]
+format = "[ ($virtualenv) ]($style)"
+style = "fg:cyan bg:black"
+detect_extensions = []
+detect_files = []
+detect_folders = []
+detect_env_vars = ["VIRTUAL_ENV"]
+pyenv_version_name = false
+disabled = false
 
 [directory]
-format = '[$read_only]($read_only_style)[ $path ]($style)'
-style = 'fg:black bg:blue'
-read_only_style = 'fg:black bg:blue'
+format = "[$read_only]($read_only_style)[ $path ]($style)"
+style = "fg:black bg:blue"
+read_only_style = "fg:black bg:blue"
 disabled = false
 read_only = " "
 truncate_to_repo = false
+truncation_length = 1
+truncation_symbol = ""
+home_symbol = "~"
 
 [git_branch]
 format = "[$symbol$branch(:$remote_branch) ]($style)"
 symbol = "  "
 style = "fg:black bg:green"
+truncation_length = 32
+truncation_symbol = "…"
+
+[git_commit]
+format = "[#$hash ]($style)"
+style = "fg:black bg:green"
+commit_hash_length = 8
+only_detached = true
+tag_disabled = false
+tag_symbol = "#"
+
+[git_state]
+format = "([](fg:green bg:yellow)[ $state( $progress_current/$progress_total) ]($style)[](fg:yellow))"
+style = "fg:red bg:yellow"
 
 [git_status]
-format = '([](fg:green bg:yellow)[ $all_status$ahead_behind ]($style)[](fg:yellow))([$up_to_date](fg:green))'
+format = "([](fg:green bg:yellow)[ $all_status$ahead_behind ]($style)[](fg:yellow))([$up_to_date](fg:green))"
 style = "fg:black bg:yellow"
-stashed = '\$${count}'
+stashed = "*${count}"
 ahead = "⇡${count}"
 behind = "⇣${count}"
-up_to_date = ""
-diverged = "⇕"
-conflicted = "="
-deleted = "✘"
-renamed = "»"
+diverged = "⇣${behind_count}⇡${ahead_count}"
+conflicted = "~${count}"
+deleted = "✘${count}"
+renamed = "»${count}"
 modified = "!${count}"
-staged = "+"
-untracked = "?"
+staged = "+${count}"
+untracked = "u${count}"
 typechanged = ""
+up_to_date = ""
 
-[os]
-format = "[ $symbol ]($style)"
+[character]
+format = "$symbol "
+success_symbol = "[❯](fg:76)"
+error_symbol = "[❯](fg:196)"
+vimcmd_symbol = "[❮](fg:76)"
+vimcmd_visual_symbol = "[V](fg:76)"
+vimcmd_replace_symbol = "[▶](fg:76)"
+vimcmd_replace_one_symbol = "[▶](fg:76)"
+
+[jobs]
+format = "[](fg:black)[ $symbol ]($style)"
+symbol = "✦"
+style = "fg:cyan bg:black"
+threshold = 1
+number_threshold = 999
+symbol_threshold = 1
+disabled = false
+
+[kubernetes]
+format = "[](fg:purple)[ $symbol$context(/$namespace) ]($style)"
+symbol = "☸ "
+style = "fg:white bg:purple"
+disabled = false
+
+[terraform]
+format = "[ $symbol$workspace ]($style)"
+symbol = "💠 "
+style = "fg:blue bg:black"
+disabled = false
+
+[aws]
+format = "([](fg:red)[ $symbol$profile ]($style))"
+symbol = "☁ "
+style = "fg:white bg:red"
+disabled = false
+force_display = false
+
+[azure]
+format = "[](fg:blue)[ $symbol$subscription ]($style)"
+symbol = "󰠅 "
+style = "fg:white bg:blue"
+disabled = false
+
+[gcloud]
+format = "[](fg:blue)[ $symbol$project ]($style)"
+symbol = "☁ "
+style = "fg:white bg:blue"
+disabled = false
+
+[nix_shell]
+format = "[](fg:blue)[ $symbol$state( ($name)) ]($style)"
+symbol = " "
+style = "fg:black bg:blue"
+impure_msg = "impure"
+pure_msg = "pure"
+unknown_msg = ""
+disabled = false
+
+[time]
+format = "[ $time ]($style)"
 style = "fg:white bg:black"
+time_format = "%H:%M"
 disabled = false
 
 [os.symbols]
