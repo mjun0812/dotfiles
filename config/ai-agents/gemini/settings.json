@@ -1,6 +1,26 @@
 {
-  "model": "Gemini 3.5 Flash (Medium)",
-  "trustedWorkspaces": [
-    "/Users/mjun/.dotfiles"
-  ]
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "ui": {
+    "theme": "GitHub",
+    "hideTips": true,
+    "showModelInfoInChat": true,
+    "showMemoryUsage": true,
+    "showStatusInTitle": true
+  },
+  "general": {
+    "previewFeatures": true,
+    "sessionRetention": {
+      "warningAcknowledged": true,
+      "enabled": true,
+      "maxAge": "30d"
+    }
+  },
+  "ide": {
+    "hasSeenNudge": true,
+    "enabled": true
+  }
 }

@@ -260,7 +260,7 @@ ln -snfv "$DOTPATH/config/ai-agents/gemini/settings.json" "$HOME/.gemini/setting
 ################ [Antigravity CLI] ################
 log_section "Setting up Antigravity CLI..."
 cp -aLf "$HOME/.gemini/antigravity-cli/settings.json" "$DOTPATH/.backup/antigravity_cli_settings.json" && rm -rf "$HOME/.gemini/antigravity-cli/settings.json"
-ln -snfv "$DOTPATH/config/ai-agents/gemini/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
+ln -snfv "$DOTPATH/config/ai-agents/gemini/antigravity-cli/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
 cp -aLf "$HOME/.gemini/antigravity-cli/skills" "$DOTPATH/.backup/antigravity_cli_skills" 2>/dev/null || true
 mkdir -p "$HOME/.gemini/antigravity-cli/skills"
 # Drop broken symlinks whose source skill was removed from the repo.
