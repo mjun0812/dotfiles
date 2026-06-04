@@ -93,7 +93,8 @@ def git_branch(cwd):
 
 
 model = data.get("model", {}).get("display_name", "Claude")
-parts = [model]
+effort = data.get("effort", {}).get("level")
+parts = [f"{model} {effort}" if effort else model]
 
 ctx = data.get("context_window", {}).get("used_percentage", 0)
 parts.append(fmt("ctx", ctx))

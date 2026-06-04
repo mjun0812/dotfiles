@@ -76,6 +76,8 @@
     ],
     "deny": [
       "Read(.env)",
+      "Read(./.env)",
+      "Bash(sudo *)",
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
       "Bash(rm -rf /)",
@@ -83,12 +85,13 @@
       "Bash(rm -rf ~)",
       "Bash(rm -rf ~/)",
       "Bash(rm -rf ~/*)",
-      "Bash(rm -rf $HOME/**)"
+      "Bash(rm -rf $HOME/**)",
+      "Bash(curl * | sh *)",
+      "Bash(wget * | sh *)",
+      "Read(./secrets/**)"
     ],
     "ask": [
       "Bash(git push *)",
-      "Bash(gh issue close *)",
-      "Bash(gh pr close *)",
       "Bash(gh pr merge *)"
     ],
     "defaultMode": "auto",
@@ -97,6 +100,7 @@
       "/private/tmp"
     ]
   },
+  "model": "claude-opus-4-7[1m]",
   "hooks": {
     "PostToolUse": [
       {
@@ -182,9 +186,10 @@
   "effortLevel": "high",
   "plansDirectory": "./.claude/plans",
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "model": "sonnet"
+  "alwaysThinkingEnabled": false
 }
