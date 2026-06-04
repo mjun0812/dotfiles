@@ -39,6 +39,7 @@ sheldon = "latest"
 chezmoi = "latest"
 kubectl = "latest"
 aqua = "latest"
+"aqua:google-antigravity/antigravity-cli" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
