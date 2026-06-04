@@ -256,3 +256,20 @@ mkdir -p "$HOME/.gemini"
 ln -snfv "$DOTPATH/config/ai-agents/gemini/commands" "$HOME/.gemini/commands"
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.gemini/GEMINI.md"
 ln -snfv "$DOTPATH/config/ai-agents/gemini/settings.json" "$HOME/.gemini/settings.json"
+
+################ [Antigravity CLI] ################
+log_section "Setting up Antigravity CLI..."
+cp -aLf "$HOME/.gemini/antigravity-cli/settings.json" "$DOTPATH/.backup/antigravity_cli_settings.json" && rm -rf "$HOME/.gemini/antigravity-cli/settings.json"
+ln -snfv "$DOTPATH/config/ai-agents/gemini/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
+cp -aLf "$HOME/.gemini/antigravity-cli/skills" "$DOTPATH/.backup/antigravity_cli_skills" 2>/dev/null || true
+mkdir -p "$HOME/.gemini/antigravity-cli/skills"
+# Drop broken symlinks whose source skill was removed from the repo.
+for entry in "$HOME/.gemini/antigravity-cli/skills"/*(@N); do
+    [ -e "$entry" ] || rm -f "$entry"
+done
+# Remove only the skills we manage, then relink (keeps locally-added skills).
+for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
+    skill_name=$(basename "$skill_dir")
+    rm -rf "$HOME/.gemini/antigravity-cli/skills/$skill_name"
+    ln -snfv "$skill_dir" "$HOME/.gemini/antigravity-cli/skills/$skill_name"
+done

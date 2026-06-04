@@ -1,5 +1,6 @@
 {
-  "model": "Gemini 3.5 Flash (Medium)",
+  "colorScheme": "tokyo night",
+  "enableTelemetry": false,
   "trustedWorkspaces": [
     "/Users/mjun/.dotfiles"
   ]
