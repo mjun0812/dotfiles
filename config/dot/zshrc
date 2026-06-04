@@ -1,5 +1,5 @@
 if [[ -r "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh"
+    source "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 export XDG_CACHE_HOME="$HOME/.cache"
@@ -72,7 +72,7 @@ command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 
 # ######### zsh completion ##########
 if [ -d ~/.zsh/completions ]; then
-  fpath=(~/.zsh/completions $fpath)
+    fpath=(~/.zsh/completions $fpath)
 fi
 autoload -Uz compinit && compinit
 autoload -Uz bashcompinit && bashcompinit
@@ -103,4 +103,4 @@ fi
 
 # powerlevel10k
 source ~/.p10k.zsh
-(( ! ${+functions[p10k]} )) || p10k finalize
+((!${+functions[p10k]})) || p10k finalize
