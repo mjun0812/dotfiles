@@ -35,16 +35,16 @@
     context                 # user@hostname
     os_icon                 # os identifier
     virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
-    # goenv                   # go environment (https://github.com/syndbg/goenv)
-    # nodenv                  # node.js version from nodenv (https://github.com/nodenv/nodenv)
-    # nvm                     # node.js version from nvm (https://github.com/nvm-sh/nvm)
-    # rbenv                   # ruby version from rbenv (https://github.com/rbenv/rbenv)
-    # fvm                     # flutter version management (https://github.com/leoafarias/fvm)
-    # luaenv                  # lua version from luaenv (https://github.com/cehoffman/luaenv)
-    # jenv                    # java version from jenv (https://github.com/jenv/jenv)
-    # plenv                   # perl version from plenv (https://github.com/tokuhirom/plenv)
-    # phpenv                  # php version from phpenv (https://github.com/phpenv/phpenv)
-    # haskell_stack           # haskell version from stack (https://haskellstack.org/)
+    # goenv                 # go environment (https://github.com/syndbg/goenv)
+    # nodenv                # node.js version from nodenv (https://github.com/nodenv/nodenv)
+    # nvm                   # node.js version from nvm (https://github.com/nvm-sh/nvm)
+    # rbenv                 # ruby version from rbenv (https://github.com/rbenv/rbenv)
+    # fvm                   # flutter version management (https://github.com/leoafarias/fvm)
+    # luaenv                # lua version from luaenv (https://github.com/cehoffman/luaenv)
+    # jenv                  # java version from jenv (https://github.com/jenv/jenv)
+    # plenv                 # perl version from plenv (https://github.com/tokuhirom/plenv)
+    # phpenv                # php version from phpenv (https://github.com/phpenv/phpenv)
+    # haskell_stack         # haskell version from stack (https://haskellstack.org/)
     dir                     # current directory
     vcs                     # git status
     # =========================[ Line #2 ]=========================
@@ -59,7 +59,7 @@
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
     # status                  # exit code of the last command
-    # command_execution_time  # duration of the last command
+    command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
     kubecontext             # current kubernetes context (https://kubernetes.io/)
     terraform               # terraform workspace (https://www.terraform.io)
