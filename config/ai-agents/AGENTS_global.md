@@ -60,7 +60,7 @@ result = session.query(VectorModel).filter(VectorModel.id == model_id).first()
 
 ### 型ヒント
 
-可能な限り**型ヒント**を記述してください。
+**型ヒント**を必ず記述してください。Anyの使用は避け、具体的な型を指定してください。
 
 ```python
 # Good: 型ヒントあり
