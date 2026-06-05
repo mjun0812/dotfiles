@@ -88,10 +88,8 @@ fi
 if command -v gwq >/dev/null 2>&1; then
     source <(gwq completion zsh)
 fi
+
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
-# Always exit zshrc with success so callers running under `set -e`
-# (e.g. CI `sh -e` jobs) don't fail when optional `~/.zshrc.local` is absent.
-true
