@@ -494,5 +494,8 @@
    "workbench.tree.indent": 16,
    "workbench.tree.renderIndentGuides": "always",
    "workbench.view.alwaysShowHeaderActions": true,
-   "go.toolsManagement.autoUpdate": true
+   "go.toolsManagement.autoUpdate": true,
+   "[skill]": {
+      "editor.defaultFormatter": "oxc.oxc-vscode"
+   }
 }
