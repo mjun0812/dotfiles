@@ -12,7 +12,7 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 
 このSkillは3つのサブSkillを正しい順序でオーケストレーションし、PRの全問題を修正する。
 
-- `github-pr-fix-conflicts`: コンフリクトの解消
+- `git-fix-conflict`: コンフリクトの解消
 - `github-fix-ci`: CI失敗の修正
 - `github-pr-respond-comment`: レビューコメントへの対応
 
@@ -82,7 +82,7 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 
 3.1で`CONFLICTING` の場合のみ:
 
-- `github-pr-fix-conflicts` Skill を `<worktree-path>` 内で実行
+- `git-fix-conflict` Skill を `<worktree-path>` 内で実行
 - 完了を待ってから、再度 `gh pr view --json mergeable --jq '.mergeable'` でコンフリクトが解消されたことを確認する
 - 検出された言語でステータスを報告する
 
