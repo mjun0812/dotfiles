@@ -1,6 +1,6 @@
 ---
 name: github-issue-resolve
-description: '指定したGitHub issueに対して「事前調査 → 必要なら議論コメント投稿 → worktree作成 → 実装 → PR作成」を一気通貫で実行するSkill。issueの内容を分析して技術選定や仕様の議論が必要か判断し、議論が必要な場合はissueにコメント投稿して停止、実装に進めると判断した場合のみworktreeを切って実装〜PR作成まで進める。ユーザーが「issue #N を解決して」「このissueを実装して」「issue番号 N を片付けて」「issueから実装してPRまで」のように依頼したら必ずこのSkillを使うこと。事前調査だけ・実装だけ・PR作成だけといった単一フェーズの依頼には使わない（その場合は github-issue-create / github-pr-create 等の個別Skillを使う）。'
+description: GitHub issueを起点に「調査 → 必要なら議論コメント → worktree作成 → 実装 → PR作成」を一気通貫で実行するSkill。「issue #N を解決して」「issueから実装してPRまで」のような複合依頼に使う。単一フェーズだけの依頼には使わない。
 allowed-tools: Skill, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Read, Write, Edit
 ---
 
