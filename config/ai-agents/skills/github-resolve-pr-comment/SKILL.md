@@ -1,5 +1,5 @@
 ---
-name: github-pr-respond-comment
+name: github-resolve-pr-comment
 description: PRのレビューコメントを確認し、対応・返信するSkill。
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*), Bash(mktemp:*), Bash(bash:*), Write
 ---
