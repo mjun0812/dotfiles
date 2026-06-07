@@ -97,8 +97,6 @@ These skills do not delegate to other skills:
 
 `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `md-note`, `resume-other-agent`, `summarize-pdf`.
 
-Note: `github-issue-update` mentions `github-issue-discover` / `github-pr-review` / `github-resolve-pr-comment` in its SKILL.md only to clarify scope boundaries — it deliberately does not invoke them.
-
 ## Conventions
 
 - Skill names use kebab-case and are scoped by domain (`git-*`, `github-*`, plus a few generic ones).

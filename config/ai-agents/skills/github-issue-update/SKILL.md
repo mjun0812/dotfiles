@@ -1,37 +1,33 @@
 ---
 name: github-issue-update
-description: open issueを横断的に点検して、closeすべきもの・内容を追記すべきもの・ラベルを追加/削除すべきものを自動判定し、ユーザー承認の上で一括反映するSkill。「open issueを整理して」「stale issueを片付けて」「ラベルを整理して」のような依頼で使う。
-allowed-tools: Bash(gh:*), Bash(git:*), Bash(date:*), Bash(ls:*), Bash(cat:*), Bash(grep:*), Bash(rg:*), Read, Glob, Grep, AskUserQuestion
+description: open issueを横断的に点検して、closeすべきもの・内容を追記すべきもの・ラベルを追加/削除すべきものを自動判定し、確認なしで一括反映するSkill。「open issueを整理して」「stale issueを片付けて」「ラベルを整理して」のような依頼で使う。
+allowed-tools: Bash(gh:*), Bash(git:*), Bash(date:*), Bash(ls:*), Bash(cat:*), Bash(grep:*), Bash(rg:*), Read, Glob, Grep
 ---
 
 # GitHub Issue Update
 
-open issueを点検し、次の3種類の更新を提案・反映する。
+open issueを点検し、次の3種類の更新を **確認なしで自動反映** する。
 
 1. **close**: 解決済み・重複・長期放置で閉じるべきもの
 2. **コメント追記**: 内容に追加すべき情報がある、本文と現状にズレがある（参照ファイルが消えた等）
 3. **ラベル変更**: 内容と乖離したラベルの追加/削除
 
-新規issueは作らない。それは `github-issue-discover` の役目。
-
 ## Arguments
 
 - `language`: コメント本文の言語。デフォルト: `ja`
 - `--issue <N>`: 対象を特定のissue番号に絞る（複数指定可）
-- `--max <N>`: 提示候補の上限。デフォルト: `15`
+- `--max <N>`: 1回の実行で反映する候補の上限。デフォルト: `15`
 - `--stale-days <N>`: stale判定の日数。デフォルト: `90`
-- `--dry-run`: 提示までで停止、書き込みはしない
-- `--auto`: ユーザー承認をスキップして反映する。**ただし弱い判定はdowngradeする**（後述）
+- `--dry-run`: 候補抽出までで停止し、書き込みを行わない（点検目的）
 
-## 自動モードのセーフガード
+## 常時適用するセーフガード
 
-`--auto` でも、close判定が弱いものは破壊的反映を避けるため格下げする:
+破壊的なcloseを誤発火させないため、以下の格下げを **常に** 行う:
 
 - 弱いシグナルのみのclose候補 → **コメント追記にdowngrade**（「解決済みの可能性があります。確認の上closeしてください」と促す）
 - 議論履歴のあるstale → **`stale` ラベル追加にdowngrade**（リポジトリに `stale` ラベルがある場合のみ）
 
 強いシグナルのclose（関連PRマージ済み、完了条件全チェック、本文/evidenceまで一致する重複）はそのまま実行する。
-`--dry-run` と `--auto` が両方指定された場合は `--dry-run` を優先する。
 
 ## Task
 
@@ -51,14 +47,14 @@ open issueを点検し、次の3種類の更新を提案・反映する。
 
 ### Phase 1: 候補抽出
 
-各open issueに対して以下を判定する。**迷ったら候補から外す**（誤closeより未対応のほうがコストが小さい場合もあるが、ノイズより安全側を優先する判断は人間に委ねる）。
+各open issueに対して以下を判定する。**迷ったら候補から外す**（ノイズより安全側を優先）。
 
 #### close候補
 
 - **重複**: タイトル正規化一致、または主要キーワード3つ以上一致、または本文の主要トークン一致。古い方を残し新しい方をclose
 - **解決済み（強）**: 関連PRに `Closes #N` / `Fixes #N` / `Resolves #N` が含まれそのPRがmerged、または完了条件のチェックボックスが全て埋まっている、または本文で参照しているファイルが消失
-- **解決済み（弱）**: 参照箇所の周辺が大きく変わっている／コメント無反応など。`--auto` ではコメント追記にdowngradeする
-- **stale**: `updatedAt` が `--stale-days` より古く、かつコメント0件 or 完了条件が抽象的
+- **解決済み（弱）**: 参照箇所の周辺が大きく変わっている／コメント無反応など。セーフガードによりコメント追記にdowngrade
+- **stale**: `updatedAt` が `--stale-days` より古く、かつコメント0件 or 完了条件が抽象的（議論履歴のあるstaleはセーフガードにより `stale` ラベル付与にdowngrade）
 
 #### コメント追記候補
 
@@ -101,45 +97,13 @@ Phase 0 で取得した既存ラベル一覧に存在するもののみ対象。
 
 `--max` を超える分は優先度の低い側から打ち切り、最終レポートに件数を含める。
 
-### Phase 3: 一覧提示と承認
+セーフガードによるdowngradeはこの段階で確定させる（弱いclose → コメント追記、議論履歴あるstale → stale label追加）。
 
-`--auto` 指定時はセーフガードに従ってdowngradeした上で Phase 4 に直行する。
+`--dry-run` 指定時はここで停止し、Phase 4 と同じ形式で「これから反映する内容」を出力して終了する。
 
-未指定時は Markdown 一覧で提示する:
+### Phase 3: 一括反映
 
-```
-## issue更新候補 (N件)
-
-### Close候補
-1. [resolved] #42 ログ出力フォーマット統一
-   理由: PR #58 マージ済み、完了条件達成
-2. [duplicate] #67 README typo
-   理由: #45 と内容一致（古い #45 を残す）
-
-### コメント追記候補
-3. [update] #103 パーサ周りのリファクタ
-   追記: 関連PR #150 が進行中
-
-### ラベル変更候補
-4. [label] #110 add: documentation
-   理由: 本文がドキュメント整備の依頼
-5. [label] #120 remove: bug
-   理由: 本文がfeature request
-```
-
-承認は多段:
-
-1. AskUserQuestion で「全件実行 / 個別選択 / 全件キャンセル / 詳細を見たい候補がある」
-2. 「個別選択」: 4件以下は multiSelect、5件以上は除外番号をテキスト入力
-3. 「詳細を見たい」: 番号を聞き、コメント下書きや該当本文を提示してから再度採否
-
-closeを含む「全件実行」を選びそうな時は、close候補のコメント下書きを確認するか1回だけ問う。
-
-`--dry-run` 時はここで停止し「ドライランです」と案内して終了。
-
-### Phase 4: 一括反映
-
-承認された候補をactionごとに `gh` で処理する。**同一issueに対する複数actionはシリアル**、**異なるissueは5〜10件単位で並列**。
+候補をactionごとに `gh` で処理する。**同一issueに対する複数actionはシリアル**、**異なるissueは5〜10件単位で並列**。
 
 ```bash
 # close + 理由コメント（必ずcomment → close の順）
@@ -162,9 +126,9 @@ gh issue comment <N> --body "<staleコメント本文>"
 
 `gh issue close --comment` は使わない（バージョン差異がある）。コメント本文に複数行を含める場合は `--body-file <tmpfile>` を使い、エスケープ問題を避ける。
 
-並列実行の上限はGitHub secondary rate limit（content作成系で約80/分）を意識し、20件超のバッチは続けて投げない。
+並列実行の上限はGitHub secondary rate limit（content作成系で約80/分）を意識し、20件超のバッチは続けて投げない。1件失敗しても他の並列呼び出しは継続し、失敗した候補は最終レポートで集計する。
 
-### Phase 5: 最終レポート
+### Phase 4: 最終レポート
 
 ```
 ## 完了
@@ -180,23 +144,18 @@ Close: N件
 - #110 +documentation
 - #120 -bug
 
-スキップ: P件（ユーザー却下）
 打ち切り: Q件（--max 超過）
-Downgrade: R件（--auto セーフガードで格下げ）
+Downgrade: R件（セーフガードでcloseからコメント追記等へ格下げ）
+失敗: S件（gh コマンドエラー）
 
-総候補数: N+M+K+P+Q+R 件
+総候補数: N+M+K+Q+R+S 件
 ```
 
-`--auto` 実行時は Downgrade の内訳（どのissueがどのactionに格下げされたか）を明示する。closeしたissueの再openコマンド（`gh issue reopen <N>`）も末尾に控えとして付ける。
+Downgradeの内訳（どのissueがどのactionに格下げされたか）を必ず明示する。closeしたissueの再openコマンド（`gh issue reopen <N>`）も末尾に控えとして付ける。
 
 ## Failure modes
 
 - **gh認証なし / read-only token**: Phase 0で停止して案内
 - **`stale` ラベルが存在しない**: 勝手に作らず、staleカテゴリ自体をskipする
 - **大量のopen issue**: 300件超えるリポジトリでは `--issue` や `--max` で対象を絞る案内をする
-- **誤close**: `gh issue reopen` で戻せるが発見が遅れるほど痛い。弱いシグナルだけのcloseは Phase 1 で候補化を控える
-
-## 既存skillとの関係
-
-- `github-issue-discover`: 新規issueの発見・起票。本skillは既存issueの更新が責務（補完的）
-- `github-issue-create`: 単発issue作成。本skillはこれを呼ばない
+- **誤close**: `gh issue reopen` で戻せるが発見が遅れるほど痛い。弱いシグナルだけのcloseはセーフガードで自動的にコメント追記へ格下げされる
