@@ -1,6 +1,6 @@
 ## Overview and Background
 
-<!-- Describe the purpose of this PR and the background in short. -->
+<!-- Briefly describe the purpose and background of this PR. Keep it concise (2-4 sentences), and explain what changed and why. -->
 
 ## Related Issues
 
@@ -8,8 +8,8 @@
 
 ## Changes
 
-<!-- Describe the changes made in this PR in bullet points. -->
+<!-- Describe the changes made in this PR as bullet points. Group them appropriately by file, feature, or area. -->
 
 ## Test Instructions
 
-<!-- Describe the test instructions for this PR. -->
+<!-- Describe how this PR was tested. Include the commands you ran and their results in a copy-pasteable format. If tests were not run, state that explicitly and explain why. -->
