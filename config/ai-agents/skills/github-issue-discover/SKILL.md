@@ -272,8 +272,3 @@ URLはMarkdownリンクではなく素のURL（クリックできる端末向け
 - **public repoでないと困る**: シークレット候補をissueにする時、private repoかを確認する。public repoなら本文に証拠を貼る前にもう一段ユーザーに確認を取る
 - **巨大リポジトリ**: スキャン時間が長くなる。`--scope docs` などで絞ることをユーザーに案内する
 - **monorepo**: ファイル数が多くノイズが増える。優先度高のもの（security / docs明示）に絞る方が現実的
-
-## 既存skillとの関係
-
-- `github-issue-create`: 1件ずつ対話的に作るskill。本skillは **発見** と **重複排除** と **一括承認** と **一括起票** が責務で、実際の `gh issue create` 呼び出しは本skill内で直接行う。テンプレートのフロントマターやセクション構造を参照するときは、`github-issue-create` skill 同梱の `references/ISSUE_TEMPLATE[_JA]/` をフォールバックとして共有する
-- `github-fix-ci`: CI失敗の修正。本skillはCI設定の **未来の問題** を予防的にissue化する点で異なる
