@@ -68,7 +68,6 @@ graph LR
     git-squash -. on conflict .-> git-fix-conflict
     docs-sync -. on commit .-> git-commit
 
-    github-issue-discover --> github-issue-create
     github-issue-resolve --> github-issue-create
     github-issue-resolve --> github-pr-create
     github-issue-resolve --> git-commit
@@ -88,7 +87,6 @@ graph LR
 | `git-commit-push`              | `git-commit`                                                           | Always (commit step before push)                               |
 | `git-squash`                   | `git-fix-conflict`                                                     | Only if a conflict surfaces during squash                      |
 | `docs-sync`                    | `git-commit`                                                           | When the user opts into committing the doc updates             |
-| `github-issue-discover`        | `github-issue-create`                                                  | One invocation per approved candidate (issued in parallel)     |
 | `github-issue-resolve`         | `github-issue-create` _(indirectly)_, `git-commit`, `github-pr-create` | Implementation phase commits + final PR                        |
 | `github-pr-create-self-review` | `github-pr-create`, `github-pr-review`                                 | Phase 1 and Phase 3 of the one-shot flow                       |
 | `github-pr-fix`                | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment`       | Each callee runs only if the corresponding problem is detected |
@@ -97,7 +95,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `md-note`, `resume-other-agent`, `summarize-pdf`.
+`git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `md-note`, `resume-other-agent`, `summarize-pdf`.
 
 Note: `github-issue-update` mentions `github-issue-discover` / `github-pr-review` / `github-resolve-pr-comment` in its SKILL.md only to clarify scope boundaries — it deliberately does not invoke them.
 

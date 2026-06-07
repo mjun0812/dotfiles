@@ -1,7 +1,7 @@
 ---
 name: github-issue-discover
 description: 現在のリポジトリをスキャンしてissue化すべき事項を自動発見し、既存issueとの重複を除いた上でユーザーに承認を取って一括起票するSkill。`--auto`指定時は承認を省略してsecurity以外を全自動で起票する。ドキュメント・ToDoリスト・コード内TODOコメント・CI/設定の不整合・テスト不足・コード品質上の問題を横断的に探す。ユーザーが「issueを洗い出して」「TODOを起票して」「リポジトリの宿題をissue化」「未対応事項をissueにして」「自動でissue起こして」のように依頼したら必ずこのSkillを使うこと。
-allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(find:*), Bash(rg:*), Bash(grep:*), Bash(wc:*), Bash(head:*), Bash(tail:*), Read, Glob, Grep, AskUserQuestion, Skill(github-issue-create)
+allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(find:*), Bash(rg:*), Bash(grep:*), Bash(wc:*), Bash(head:*), Bash(tail:*), Read, Glob, Grep, AskUserQuestion
 ---
 
 # GitHub Issue Discover
@@ -14,7 +14,7 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(find:*), B
 - `--scope <list>`: スキャン範囲を絞る。カンマ区切りで `docs,todos,ci,tests,code` から選ぶ。未指定なら全範囲
 - `--max <N>`: 提示する候補の最大数。デフォルト: `15`（一度に多すぎると承認作業が重い）
 - `--dry-run`: 候補抽出と提示までで停止し、issueは作成しない
-- `--auto`: Phase 5のユーザー承認をスキップし、抽出された候補を全件 `github-issue-create` に委譲して自動起票する。**ただしセーフガードあり**（後述）。`--dry-run` と併用された場合は `--dry-run` が優先される
+- `--auto`: Phase 5のユーザー承認をスキップし、抽出された候補を全件自動起票する。**ただしセーフガードあり**（後述）。`--dry-run` と併用された場合は `--dry-run` が優先される
 
 ## Why this skill exists
 
@@ -180,18 +180,16 @@ rg -n --no-heading -i -e '\bTODO\b' -e '\bFIXME\b' -e '\bXXX\b' -e '\bHACK\b' \
 
 `--max` を超える場合は優先度の低いものから打ち切る。打ち切られた件数も最終レポートに含める。
 
-各候補について **タイトル下書き** と **kind → テンプレ名** のマッピングを作る:
+各候補について **タイトル下書き**、**テンプレ名**、**本文ドラフト**、**ラベル候補** を作る:
 
 - **タイトル**: 動詞始まりで具体的に。`update X`, `remove Y`, `add tests for Z`, `bugfix: ...` のように行動が伝わる形
-- **テンプレマッピング**（Phase 6 で `github-issue-create --template <name>` に渡す値）:
+- **テンプレマッピング**:
   - ドキュメントの未着手項目 / コード品質改善 / リファクタ → `task`
   - 新機能の提案 → `feature_request`
   - 不具合・脆弱性・既知のバグ → `bug_report`
   - テスト追加 → `test`
-- **本文の素材**: 背景・目的・参考情報（ファイルパス + 行番号、引用文）を整理しておく。テンプレへの流し込みは Phase 6 で `github-issue-create` 側に任せる
-- **ラベル候補**: kind に合うものを Phase 0 の既存ラベル一覧から選ぶ（`enhancement`, `bug`, `documentation`, `test`, `security` など、実在するもののみ）。テンプレ自身が持つデフォルトラベルは `github-issue-create` が自動付与するので、ここでは「追加したいラベル」だけ控える
-
-本文の整形（テンプレ選択、セクション割り当て、フロントマター除去）は重複実装を避けるため `github-issue-create` に委譲する。このskill側では下書き素材だけ用意する。
+- **本文ドラフト**: 選んだテンプレートのセクション見出し（リポジトリ内 `.github/ISSUE_TEMPLATE/` を優先、無ければ `github-issue-create` skill の `references/ISSUE_TEMPLATE[_JA]/` を参照）に背景・目的・参考情報（ファイルパス + 行番号、引用文）を流し込んだ Markdown を作る。フロントマターは含めない。情報が無いセクションは省略する
+- **ラベル候補**: テンプレートのフロントマターに記載のデフォルトラベル（例: `task` ならラベルなし、`bug_report` なら `bug`）を起点に、kind に合うものを Phase 0 の既存ラベル一覧から追加する（`enhancement`, `bug`, `documentation`, `test`, `security` など、実在するもののみ）
 
 ### Phase 5: ユーザーへの一覧提示と承認
 
@@ -221,35 +219,32 @@ rg -n --no-heading -i -e '\bTODO\b' -e '\bFIXME\b' -e '\bXXX\b' -e '\bHACK\b' \
 
 `--dry-run` 指定時は Phase 5 の一覧提示で停止し、ユーザーに「ドライランです。実際に作成するには `--dry-run` を外して再実行してください」と伝えて終了。
 
-### Phase 6: 一括作成（github-issue-create に委譲）
+### Phase 6: 一括作成
 
-承認された候補は **`github-issue-create` skill を Skill ツール経由で並列に呼び出して作成する**。本skill側で `gh issue create` を直接叩かない。テンプレ選択・本文整形・フロントマター除去は元skillが既に持っているロジックなので二重に持たない。
+承認された候補は **`gh issue create` を直接呼び出して作成する**。Phase 4 で既に整形済みの本文ドラフトとラベル候補が揃っているため、ここでは追加加工せずそのまま投げる。
 
 各候補について以下のように呼ぶ:
 
-```
-Skill(github-issue-create) args="ja --template <task|feature_request|bug_report|test> --title <タイトル> --body <本文素材> --no-confirm [--label <name> ...]"
+```bash
+gh issue create --title "<タイトル>" --body "<本文ドラフト>" [--label <name> ...] [--assignee <username> ...]
 ```
 
 引数の作り方:
 
-- `ja` / `en`: discover の `language` 引数を素通しする
-- `--template <name>`: Phase 4 で決めたテンプレ名（`task` / `feature_request` / `bug_report` / `test`）
-- `--title <s>`: Phase 4 で作ったタイトル下書き
-- `--body <s>`: Phase 4 で集めた背景・目的・参考情報を改行区切りでまとめた **下書きテキスト**。これを `github-issue-create` がテンプレに沿って整形してくれる
-- `--no-confirm`: Phase 5 で既にユーザー承認を取っているので最終確認はスキップする
-- `--label <name>`: Phase 4 で決めた追加ラベル。複数指定する場合は `--label foo --label bar` のように繰り返す
+- `--title`: Phase 4 で作ったタイトル下書き
+- `--body`: Phase 4 で作った本文ドラフト（テンプレートの構造に沿って整形済み、フロントマター除去済み）
+- `--label`: Phase 4 で決めたラベル候補（デフォルトラベル + 追加ラベル）。複数指定する場合は `--label foo --label bar` のように繰り返す
 
 #### 並列実行のガイドライン
 
-承認された候補は同一メッセージ内で **複数の `Skill(github-issue-create)` 呼び出しを並列発行** して一気に作成する。各候補は独立しているので並列でレースは起きない。
+承認された候補は同一メッセージ内で **複数の `gh issue create` 呼び出しを並列発行** して一気に作成する。各候補は独立しているので並列でレースは起きない。
 
 - **バッチサイズ**: 1メッセージあたり最大 **5〜10件** を目安に並列発行する。これより多いとメインコンテキストへの結果流入が一度に重くなるため
 - **件数が多い場合**: 候補が10件を超えるなら、 5〜10件のバッチに分けて、バッチ単位で順に流す（バッチ内は並列、バッチ間はシリアル）
 - **rate limit**: GitHub のコンテンツ作成系 secondary rate limit は1分あたり概ね80件が目安。20件程度のバッチを連続発行する程度なら問題にはならない。100件規模を一気に作る用途では使わない
 - **エラーハンドリング**: 1件が失敗しても他の並列呼び出しには影響しない。失敗した候補のエラー内容と、成功した候補の URL を Phase 7 レポートで集計する
 
-すべての `Skill(github-issue-create)` 呼び出しから返ってきた issue URL を記録して、Phase 7 のレポートに使う。
+すべての `gh issue create` 呼び出しから返ってきた issue URL を記録して、Phase 7 のレポートに使う。
 
 ### Phase 7: 最終レポート
 
@@ -280,5 +275,5 @@ URLはMarkdownリンクではなく素のURL（クリックできる端末向け
 
 ## 既存skillとの関係
 
-- `github-issue-create`: 1件ずつ対話的に作るskill。本skillは **発見** と **重複排除** と **一括承認** が責務で、実際の作成（テンプレ選択 / 本文整形 / `gh issue create`）は `github-issue-create` に委譲する。委譲モード（`--title` / `--body` / `--template` / `--no-confirm`）で呼び出すことで、対話を省略しつつ既存ロジックを再利用する
+- `github-issue-create`: 1件ずつ対話的に作るskill。本skillは **発見** と **重複排除** と **一括承認** と **一括起票** が責務で、実際の `gh issue create` 呼び出しは本skill内で直接行う。テンプレートのフロントマターやセクション構造を参照するときは、`github-issue-create` skill 同梱の `references/ISSUE_TEMPLATE[_JA]/` をフォールバックとして共有する
 - `github-fix-ci`: CI失敗の修正。本skillはCI設定の **未来の問題** を予防的にissue化する点で異なる
