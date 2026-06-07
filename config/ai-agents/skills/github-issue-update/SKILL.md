@@ -27,7 +27,7 @@ open issueを点検し、次の3種類の更新を **確認なしで自動反映
 - 弱いシグナルのみのclose候補 → **コメント追記にdowngrade**（「解決済みの可能性があります。確認の上closeしてください」と促す）
 - 議論履歴のあるstale → **`stale` ラベル追加にdowngrade**（リポジトリに `stale` ラベルがある場合のみ）
 
-強いシグナルのclose（関連PRマージ済み、完了条件全チェック、本文/evidenceまで一致する重複）はそのまま実行する。
+強いシグナルのclose（完了条件全チェック、参照ファイルの消失、本文/evidenceまで一致する重複）はそのまま実行する。
 
 ## Task
 
@@ -39,11 +39,9 @@ open issueを点検し、次の3種類の更新を **確認なしで自動反映
 - gh認証確認: `gh auth status`（未認証なら停止）
 - 既存ラベル: `gh label list --limit 100 --json name`
 - open issue一覧: `gh issue list --state open --limit 300 --json number,title,body,labels,createdAt,updatedAt,comments,url`
-- 直近1年のclosed issue: `gh issue list --state closed --limit 300 --json number,title,body,labels,closedAt,url --search "closed:>$(date -u -v-1y +%Y-%m-%d 2>/dev/null || date -u -d '1 year ago' +%Y-%m-%d)"`
-- 直近のPR: `gh pr list --state all --limit 200 --json number,title,body,state,mergedAt,closedAt,url`
 - 現在日: `date -u +%Y-%m-%d`
 
-`--issue <N>` 指定時は対象を該当issueのみに絞る。
+`--issue <N>` 指定時は対象を該当issueのみに絞る。closed issueやPRは判定対象に含めない（点検範囲はopen issueのみ）。
 
 ### Phase 1: 候補抽出
 
@@ -51,17 +49,16 @@ open issueを点検し、次の3種類の更新を **確認なしで自動反映
 
 #### close候補
 
-- **重複**: タイトル正規化一致、または主要キーワード3つ以上一致、または本文の主要トークン一致。古い方を残し新しい方をclose
-- **解決済み（強）**: 関連PRに `Closes #N` / `Fixes #N` / `Resolves #N` が含まれそのPRがmerged、または完了条件のチェックボックスが全て埋まっている、または本文で参照しているファイルが消失
+- **重複**: open issue同士でタイトル正規化一致、または主要キーワード3つ以上一致、または本文の主要トークン一致。古い方を残し新しい方をclose
+- **解決済み（強）**: 完了条件のチェックボックスが全て埋まっている、または本文で参照しているファイルが消失
 - **解決済み（弱）**: 参照箇所の周辺が大きく変わっている／コメント無反応など。セーフガードによりコメント追記にdowngrade
 - **stale**: `updatedAt` が `--stale-days` より古く、かつコメント0件 or 完了条件が抽象的（議論履歴のあるstaleはセーフガードにより `stale` ラベル付与にdowngrade）
 
 #### コメント追記候補
 
-- 関連PRがopen/draft状態 → 「PR #X が進行中です」と現状共有
 - issue本文が参照するファイルが直近で大きく変わったがcloseまでは判定できない
-- 本文と最新状況に齟齬がある（仕様が決まった、技術選択が確定した等が他issueで判明している）
-- 関連性の高い別issueがある → 「関連: #N」コメント（既にリンクされていれば除外）
+- 本文と最新状況に齟齬がある（仕様が決まった、技術選択が確定した等が他のopen issueで判明している）
+- 関連性の高い別のopen issueがある → 「関連: #N」コメント（既にリンクされていれば除外）
 
 #### ラベル変更候補
 
@@ -79,7 +76,7 @@ Phase 0 で取得した既存ラベル一覧に存在するもののみ対象。
   actions: [
     { type: "close" | "comment" | "label_add" | "label_remove", payload: "...", reason: "...", strength: "strong" | "weak" }
   ],
-  evidence: ["<PR番号/ファイルパス/関連issue番号 など>"]
+  evidence: ["<ファイルパス/関連issue番号 など>"]
 }
 ```
 
@@ -89,7 +86,7 @@ Phase 0 で取得した既存ラベル一覧に存在するもののみ対象。
 
 優先度（高い順）:
 
-1. 解決済みclose（PRマージなど確実なもの）
+1. 解決済みclose（完了条件達成や参照ファイル消失など確実なもの）
 2. 重複close
 3. stale close / stale label追加
 4. ラベル追加/削除
@@ -138,7 +135,7 @@ Close: N件
 - #67 README typo — closed (duplicate of #45)
 
 コメント追記: M件
-- #103 パーサ周りのリファクタ — 関連PR #150 を追記
+- #103 パーサ周りのリファクタ — 関連issue #110 を追記
 
 ラベル変更: K件
 - #110 +documentation
