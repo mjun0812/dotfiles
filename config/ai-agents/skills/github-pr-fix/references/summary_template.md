@@ -1,8 +1,3 @@
-# PR Fix Summary Template
-
-Use this template when the detected PR language is English.
-
-```markdown
 ## PR Fix Summary
 
 ### Actions Taken
@@ -20,4 +15,3 @@ Use this template when the detected PR language is English.
 ### Worktree
 
 - `/path/to/repo-worktrees/pr-123-fix`
-```
