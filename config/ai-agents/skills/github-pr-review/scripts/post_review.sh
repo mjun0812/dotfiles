@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Post a PR review (with optional inline comments) via GitHub API.
+# Post a new PR review (with optional inline comments) via GitHub API.
 #
 # Usage:
 #   post_review.sh \
@@ -8,9 +8,10 @@
 #     --commit <sha> \
 #     --event <APPROVE|REQUEST_CHANGES|COMMENT> \
 #     --body-file <path-to-markdown-body> \
-#     [--comments-file <path-to-comments-json>] \
-#     [--dismiss-review-id <id>] \
-#     [--dismiss-message <message>]
+#     [--comments-file <path-to-comments-json>]
+#
+# To dismiss existing reviews, use scripts/dismiss_my_reviews.sh separately.
+# To resolve outdated threads, use scripts/resolve_outdated_threads.sh.
 #
 # Comments JSON shape (array):
 #   [
@@ -34,8 +35,6 @@ COMMIT=""
 EVENT=""
 BODY_FILE=""
 COMMENTS_FILE=""
-DISMISS_REVIEW_ID=""
-DISMISS_MESSAGE="Superseded by new review"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -45,18 +44,22 @@ while [[ $# -gt 0 ]]; do
     --event) EVENT="$2"; shift 2 ;;
     --body-file) BODY_FILE="$2"; shift 2 ;;
     --comments-file) COMMENTS_FILE="$2"; shift 2 ;;
-    --dismiss-review-id) DISMISS_REVIEW_ID="$2"; shift 2 ;;
-    --dismiss-message) DISMISS_MESSAGE="$2"; shift 2 ;;
     *) echo "Unknown argument: $1" >&2; exit 2 ;;
   esac
 done
 
-for var in REPO PR COMMIT EVENT BODY_FILE; do
-  if [[ -z "${!var}" ]]; then
-    echo "Missing required argument: --${var,,}" >&2
+require() {
+  local name="$1" value="$2" flag="$3"
+  if [[ -z "$value" ]]; then
+    echo "Missing required argument: $flag" >&2
     exit 2
   fi
-done
+}
+require REPO "$REPO" --repo
+require PR "$PR" --pr
+require COMMIT "$COMMIT" --commit
+require EVENT "$EVENT" --event
+require BODY_FILE "$BODY_FILE" --body-file
 
 case "$EVENT" in
   APPROVE|REQUEST_CHANGES|COMMENT) ;;
@@ -71,13 +74,6 @@ fi
 if [[ -n "$COMMENTS_FILE" && ! -f "$COMMENTS_FILE" ]]; then
   echo "Comments file not found: $COMMENTS_FILE" >&2
   exit 2
-fi
-
-if [[ -n "$DISMISS_REVIEW_ID" ]]; then
-  echo "Dismissing existing review #$DISMISS_REVIEW_ID..." >&2
-  gh api -X PUT \
-    "repos/${REPO}/pulls/${PR}/reviews/${DISMISS_REVIEW_ID}/dismissals" \
-    -f message="$DISMISS_MESSAGE" >/dev/null
 fi
 
 PAYLOAD_FILE=$(mktemp)
