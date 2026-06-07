@@ -11,19 +11,11 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Ba
 - `PR number`: 確認するPR番号（任意）
 - `--no-commit`: 修正後のコミットとプッシュをスキップ（任意）
 
-## コンテキスト
-
-以下を取得してから作業を開始してください。
-
-- 現在のブランチ: `git branch --show-current`
-- 現在のPR: `gh pr view --json number,url 2>/dev/null || echo "No PR found"`
-- PRタイトル: `gh pr view --json title --jq '.title' 2>/dev/null`
-- PR本文: `gh pr view --json body --jq '.body' 2>/dev/null | head -30`
-- CIステータス: `gh pr checks 2>/dev/null || echo "No checks found"`
-
 ## タスク
 
 ### Phase 0: 事前チェックとモード検出
+
+現在のブランチ、PR情報、PRタイトル、PR本文、CIステータスを確認して、動作モードを判定する。
 
 動作モードを判定する:
 
@@ -43,7 +35,7 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Ba
 
 - `gh pr checks` ですべてのチェックステータスを取得
 - すべてのチェックが成功している場合、成功を報告（PRモードでは検出された言語で）して終了
-- チェックがまだ実行中の場合、ステータスを報告し、待つか続行するかユーザーに確認
+- チェックがまだ実行中の場合、ステータスを報告して終了する。待機やユーザー確認は行わない
 
 ### Phase 3: 失敗したチェックの特定
 
