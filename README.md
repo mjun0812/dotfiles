@@ -64,6 +64,8 @@ cd ~/.dotfiles
 | Copilot-cli     | AI agent for code |
 | OpenCode        | AI agent for code |
 
+Agent skills (shared across Claude Code / Codex / Gemini / Antigravity) are documented in [doc/skills.md](doc/skills.md).
+
 ### macOS Only
 
 Apps installed via Homebrew Cask.
