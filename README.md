@@ -24,55 +24,77 @@ cd ~/.dotfiles
 
 ### CLI
 
-| Tool        | Description                           |
-| ----------- | ------------------------------------- |
-| aws-cli     | AWS command-line interface            |
-| bat         | Modern `cat` with syntax highlighting |
-| delta       | Git diff pager                        |
-| eza         | Modern `ls`                           |
-| fd          | Modern `find`                         |
-| gh          | GitHub CLI                            |
-| ghq         | Repository management                 |
-| git-lfs     | Git Large File Storage                |
-| gwq         | Git worktree management               |
-| jq          | JSON processor                        |
-| lazygit     | Git TUI                               |
-| ripgrep     | Modern `grep`                         |
-| starship    | Cross-shell prompt                    |
-| tree-sitter | Parser generator tool                 |
-| yazi        | Terminal file manager                 |
-| yq          | YAML processor                        |
-| zoxide      | Smart `cd` command                    |
+| Tool        | Description                            |
+| ----------- | -------------------------------------- |
+| actionlint  | GitHub Actions workflow linter         |
+| aqua        | Declarative CLI version manager        |
+| aws-cli     | AWS command-line interface             |
+| bat         | Modern `cat` with syntax highlighting  |
+| chezmoi     | Dotfiles manager                       |
+| delta       | Git diff pager                         |
+| eza         | Modern `ls`                            |
+| fd          | Modern `find`                          |
+| gh          | GitHub CLI                             |
+| ghq         | Repository management                  |
+| git-lfs     | Git Large File Storage                 |
+| gwq         | Git worktree management                |
+| jq          | JSON processor                         |
+| kubectl     | Kubernetes CLI                         |
+| lazygit     | Git TUI                                |
+| ripgrep     | Modern `grep`                          |
+| ripgrep-all | `ripgrep` for PDFs, archives, and docs |
+| sheldon     | Zsh plugin manager                     |
+| shfmt       | Shell script formatter                 |
+| starship    | Cross-shell prompt                     |
+| tex-fmt     | LaTeX formatter                        |
+| tmux        | Terminal multiplexer                   |
+| tree-sitter | Parser generator tool                  |
+| yazi        | Terminal file manager                  |
+| yq          | YAML processor                         |
+| zoxide      | Smart `cd` command                     |
 
 ### AI Agents
 
-| Agent       | Description       |
-| ----------- | ----------------- |
-| Claude Code | AI agent for code |
-| Gemini-cli  | AI agent for code |
-| Codex       | AI agent for code |
-| Copilot-cli | AI agent for code |
+| Agent           | Description       |
+| --------------- | ----------------- |
+| Claude Code     | AI agent for code |
+| Codex           | AI agent for code |
+| Gemini-cli      | AI agent for code |
+| Antigravity-cli | AI agent for code |
+| Copilot-cli     | AI agent for code |
+| OpenCode        | AI agent for code |
 
 ### macOS Only
 
 Apps installed via Homebrew Cask.
 
-| App                | Description                   |
-| ------------------ | ----------------------------- |
-| AeroSpace          | Tiling window manager         |
-| Alt-Tab            | Windows-style window switcher |
-| balenaEtcher       | USB flash tool                |
-| BetterTouchTool    | Input device customization    |
-| Clipy              | Clipboard manager             |
-| cmux               | Terminal emulator             |
-| Ghostty            | Terminal emulator             |
-| Hammerspoon        | macOS automation              |
-| Inkscape           | Vector graphics editor        |
-| iTerm2             | Terminal emulator             |
-| Karabiner-Elements | Keyboard customization        |
-| Raycast            | Launcher                      |
-| WezTerm            | Terminal emulator             |
-| XQuartz            | X11 for macOS                 |
+| App                | Description                       |
+| ------------------ | --------------------------------- |
+| AeroSpace          | Tiling window manager             |
+| Alt-Tab            | Windows-style window switcher     |
+| azooKey            | Japanese input method             |
+| balenaEtcher       | USB flash tool                    |
+| BetterTouchTool    | Input device customization        |
+| ChatGPT            | OpenAI desktop client             |
+| Claude             | Anthropic desktop client          |
+| Clipy              | Clipboard manager                 |
+| cmux               | Terminal emulator                 |
+| Cursor             | AI-powered IDE                    |
+| DeepL              | Translator                        |
+| Ghostty            | Terminal emulator                 |
+| Hammerspoon        | macOS automation                  |
+| Homerow            | Keyboard-driven mouse replacement |
+| Inkscape           | Vector graphics editor            |
+| iTerm2             | Terminal emulator                 |
+| Karabiner-Elements | Keyboard customization            |
+| Nani               | macOS utility                     |
+| Notion             | Notes and knowledge base          |
+| Obsidian           | Markdown knowledge base           |
+| Ollama             | Local LLM runtime                 |
+| Raycast            | Launcher                          |
+| Visual Studio Code | Code editor                       |
+| WezTerm            | Terminal emulator                 |
+| XQuartz            | X11 for macOS                     |
 
 ## Alias
 
