@@ -14,7 +14,7 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 
 - `git-fix-conflict`: コンフリクトの解消
 - `github-fix-ci`: CI失敗の修正
-- `github-pr-respond-comment`: レビューコメントへの対応
+- `github-resolve-pr-comment`: レビューコメントへの対応
 
 **重要**: 修正作業は必ず専用 worktree 内で行う。Skillを起動した元の作業ツリーでは、PR情報の取得と worktree 作成以外のファイル編集・commit・push を行わない。
 
@@ -98,7 +98,7 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 
 3.3で未解決スレッドがある場合のみ:
 
-- `github-pr-respond-comment` Skill を `<worktree-path>` 内で実行（同Skillはレビューコメントへのリプライを常に投稿する）
+- `github-resolve-pr-comment` Skill を `<worktree-path>` 内で実行（同Skillはレビューコメントへのリプライを常に投稿する）
 - 完了後、再度 [`scripts/fetch_review_threads.sh`](scripts/fetch_review_threads.sh) の `--only-unresolved` で unresolved 数の差分を取って報告する
 - 検出された言語でステータスを報告する
 
@@ -125,5 +125,5 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 
 - 大きな変更の前にはユーザーに確認を求める
 - 修正・commit・push は必ず専用 worktree 内で実行する。元の作業ツリーはPR情報取得と worktree 作成だけに使う
-- レビューコメントへの対応時は、`github-pr-respond-comment` に常にリプライを投稿させる（Phase 4 Step 3）
+- レビューコメントへの対応時は、`github-resolve-pr-comment` に常にリプライを投稿させる（Phase 4 Step 3）
 - レビューコメントの未解決判定は [`scripts/fetch_review_threads.sh`](scripts/fetch_review_threads.sh) の `--only-unresolved` を使う。review 全体の state ベースの判定は unresolved thread を取りこぼすので使わない

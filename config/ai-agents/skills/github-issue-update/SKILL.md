@@ -367,4 +367,4 @@ URLは素のURLで提示する。closeしたissueの再openコマンド（`gh is
 
 - `github-issue-discover`: 新規issueを **発見・起票** するskill。本skillは既存issueの **更新・close** が責務で、対象が補完的
 - `github-issue-create`: 単発のissue作成。本skillはこれを呼ばない（新規起票しないため）
-- `github-pr-review` / `github-pr-respond-comment`: PR側の対応。本skillはPRの状態を読むだけで書き込まない
+- `github-pr-review` / `github-resolve-pr-comment`: PR側の対応。本skillはPRの状態を読むだけで書き込まない
