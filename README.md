@@ -210,6 +210,7 @@ Currently configured features:
 
 - Center window on screen via URL scheme (`hammerspoon://center`)
 - AeroSpace workspace HUD via URL scheme (`hammerspoon://aerospace-workspace?ws=<num>`)
+- Toggle Chrome's native vertical tab sidebar via `Cmd+B` and left-edge hover
 
 ## Raycast Scripts
 
