@@ -204,6 +204,19 @@ For terminal color schemes.
 | Light Cyan    | #84CFF6 |
 | Light White   | #EAEAEA |
 
+## mise
+
+This dotfiles uses [mise](https://github.com/jdx/mise) as a package manager for CLI tools.  
+If you want to search and add a new tool, you can use below commands.
+
+```bash
+# Search for a tool in the mise registry
+mise registry | grep <tool-name>
+# Search for a tool in aqua registry
+aqua g
+mise use aqua:google-antigravity/antigravity-cli@latest
+```
+
 ## Neovim
 
 See [doc/nvim.md](doc/nvim.md) for Neovim configuration and keyboard shortcuts.
