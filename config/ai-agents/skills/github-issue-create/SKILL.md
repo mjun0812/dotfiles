@@ -6,91 +6,81 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*), Re
 
 # Create GitHub Issue
 
-ユーザーから情報を収集して、インタラクティブにGitHub Issueを作成する。
+ユーザーから自由入力で受け取ったIssue概要を元に、種別とラベルを自動判定してGitHub Issueを作成する。
 
 ## Arguments
 
 - `language`: Issueのタイトルと本文の言語（例: "ja", "en"）。デフォルト: "en"
-- `--label <name>`: ラベルを追加（任意、複数指定可）
+- `--label <name>`: ラベルを **追加** する（任意、複数指定可）。自動判定されたラベルに加えて付与される
 - `--assignee <username>`: 担当者を割り当て（任意、複数指定可）
-- `--title <title>`: タイトルを直接指定（指定時はタイトルの対話入力をスキップ）
-- `--body <body>`: 本文を直接指定（指定時は本文の対話入力をスキップ）
-- `--template <name>`: 使用するテンプレートを直接指定（`feature_request` / `bug_report` / `task` / `test`）。指定時はIssue種別の対話確認をスキップ
-- `--no-confirm`: 最終確認の対話もスキップしてそのまま作成する（`--title` / `--body` 併用前提。`github-issue-discover` のような自動化skillから呼ばれる際に使う）
-
-## Modes
-
-このskillは2つのモードで動作する。
-
-- **対話モード（デフォルト）**: 引数の `--title` / `--body` / `--template` がいずれも未指定の通常起動。ユーザーから情報を逐次収集して作成する
-- **委譲モード**: `--title` / `--body` / `--template` が事前に渡された起動。対応する対話ステップは飛ばし、提示と確認だけ行う。`--no-confirm` 併用時は最終確認も省略して即作成する
-
-委譲モードは主に `github-issue-discover` から「リポジトリスキャン結果を下書きとして渡し、Issue化する」目的で使う。委譲側で既に承認を取っているケースが多いので、`--no-confirm` で確認も省略できる設計にしている。
-
-## Context
-
-以下を取得してから作業を開始してください。
-
-- リポジトリ情報: `gh repo view --json name,owner --jq '.owner.login + "/" + .name'`
-- 利用可能なラベル: `gh label list --limit 50 --json name --jq '.[].name' 2>/dev/null || echo "none"`
-- リポジトリ内Issueテンプレート: `ls .github/ISSUE_TEMPLATE/ 2>/dev/null || echo "none"`
 
 ## Issue Templates
 
 テンプレートは以下の優先順位で選択する：
 
 1. **リポジトリ内テンプレート**: `.github/ISSUE_TEMPLATE/` が存在する場合はそれを使用
-2. **フォールバックテンプレート**: リポジトリにテンプレートがない場合は `doc/templates/` 配下を使用
-   - 英語（en）: `doc/templates/ISSUE_TEMPLATE/`
-   - 日本語（ja）: `doc/templates/ISSUE_TEMPLATE_JA/`
+2. **Skill 同梱テンプレート（フォールバック）**: リポジトリにテンプレートがない場合は本skillの `references/` 配下を使用
+   - 英語（`language` が "en" または未指定）: `references/ISSUE_TEMPLATE/`
+   - 日本語（`language` が "ja"）: `references/ISSUE_TEMPLATE_JA/`
 
 各ディレクトリには以下のテンプレートが含まれる：
 
-- `feature_request.md` - 機能追加
-- `bug_report.md` - バグ報告
-- `task.md` - タスク
-- `test.md` - テスト追加
+- `feature_request.md` - 機能追加（デフォルトラベル: `enhancement`）
+- `bug_report.md` - バグ報告（デフォルトラベル: `bug`）
+- `task.md` - タスク（デフォルトラベルなし）
+- `test.md` - テスト追加（デフォルトラベル: `test`）
 
 ## Task
 
-1. **Issue種別の確認**: 引数 `--template <name>` が指定されていればそれを採用してこのステップは飛ばす。未指定なら AskUserQuestion を使用して、作成するIssueの種類を確認する。各選択肢の description にはテンプレートの `about` フィールドの内容を使用する：
-   - ✨ 機能追加 (Feature Request) — Propose a new feature or improvement
-   - 🐛 バグ報告 (Bug Report) — Report a bug or issue
-   - 📝 タスク (Task) — Work that doesn't fit the above categories
-   - 🧪 テスト追加 (Add Tests) — Add or improve tests
+1. **前提情報の取得**: 以下を取得する。
+   - リポジトリ情報: `gh repo view --json name,owner --jq '.owner.login + "/" + .name'`
+   - 利用可能なラベル一覧: `gh label list --limit 100 --json name,description --jq '.[] | "\(.name)\t\(.description // "")"'`
+   - リポジトリ内Issueテンプレートの有無: `ls .github/ISSUE_TEMPLATE/ 2>/dev/null || echo "none"`
 
-2. **テンプレートの読み込み**: 以下の優先順位でテンプレートを決定する：
-   - **優先度1**: リポジトリ内に `.github/ISSUE_TEMPLATE/` が存在する場合、該当するテンプレートを読み込む
-   - **優先度2（フォールバック）**: リポジトリにテンプレートがない場合：
-     - 英語（`language` が "en" または未指定）: `doc/templates/ISSUE_TEMPLATE/` から読み込む
-     - 日本語（`language` が "ja"）: `doc/templates/ISSUE_TEMPLATE_JA/` から読み込む
+2. **ユーザーからの自由入力**: AskUserQuestion ではなく **自由テキスト入力** でIssueの概要を受け取る。次のようにプロンプトを出す:
 
-3. **情報の収集**: 引数 `--title` と `--body` が両方とも指定されていればこのステップは飛ばす。未指定なら AskUserQuestion を使用して、ユーザーにIssueの概要を自由入力で記述してもらう：
-   - 「どのようなIssueを作成しますか？自由に記述してください」と質問する
-   - ユーザーは背景、目的、詳細などを自由に記述できる
+   > 作成したいIssueの内容を自由に記述してください。背景、目的、再現手順、完了条件など分かる範囲で構いません。1行でも構いません。
 
-4. **タイトルと本文の生成**: 引数で `--title` `--body` が両方与えられていればそれをそのまま採用してステップ5の確認に進む。未指定の場合は、ステップ3のユーザー入力を元にテンプレートに沿った形でタイトルと本文を生成する：
-   - テンプレートのフロントマターから以下を抽出する：
-     - `labels`: デフォルトラベルとして使用（例: `labels: enhancement`, `labels: bug`, `labels: test`）
-     - `about`: Issue種別の補足説明として活用
-   - ユーザーの入力内容を、テンプレート種別に応じて以下のセクションに振り分ける：
-     - **Feature Request**: 背景→「Background & Summary」、具体的な要件→「Specifications & Requirements」、完了基準→「Acceptance Criteria」
-     - **Bug Report**: 現象→「Summary」、正常動作→「Expected Behavior」、手順→「Steps to Reproduce」、コード/ログ→該当セクション
-     - **Task**: 背景と目的→「Background, Purpose & Summary」、完了基準→「Acceptance Criteria」
-     - **Test**: 対象と目的→「Summary & Purpose」、完了基準→「Acceptance Criteria」、テストケース→「Test Scenarios to Implement」
-   - ユーザー入力から情報が不足しているセクションは、コメントプレースホルダーを残すのではなくセクション自体を省略する
+   ユーザーの応答テキスト全体を「下書き素材」として保持する。
+
+3. **種別の自動判定**: 下書き素材の内容からテンプレートを自動選択する。判定ヒューリスティック:
+   - 「バグ」「不具合」「壊れている」「動かない」「再現」「エラー」「bug」「broken」「reproduce」「stack trace」などが含まれる → `bug_report`
+   - 「テストがない」「カバレッジ」「テスト追加」「test missing」「add test」「coverage」などが含まれる → `test`
+   - 「機能追加」「新機能」「〜したい」「実装したい」「提案」「improve」「feature」「proposal」などが含まれる → `feature_request`
+   - 上記のいずれにも当てはまらない雑多な作業（リファクタ、調査、ドキュメント整備など）→ `task`
+
+   判定が曖昧な場合は `task` を選ぶ（最も汎用的）。判定結果はステップ7の確認時にユーザーに開示する。
+
+4. **テンプレートの読み込み**: ステップ1で確認したテンプレート所在に従い、ステップ3で選んだテンプレート種別のファイルを Read で読み込む。フロントマターから `labels` をデフォルトラベルとして抽出し、本文部分は構造の参考にする。
+
+5. **タイトルと本文の生成**: 下書き素材を元に、テンプレートに沿った形でタイトルと本文を生成する:
+   - **タイトル**: 下書き素材の要点を1行で要約。先頭に種別を示す接頭辞は付けない（ラベルで判別可能なため）
+   - **本文**: 選択したテンプレートのセクション見出しを利用し、下書き素材からの情報を該当セクションに振り分ける
+     - **Feature Request**: 背景→「Background & Summary / 背景・概要」、要件→「Specifications & Requirements / 仕様・要件」、完了条件→「Acceptance Criteria / 完了条件」
+     - **Bug Report**: 現象→「Summary / 概要」、正常動作→「Expected Behavior / 期待される動作」、再現手順→「Steps to Reproduce / 再現手順」、ログ/コード→該当セクション
+     - **Task**: 背景・目的→「Background, Purpose & Summary / 背景・目的・概要」、完了条件→「Acceptance Criteria / 完了条件」
+     - **Test**: 対象・目的→「Summary & Purpose / 概要・目的」、テストケース→「Test Scenarios to Implement / 実装するテストのシナリオ」、完了条件→「Acceptance Criteria / 完了条件」
+   - 下書き素材から情報が不足しているセクションは、コメントプレースホルダーを残すのではなく **セクション自体を省略** する
    - 最終的なIssue本文からはフロントマターを除去する
 
-5. **確認と修正**: `--no-confirm` が指定されていればこのステップは飛ばす。未指定なら、生成したタイトルと本文をユーザーに提示し、必要に応じて修正を依頼できるようにする
+6. **ラベルの自動判定**: 付与するラベルを次の手順で決める:
+   - **デフォルトラベル**: ステップ4でテンプレートのフロントマターから抽出したラベル（例: `enhancement` / `bug` / `test`）を起点とする
+   - **追加ラベルの推定**: ステップ1で取得した「リポジトリの既存ラベル一覧」とその description を参照し、下書き素材の内容に合致するラベルを選ぶ。例:
+     - 下書きに「ドキュメント」「README」「docstring」などが含まれ、既存ラベルに `documentation` がある → 追加
+     - 「セキュリティ」「脆弱性」「XSS」「SQLi」などが含まれ、既存ラベルに `security` がある → 追加
+     - 「CI」「GitHub Actions」「workflow」が含まれ、既存ラベルに `ci` がある → 追加
+     - 「パフォーマンス」「遅い」「最適化」が含まれ、既存ラベルに `performance` がある → 追加
+   - **存在しないラベルは付与しない**: 推定したラベル名がリポジトリの既存ラベル一覧に存在しない場合はスキップする
+   - **ユーザー指定の追加**: 引数 `--label` で渡されたラベルを最終リストに追加する
+   - 最終的なラベルリストは重複排除する
 
-6. **Issueの作成**:
-   ```
-   gh issue create --title "<title>" --body "<body>" [--label <name>] [--assignee <username>]
-   ```
-   - テンプレートのフロントマターに含まれるラベルをデフォルトとして使用
-   - `--label` がユーザーから指定された場合は、追加でそのラベルを付与
-   - `--assignee` がユーザーから指定された場合は、その担当者を割り当て
+7. **確認と修正**: 生成したタイトル・本文・自動判定された種別・付与予定のラベル・担当者をユーザーに提示し、必要に応じて修正を依頼できるようにする。修正指示があれば反映して再提示する。
 
-7. **結果の報告**:
+8. **Issueの作成**:
+   ```
+   gh issue create --title "<title>" --body "<body>" [--label <name> ...] [--assignee <username> ...]
+   ```
+
+9. **結果の報告**:
    - 作成されたIssueのURLを表示
-   - 概要（タイトル、ラベル、担当者）を表示
+   - 概要（タイトル、選択されたテンプレート種別、付与されたラベル、担当者）を表示
