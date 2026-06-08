@@ -51,7 +51,7 @@ config.window_padding = {
 }
 
 -- タブの最大幅
-config.tab_max_width = 10
+config.tab_max_width = 16
 -- タブ上のタイトルを消す
 if wezterm.target_triple == 'aarch64-apple-darwin' then
     config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
