@@ -11,6 +11,7 @@ allowed-tools: Read, Write, Task, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 ## Arguments
 
 - `language`: PRのタイトルと説明文の言語（例: "ja", "en"）。デフォルト: "English"
+- `--base <branch>`: PRのbase branchを明示指定（Optional、未指定時はrepositoryのdefault branch）
 - `--draft`: draft PRとして作成（Optional）
 - `--reviewer <username>`: reviewerを指定（Optional、複数指定可）
 - `--label <name>`: labelを追加（Optional、複数指定可）
@@ -19,19 +20,20 @@ allowed-tools: Read, Write, Task, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 
 1. **default branch上での実行を防止**:
    - 現在のbranchがdefault branch（`main`, `master` 等）の場合、PRを作成せずエラーメッセージを出して中止
-2. **commitの存在確認**:
-   - `git log origin/<base>..HEAD` が空でないことを確認
-   - 未commitの変更は無視してcommit済みの変更のみを対象とする
-   - commitがない場合は中止
+2. **base branchの決定**:
+   - `--base <branch>` が指定されている場合はそのbranchを使用する
+   - 未指定の場合はrepositoryのdefault branchを使用する: `gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'`
+   - tracking branch（`@{upstream}`）はpush先の判定にだけ使い、PRのbase branchとして扱わない。feature branchのupstreamは通常 `origin/<current-branch>` であり、baseに使うと `origin/<base>..HEAD` が空になるため
 3. **既存PRの確認**:
    - `gh pr view --json url,state` で既存のPRを確認
    - PRが既に存在する場合は、そのURLと状態を表示して中止
-4. **base branchの決定**:
-   - tracking branchを確認: `git rev-parse --abbrev-ref @{upstream} 2>/dev/null`
-   - tracking branchが取得できない場合、repositoryのdefault branchにfallback
-5. **base branchの最新化**:
+4. **base branchの最新化**:
    - 比較基準を最新化するため、base branch決定後に `git fetch origin <base-branch>` を実行する
    - 以降のcommit確認と差分取得では、最新化した `origin/<base-branch>` を基準にする
+5. **commitの存在確認**:
+   - `git log origin/<base-branch>..HEAD` が空でないことを確認
+   - 未commitの変更は無視してcommit済みの変更のみを対象とする
+   - commitがない場合は中止
 6. **PR templateの確認**:
    - 以下のパスを順に確認し、最初に見つかったものを使用:
      - `.github/pull_request_template.md`

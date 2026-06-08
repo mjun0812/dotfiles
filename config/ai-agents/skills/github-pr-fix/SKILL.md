@@ -54,7 +54,14 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
    git fetch origin +<base-ref-name>:refs/pr-fix/<number>/base
    ```
 
-4. PR の `headRefName` を専用 worktree に checkout し、worktree 内の branch が PR head branch であることを確認する。
+4. 専用 worktree は、`headRefName` ではなく fetch済みの `refs/pr-fix/<number>/head` から専用local branchを作って checkout する:
+
+   ```bash
+   git worktree add -B pr-fix/<number> <worktree-path> refs/pr-fix/<number>/head
+   ```
+
+   `headRefName` はPR head branch名としてpush先の判定に使う。checkout対象にはしない。fork PR や同名branchの衝突で別branchを修正しないよう、worktreeの `HEAD` が `refs/pr-fix/<number>/head` の commit SHA と一致することを確認する。
+
 5. Phase 3 以降は、すべての操作を `<worktree-path>` 配下で実行する。
 
 ## 3. 問題の検出
