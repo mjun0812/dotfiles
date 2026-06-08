@@ -1,7 +1,7 @@
 ---
 name: github-pr-review
 description: GitHubのpull request(PR)のコードレビューを行うSkill。worktreeを作成してソースコード全体を読みながら専門Reviewer SubAgentを並列実行し、統合されたレビューレポートとインラインコメントを投稿する。self reviewにも対応する。
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*), Bash(mkdir:*), Bash(rm:*), Bash(test:*), Bash(basename:*), Bash(bash:*), Bash(mktemp:*), Read, Write
+allowed-tools: Task, Read, Write, AskUserQuestion, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*), Bash(mkdir:*), Bash(rm:*), Bash(test:*), Bash(basename:*), Bash(bash:*), Bash(mktemp:*)
 ---
 
 # Pull Request Review
@@ -42,7 +42,14 @@ PRのhead commitを worktree にチェックアウトし，専門Reviewer SubAge
    git fetch origin +<base-ref-name>:refs/pr-review/<number>/base
    ```
 
-4. PR の `headRefName` を専用 worktree に checkout し、worktree 内の branch が PR head branch であることを確認する。
+4. 専用 worktree は、fetch済みの `refs/pr-review/<number>/head` を直接 checkout して作成する:
+
+   ```bash
+   git worktree add --detach <worktree-path> refs/pr-review/<number>/head
+   ```
+
+   `headRefName` は表示・報告用のメタデータとして扱い、checkout対象にはしない。fork PR や同名branchの衝突で別branchをレビューしないよう、worktreeの `HEAD` が `refs/pr-review/<number>/head` の commit SHA と一致することを確認する。
+
 5. Phase 3 以降のレビュー対象ソースの参照は、すべて `<worktree-path>` 配下で行う。
 6. **worktree 作成に失敗した場合**: エラーをユーザーに表示して中断する（worktree なしのレビューは品質が大きく落ちるため，フォールバックは行わない）
 

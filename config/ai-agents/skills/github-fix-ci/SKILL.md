@@ -1,7 +1,7 @@
 ---
 name: github-fix-ci
 description: CIのステータスを確認し、失敗を分析して自動修正するSkill。
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
+allowed-tools: Read, Edit, Write, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 ---
 
 # CI ステータス確認と失敗修正
@@ -24,6 +24,7 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Ba
 3. **PRが存在しない場合**: リポジトリモード（最後にコミット/プッシュしない）
 
 検出したモードを以降のPhaseで使用するために保持する。
+PRモードでは `gh pr view <number> --json headRefName,headRefOid` で head branch と head commit SHA を取得し、以降のCI run特定で使う。
 
 ### Phase 1: 言語検出（PRモードのみ）
 
@@ -39,8 +40,11 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Ba
 
 ### Phase 3: 失敗したチェックの特定
 
-- 失敗したすべてのチェックを名前付きで一覧表示
-- ワークフロー実行IDを取得: `gh run list --branch <branch> --json databaseId,name,status,conclusion`
+- 失敗したすべてのチェックを名前付きで一覧表示し、check名と状態を保持する
+- PRモードでは、PR head commit SHA に一致するworkflow runだけを対象にする:
+  `gh run list --branch <headRefName> --commit <headRefOid> --json databaseId,name,headSha,status,conclusion,workflowName`
+- `headSha` が `<headRefOid>` と一致しないrunは古いrunなので除外する
+- 複数runが残る場合は、失敗したcheck名と `name` / `workflowName` が対応するrunを優先する。対応が曖昧な場合は最新runだけを採用し、別runのログを根拠に修正しない
 
 ### Phase 4: エラーログの取得
 
