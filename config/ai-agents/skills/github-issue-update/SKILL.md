@@ -158,10 +158,3 @@ Close: N件
 
 総候補数: N+M+K+P+Q+R 件
 ```
-
-closeしたissueの再openコマンド（`gh issue reopen <N>`）も末尾に控えとして付ける。
-
-## Failure modes
-
-- **gh認証なし / read-only token**: Phase 0で停止して案内
-- **大量のopen issue**: 300件超えるリポジトリでは `--max` で反映件数を絞る案内をする

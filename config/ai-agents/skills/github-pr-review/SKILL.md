@@ -85,7 +85,7 @@ SubAgent ツールを使い，以下のReview SubAgentを**すべて同時に並
 - SubAgent ごとの reviewer カテゴリは複数併記する（例: `[must] [code-quality / security]`）
 - `理由` / `対応` はすべての指摘を統合する。
 - 「PR の目的に直接関係しない好み・スタイル指摘」は除外（例: PR が docs 変更なのにコード品質の細部指摘）
-- [must] / [should]への昇格・降格は行わない。レビュワーの判断を尊重する。
+- `should` から `must` への昇格は、main セッション（オーケストレーター）の判断で行ってよい。降格は行わない。
 
 #### Phase 3.3: レビューレポートに記述するVerdictの判定
 
