@@ -1,4 +1,4 @@
-name: CI
+name: CI Ubuntu
 
 on:
   push:
@@ -8,95 +8,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-macos:
-    name: Test on macOS
-    runs-on: macos-latest
-    timeout-minutes: 45
-    defaults:
-      run:
-        shell: zsh {0}
-    env:
-      NONINTERACTIVE: "1"
-      CI: "true"
-      GITHUB_TOKEN: ${{ github.token }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Run install script
-        run: |
-          ./install.sh
-
-      - name: Verify symlinks (dotfiles)
-        run: |
-          echo "=== Checking dotfile symlinks ==="
-          for f in config/dot/*; do
-            name=".$(basename "$f")"
-            if [[ -L "$HOME/$name" ]]; then
-              echo "✓ $name is a symlink"
-            else
-              echo "✗ $name is NOT a symlink"
-              exit 1
-            fi
-          done
-
-      - name: Verify symlinks (config)
-        run: |
-          echo "=== Checking .config symlinks ==="
-          for d in config/dot_config/*; do
-            name=$(basename "$d")
-            if [[ -L "$HOME/.config/$name" ]]; then
-              echo "✓ .config/$name is a symlink"
-            else
-              echo "✗ .config/$name is NOT a symlink"
-              exit 1
-            fi
-          done
-
-      - name: Verify mise installation
-        run: |
-          echo "=== Checking mise ==="
-          source "$HOME/.zshrc"
-          mise --version
-          echo "✓ mise is installed"
-
-      - name: Verify uv installation
-        run: |
-          echo "=== Checking uv ==="
-          source "$HOME/.zshrc"
-          uv --version
-          echo "✓ uv is installed"
-
-      - name: Verify sheldon installation
-        run: |
-          echo "=== Checking sheldon ==="
-          source "$HOME/.zshrc"
-          sheldon --version
-          echo "✓ sheldon is installed"
-
-      - name: Verify Node.js (via mise)
-        run: |
-          echo "=== Checking Node.js ==="
-          source "$HOME/.zshrc"
-          node --version
-          echo "✓ Node.js is installed"
-
-      - name: Verify bun (via mise)
-        run: |
-          echo "=== Checking bun ==="
-          source "$HOME/.zshrc"
-          bun --version
-          echo "✓ bun is installed"
-
-      - name: Verify Python virtual environment
-        run: |
-          echo "=== Checking Python venv ==="
-          source "$HOME/.zshrc"
-          source "$HOME/.venv/bin/activate"
-          python --version
-          echo "✓ Python venv is configured"
-
   test-ubuntu:
     name: Test on Ubuntu (Container)
     runs-on: ubuntu-latest
@@ -206,3 +117,4 @@ jobs:
           echo "=== Checking Python venv ==="
           su - testuser -c 'source ~/.zshrc && source ~/.venv/bin/activate && python --version'
           echo "✓ Python venv is configured"
+

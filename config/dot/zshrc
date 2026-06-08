@@ -91,5 +91,4 @@ fi
 
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh
-[ -f ~/.zshrc.local ] && source ~/.zshrc.local
-
+[ ! -f ~/.zshrc.local ] || source ~/.zshrc.local
