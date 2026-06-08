@@ -1,4 +1,5 @@
 {
+  "allowNonWorkspaceAccess": true,
   "colorScheme": "tokyo night",
   "enableTelemetry": false,
   "trustedWorkspaces": [
