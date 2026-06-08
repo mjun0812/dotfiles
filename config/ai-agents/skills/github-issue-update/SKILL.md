@@ -15,9 +15,7 @@ open issueを点検し、次の3種類の更新を **確認なしで自動反映
 ## Arguments
 
 - `language`: コメント本文の言語。デフォルト: `ja`
-- `--issue <N>`: 対象を特定のissue番号に絞る（複数指定可）
 - `--max <N>`: 1回の実行で反映する候補の上限。デフォルト: `15`
-- `--stale-days <N>`: stale判定の日数。デフォルト: `90`
 - `--dry-run`: 候補抽出までで停止し、書き込みを行わない（点検目的）
 
 ## 常時適用するセーフガード
@@ -41,7 +39,7 @@ open issueを点検し、次の3種類の更新を **確認なしで自動反映
 - open issue一覧: `gh issue list --state open --limit 300 --json number,title,body,labels,createdAt,updatedAt,comments,url`
 - 現在日: `date -u +%Y-%m-%d`
 
-`--issue <N>` 指定時は対象を該当issueのみに絞る。closed issueやPRは判定対象に含めない（点検範囲はopen issueのみ）。
+closed issueやPRは判定対象に含めない（点検範囲はopen issueのみ）。
 
 ### Phase 1: 候補抽出
 
@@ -52,7 +50,7 @@ open issueを点検し、次の3種類の更新を **確認なしで自動反映
 - **重複**: open issue同士でタイトル正規化一致、または主要キーワード3つ以上一致、または本文の主要トークン一致。古い方を残し新しい方をclose
 - **解決済み（強）**: 完了条件のチェックボックスが全て埋まっている、または本文で参照しているファイルが消失
 - **解決済み（弱）**: 参照箇所の周辺が大きく変わっている／コメント無反応など。セーフガードによりコメント追記にdowngrade
-- **stale**: `updatedAt` が `--stale-days` より古く、かつコメント0件 or 完了条件が抽象的（議論履歴のあるstaleはセーフガードにより `stale` ラベル付与にdowngrade）
+- **stale**: `updatedAt` が90日より古く、かつコメント0件 or 完了条件が抽象的（議論履歴のあるstaleはセーフガードにより `stale` ラベル付与にdowngrade）
 
 #### コメント追記候補
 
@@ -154,5 +152,5 @@ Downgradeの内訳（どのissueがどのactionに格下げされたか）を必
 
 - **gh認証なし / read-only token**: Phase 0で停止して案内
 - **`stale` ラベルが存在しない**: 勝手に作らず、staleカテゴリ自体をskipする
-- **大量のopen issue**: 300件超えるリポジトリでは `--issue` や `--max` で対象を絞る案内をする
+- **大量のopen issue**: 300件超えるリポジトリでは `--max` で反映件数を絞る案内をする
 - **誤close**: `gh issue reopen` で戻せるが発見が遅れるほど痛い。弱いシグナルだけのcloseはセーフガードで自動的にコメント追記へ格下げされる
