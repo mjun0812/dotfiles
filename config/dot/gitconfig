@@ -19,7 +19,7 @@
   ui = auto
 
 [commit]
-  gpgsign = true
+  gpgsign = false
   verbose = true
 
 [fetch]
@@ -34,7 +34,7 @@
   autocorrect = prompt
 
 [init]
-   defaultBranch=main
+  defaultBranch=main
 
 [interactive]
   diffFilter = delta --color-only
@@ -61,7 +61,7 @@
 
 [tag]
   sort = version:refname
-  gpgsign = true
+  gpgsign = false
 
 [alias]
   aicommit = !claude --model=haiku '/git:commit'
