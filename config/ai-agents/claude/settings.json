@@ -97,7 +97,7 @@
       "/private/tmp"
     ]
   },
-  "model": "claude-opus-4-7[1m]",
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "PostToolUse": [],
     "Notification": [
@@ -170,14 +170,14 @@
     }
   },
   "language": "japanese",
-  "alwaysThinkingEnabled": false,
+  "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "plansDirectory": "./.claude/plans",
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "tui": "fullscreen"
+  "skipAutoPermissionPrompt": true
 }
