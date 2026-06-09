@@ -13,12 +13,12 @@
   <br>
   <!-- OS -->
   <img src="https://shieldcn.dev/badge/macOS-000000.svg?size=xs&logo=apple&logoColor=white" alt="macOS">
-  <img src="https://shieldcn.dev/badge/Linux-FCC624.svg?size=xs&logo=linux&logoColor=black" alt="Linux">
+  <img src="https://shieldcn.dev/badge/Linux-E95420.svg?size=xs&logo=linux&logoColor=white&valueColor=white" alt="Linux">
   <br>
   <!-- Shell -->
   <img src="https://shieldcn.dev/badge/Zsh-F15A24.svg?size=xs&logo=zsh&logoColor=white" alt="Zsh">
-  <img src="https://shieldcn.dev/badge/Powerlevel10k-000000.svg?size=xs&logo=zsh&logoColor=white" alt="Powerlevel10k">
-  <img src="https://shieldcn.dev/badge/sheldon-000000.svg?size=xs&logo=ri:RiPlugFill&logoColor=white" alt="sheldon">
+  <img src="https://shieldcn.dev/badge/Powerlevel10k-38BDF8.svg?size=xs&logo=zsh&logoColor=white&valueColor=white" alt="Powerlevel10k">
+  <img src="https://shieldcn.dev/badge/sheldon-20609F.svg?size=xs&logo=ri:RiPlugFill&logoColor=white" alt="sheldon">
   <img src="https://shieldcn.dev/badge/tmux-1BB91F.svg?size=xs&logo=tmux&logoColor=white" alt="tmux">
   <img src="https://shieldcn.dev/badge/mise-258577.svg?size=xs&logo=ri:RiTerminalBoxFill&logoColor=white" alt="mise">
   <br>
@@ -27,7 +27,7 @@
   <img src="https://shieldcn.dev/badge/uv-DE5FE9.svg?size=xs&logo=uv&logoColor=white" alt="uv">
   <img src="https://shieldcn.dev/badge/Go-00ADD8.svg?size=xs&logo=go&logoColor=white" alt="Go">
   <img src="https://shieldcn.dev/badge/Vite%20Plus-646CFF.svg?size=xs&logo=vite&logoColor=white" alt="Vite Plus">
-  <img src="https://shieldcn.dev/badge/pnpm-F69220.svg?size=xs&logo=pnpm&logoColor=white" alt="pnpm">
+  <img src="https://shieldcn.dev/badge/pnpm-F69220.svg?size=xs&logo=pnpm&logoColor=white&valueColor=white" alt="pnpm">
   <br>
   <!-- Editor -->
   <img src="https://shieldcn.dev/badge/Neovim-57A143.svg?size=xs&logo=neovim&logoColor=white" alt="Neovim">
@@ -43,11 +43,11 @@
   <img src="https://shieldcn.dev/badge/Claude%20Code-D97757.svg?size=xs&logo=claude&logoColor=white" alt="Claude Code">
   <img src="https://shieldcn.dev/badge/Codex-000000.svg?size=xs&logo=ri:RiOpenaiFill&logoColor=white" alt="Codex">
   <img src="https://shieldcn.dev/badge/Gemini-8E75B2.svg?size=xs&logo=googlegemini&logoColor=white" alt="Gemini">
-  <img src="https://shieldcn.dev/badge/Antigravity-000000.svg?size=xs&logo=google&logoColor=white" alt="Antigravity">
+  <img src="https://shieldcn.dev/badge/Antigravity-3087FB.svg?size=xs&logo=google&logoColor=white" alt="Antigravity">
   <img src="https://shieldcn.dev/badge/Copilot-000000.svg?size=xs&logo=githubcopilot&logoColor=white" alt="GitHub Copilot">
   <br>
   <!-- macOS Apps -->
-  <img src="https://shieldcn.dev/badge/AeroSpace-000000.svg?size=xs&logo=ri:RiLayoutGridFill&logoColor=white" alt="AeroSpace">
+  <img src="https://shieldcn.dev/badge/AeroSpace-60C652.svg?size=xs&logo=ri:RiLayoutGridFill&logoColor=white&valueColor=white" alt="AeroSpace">
   <img src="https://shieldcn.dev/badge/Raycast-FF6363.svg?size=xs&logo=raycast&logoColor=white" alt="Raycast">
   <br>
   <!-- Design -->
