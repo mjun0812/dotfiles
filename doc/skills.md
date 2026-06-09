@@ -26,12 +26,13 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 
 ### GitHub Issue
 
-| Skill                                                                                | Purpose                                                                                                         |
-| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)     | Gather information from the user and create a GitHub Issue                                                      |
-| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md) | Scan the repo for issue-worthy items, dedupe vs existing issues, and bulk-create with approval (`--auto` skips) |
-| [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)     | Review open issues and close / annotate stale, resolved, duplicate, or outdated issues                          |
-| [`github-issue-resolve`](../config/ai-agents/skills/github-issue-resolve/SKILL.md)   | End-to-end: investigate → discuss-or-implement decision → worktree → implement → PR for a given issue           |
+| Skill                                                                                      | Purpose                                                                                                             |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)           | Gather information from the user and create a GitHub Issue                                                          |
+| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md)       | Scan the repo for issue-worthy items, dedupe vs existing issues, and bulk-create with approval (`--auto` skips)     |
+| [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)           | Review open issues and close / annotate stale, resolved, duplicate, or outdated issues                              |
+| [`github-issue-resolve`](../config/ai-agents/skills/github-issue-resolve/SKILL.md)         | End-to-end: investigate → discuss-or-implement decision → worktree → implement → PR for a given issue               |
+| [`issue-resolve-with-grill`](../config/ai-agents/skills/issue-resolve-with-grill/SKILL.md) | One-shot: `grill-self` the implementation plan for an issue, then `github-issue-resolve` guided by the decision log |
 
 ### GitHub Pull Request
 
@@ -43,6 +44,13 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 | [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                               | Detect and fix all PR problems (conflicts, CI failures, review comments) inside a dedicated worktree  |
 | [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                               | Inspect CI status, analyze failures, and apply fixes                                                  |
 | [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md)       | Triage PR review comments and respond / address them                                                  |
+
+### Planning & Design
+
+| Skill                                                          | Purpose                                                                                                             |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| [`grill-me`](../config/ai-agents/skills/grill-me/SKILL.md)     | Interactively grill the user about a plan / design, one question at a time, until every decision branch is resolved |
+| [`grill-self`](../config/ai-agents/skills/grill-self/SKILL.md) | Autonomous grill: the agent investigates and resolves each design decision itself, then presents a decision log     |
 
 ### Docs & Notes
 
@@ -73,6 +81,9 @@ graph LR
     github-issue-resolve --> github-pr-create
     github-issue-resolve --> git-commit
 
+    issue-resolve-with-grill --> grill-self
+    issue-resolve-with-grill --> github-issue-resolve
+
     github-pr-create-self-review --> github-pr-create
     github-pr-create-self-review --> github-pr-review
 
@@ -83,21 +94,22 @@ graph LR
 
 ### Caller → callee table
 
-| Caller                         | Callee                                                                 | When                                                           |
-| ------------------------------ | ---------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `git-commit-push`              | `git-commit`                                                           | Always (commit step before push)                               |
-| `git-squash`                   | `git-fix-conflict`                                                     | Only if a conflict surfaces during squash                      |
-| `docs-sync`                    | `git-commit`                                                           | When the user opts into committing the doc updates             |
-| `github-issue-discover`        | `github-issue-create`                                                  | One invocation per approved candidate (issued in parallel)     |
-| `github-issue-resolve`         | `github-issue-create` _(indirectly)_, `git-commit`, `github-pr-create` | Implementation phase commits + final PR                        |
-| `github-pr-create-self-review` | `github-pr-create`, `github-pr-review`                                 | Phase 1 and Phase 3 of the one-shot flow                       |
-| `github-pr-fix`                | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment`       | Each callee runs only if the corresponding problem is detected |
+| Caller                         | Callee                                                                 | When                                                               |
+| ------------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `git-commit-push`              | `git-commit`                                                           | Always (commit step before push)                                   |
+| `git-squash`                   | `git-fix-conflict`                                                     | Only if a conflict surfaces during squash                          |
+| `docs-sync`                    | `git-commit`                                                           | When the user opts into committing the doc updates                 |
+| `github-issue-discover`        | `github-issue-create`                                                  | One invocation per approved candidate (issued in parallel)         |
+| `github-issue-resolve`         | `github-issue-create` _(indirectly)_, `git-commit`, `github-pr-create` | Implementation phase commits + final PR                            |
+| `issue-resolve-with-grill`     | `grill-self`, `github-issue-resolve`                                   | Phase 2 grills the design, Phase 3 implements per the decision log |
+| `github-pr-create-self-review` | `github-pr-create`, `github-pr-review`                                 | Phase 1 and Phase 3 of the one-shot flow                           |
+| `github-pr-fix`                | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment`       | Each callee runs only if the corresponding problem is detected     |
 
 ### Standalone skills
 
 These skills do not delegate to other skills:
 
-`git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `md-note`, `resume-other-agent`, `summarize-pdf`.
+`git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `md-note`, `resume-other-agent`, `summarize-pdf`.
 
 Note: `github-issue-update` mentions `github-issue-discover` / `github-pr-review` / `github-resolve-pr-comment` in its SKILL.md only to clarify scope boundaries — it deliberately does not invoke them.
 
