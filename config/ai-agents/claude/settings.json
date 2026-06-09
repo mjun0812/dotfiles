@@ -1,7 +1,7 @@
 {
   "attribution": {
     "commit": "",
-    "pr": "🤖 Generated with Claude Code"
+    "pr": ""
   },
   "permissions": {
     "allow": [
@@ -92,21 +92,14 @@
     ],
     "ask": [],
     "defaultMode": "auto",
-    "additionalDirectories": ["/tmp", "/private/tmp"]
+    "additionalDirectories": [
+      "/tmp",
+      "/private/tmp"
+    ]
   },
   "model": "claude-opus-4-7[1m]",
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "ExitPlanMode",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.dotfiles/script/rename-plan.sh"
-          }
-        ]
-      }
-    ],
+    "PostToolUse": [],
     "Notification": [
       {
         "matcher": "",
