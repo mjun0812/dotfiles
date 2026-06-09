@@ -3,34 +3,65 @@
   email=mjun@mjunya.com
   signingkey = ~/.ssh/id_rsa.pub
 
-[pull]
-  rebase=false
-
 [core]
   pager = delta
   editor=vim
   ignorecase=false
+  excludesfile = ~/.gitignore
 
-[init]
-   defaultBranch=main
+[branch]
+  sort = -committerdate
 
 [color]
   ui = true
 
+[column]
+  ui = auto
+
+[commit]
+  gpgsign = true
+  verbose = true
+
 [fetch]
+  all = true
   prune = true
+  pruneTags = true
 
-[push]
-  autoSetupRemote = true
+[gpg]
+  format = ssh
 
-[merge]
-  conflictStyle = zdiff3
+[help]
+  autocorrect = prompt
+
+[init]
+   defaultBranch=main
 
 [interactive]
   diffFilter = delta --color-only
 
+[merge]
+  conflictStyle = zdiff3
+
+[pull]
+  rebase=false
+
+[push]
+  default = simple
+  autoSetupRemote = true
+  followTags = true
+
+[rebase]
+  autoSquash = true
+  autoStash = true
+  updateRefs = true
+
+[rerere]
+  enabled = true
+  autoupdate = true
+
 [tag]
-  sort = -v:refname
+  sort = version:refname
+  gpgsign = true
 
 [alias]
   aicommit = !claude --model=haiku '/git:commit'
@@ -42,13 +73,6 @@
   process = git-lfs filter-process
   required = true
   clean = git-lfs clean -- %f
-
-[gpg]
-    format = ssh
-[commit]
-    gpgsign = true
-[tag]
-    gpgsign = true
 
 [ghq]
   root = ~/workspace
