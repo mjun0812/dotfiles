@@ -11,10 +11,13 @@ git clone git@github.com:mjun0812/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
 
+# First Install Only: Install VS Code extensions
+./script/install_vscode_extensions.sh
+# First Install Only: For macOS
+./script/install_macOS.sh
+
 # Optional: Login to GitHub CLI
 gh auth login
-# Optional: Sync VS Code extensions with config/vscode/extensions.txt
-./script/sync-vscode-extensions.sh
 ```
 
 ## Tools
@@ -46,6 +49,8 @@ gh auth login
 | jq          | JSON processor                         |
 | kubectl     | Kubernetes CLI                         |
 | lazygit     | Git TUI                                |
+| pre-commit  | Git commit hooks manager               |
+| prek        | pre-commit runner in Rust              |
 | ripgrep     | Modern `grep`                          |
 | ripgrep-all | `ripgrep` for PDFs, archives, and docs |
 | sheldon     | Zsh plugin manager                     |
@@ -77,6 +82,7 @@ Agent skills (shared across Claude Code / Codex / Gemini / Antigravity) are docu
 ### macOS Apps
 
 Apps installed via Homebrew Cask.
+Details of configuration and keyboard shortcuts are documented in [doc/macOS.md](doc/macOS.md).
 
 | Name               | Description                       |
 | ------------------ | --------------------------------- |
@@ -105,6 +111,34 @@ Apps installed via Homebrew Cask.
 | Visual Studio Code | Code editor                       |
 | WezTerm            | Terminal emulator                 |
 | XQuartz            | X11 for macOS                     |
+
+## Design
+
+I prefer [Tokyo Night](https://github.com/tokyo-night) color scheme.
+It is used in Neovim, VS Code, Cursor.
+
+### Terminal color schemes
+
+| Color         | sRGB    | Display-P3 |
+| ------------- | ------- | ---------- |
+| Foreground    | #EAEAEA | #EAEAEA    |
+| Background    | #000000 | #000000    |
+| Black         | #000000 | #000000    |
+| Red           | #FE533E | #EB6049    |
+| Green         | #57DC76 | #7DD981    |
+| Yellow        | #FECB00 | #F6CD45    |
+| Blue          | #00A7FF | #4AA5F8    |
+| Magenta       | #FF4867 | #EB576A    |
+| Cyan          | #69D1FA | #84CFF6    |
+| White         | #EAEAEA | #EAEAEA    |
+| Gray          | #7B7B7B | #7B7B7B    |
+| Light Red     | #FE533E | #EB6049    |
+| Light Green   | #57DC76 | #7DD981    |
+| Light Yellow  | #FECB00 | #F6CD45    |
+| Light Blue    | #00A7FF | #4AA5F8    |
+| Light Magenta | #FF4867 | #EB576A    |
+| Light Cyan    | #69D1FA | #84CFF6    |
+| Light White   | #EAEAEA | #EAEAEA    |
 
 ## Alias
 
@@ -187,76 +221,23 @@ See [doc/nvim.md](doc/nvim.md) for Neovim configuration and keyboard shortcuts.
 
 VS Code extensions are managed in `config/vscode/extensions.txt`.
 
-`install.sh` runs `script/install-vscode-extensions.sh`, which installs missing extensions only and does not uninstall local extensions.
+`install.sh` runs `script/install_vscode_extensions.sh`, which installs missing extensions only and does not uninstall local extensions.
 
 To synchronize the installed extensions exactly with `config/vscode/extensions.txt`, run:
 
 ```bash
-script/sync-vscode-extensions.sh
+script/sync_vscode_extensions.sh
 ```
 
 You can pass another extension list:
 
 ```bash
-script/sync-vscode-extensions.sh path/to/extensions.txt
+script/sync_vscode_extensions.sh path/to/extensions.txt
 ```
 
 Use `--dry-run` to preview installs and uninstalls without changing VS Code:
 
 ```bash
-script/sync-vscode-extensions.sh --dry-run
-script/sync-vscode-extensions.sh --dry-run path/to/extensions.txt
+script/sync_vscode_extensions.sh --dry-run
+script/sync_vscode_extensions.sh --dry-run path/to/extensions.txt
 ```
-
-## AeroSpace
-
-See [doc/aerospace.md](doc/aerospace.md) for AeroSpace window manager configuration and keyboard shortcuts.
-
-## Hammerspoon
-
-See [doc/hammerspoon.md](doc/hammerspoon.md) for Hammerspoon configuration and URL schemes.
-
-Hammerspoon is used for window management features that AeroSpace cannot handle natively.
-
-Currently configured features:
-
-- Center window on screen via URL scheme (`hammerspoon://center`)
-- AeroSpace workspace HUD via URL scheme (`hammerspoon://aerospace-workspace?ws=<num>`)
-- Toggle Chrome's native vertical tab sidebar via `Cmd+B` and left-edge hover
-
-## Raycast Scripts
-
-Custom Raycast scripts are available in `script/raycast/`:
-
-| Script                      | Description                              |
-| --------------------------- | ---------------------------------------- |
-| `toggle_aerospace.sh`       | Toggle AeroSpace ON/OFF                  |
-| `toggle_aerospace_float.sh` | Toggle floating layout and center window |
-| `new_chrome.sh`             | Open new Chrome window in current space  |
-| `new_safari.sh`             | Open new Safari window in current space  |
-| `new_wezterm.sh`            | Open new WezTerm window                  |
-
-## Design
-
-### Terminal color schemes
-
-| Color         | sRGB    | Display-P3 |
-| ------------- | ------- | ---------- |
-| Foreground    | #EAEAEA | #EAEAEA    |
-| Background    | #000000 | #000000    |
-| Black         | #000000 | #000000    |
-| Red           | #FE533E | #EB6049    |
-| Green         | #57DC76 | #7DD981    |
-| Yellow        | #FECB00 | #F6CD45    |
-| Blue          | #00A7FF | #4AA5F8    |
-| Magenta       | #FF4867 | #EB576A    |
-| Cyan          | #69D1FA | #84CFF6    |
-| White         | #EAEAEA | #EAEAEA    |
-| Gray          | #7B7B7B | #7B7B7B    |
-| Light Red     | #FE533E | #EB6049    |
-| Light Green   | #57DC76 | #7DD981    |
-| Light Yellow  | #FECB00 | #F6CD45    |
-| Light Blue    | #00A7FF | #4AA5F8    |
-| Light Magenta | #FF4867 | #EB576A    |
-| Light Cyan    | #69D1FA | #84CFF6    |
-| Light White   | #EAEAEA | #EAEAEA    |

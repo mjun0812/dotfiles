@@ -14,7 +14,7 @@ brew install \
     htop \
     neofetch
 
-# Xcodeが入っているときのみインストール可能
+# Xcodeが入っているときのみインストール可能なのでinstallを分ける
 brew install \
     swiftlint
 
@@ -47,3 +47,10 @@ brew install --cask \
 
 brew tap manaflow-ai/cmux
 brew install --cask cmux
+
+DOTPATH=$(cd "$(dirname "$0")/.." && pwd)
+
+# AltTabの設定を反映
+osascript -e 'quit app "AltTab"' >/dev/null 2>&1 || true
+defaults import com.lwouis.alt-tab-macos "$DOTPATH/config/mac/com.lwouis.alt-tab-macos.plist"
+killall cfprefsd >/dev/null 2>&1 || true

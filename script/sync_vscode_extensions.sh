@@ -17,29 +17,29 @@ DRY_RUN=0
 
 while (($# > 0)); do
     case "$1" in
-        --dry-run)
-            DRY_RUN=1
-            shift
-            ;;
-        -h | --help)
-            usage
-            exit 0
-            ;;
-        -*)
-            echo "Unknown option: $1" >&2
+    --dry-run)
+        DRY_RUN=1
+        shift
+        ;;
+    -h | --help)
+        usage
+        exit 0
+        ;;
+    -*)
+        echo "Unknown option: $1" >&2
+        usage >&2
+        exit 1
+        ;;
+    *)
+        if ((EXTENSIONS_FILE_SET)); then
+            echo "Extensions file is already specified: $EXTENSIONS_FILE" >&2
             usage >&2
             exit 1
-            ;;
-        *)
-            if ((EXTENSIONS_FILE_SET)); then
-                echo "Extensions file is already specified: $EXTENSIONS_FILE" >&2
-                usage >&2
-                exit 1
-            fi
-            EXTENSIONS_FILE="$1"
-            EXTENSIONS_FILE_SET=1
-            shift
-            ;;
+        fi
+        EXTENSIONS_FILE="$1"
+        EXTENSIONS_FILE_SET=1
+        shift
+        ;;
     esac
 done
 
@@ -126,13 +126,13 @@ while IFS= read -r extension || [[ -n "$extension" ]]; do
     fi
 done <"$extensions_to_uninstall"
 
-if (( ${#failed_installs[@]} > 0 || ${#failed_uninstalls[@]} > 0 )); then
-    if (( ${#failed_installs[@]} > 0 )); then
+if ((${#failed_installs[@]} > 0 || ${#failed_uninstalls[@]} > 0)); then
+    if ((${#failed_installs[@]} > 0)); then
         echo "Failed to install VS Code extensions:" >&2
         printf '  %s\n' "${failed_installs[@]}" >&2
     fi
 
-    if (( ${#failed_uninstalls[@]} > 0 )); then
+    if ((${#failed_uninstalls[@]} > 0)); then
         echo "Failed to uninstall VS Code extensions:" >&2
         printf '  %s\n' "${failed_uninstalls[@]}" >&2
     fi

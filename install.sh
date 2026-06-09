@@ -89,7 +89,7 @@ uv pip install -U \
     pymupdf \
     pynvim \
     'python-lsp-server[all]'
-UV_TOOLS=(ruff glances nvitop ty pre-commit prek plamo-translate copier)
+UV_TOOLS=(ruff glances nvitop ty plamo-translate copier)
 for tool in "${UV_TOOLS[@]}"; do
     uv tool install -U $tool
 done
@@ -108,7 +108,6 @@ mkdir -p "$VSCODE_USER_DIR"
 rm -f "$VSCODE_USER_DIR/settings.json" "$VSCODE_USER_DIR/keybindings.json"
 ln -snfv "$DOTPATH/config/vscode/settings.json" "$VSCODE_USER_DIR/settings.json"
 ln -snfv "$DOTPATH/config/vscode/keybindings.json" "$VSCODE_USER_DIR/keybindings.json"
-# "$DOTPATH/script/install-vscode-extensions.sh"
 
 ################ [Cursor] ################
 log_section "Setting up Cursor..."
