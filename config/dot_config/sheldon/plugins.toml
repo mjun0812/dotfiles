@@ -51,14 +51,15 @@ WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
 [plugins.zsh-history-substring-search]
 github = "zsh-users/zsh-history-substring-search"
-apply = ["defer"]
-hooks.post = """
+apply = ["source"]
+hooks.pre = """
+unset HISTORY_SUBSTRING_SEARCH_PREFIXED
 export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
-export HISTORY_SUBSTRING_SEARCH_FUZZY=1
-export HISTORY_SUBSTRING_SEARCH_PREFIXED=1
-# enable arrow key bindings
+"""
+hooks.post = """
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
+# enable arrow key bindings
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 # enable emacs-style keybindings
