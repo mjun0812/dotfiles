@@ -97,6 +97,7 @@
       "/private/tmp"
     ]
   },
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "PostToolUse": [],
     "Notification": [
@@ -178,6 +179,5 @@
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "model": "sonnet"
+  "skipAutoPermissionPrompt": true
 }
