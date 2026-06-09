@@ -7,3 +7,5 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+    assignees:
+      - mjun0812
