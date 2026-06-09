@@ -1,6 +1,8 @@
-# dotfiles
+<p align="center">
+  <img src="doc/banner.svg" alt="dotfiles" width="720">
+</p>
 
-My Linux/macOS dotfiles.
+<p align="center">My Linux / macOS dotfiles.</p>
 
 <p align="center">
   <!-- CI / Repository -->
@@ -16,6 +18,7 @@ My Linux/macOS dotfiles.
   <!-- Shell -->
   <img src="https://shieldcn.dev/badge/Zsh-F15A24.svg?size=xs&logo=zsh&logoColor=white" alt="Zsh">
   <img src="https://shieldcn.dev/badge/Powerlevel10k-000000.svg?size=xs&logo=zsh&logoColor=white" alt="Powerlevel10k">
+  <img src="https://shieldcn.dev/badge/sheldon-000000.svg?size=xs&logo=ri:RiPlugFill&logoColor=white" alt="sheldon">
   <img src="https://shieldcn.dev/badge/tmux-1BB91F.svg?size=xs&logo=tmux&logoColor=white" alt="tmux">
   <img src="https://shieldcn.dev/badge/mise-258577.svg?size=xs&logo=ri:RiTerminalBoxFill&logoColor=white" alt="mise">
   <br>
@@ -42,6 +45,13 @@ My Linux/macOS dotfiles.
   <img src="https://shieldcn.dev/badge/Gemini-8E75B2.svg?size=xs&logo=googlegemini&logoColor=white" alt="Gemini">
   <img src="https://shieldcn.dev/badge/Antigravity-000000.svg?size=xs&logo=google&logoColor=white" alt="Antigravity">
   <img src="https://shieldcn.dev/badge/Copilot-000000.svg?size=xs&logo=githubcopilot&logoColor=white" alt="GitHub Copilot">
+  <br>
+  <!-- macOS Apps -->
+  <img src="https://shieldcn.dev/badge/AeroSpace-000000.svg?size=xs&logo=ri:RiLayoutGridFill&logoColor=white" alt="AeroSpace">
+  <img src="https://shieldcn.dev/badge/Raycast-FF6363.svg?size=xs&logo=raycast&logoColor=white" alt="Raycast">
+  <br>
+  <!-- Design -->
+  <img src="https://shieldcn.dev/badge/Tokyo%20Night-1A1B26.svg?size=xs&logo=ri:RiMoonFill&logoColor=white" alt="Tokyo Night">
 </p>
 
 ## Install
