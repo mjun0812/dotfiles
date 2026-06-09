@@ -59,6 +59,16 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 | [`docs-sync`](../config/ai-agents/skills/docs-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift       |
 | [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)     | Save the current conversation's research as a self-contained Japanese Markdown file (`YYYYMMDD_*.md`) in the cwd |
 
+### Cross-Agent Consultation
+
+These skills are user-invoked only (`disable-model-invocation: true`) — the agent does not trigger them on its own.
+
+| Skill                                                          | Purpose                                                                                              |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| [`ask-claude`](../config/ai-agents/skills/ask-claude/SKILL.md) | Ask Claude Code (`claude -p`) for a second opinion on an explicit user request                       |
+| [`ask-codex`](../config/ai-agents/skills/ask-codex/SKILL.md)   | Ask Codex (`codex exec`, read-only sandbox) for a second opinion on an explicit user request         |
+| [`ask-gemini`](../config/ai-agents/skills/ask-gemini/SKILL.md) | Ask Gemini via Antigravity CLI (`agy --sandbox -p`) for a second opinion on an explicit user request |
+
 ### Misc
 
 | Skill                                                                          | Purpose                                                                                      |
@@ -109,7 +119,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `md-note`, `resume-other-agent`, `summarize-pdf`.
+`ask-claude`, `ask-codex`, `ask-gemini`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `md-note`, `resume-other-agent`, `summarize-pdf`.
 
 Note: `github-issue-update` mentions `github-issue-discover` / `github-pr-review` / `github-resolve-pr-comment` in its SKILL.md only to clarify scope boundaries — it deliberately does not invoke them.
 
