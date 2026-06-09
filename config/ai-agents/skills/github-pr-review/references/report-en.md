@@ -2,15 +2,18 @@
 
 <!--
 Authoring rules:
-- 1 is a single sequence across the whole report (Must Fix → Should Fix → Question, do not restart per section)
-- `[reviewer category]` must be **bold**; multi-category: `**[code-quality / security]**`
-- If a section has no items, keep the heading and write "N/A"
-- Only Must Fix items become inline comments
+- The final review only contains Must Fix items.
+- `[reviewer category]` must be **bold**; multi-category: `**[code-quality / security]**`.
+- If there are no Must Fix items, keep the heading and write "N/A".
+- Each Must Fix item must include `Reason` / `Impact` / `Action` / `Confidence`.
+- Confidence must be `high` or `medium`; do not include findings with weak confidence in the final review.
+- Do not create Should Fix or Question sections in the final review.
+- Only Must Fix items become inline comments.
 -->
 
 ## Summary
 
-<!-- 1-4 sentence summary of what this PR does -->
+<!-- 1-4 sentence summary of what this PR does and the review result -->
 
 ## Verdict
 
@@ -20,18 +23,9 @@ Authoring rules:
 
 - 1: `filename:line` - **[reviewer category]** Description of the issue
   - Reason: ...
+  - Impact: ...
   - Action: ...
-
-## Should Fix
-
-- 2: `filename:line` - **[reviewer category]** Description of the suggestion
-  - Reason: ...
-  - Action: ...
-
-## Question / Clarifications
-
-- 3: `filename:line` - **[reviewer category]** Clarification needed
-  - Reason: ...
+  - Confidence: high | medium
 
 ---
 
