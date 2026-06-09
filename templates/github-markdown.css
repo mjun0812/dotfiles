@@ -62,8 +62,16 @@ body {
   -webkit-text-size-adjust: 100%;
   line-height: 1.5;
   color: #24292e;
-  font-family: Helvetica, Arial, "Osaka", -apple-system, BlinkMacSystemFont,
-    sans-serif, Apple Color Emoji, Segoe UI, Segoe UI Emoji;
+  font-family:
+    Helvetica,
+    Arial,
+    "Osaka",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif,
+    Apple Color Emoji,
+    Segoe UI,
+    Segoe UI Emoji;
   font-size: 16px;
   line-height: 1.5;
   word-wrap: break-word;
@@ -186,7 +194,12 @@ body details summary {
 body kbd {
   display: inline-block;
   padding: 3px 5px;
-  font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font:
+    11px SFMono-Regular,
+    Consolas,
+    Liberation Mono,
+    Menlo,
+    monospace;
   line-height: 10px;
   color: #444d56;
   vertical-align: middle;
@@ -279,7 +292,12 @@ body dd {
 
 body code,
 body pre {
-  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace,
+  font-family:
+    SFMono-Regular,
+    Consolas,
+    Liberation Mono,
+    Menlo,
+    monospace,
     "Osaka" !important;
   font-size: 12px;
 }
@@ -599,7 +617,12 @@ body hr {
 body kbd {
   display: inline-block;
   padding: 3px 5px;
-  font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font:
+    11px SFMono-Regular,
+    Consolas,
+    Liberation Mono,
+    Menlo,
+    monospace;
   line-height: 10px;
   color: #444d56;
   vertical-align: middle;
@@ -845,7 +868,12 @@ body pre code {
 
 body .commit-tease-sha {
   display: inline-block;
-  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-family:
+    SFMono-Regular,
+    Consolas,
+    Liberation Mono,
+    Menlo,
+    monospace;
   font-size: 90%;
   color: #444d56;
 }
@@ -870,7 +898,12 @@ body .blob-num {
   min-width: 50px;
   padding-right: 10px;
   padding-left: 10px;
-  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-family:
+    SFMono-Regular,
+    Consolas,
+    Liberation Mono,
+    Menlo,
+    monospace;
   font-size: 12px;
   line-height: 20px;
   color: rgba(27, 31, 35, 0.3);
@@ -902,7 +935,12 @@ body .blob-code {
 
 body .blob-code-inner {
   overflow: visible;
-  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-family:
+    SFMono-Regular,
+    Consolas,
+    Liberation Mono,
+    Menlo,
+    monospace;
   font-size: 12px;
   color: #24292e;
   word-wrap: normal;

@@ -1,9 +1,9 @@
 ---
 name: 🧪 Add Tests
 about: Add or improve tests
-title: ''
+title: ""
 labels: test
-assignees: ''
+assignees: ""
 ---
 
 ## Summary & Purpose

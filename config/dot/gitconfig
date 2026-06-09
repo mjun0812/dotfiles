@@ -1,6 +1,7 @@
 [user]
   name="Junya Morioka"
   email=mjun@mjunya.com
+  signingkey = ~/.ssh/id_rsa.pub
 
 [pull]
   rebase=false
@@ -41,6 +42,13 @@
   process = git-lfs filter-process
   required = true
   clean = git-lfs clean -- %f
+
+[gpg]
+    format = ssh
+[commit]
+    gpgsign = true
+[tag]
+    gpgsign = true
 
 [ghq]
   root = ~/workspace

@@ -117,4 +117,3 @@ jobs:
           echo "=== Checking Python venv ==="
           su - testuser -c 'source ~/.zshrc && source ~/.venv/bin/activate && python --version'
           echo "✓ Python venv is configured"
-

@@ -10,21 +10,26 @@ require git, zsh, curl
 git clone git@github.com:mjun0812/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
+
+# Optional: Login to GitHub CLI
+gh auth login
+# Optional: Sync VS Code extensions with config/vscode/extensions.txt
+./script/sync-vscode-extensions.sh
 ```
 
 ## Tools
 
-| Tool   | Description     |
+| Name   | Description     |
 | ------ | --------------- |
 | zsh    | Shell           |
 | mise   | Package manager |
-| Neovim | editor          |
+| Neovim | Editor          |
 | VSCode | IDE             |
 | Cursor | IDE             |
 
 ### CLI
 
-| Tool        | Description                            |
+| Name        | Description                            |
 | ----------- | -------------------------------------- |
 | actionlint  | GitHub Actions workflow linter         |
 | aqua        | Declarative CLI version manager        |
@@ -44,33 +49,36 @@ cd ~/.dotfiles
 | ripgrep     | Modern `grep`                          |
 | ripgrep-all | `ripgrep` for PDFs, archives, and docs |
 | sheldon     | Zsh plugin manager                     |
+| shellcheck  | Shell script linter                    |
 | shfmt       | Shell script formatter                 |
 | starship    | Cross-shell prompt                     |
 | tex-fmt     | LaTeX formatter                        |
 | tmux        | Terminal multiplexer                   |
 | tree-sitter | Parser generator tool                  |
+| uv          | Python package and tool manager        |
+| vp          | Vite Plus CLI                          |
 | yazi        | Terminal file manager                  |
 | yq          | YAML processor                         |
 | zoxide      | Smart `cd` command                     |
 
 ### AI Agents
 
-| Agent           | Description       |
-| --------------- | ----------------- |
-| Claude Code     | AI agent for code |
-| Codex           | AI agent for code |
-| Gemini-cli      | AI agent for code |
-| Antigravity-cli | AI agent for code |
-| Copilot-cli     | AI agent for code |
-| OpenCode        | AI agent for code |
+| Name            | Description                           |
+| --------------- | ------------------------------------- |
+| Claude Code     | AI agent for daily use                |
+| Codex           | AI agent for daily use                |
+| Gemini-cli      | AI agent for generate commit messages |
+| Antigravity-cli | AI agent for generate commit messages |
+| Copilot-cli     | AI agent for code                     |
+| OpenCode        | AI agent for code                     |
 
 Agent skills (shared across Claude Code / Codex / Gemini / Antigravity) are documented in [doc/skills.md](doc/skills.md).
 
-### macOS Only
+### macOS Apps
 
 Apps installed via Homebrew Cask.
 
-| App                | Description                       |
+| Name               | Description                       |
 | ------------------ | --------------------------------- |
 | AeroSpace          | Tiling window manager             |
 | Alt-Tab            | Windows-style window switcher     |
@@ -89,7 +97,7 @@ Apps installed via Homebrew Cask.
 | Inkscape           | Vector graphics editor            |
 | iTerm2             | Terminal emulator                 |
 | Karabiner-Elements | Keyboard customization            |
-| Nani               | macOS utility                     |
+| Nani               | Translator                        |
 | Notion             | Notes and knowledge base          |
 | Obsidian           | Markdown knowledge base           |
 | Ollama             | Local LLM runtime                 |
@@ -146,7 +154,7 @@ cd_repo
 cd_gwq
 ```
 
-## Git Commands
+### Git Commands
 
 ```bash
 # Delete local branches that are deleted and merged
@@ -157,52 +165,6 @@ git aicommit
 # commit with AI generated commit message in Japanese
 git aicommit-ja
 ```
-
-## ANSI 16 Color
-
-For terminal color schemes.
-
-### sRGB
-
-| Color         | Hex     |
-| ------------- | ------- |
-| Black         | #000000 |
-| Red           | #FE533E |
-| Green         | #57DC76 |
-| Yellow        | #FECB00 |
-| Blue          | #00A7FF |
-| Magenta       | #FF4867 |
-| Cyan          | #69D1FA |
-| White         | #EAEAEA |
-| Gray          | #7B7B7B |
-| Light Red     | #FE533E |
-| Light Green   | #57DC76 |
-| Light Yellow  | #FECB00 |
-| Light Blue    | #00A7FF |
-| Light Magenta | #FF4867 |
-| Light Cyan    | #69D1FA |
-| Light White   | #EAEAEA |
-
-### Display-P3 (only supported on macOS)
-
-| Color         | Hex     |
-| ------------- | ------- |
-| Black         | #000000 |
-| Red           | #EB6049 |
-| Green         | #7DD981 |
-| Yellow        | #F6CD45 |
-| Blue          | #4AA5F8 |
-| Magenta       | #EB576A |
-| Cyan          | #84CFF6 |
-| White         | #EAEAEA |
-| Gray          | #7B7B7B |
-| Light Red     | #EB6049 |
-| Light Green   | #7DD981 |
-| Light Yellow  | #F6CD45 |
-| Light Blue    | #4AA5F8 |
-| Light Magenta | #EB576A |
-| Light Cyan    | #84CFF6 |
-| Light White   | #EAEAEA |
 
 ## mise
 
@@ -273,3 +235,28 @@ Custom Raycast scripts are available in `script/raycast/`:
 | `new_chrome.sh`             | Open new Chrome window in current space  |
 | `new_safari.sh`             | Open new Safari window in current space  |
 | `new_wezterm.sh`            | Open new WezTerm window                  |
+
+## Design
+
+### Terminal color schemes
+
+| Color         | sRGB    | Display-P3 |
+| ------------- | ------- | ---------- |
+| Foreground    | #EAEAEA | #EAEAEA    |
+| Background    | #000000 | #000000    |
+| Black         | #000000 | #000000    |
+| Red           | #FE533E | #EB6049    |
+| Green         | #57DC76 | #7DD981    |
+| Yellow        | #FECB00 | #F6CD45    |
+| Blue          | #00A7FF | #4AA5F8    |
+| Magenta       | #FF4867 | #EB576A    |
+| Cyan          | #69D1FA | #84CFF6    |
+| White         | #EAEAEA | #EAEAEA    |
+| Gray          | #7B7B7B | #7B7B7B    |
+| Light Red     | #FE533E | #EB6049    |
+| Light Green   | #57DC76 | #7DD981    |
+| Light Yellow  | #FECB00 | #F6CD45    |
+| Light Blue    | #00A7FF | #4AA5F8    |
+| Light Magenta | #FF4867 | #EB576A    |
+| Light Cyan    | #69D1FA | #84CFF6    |
+| Light White   | #EAEAEA | #EAEAEA    |

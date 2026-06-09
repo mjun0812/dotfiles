@@ -1,9 +1,9 @@
 ---
 name: 📝 タスク
 about: 上記に当てはまらない作業
-title: ''
-labels: ''
-assignees: ''
+title: ""
+labels: ""
+assignees: ""
 ---
 
 ## 背景・目的・概要
