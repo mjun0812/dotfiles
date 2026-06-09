@@ -6,10 +6,10 @@
 
 <p align="center">
   <!-- CI / Repository -->
-  <img alt="badge" src="https://shieldcn.dev/github/ci/mjun0812/dotfiles.svg?workflow=ci-macos.yml&variant=secondary&size=xs">
-  <img alt="badge" src="https://shieldcn.dev/github/ci/mjun0812/dotfiles.svg?workflow=ci-ubuntu.yml&variant=secondary&size=xs">
   <img alt="badge" src="https://shieldcn.dev/github/commits/mjun0812/dotfiles.svg?variant=secondary&size=xs">
   <img alt="badge" src="https://shieldcn.dev/github/last-commit/mjun0812/dotfiles.svg?variant=secondary&size=xs">
+  <img alt="badge" src="https://shieldcn.dev/github/ci/mjun0812/dotfiles.svg?workflow=ci-ubuntu.yml&branch=main&variant=secondary&size=xs&label=CI+Ubuntu">
+  <img alt="badge" src="https://shieldcn.dev/github/ci/mjun0812/dotfiles.svg?workflow=ci-macos.yml&branch=main&variant=secondary&size=xs&label=CI+macOS">
   <br>
   <!-- OS -->
   <img src="https://shieldcn.dev/badge/macOS-000000.svg?size=xs&logo=apple&logoColor=white" alt="macOS">
