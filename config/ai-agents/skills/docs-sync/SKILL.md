@@ -24,6 +24,7 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Bash(find:*), Bash(rg:*), Bash(gre
 - `language`: 更新時の文章言語（任意。指定しない場合は**既存ドキュメントの言語**を維持する）
 
 例:
+
 - `/docs-sync` → リポジトリ全体を対話モードで更新
 - `/docs-sync --auto` → 全部自動更新
 - `/docs-sync docs/api/` → 特定ディレクトリのみ対話モード
@@ -33,12 +34,12 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Bash(find:*), Bash(rg:*), Bash(gre
 
 以下4種類を対象にする。
 
-| 種別             | 検出パターン                                                |
-| ---------------- | ----------------------------------------------------------- |
-| Markdown         | `*.md`（`README.md`, `CLAUDE.md`, `docs/**/*.md` など）     |
-| docstring/コメント | コード内の関数・クラスのdocstring、ファイル冒頭のheaderコメント |
-| OpenAPI/Swagger  | `openapi.{yaml,yml,json}`, `swagger.{yaml,yml,json}`        |
-| 設定ファイル例   | `.env.example`, `*.example.{yaml,toml,json,ini}`, `config.example.*` |
+| 種別               | 検出パターン                                                         |
+| ------------------ | -------------------------------------------------------------------- |
+| Markdown           | `*.md`（`README.md`, `CLAUDE.md`, `docs/**/*.md` など）              |
+| docstring/コメント | コード内の関数・クラスのdocstring、ファイル冒頭のheaderコメント      |
+| OpenAPI/Swagger    | `openapi.{yaml,yml,json}`, `swagger.{yaml,yml,json}`                 |
+| 設定ファイル例     | `.env.example`, `*.example.{yaml,toml,json,ini}`, `config.example.*` |
 
 `node_modules/`, `.git/`, `dist/`, `build/`, `vendor/`, `.venv/` は常に除外する。
 
@@ -71,20 +72,21 @@ docstring/コメントは個別探索ではなく、**コード変更を起点**
 各ドキュメントについて、**実装と照合して古い記述**を見つける。
 よくある乖離パターン:
 
-| パターン                | 例                                                     |
-| ----------------------- | ------------------------------------------------------ |
-| 関数・クラス名の変更    | docには`fooBar()`、コードは`foo_bar()`または削除済み   |
-| シグネチャの変更        | doc記載の引数と実装の引数が異なる                      |
+| パターン                  | 例                                                     |
+| ------------------------- | ------------------------------------------------------ |
+| 関数・クラス名の変更      | docには`fooBar()`、コードは`foo_bar()`または削除済み   |
+| シグネチャの変更          | doc記載の引数と実装の引数が異なる                      |
 | ファイル/ディレクトリ移動 | doc記載のパスにファイルが存在しない                    |
-| CLIフラグ・コマンド変更 | doc記載の`--old-flag`がCLIに存在しない                 |
-| API endpointの変更      | OpenAPIの`/api/v1/foo`が実装には無い、または逆         |
-| 設定キーの変更          | `.env.example`に古いキーが残っている                   |
-| 削除済み機能の残存記述  | docに「機能X」の説明があるがコードには無い             |
-| 新機能の未記載          | コードに「機能Y」があるがdocに記載が無い               |
-| 古いバージョン/依存関係 | docの「Python 3.9以上」が`pyproject.toml`では3.11以上  |
-| 古いインストール手順    | doc記載の手順が現在の`package.json`/`Makefile`と不一致 |
+| CLIフラグ・コマンド変更   | doc記載の`--old-flag`がCLIに存在しない                 |
+| API endpointの変更        | OpenAPIの`/api/v1/foo`が実装には無い、または逆         |
+| 設定キーの変更            | `.env.example`に古いキーが残っている                   |
+| 削除済み機能の残存記述    | docに「機能X」の説明があるがコードには無い             |
+| 新機能の未記載            | コードに「機能Y」があるがdocに記載が無い               |
+| 古いバージョン/依存関係   | docの「Python 3.9以上」が`pyproject.toml`では3.11以上  |
+| 古いインストール手順      | doc記載の手順が現在の`package.json`/`Makefile`と不一致 |
 
 照合方法のヒント:
+
 - ファイルパス・関数名がdocに出てきたら、**実際にそのファイル・関数が存在するか** Grep/Glob で確認する
 - CLIフラグなら、CLIエントリポイントのargparse/clap等の定義と照合する
 - 設定キーなら、設定ファイルを実際に読み込むコードを見つけて参照されているキーを抽出する

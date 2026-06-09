@@ -77,6 +77,7 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*), Re
 7. **確認と修正**: 生成したタイトル・本文・自動判定された種別・付与予定のラベル・担当者をユーザーに提示し、必要に応じて修正を依頼できるようにする。修正指示があれば反映して再提示する。
 
 8. **Issueの作成**:
+
    ```
    gh issue create --title "<title>" --body "<body>" [--label <name> ...] [--assignee <username> ...]
    ```

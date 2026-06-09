@@ -1,9 +1,9 @@
 ---
 name: 📝 Task
 about: Work that doesn't fit the above categories
-title: ''
-labels: ''
-assignees: ''
+title: ""
+labels: ""
+assignees: ""
 ---
 
 ## Background, Purpose & Summary

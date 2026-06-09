@@ -7,7 +7,7 @@ This document describes the Neovim configuration and keyboard shortcuts.
 The configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) as the plugin manager.
 
 | Plugin                                                                | Description                          |
-|-----------------------------------------------------------------------|--------------------------------------|
+| --------------------------------------------------------------------- | ------------------------------------ |
 | [tokyonight.nvim](https://github.com/folke/tokyonight.nvim)           | Color scheme                         |
 | [snacks.nvim](https://github.com/folke/snacks.nvim)                   | Terminal, indent guides, window zoom |
 | [blink.cmp](https://github.com/saghen/blink.cmp)                      | Completion engine                    |
@@ -30,14 +30,14 @@ Leader key: `<Space>`, Local leader: `\`
 ### General
 
 | Key         | Mode     | Description                            |
-|-------------|----------|----------------------------------------|
+| ----------- | -------- | -------------------------------------- |
 | `<Esc>`     | Terminal | Exit terminal mode to normal mode      |
 | `:T [args]` | Command  | Open terminal at bottom with height 20 |
 
 ### Window Resize
 
 | Key     | Mode   | Description            |
-|---------|--------|------------------------|
+| ------- | ------ | ---------------------- |
 | `<A-j>` | Normal | Increase window height |
 | `<A-k>` | Normal | Decrease window height |
 | `<A-h>` | Normal | Decrease window width  |
@@ -45,23 +45,23 @@ Leader key: `<Space>`, Local leader: `\`
 
 ### Terminal (snacks.nvim)
 
-| Key | Mode | Description |
-| --- | ---- | ----------- |
-| `<C-`>` | Normal/Terminal | Toggle bottom terminal (25% height) |
-| `<M-`>` | Normal/Terminal | Toggle floating terminal (90% size) |
-| `<leader>wm` | Normal | Toggle window maximize (zoom) |
+| Key          | Mode            | Description                         |
+| ------------ | --------------- | ----------------------------------- |
+| `<C-`>`      | Normal/Terminal | Toggle bottom terminal (25% height) |
+| `<M-`>`      | Normal/Terminal | Toggle floating terminal (90% size) |
+| `<leader>wm` | Normal          | Toggle window maximize (zoom)       |
 
 ### File Explorer (Fern)
 
 | Key     | Mode        | Description                 |
-|---------|-------------|-----------------------------|
+| ------- | ----------- | --------------------------- |
 | `<C-e>` | Normal      | Toggle file tree            |
 | `V`     | Fern buffer | Open file in vertical split |
 
 ### Fuzzy Finder (Telescope)
 
 | Key          | Mode   | Description             |
-|--------------|--------|-------------------------|
+| ------------ | ------ | ----------------------- |
 | `<leader>ff` | Normal | Find files              |
 | `<leader>fg` | Normal | Live grep (search text) |
 | `<leader>fb` | Normal | List buffers            |
@@ -72,7 +72,7 @@ Leader key: `<Space>`, Local leader: `\`
 Preset: `enter`
 
 | Key                | Mode   | Description                           |
-|--------------------|--------|---------------------------------------|
+| ------------------ | ------ | ------------------------------------- |
 | `<CR>`             | Insert | Accept completion                     |
 | `<C-Space>`        | Insert | Open menu / open docs if menu is open |
 | `<C-n>` / `<Down>` | Insert | Select next item                      |
@@ -83,7 +83,7 @@ Preset: `enter`
 ### LSP / Code Intelligence
 
 | Key         | Mode   | Description              |
-|-------------|--------|--------------------------|
+| ----------- | ------ | ------------------------ |
 | `gd`        | Normal | Go to definition         |
 | `<leader>k` | Normal | Show hover documentation |
 
@@ -92,7 +92,7 @@ Auto-format on save is enabled when the language server supports formatting.
 ### Diagnostics (Trouble)
 
 | Key          | Mode   | Description                       |
-|--------------|--------|-----------------------------------|
+| ------------ | ------ | --------------------------------- |
 | `<leader>xx` | Normal | Toggle diagnostics                |
 | `<leader>xX` | Normal | Toggle buffer diagnostics         |
 | `<leader>cs` | Normal | Toggle symbols                    |
@@ -103,13 +103,13 @@ Auto-format on save is enabled when the language server supports formatting.
 ### Which Key
 
 | Key         | Mode   | Description               |
-|-------------|--------|---------------------------|
+| ----------- | ------ | ------------------------- |
 | `<leader>?` | Normal | Show buffer local keymaps |
 
 ### AI Integration (Sidekick)
 
 | Key          | Mode                          | Description                           |
-|--------------|-------------------------------|---------------------------------------|
+| ------------ | ----------------------------- | ------------------------------------- |
 | `<Tab>`      | Normal                        | Jump to / apply next edit suggestion  |
 | `<C-.>`      | Normal/Terminal/Insert/Visual | Toggle Sidekick                       |
 | `<leader>aa` | Normal                        | Toggle Sidekick CLI                   |
@@ -124,7 +124,7 @@ Auto-format on save is enabled when the language server supports formatting.
 ## Commands
 
 | Command     | Description                            |
-|-------------|----------------------------------------|
+| ----------- | -------------------------------------- |
 | `:T [args]` | Open terminal at bottom with height 20 |
 | `:Trouble`  | Open Trouble diagnostics               |
 | `:Mason`    | Open Mason (LSP server management)     |

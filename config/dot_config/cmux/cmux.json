@@ -8,16 +8,16 @@
   // cmux creates this template on launch when both settings file locations are missing.
   // ~/.config/cmux/settings.json takes precedence over the Application Support fallback.
 
-  "app" : {
-    "appearance" : "dark",
-    "appIcon" : "dark",
+  "app": {
+    "appearance": "dark",
+    "appIcon": "dark",
     // "commandPaletteSearchesAllSurfaces" : false,
     // "focusPaneOnFirstClick" : false,
     // "keepWorkspaceOpenWhenClosingLastSurface" : false,
     // "language" : "system",
-    "minimalMode" : true,
+    "minimalMode": true,
     // "newWorkspacePlacement" : "afterCurrent",
-    "preferredEditor" : "code",
+    "preferredEditor": "code"
     // "renameSelectsExistingName" : true,
     // "reorderOnNotification" : true,
     // "sendAnonymousTelemetry" : true,
@@ -49,12 +49,12 @@
   //     "showSSH" : true
   //   },
 
-  "workspaceColors" : {
-    "colors" : {
-      "Blue" : "#00A7FF",
-      "Red" : "#FE533E",
-      "Green" : "#57DC76",
-      "Magenta" : "#FF4867",
+  "workspaceColors": {
+    "colors": {
+      "Blue": "#00A7FF",
+      "Red": "#FE533E",
+      "Green": "#57DC76",
+      "Magenta": "#FF4867"
       // "Amber" : "#7D6608",
       // "Aqua" : "#0E6B8C",
       // "Brown" : "#7B3F00",
@@ -67,19 +67,19 @@
       // "Purple" : "#6A1B9A",
       // "Rose" : "#880E4F",
       // "Teal" : "#006B6B"
-    },
+    }
     // "indicatorStyle" : "leftRail",
     // "notificationBadgeColor" : null,
     // "selectionColor" : null
   },
 
-  "sidebarAppearance" : {
+  "sidebarAppearance": {
     // "darkModeTintColor" : null,
     // "lightModeTintColor" : null,
-    "matchTerminalBackground" : true,
+    "matchTerminalBackground": true
     // "tintColor" : "#000000",
     // "tintOpacity" : 0.7
-  },
+  }
 
   //   "automation" : {
   //     "claudeBinaryPath" : "",
@@ -92,14 +92,14 @@
 
   //   "customCommands" : {
   //     "trustedDirectories" : [
-  // 
+  //
   //     ]
   //   },
 
   //   "browser" : {
   //     "defaultSearchEngine" : "google",
   //     "hostsToOpenInEmbeddedBrowser" : [
-  // 
+  //
   //     ],
   //     "insecureHttpHostsAllowedInEmbeddedBrowser" : [
   //       "localhost",
@@ -115,7 +115,7 @@
   //     "showSearchSuggestions" : true,
   //     "theme" : "system",
   //     "urlsToAlwaysOpenExternally" : [
-  // 
+  //
   //     ]
   //   },
 

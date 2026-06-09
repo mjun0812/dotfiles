@@ -1,9 +1,9 @@
 ---
 name: 🧪 テスト追加
 about: テストの追加・改善
-title: ''
+title: ""
 labels: test
-assignees: ''
+assignees: ""
 ---
 
 ## 概要・目的

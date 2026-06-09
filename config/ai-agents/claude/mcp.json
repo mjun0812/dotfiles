@@ -3,28 +3,20 @@
     "chrome-devtools": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "chrome-devtools-mcp@latest"
-      ],
+      "args": ["chrome-devtools-mcp@latest"],
       "env": {}
     },
     "context7": {
       "command": "bunx",
-      "args": [
-        "@upstash/context7-mcp@latest"
-      ]
+      "args": ["@upstash/context7-mcp@latest"]
     },
     "drawio": {
       "command": "bunx",
-      "args": [
-        "@drawio/mcp"
-      ]
+      "args": ["@drawio/mcp"]
     },
     "playwright": {
       "command": "bunx",
-      "args": [
-        "@playwright/mcp@latest"
-      ]
+      "args": ["@playwright/mcp@latest"]
     }
   }
 }

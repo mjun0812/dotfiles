@@ -1,9 +1,9 @@
 ---
 name: ✨ 機能追加
 about: 新機能や改善の提案
-title: ''
+title: ""
 labels: enhancement
-assignees: ''
+assignees: ""
 ---
 
 ## 背景・概要

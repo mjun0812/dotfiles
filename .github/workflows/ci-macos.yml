@@ -96,4 +96,3 @@ jobs:
           source "$HOME/.venv/bin/activate"
           python --version
           echo "✓ Python venv is configured"
-
