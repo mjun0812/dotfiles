@@ -161,26 +161,26 @@ It is used in Neovim, VS Code, Cursor.
 
 ### Terminal color schemes
 
-| Color         | sRGB    | Display-P3 |
-| ------------- | ------- | ---------- |
-| Foreground    | #EAEAEA | #EAEAEA    |
-| Background    | #000000 | #000000    |
-| Black         | #000000 | #000000    |
-| Red           | #FE533E | #EB6049    |
-| Green         | #57DC76 | #7DD981    |
-| Yellow        | #FECB00 | #F6CD45    |
-| Blue          | #00A7FF | #4AA5F8    |
-| Magenta       | #FF4867 | #EB576A    |
-| Cyan          | #69D1FA | #84CFF6    |
-| White         | #EAEAEA | #EAEAEA    |
-| Gray          | #7B7B7B | #7B7B7B    |
-| Light Red     | #FE533E | #EB6049    |
-| Light Green   | #57DC76 | #7DD981    |
-| Light Yellow  | #FECB00 | #F6CD45    |
-| Light Blue    | #00A7FF | #4AA5F8    |
-| Light Magenta | #FF4867 | #EB576A    |
-| Light Cyan    | #69D1FA | #84CFF6    |
-| Light White   | #EAEAEA | #EAEAEA    |
+| Color         | sRGB                                                             | Display-P3                                                       |
+| ------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Foreground    | ![](https://shieldcn.dev/badge/%20-EAEAEA.svg?size=xs) `#EAEAEA` | ![](https://shieldcn.dev/badge/%20-EAEAEA.svg?size=xs) `#EAEAEA` |
+| Background    | ![](https://shieldcn.dev/badge/%20-000000.svg?size=xs) `#000000` | ![](https://shieldcn.dev/badge/%20-000000.svg?size=xs) `#000000` |
+| Black         | ![](https://shieldcn.dev/badge/%20-000000.svg?size=xs) `#000000` | ![](https://shieldcn.dev/badge/%20-000000.svg?size=xs) `#000000` |
+| Red           | ![](https://shieldcn.dev/badge/%20-FE533E.svg?size=xs) `#FE533E` | ![](https://shieldcn.dev/badge/%20-EB6049.svg?size=xs) `#EB6049` |
+| Green         | ![](https://shieldcn.dev/badge/%20-57DC76.svg?size=xs) `#57DC76` | ![](https://shieldcn.dev/badge/%20-7DD981.svg?size=xs) `#7DD981` |
+| Yellow        | ![](https://shieldcn.dev/badge/%20-FECB00.svg?size=xs) `#FECB00` | ![](https://shieldcn.dev/badge/%20-F6CD45.svg?size=xs) `#F6CD45` |
+| Blue          | ![](https://shieldcn.dev/badge/%20-00A7FF.svg?size=xs) `#00A7FF` | ![](https://shieldcn.dev/badge/%20-4AA5F8.svg?size=xs) `#4AA5F8` |
+| Magenta       | ![](https://shieldcn.dev/badge/%20-FF4867.svg?size=xs) `#FF4867` | ![](https://shieldcn.dev/badge/%20-EB576A.svg?size=xs) `#EB576A` |
+| Cyan          | ![](https://shieldcn.dev/badge/%20-69D1FA.svg?size=xs) `#69D1FA` | ![](https://shieldcn.dev/badge/%20-84CFF6.svg?size=xs) `#84CFF6` |
+| White         | ![](https://shieldcn.dev/badge/%20-EAEAEA.svg?size=xs) `#EAEAEA` | ![](https://shieldcn.dev/badge/%20-EAEAEA.svg?size=xs) `#EAEAEA` |
+| Gray          | ![](https://shieldcn.dev/badge/%20-7B7B7B.svg?size=xs) `#7B7B7B` | ![](https://shieldcn.dev/badge/%20-7B7B7B.svg?size=xs) `#7B7B7B` |
+| Light Red     | ![](https://shieldcn.dev/badge/%20-FE533E.svg?size=xs) `#FE533E` | ![](https://shieldcn.dev/badge/%20-EB6049.svg?size=xs) `#EB6049` |
+| Light Green   | ![](https://shieldcn.dev/badge/%20-57DC76.svg?size=xs) `#57DC76` | ![](https://shieldcn.dev/badge/%20-7DD981.svg?size=xs) `#7DD981` |
+| Light Yellow  | ![](https://shieldcn.dev/badge/%20-FECB00.svg?size=xs) `#FECB00` | ![](https://shieldcn.dev/badge/%20-F6CD45.svg?size=xs) `#F6CD45` |
+| Light Blue    | ![](https://shieldcn.dev/badge/%20-00A7FF.svg?size=xs) `#00A7FF` | ![](https://shieldcn.dev/badge/%20-4AA5F8.svg?size=xs) `#4AA5F8` |
+| Light Magenta | ![](https://shieldcn.dev/badge/%20-FF4867.svg?size=xs) `#FF4867` | ![](https://shieldcn.dev/badge/%20-EB576A.svg?size=xs) `#EB576A` |
+| Light Cyan    | ![](https://shieldcn.dev/badge/%20-69D1FA.svg?size=xs) `#69D1FA` | ![](https://shieldcn.dev/badge/%20-84CFF6.svg?size=xs) `#84CFF6` |
+| Light White   | ![](https://shieldcn.dev/badge/%20-EAEAEA.svg?size=xs) `#EAEAEA` | ![](https://shieldcn.dev/badge/%20-EAEAEA.svg?size=xs) `#EAEAEA` |
 
 ## Alias
 
