@@ -2,6 +2,54 @@
 
 My Linux/macOS dotfiles.
 
+[![CI macOS](https://img.shields.io/github/actions/workflow/status/mjun0812/dotfiles/ci-macos.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI%20macOS)](https://github.com/mjun0812/dotfiles/actions/workflows/ci-macos.yml)
+[![CI Ubuntu](https://img.shields.io/github/actions/workflow/status/mjun0812/dotfiles/ci-ubuntu.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI%20Ubuntu)](https://github.com/mjun0812/dotfiles/actions/workflows/ci-ubuntu.yml)
+![macOS](https://img.shields.io/badge/macOS-000000?style=flat-square&logo=apple&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
+![Zsh](https://img.shields.io/badge/Zsh-F15A24?style=flat-square&logo=zsh&logoColor=white)
+![tmux](https://img.shields.io/badge/tmux-1BB91F?style=flat-square&logo=tmux&logoColor=white)
+![Starship](https://img.shields.io/badge/Starship-DD0B78?style=flat-square&logo=starship&logoColor=white)
+![mise](https://img.shields.io/badge/mise-258577?style=flat-square)
+![Neovim](https://img.shields.io/badge/Neovim-57A143?style=flat-square&logo=neovim&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS%20Code-0078d7?style=flat-square&logo=vscodium&logoColor=white)
+![Cursor](https://img.shields.io/badge/Cursor-000000?style=flat-square&logo=cursor&logoColor=white)
+![Ghostty](https://img.shields.io/badge/Ghostty-1D2021?style=flat-square&logo=ghostty&logoColor=white)
+![WezTerm](https://img.shields.io/badge/WezTerm-4E49EE?style=flat-square&logo=wezterm&logoColor=white)
+![iTerm2](https://img.shields.io/badge/iTerm2-000000?style=flat-square&logo=iterm2&logoColor=white)
+![Claude Code](https://img.shields.io/badge/Claude%20Code-D97757?style=flat-square&logo=claude&logoColor=white)
+![Codex](https://img.shields.io/badge/Codex-000000?style=flat-square&logo=openai&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)
+![GitHub Copilot](https://img.shields.io/badge/Copilot-000000?style=flat-square&logo=githubcopilot&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
+![GitHub CLI](https://img.shields.io/badge/gh-181717?style=flat-square&logo=github&logoColor=white)
+![License](https://img.shields.io/github/license/mjun0812/dotfiles?style=flat-square)
+![Last Commit](https://img.shields.io/github/last-commit/mjun0812/dotfiles?style=flat-square)
+
+### Shieldcn
+
+[![CI macOS](https://shieldcn.dev/github/ci/mjun0812/dotfiles.png?size=sm&logo=githubactions&logoColor=white&label=CI%20macOS)](https://github.com/mjun0812/dotfiles/actions/workflows/ci-macos.yml)
+[![CI Ubuntu](https://shieldcn.dev/github/ci/mjun0812/dotfiles.png?size=sm&logo=githubactions&logoColor=white&label=CI%20Ubuntu)](https://github.com/mjun0812/dotfiles/actions/workflows/ci-ubuntu.yml)
+![macOS](https://shieldcn.dev/badge/macOS-000000.png?size=sm&logo=apple&logoColor=white)
+![Linux](https://shieldcn.dev/badge/Linux-FCC624.png?size=sm&logo=linux&logoColor=black)
+![Zsh](https://shieldcn.dev/badge/Zsh-F15A24.png?size=sm&logo=zsh&logoColor=white)
+![tmux](https://shieldcn.dev/badge/tmux-1BB91F.png?size=sm&logo=tmux&logoColor=white)
+![Starship](https://shieldcn.dev/badge/Starship-DD0B78.png?size=sm&logo=starship&logoColor=white)
+![mise](https://shieldcn.dev/badge/mise-258577.png?size=sm)
+![Neovim](https://shieldcn.dev/badge/Neovim-57A143.png?size=sm&logo=neovim&logoColor=white)
+![VS Code](https://shieldcn.dev/badge/VS%20Code-0078d7.png?size=sm&logo=vscodium&logoColor=white)
+![Cursor](https://shieldcn.dev/badge/Cursor-000000.png?size=sm&logo=cursor&logoColor=white)
+![Ghostty](https://shieldcn.dev/badge/Ghostty-1D2021.png?size=sm&logo=ghostty&logoColor=white)
+![WezTerm](https://shieldcn.dev/badge/WezTerm-4E49EE.png?size=sm&logo=wezterm&logoColor=white)
+![iTerm2](https://shieldcn.dev/badge/iTerm2-000000.png?size=sm&logo=iterm2&logoColor=white)
+![Claude Code](https://shieldcn.dev/badge/Claude%20Code-D97757.png?size=sm&logo=claude&logoColor=white)
+![Codex](https://shieldcn.dev/badge/Codex-000000.png?size=sm&logo=openai&logoColor=white)
+![Gemini](https://shieldcn.dev/badge/Gemini-8E75B2.png?size=sm&logo=googlegemini&logoColor=white)
+![GitHub Copilot](https://shieldcn.dev/badge/Copilot-000000.png?size=sm&logo=githubcopilot&logoColor=white)
+![Git](https://shieldcn.dev/badge/Git-F05032.png?size=sm&logo=git&logoColor=white)
+![GitHub CLI](https://shieldcn.dev/badge/gh-181717.png?size=sm&logo=github&logoColor=white)
+![License](https://shieldcn.dev/github/license/mjun0812/dotfiles.png?size=sm)
+![Last Commit](https://shieldcn.dev/github/commits/mjun0812/dotfiles.png?size=sm)
+
 ## Install
 
 require git, zsh, curl
