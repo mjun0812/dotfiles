@@ -2,5 +2,7 @@
   "allowNonWorkspaceAccess": true,
   "colorScheme": "tokyo night",
   "enableTelemetry": false,
-  "trustedWorkspaces": ["/Users/mjun/.dotfiles"]
+  "trustedWorkspaces": [
+    "/Users/mjun/.dotfiles"
+  ]
 }
