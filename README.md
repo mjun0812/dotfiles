@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="doc/banner.svg" alt="dotfiles" width="720">
+  <img src="doc/banner-path.svg" alt="dotfiles" width="720">
 </p>
 
 <p align="center">My Linux / macOS dotfiles.</p>
