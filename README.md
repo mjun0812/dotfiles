@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(max-width: 600px)" srcset="doc/banner-static.svg">
-    <img src="doc/banner-2x.svg" alt="dotfiles" width="720">
-  </picture>
+  <img src="doc/banner.svg" alt="dotfiles" width="720">
 </p>
 
 <p align="center">My Linux / macOS dotfiles.</p>
