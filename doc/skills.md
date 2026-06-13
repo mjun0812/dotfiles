@@ -29,6 +29,7 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 | Skill                                                                                                    | Purpose                                                                                                             |
 | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)                         | Gather information from the user and create a GitHub Issue                                                          |
+| [`github-issue-create-with-grill`](../config/ai-agents/skills/github-issue-create-with-grill/SKILL.md)   | One-shot: `grill-self` the design for a new issue, then `github-issue-create` with the decision log embedded        |
 | [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md)                     | Scan the repo for issue-worthy items, dedupe vs existing issues, and bulk-create with approval (`--auto` skips)     |
 | [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)                         | Review open issues and close / annotate stale, resolved, duplicate, or outdated issues                              |
 | [`github-issue-resolve`](../config/ai-agents/skills/github-issue-resolve/SKILL.md)                       | End-to-end: investigate → discuss-or-implement decision → worktree → implement → PR for a given issue               |
@@ -91,6 +92,9 @@ graph LR
     github-issue-resolve --> github-pr-create
     github-issue-resolve --> git-commit
 
+    github-issue-create-with-grill --> grill-self
+    github-issue-create-with-grill --> github-issue-create
+
     github-issue-resolve-with-grill --> grill-self
     github-issue-resolve-with-grill --> github-issue-resolve
 
@@ -111,6 +115,7 @@ graph LR
 | `docs-sync`                       | `git-commit`                                                           | When the user opts into committing the doc updates                                  |
 | `github-issue-discover`           | `github-issue-create`                                                  | One invocation per approved candidate (issued in parallel)                          |
 | `github-issue-resolve`            | `github-issue-create` _(indirectly)_, `git-commit`, `github-pr-create` | Implementation phase commits + final PR                                             |
+| `github-issue-create-with-grill`  | `grill-self`, `github-issue-create`                                    | Phase 2 grills the design, Phase 3 creates the issue with the decision log embedded |
 | `github-issue-resolve-with-grill` | `grill-self`, `github-issue-resolve`                                   | Phase 2 grills the design, Phase 3 implements per the decision log                  |
 | `github-pr-create-self-review`    | `github-pr-create`, `github-pr-review`                                 | Phase 1 and Phase 3 of the one-shot flow                                            |
 | `github-pr-fix`                   | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment`       | Each callee runs only if the corresponding problem is detected                      |
