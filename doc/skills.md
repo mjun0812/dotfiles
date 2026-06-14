@@ -55,10 +55,10 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 
 ### Docs & Notes
 
-| Skill                                                        | Purpose                                                                                                          |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| [`docs-sync`](../config/ai-agents/skills/docs-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift       |
-| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)     | Save the current conversation's research as a self-contained Japanese Markdown file (`YYYYMMDD_*.md`) in the cwd |
+| Skill                                                      | Purpose                                                                                                          |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift       |
+| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | Save the current conversation's research as a self-contained Japanese Markdown file (`YYYYMMDD_*.md`) in the cwd |
 
 ### Cross-Agent Consultation
 
@@ -85,7 +85,6 @@ The following skills invoke other skills through the agent's `Skill` tool. Arrow
 graph LR
     git-commit-push --> git-commit
     git-squash -. on conflict .-> git-fix-conflict
-    docs-sync -. on commit .-> git-commit
 
     github-issue-discover --> github-issue-create
     github-issue-resolve --> github-issue-create
@@ -112,7 +111,6 @@ graph LR
 | --------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `git-commit-push`                 | `git-commit`                                                           | Always (commit step before push)                                                    |
 | `git-squash`                      | `git-fix-conflict`                                                     | Only if a conflict surfaces during squash                                           |
-| `docs-sync`                       | `git-commit`                                                           | When the user opts into committing the doc updates                                  |
 | `github-issue-discover`           | `github-issue-create`                                                  | One invocation per approved candidate (issued in parallel)                          |
 | `github-issue-resolve`            | `github-issue-create` _(indirectly)_, `git-commit`, `github-pr-create` | Implementation phase commits + final PR                                             |
 | `github-issue-create-with-grill`  | `grill-self`, `github-issue-create`                                    | Phase 2 grills the design, Phase 3 creates the issue with the decision log embedded |
@@ -124,7 +122,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`ask-claude`, `ask-codex`, `ask-gemini`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `md-note`, `resume-other-agent`, `summarize-pdf`.
+`ask-claude`, `ask-codex`, `ask-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `md-note`, `resume-other-agent`, `summarize-pdf`.
 
 Note: `github-issue-update` mentions `github-issue-discover` / `github-pr-review` / `github-resolve-pr-comment` in its SKILL.md only to clarify scope boundaries — it deliberately does not invoke them.
 
