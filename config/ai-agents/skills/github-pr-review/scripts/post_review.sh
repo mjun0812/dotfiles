@@ -37,23 +37,44 @@ BODY_FILE=""
 COMMENTS_FILE=""
 
 while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --repo) REPO="$2"; shift 2 ;;
-    --pr) PR="$2"; shift 2 ;;
-    --commit) COMMIT="$2"; shift 2 ;;
-    --event) EVENT="$2"; shift 2 ;;
-    --body-file) BODY_FILE="$2"; shift 2 ;;
-    --comments-file) COMMENTS_FILE="$2"; shift 2 ;;
-    *) echo "Unknown argument: $1" >&2; exit 2 ;;
-  esac
+    case "$1" in
+    --repo)
+        REPO="$2"
+        shift 2
+        ;;
+    --pr)
+        PR="$2"
+        shift 2
+        ;;
+    --commit)
+        COMMIT="$2"
+        shift 2
+        ;;
+    --event)
+        EVENT="$2"
+        shift 2
+        ;;
+    --body-file)
+        BODY_FILE="$2"
+        shift 2
+        ;;
+    --comments-file)
+        COMMENTS_FILE="$2"
+        shift 2
+        ;;
+    *)
+        echo "Unknown argument: $1" >&2
+        exit 2
+        ;;
+    esac
 done
 
 require() {
-  local name="$1" value="$2" flag="$3"
-  if [[ -z "$value" ]]; then
-    echo "Missing required argument: $flag" >&2
-    exit 2
-  fi
+    local name="$1" value="$2" flag="$3"
+    if [[ -z $value ]]; then
+        echo "Missing required argument: $flag" >&2
+        exit 2
+    fi
 }
 require REPO "$REPO" --repo
 require PR "$PR" --pr
@@ -62,18 +83,21 @@ require EVENT "$EVENT" --event
 require BODY_FILE "$BODY_FILE" --body-file
 
 case "$EVENT" in
-  APPROVE|REQUEST_CHANGES|COMMENT) ;;
-  *) echo "--event must be APPROVE, REQUEST_CHANGES, or COMMENT (got: $EVENT)" >&2; exit 2 ;;
+APPROVE | REQUEST_CHANGES | COMMENT) ;;
+*)
+    echo "--event must be APPROVE, REQUEST_CHANGES, or COMMENT (got: $EVENT)" >&2
+    exit 2
+    ;;
 esac
 
-if [[ ! -f "$BODY_FILE" ]]; then
-  echo "Body file not found: $BODY_FILE" >&2
-  exit 2
+if [[ ! -f $BODY_FILE ]]; then
+    echo "Body file not found: $BODY_FILE" >&2
+    exit 2
 fi
 
-if [[ -n "$COMMENTS_FILE" && ! -f "$COMMENTS_FILE" ]]; then
-  echo "Comments file not found: $COMMENTS_FILE" >&2
-  exit 2
+if [[ -n $COMMENTS_FILE && ! -f $COMMENTS_FILE ]]; then
+    echo "Comments file not found: $COMMENTS_FILE" >&2
+    exit 2
 fi
 
 PAYLOAD_FILE=$(mktemp)
@@ -87,10 +111,10 @@ trap 'rm -f "$PAYLOAD_FILE" "$PR_FILES_FILE" "$SPLIT_FILE" "$VALID_COMMENTS_FILE
 # Preflight: split inline comments into (valid, invalid) by checking whether
 # (path, line, side) is part of the PR diff. Invalid entries are demoted to
 # the review body under "inline 化できなかった指摘 / Comments that could not be inlined".
-if [[ -n "$COMMENTS_FILE" ]]; then
-  gh api "repos/${REPO}/pulls/${PR}/files" --paginate > "$PR_FILES_FILE"
+if [[ -n $COMMENTS_FILE ]]; then
+    gh api "repos/${REPO}/pulls/${PR}/files" --paginate >"$PR_FILES_FILE"
 
-  jq --slurpfile comments "$COMMENTS_FILE" '
+    jq --slurpfile comments "$COMMENTS_FILE" '
     def parse_patch:
       if . == null or . == "" then []
       else
@@ -130,55 +154,55 @@ if [[ -n "$COMMENTS_FILE" ]]; then
         valid:   [ $annotated[] | . as $c | select($valid_set | index($c._key) != null) | del(._key) ],
         invalid: [ $annotated[] | . as $c | select($valid_set | index($c._key) == null) | del(._key) ]
       }
-  ' "$PR_FILES_FILE" > "$SPLIT_FILE"
+  ' "$PR_FILES_FILE" >"$SPLIT_FILE"
 
-  jq '.valid'   "$SPLIT_FILE" > "$VALID_COMMENTS_FILE"
-  jq '.invalid' "$SPLIT_FILE" > "$INVALID_COMMENTS_FILE"
+    jq '.valid' "$SPLIT_FILE" >"$VALID_COMMENTS_FILE"
+    jq '.invalid' "$SPLIT_FILE" >"$INVALID_COMMENTS_FILE"
 
-  INVALID_COUNT=$(jq 'length' "$INVALID_COMMENTS_FILE")
-  VALID_COUNT=$(jq 'length'   "$VALID_COMMENTS_FILE")
+    INVALID_COUNT=$(jq 'length' "$INVALID_COMMENTS_FILE")
+    VALID_COUNT=$(jq 'length' "$VALID_COMMENTS_FILE")
 
-  if [[ "$INVALID_COUNT" -gt 0 ]]; then
-    echo "Warning: ${INVALID_COUNT} inline comment(s) target lines not in the PR diff; demoting them to the review body." >&2
-    {
-      cat "$BODY_FILE"
-      printf '\n\n---\n\n'
-      printf '### inline 化できなかった指摘 / Comments that could not be inlined\n\n'
-      printf '以下の指摘は，対象行が PR の diff に含まれていないため inline コメントとして投稿できませんでした。\n'
-      printf 'The following comments could not be posted inline because the target lines are not part of the PR diff:\n\n'
-      jq -r '.[] | "- `\(.path):\(.line)\(if (.side // "RIGHT") != "RIGHT" then " (side=\(.side))" else "" end)`\n\n\(.body)\n"' "$INVALID_COMMENTS_FILE"
-    } > "$SUPP_BODY_FILE"
-    BODY_FILE="$SUPP_BODY_FILE"
-  fi
+    if [[ $INVALID_COUNT -gt 0 ]]; then
+        echo "Warning: ${INVALID_COUNT} inline comment(s) target lines not in the PR diff; demoting them to the review body." >&2
+        {
+            cat "$BODY_FILE"
+            printf '\n\n---\n\n'
+            printf '### inline 化できなかった指摘 / Comments that could not be inlined\n\n'
+            printf '以下の指摘は，対象行が PR の diff に含まれていないため inline コメントとして投稿できませんでした。\n'
+            printf 'The following comments could not be posted inline because the target lines are not part of the PR diff:\n\n'
+            jq -r '.[] | "- `\(.path):\(.line)\(if (.side // "RIGHT") != "RIGHT" then " (side=\(.side))" else "" end)`\n\n\(.body)\n"' "$INVALID_COMMENTS_FILE"
+        } >"$SUPP_BODY_FILE"
+        BODY_FILE="$SUPP_BODY_FILE"
+    fi
 
-  if [[ "$VALID_COUNT" -eq 0 ]]; then
-    COMMENTS_FILE=""
-  else
-    COMMENTS_FILE="$VALID_COMMENTS_FILE"
-  fi
+    if [[ $VALID_COUNT -eq 0 ]]; then
+        COMMENTS_FILE=""
+    else
+        COMMENTS_FILE="$VALID_COMMENTS_FILE"
+    fi
 fi
 
 # Build the request payload via jq so the body is properly escaped.
 
-if [[ -n "$COMMENTS_FILE" ]]; then
-  jq -n \
-    --rawfile body "$BODY_FILE" \
-    --arg commit_id "$COMMIT" \
-    --arg event "$EVENT" \
-    --slurpfile comments "$COMMENTS_FILE" \
-    '{body: $body, commit_id: $commit_id, event: $event, comments: $comments[0]}' \
-    > "$PAYLOAD_FILE"
+if [[ -n $COMMENTS_FILE ]]; then
+    jq -n \
+        --rawfile body "$BODY_FILE" \
+        --arg commit_id "$COMMIT" \
+        --arg event "$EVENT" \
+        --slurpfile comments "$COMMENTS_FILE" \
+        '{body: $body, commit_id: $commit_id, event: $event, comments: $comments[0]}' \
+        >"$PAYLOAD_FILE"
 else
-  jq -n \
-    --rawfile body "$BODY_FILE" \
-    --arg commit_id "$COMMIT" \
-    --arg event "$EVENT" \
-    '{body: $body, commit_id: $commit_id, event: $event}' \
-    > "$PAYLOAD_FILE"
+    jq -n \
+        --rawfile body "$BODY_FILE" \
+        --arg commit_id "$COMMIT" \
+        --arg event "$EVENT" \
+        '{body: $body, commit_id: $commit_id, event: $event}' \
+        >"$PAYLOAD_FILE"
 fi
 
 RESPONSE=$(gh api -X POST \
-  "repos/${REPO}/pulls/${PR}/reviews" \
-  --input "$PAYLOAD_FILE")
+    "repos/${REPO}/pulls/${PR}/reviews" \
+    --input "$PAYLOAD_FILE")
 
 echo "$RESPONSE" | jq -r '.html_url'

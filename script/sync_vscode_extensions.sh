@@ -48,7 +48,7 @@ if ! command -v code >/dev/null 2>&1; then
     exit 1
 fi
 
-if [[ ! -f "$EXTENSIONS_FILE" ]]; then
+if [[ ! -f $EXTENSIONS_FILE ]]; then
     echo "VS Code extensions file not found: $EXTENSIONS_FILE" >&2
     exit 1
 fi
@@ -83,17 +83,17 @@ code --list-extensions 2>/dev/null | awk '
 comm -23 "$desired_extensions" "$installed_extensions" >"$extensions_to_install"
 comm -13 "$desired_extensions" "$installed_extensions" >"$extensions_to_uninstall"
 
-if [[ ! -s "$extensions_to_install" && ! -s "$extensions_to_uninstall" ]]; then
+if [[ ! -s $extensions_to_install && ! -s $extensions_to_uninstall ]]; then
     echo "VS Code extensions are already synchronized."
     exit 0
 fi
 
-if [[ -s "$extensions_to_install" ]]; then
+if [[ -s $extensions_to_install ]]; then
     echo "VS Code extensions to install:"
     sed 's/^/  /' "$extensions_to_install"
 fi
 
-if [[ -s "$extensions_to_uninstall" ]]; then
+if [[ -s $extensions_to_uninstall ]]; then
     echo "VS Code extensions to uninstall:"
     sed 's/^/  /' "$extensions_to_uninstall"
 fi
@@ -106,8 +106,8 @@ fi
 failed_installs=()
 failed_uninstalls=()
 
-while IFS= read -r extension || [[ -n "$extension" ]]; do
-    if [[ -z "$extension" ]]; then
+while IFS= read -r extension || [[ -n $extension ]]; do
+    if [[ -z $extension ]]; then
         continue
     fi
 
@@ -116,8 +116,8 @@ while IFS= read -r extension || [[ -n "$extension" ]]; do
     fi
 done <"$extensions_to_install"
 
-while IFS= read -r extension || [[ -n "$extension" ]]; do
-    if [[ -z "$extension" ]]; then
+while IFS= read -r extension || [[ -n $extension ]]; do
+    if [[ -z $extension ]]; then
         continue
     fi
 

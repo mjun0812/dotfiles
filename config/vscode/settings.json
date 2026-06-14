@@ -74,6 +74,9 @@
   "[scss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[skill]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
   "[sql]": {
     "editor.formatOnSave": false,
     "editor.formatOnType": false
@@ -185,6 +188,7 @@
   "go.formatTool": "gofumpt",
   "go.lintFlags": ["--fast"],
   "go.lintTool": "golangci-lint",
+  "go.toolsManagement.autoUpdate": true,
   "gopls": {
     "templateExtensions": ["tmpl", "gohtml", "gotmpl"],
     "ui.semanticTokens": true
@@ -338,7 +342,6 @@
   "pasteImage.defaultName": "YMMDD_HHmmss",
   "pasteImage.path": "${currentFileDir}/images",
   "prettier.resolveGlobalModules": true,
-  "python.analysis.autoImportCompletions": false,
   "python.languageServer": "None",
   "python.terminal.activateEnvInCurrentTerminal": true,
   "python.terminal.activateEnvironment": false,
@@ -346,7 +349,7 @@
   "remote.SSH.lockfilesInTmp": true,
   "scm.alwaysShowRepositories": true,
   "scm.compactFolders": false,
-  "scm.defaultViewMode": "tree",
+  "scm.defaultViewMode": "list",
   "scm.inputFontFamily": "editor",
   "search.showLineNumbers": true,
   "security.workspace.trust.untrustedFiles": "open",
@@ -414,9 +417,5 @@
   "workbench.startupEditor": "none",
   "workbench.tree.indent": 16,
   "workbench.tree.renderIndentGuides": "always",
-  "workbench.view.alwaysShowHeaderActions": true,
-  "go.toolsManagement.autoUpdate": true,
-  "[skill]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  }
+  "workbench.view.alwaysShowHeaderActions": true
 }

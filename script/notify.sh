@@ -17,15 +17,15 @@ set -euo pipefail
 # Parse force mode flag
 FORCE_MODE="auto"
 case "${1:-}" in
-  --osc)
+--osc)
     FORCE_MODE="osc"
     shift
     ;;
-  --native)
+--native)
     FORCE_MODE="native"
     shift
     ;;
-  --emit-osc)
+--emit-osc)
     FORCE_MODE="emit"
     shift
     ;;
@@ -35,93 +35,93 @@ TITLE="${1:-Claude Code}"
 MESSAGE="${2:-Notification}"
 
 # Determine if we should use OSC notification
-USE_OSC=$([[ "$FORCE_MODE" == "osc" || "$FORCE_MODE" == "emit" || ( "$FORCE_MODE" == "auto" && ( -n "${SSH_CONNECTION:-}" || -n "${SSH_CLIENT:-}" || -n "${SSH_TTY:-}" ) ) ]] && printf 'true' || printf 'false')
+USE_OSC=$([[ $FORCE_MODE == "osc" || $FORCE_MODE == "emit" || ($FORCE_MODE == "auto" && (-n ${SSH_CONNECTION:-} || -n ${SSH_CLIENT:-} || -n ${SSH_TTY:-})) ]] && printf 'true' || printf 'false')
 
 # Handle OSC notification
-if [[ "$USE_OSC" == "true" ]]; then
-  # Sanitize title and message: remove control chars and replace ';'
-  SAFE_TITLE="$(printf '%s' "$TITLE" | LC_ALL=C tr -d '\000-\010\013-\037\177' | sed 's/;/,/g')"
-  SAFE_MESSAGE="$(printf '%s' "$MESSAGE" | LC_ALL=C tr -d '\000-\010\013-\037\177' | sed 's/;/,/g')"
+if [[ $USE_OSC == "true" ]]; then
+    # Sanitize title and message: remove control chars and replace ';'
+    SAFE_TITLE="$(printf '%s' "$TITLE" | LC_ALL=C tr -d '\000-\010\013-\037\177' | sed 's/;/,/g')"
+    SAFE_MESSAGE="$(printf '%s' "$MESSAGE" | LC_ALL=C tr -d '\000-\010\013-\037\177' | sed 's/;/,/g')"
 
-  # Detect client terminal to choose the correct OSC protocol
-  OSC_KIND="777"
-  if [[ -n "${ITERM_SESSION_ID:-}" || "${TERM_PROGRAM:-}" == "iTerm.app" ]]; then
-    OSC_KIND="9"
-  elif [[ -n "${WEZTERM_PANE:-}" || "${TERM_PROGRAM:-}" == "WezTerm" ]]; then
+    # Detect client terminal to choose the correct OSC protocol
     OSC_KIND="777"
-  elif [[ "${TERM_PROGRAM:-}" == "vscode" || -n "${VSCODE_IPC_HOOK_CLI:-}" || -n "${VSCODE_PID:-}" ]]; then
-    OSC_KIND="777"
-  elif [[ "${TERM_PROGRAM:-}" == "cursor" || -n "${CURSOR_IPC_HOOK_CLI:-}" || -n "${CURSOR_TRACE_ID:-}" ]]; then
-    OSC_KIND="777"
-  fi
+    if [[ -n ${ITERM_SESSION_ID:-} || ${TERM_PROGRAM:-} == "iTerm.app" ]]; then
+        OSC_KIND="9"
+    elif [[ -n ${WEZTERM_PANE:-} || ${TERM_PROGRAM:-} == "WezTerm" ]]; then
+        OSC_KIND="777"
+    elif [[ ${TERM_PROGRAM:-} == "vscode" || -n ${VSCODE_IPC_HOOK_CLI:-} || -n ${VSCODE_PID:-} ]]; then
+        OSC_KIND="777"
+    elif [[ ${TERM_PROGRAM:-} == "cursor" || -n ${CURSOR_IPC_HOOK_CLI:-} || -n ${CURSOR_TRACE_ID:-} ]]; then
+        OSC_KIND="777"
+    fi
 
-  # Build OSC sequence
-  # OSC 777: WezTerm, VSCode, Cursor (supports title + body)
-  # OSC 9: iTerm2 (single message only, combine title and body)
-  if [[ "$OSC_KIND" == "9" ]]; then
-    OSC_PAYLOAD="$(printf '\e]9;%s: %s\a' "$SAFE_TITLE" "$SAFE_MESSAGE")"
-  else
-    OSC_PAYLOAD="$(printf '\e]777;notify;%s;%s\e\\' "$SAFE_TITLE" "$SAFE_MESSAGE")"
-  fi
+    # Build OSC sequence
+    # OSC 777: WezTerm, VSCode, Cursor (supports title + body)
+    # OSC 9: iTerm2 (single message only, combine title and body)
+    if [[ $OSC_KIND == "9" ]]; then
+        OSC_PAYLOAD="$(printf '\e]9;%s: %s\a' "$SAFE_TITLE" "$SAFE_MESSAGE")"
+    else
+        OSC_PAYLOAD="$(printf '\e]777;notify;%s;%s\e\\' "$SAFE_TITLE" "$SAFE_MESSAGE")"
+    fi
 
-  # Wrap in tmux passthrough if inside tmux
-  if [[ -n "${TMUX:-}" ]]; then
-    OSC_PAYLOAD="$(printf '\033Ptmux;\033%s\033\\' "$OSC_PAYLOAD")"
-  fi
+    # Wrap in tmux passthrough if inside tmux
+    if [[ -n ${TMUX:-} ]]; then
+        OSC_PAYLOAD="$(printf '\033Ptmux;\033%s\033\\' "$OSC_PAYLOAD")"
+    fi
 
-  # In emit mode, print the raw OSC payload to stdout only and exit. The caller
-  # (notify-claude-hook.sh) wraps it into a Claude Code terminalSequence so that
-  # Claude Code itself writes the sequence to the terminal. Do not write to the
-  # terminal directly nor fall back to native notifications here.
-  if [[ "$FORCE_MODE" == "emit" ]]; then
-    printf '%b' "$OSC_PAYLOAD"
-    exit 0
-  fi
+    # In emit mode, print the raw OSC payload to stdout only and exit. The caller
+    # (notify-claude-hook.sh) wraps it into a Claude Code terminalSequence so that
+    # Claude Code itself writes the sequence to the terminal. Do not write to the
+    # terminal directly nor fall back to native notifications here.
+    if [[ $FORCE_MODE == "emit" ]]; then
+        printf '%b' "$OSC_PAYLOAD"
+        exit 0
+    fi
 
-  # Determine output target. Fall through to native notifications if OSC cannot be delivered.
-  if [[ -t 1 ]]; then
-    printf '%b' "$OSC_PAYLOAD" && exit 0
-  elif [[ -e /dev/tty ]] && printf '%b' "$OSC_PAYLOAD" 2>/dev/null > /dev/tty; then
-    exit 0
-  fi
+    # Determine output target. Fall through to native notifications if OSC cannot be delivered.
+    if [[ -t 1 ]]; then
+        printf '%b' "$OSC_PAYLOAD" && exit 0
+    elif [[ -e /dev/tty ]] && printf '%b' "$OSC_PAYLOAD" 2>/dev/null >/dev/tty; then
+        exit 0
+    fi
 fi
 
 # ################ Native notification ################
 # detect OS
 OS_TYPE="unknown"
 case "$(uname -s)" in
-  Darwin*)
+Darwin*)
     OS_TYPE="mac"
     ;;
-  Linux*)
+Linux*)
     if grep -qEi "(Microsoft|WSL)" /proc/version 2>/dev/null; then
-      OS_TYPE="wsl"
+        OS_TYPE="wsl"
     else
-      OS_TYPE="linux"
+        OS_TYPE="linux"
     fi
     ;;
-  MINGW* | MSYS* | CYGWIN*)
+MINGW* | MSYS* | CYGWIN*)
     OS_TYPE="windows"
     ;;
 esac
 
 # Send native notification based on OS
 case "$OS_TYPE" in
-  mac)
+mac)
     osascript -e "display notification \"${MESSAGE}\" with title \"${TITLE}\""
     ;;
-  linux)
+linux)
     if command -v notify-send &>/dev/null; then
-      notify-send "${TITLE}" "${MESSAGE}" --urgency=normal
+        notify-send "${TITLE}" "${MESSAGE}" --urgency=normal
     elif command -v zenity &>/dev/null; then
-      zenity --notification --text="${TITLE}: ${MESSAGE}" &>/dev/null &
+        zenity --notification --text="${TITLE}: ${MESSAGE}" &>/dev/null &
     elif command -v kdialog &>/dev/null; then
-      kdialog --passivepopup "${MESSAGE}" 5 --title "${TITLE}" &>/dev/null &
+        kdialog --passivepopup "${MESSAGE}" 5 --title "${TITLE}" &>/dev/null &
     fi
     ;;
-  wsl)
+wsl)
     if command -v powershell.exe &>/dev/null; then
-      powershell.exe -Command "
+        powershell.exe -Command "
         [windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
         [Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType = WindowsRuntime] | Out-Null
         \$template = '<toast><visual><binding template=\"ToastText02\"><text id=\"1\">${TITLE}</text><text id=\"2\">${MESSAGE}</text></binding></visual></toast>'
@@ -132,9 +132,9 @@ case "$OS_TYPE" in
       " 2>/dev/null || true
     fi
     ;;
-  windows)
+windows)
     if command -v powershell &>/dev/null; then
-      powershell -Command "
+        powershell -Command "
         Add-Type -AssemblyName System.Windows.Forms
         \$balloon = New-Object System.Windows.Forms.NotifyIcon
         \$balloon.Icon = [System.Drawing.SystemIcons]::Information
@@ -146,7 +146,7 @@ case "$OS_TYPE" in
         \$balloon.Dispose()
       " 2>/dev/null || true
     elif command -v msg &>/dev/null; then
-      msg "%username%" "${TITLE}: ${MESSAGE}" 2>/dev/null || true
+        msg "%username%" "${TITLE}: ${MESSAGE}" 2>/dev/null || true
     fi
     ;;
 esac
