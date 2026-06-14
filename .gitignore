@@ -9,6 +9,8 @@
 !.gitmodules
 !.github
 !.github/**
+!.pre-commit-config.yaml
+!.oxfmtrc.json
 
 !config
 !config/**
