@@ -1,47 +1,57 @@
 [tools]
-# lang
+# Languages & Runtimes
 go = "latest"
 rust = "latest"
-cmake = "latest"
 node = "lts"
 bun = "latest"
 pnpm = "latest"
-delta = "latest"
+cmake = "latest"
+
+# Shell & CLI utilities
 eza = "latest"
-gh = "latest"
-ghq = "latest"
 jq = "latest"
-lazygit = "latest"
+starship = "latest"
+tmux = "latest"
+yazi = "latest"
 yq = "latest"
 zoxide = "latest"
-"aqua:aws/aws-cli" = "latest"
 "aqua:sharkdp/bat" = "latest"
 "aqua:sharkdp/fd" = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
-"github:d-kuro/gwq" = "latest"
-"github:WGUNDERWOOD/tex-fmt" = "latest"
-"aqua:neovim/neovim" = "latest"
+
+# Editor
 tree-sitter = "latest"
-starship = "latest"
+"aqua:neovim/neovim" = "latest"
+
+# Git
+delta = "latest"
 git-lfs = "latest"
-tmux = "latest"
-yazi = "latest"
-gemini-cli = "latest"
-codex = "latest"
-opencode = "latest"
-claude = "latest"
-"npm:@github/copilot" = "latest"
-shfmt = "latest"
+gh = "latest"
+ghq = "latest"
+lazygit = "latest"
+"github:d-kuro/gwq" = "latest"
+
+# Dev tooling
 actionlint = "latest"
-sheldon = "latest"
+aqua = "latest"
 chezmoi = "latest"
 kubectl = "latest"
-aqua = "latest"
-"aqua:google-antigravity/antigravity-cli" = "latest"
-shellcheck = "latest"
-prek = "latest"
 pre-commit = "latest"
+prek = "latest"
+sheldon = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+"aqua:aws/aws-cli" = "latest"
+"github:WGUNDERWOOD/tex-fmt" = "latest"
+
+# AI coding agents
+claude = "latest"
+codex = "latest"
+gemini-cli = "latest"
+opencode = "latest"
+"aqua:google-antigravity/antigravity-cli" = "latest"
+"npm:@github/copilot" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
@@ -52,3 +62,5 @@ aqua.registry_url = "https://github.com/aquaproj/aqua-registry"
 aqua.registry_cache_ttl = "1d"
 aqua.baked_registry = true
 trusted_config_paths = ["/"]
+minimum_release_age = "24h"
+minimum_release_age_excludes = ["claude", "codex", "aqua:google-antigravity/antigravity-cli"]
