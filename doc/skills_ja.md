@@ -1,0 +1,135 @@
+# Agent Skills
+
+このドキュメントは、本リポジトリに同梱されているAI agent skillと、それらの依存関係について説明します。
+
+Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) 配下にあり、`install.sh` によって以下へsymlinkとしてデプロイされます。
+
+- `~/.agents/skills/<skill>` — 共有skillディレクトリ
+- `~/.claude/skills/<skill>` — Claude Code
+- `~/.codex/skills/<skill>` — Codex
+- `~/.gemini/antigravity-cli/skills/<skill>` — Antigravity CLI
+
+`config/ai-agents/skills/` 配下のファイルを編集すると、symlink経由ですべてのagentに同時に反映されます。
+
+## Skill一覧
+
+各skillは `SKILL.md` を含むディレクトリです。Agentはfront-matterの `description` を読んで、いつ使うかを判断します。
+
+### Git
+
+| Skill                                                                      | 用途                                                                                       |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [`git-commit`](../config/ai-agents/skills/git-commit/SKILL.md)             | 現在の変更を適切な単位でstaging・commitする                                                |
+| [`git-commit-push`](../config/ai-agents/skills/git-commit-push/SKILL.md)   | `git-commit` を実行した後、現在のbranchをpushする                                          |
+| [`git-squash`](../config/ai-agents/skills/git-squash/SKILL.md)             | 現在のbranchのcommitをsquash・整理し、必要なら force-with-lease でpushする                 |
+| [`git-fix-conflict`](../config/ai-agents/skills/git-fix-conflict/SKILL.md) | merge、rebase、cherry-pick、revert、apply、PR などで発生したコンフリクトを検出して解消する |
+
+### GitHub Issue
+
+| Skill                                                                                                    | 用途                                                                                                                                |
+| -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)                         | ユーザーから情報を収集してGitHub Issueを作成する                                                                                    |
+| [`github-issue-create-with-grill`](../config/ai-agents/skills/github-issue-create-with-grill/SKILL.md)   | ワンショット: 新規issueの設計を `grill-self` で詰めた上で、決定ログを埋め込んで `github-issue-create` を実行する                    |
+| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md)                     | リポジトリをスキャンしてissue化すべき事項を発見し、既存issueとの重複を除いた上で承認のもと一括起票する（`--auto` で承認をスキップ） |
+| [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)                         | open issueを点検し、古い・解決済み・重複・陳腐化したissueをclose／追記する                                                          |
+| [`github-issue-resolve`](../config/ai-agents/skills/github-issue-resolve/SKILL.md)                       | 一気通貫: 指定issueの調査 → 議論または実装判断 → worktree作成 → 実装 → PR作成                                                       |
+| [`github-issue-resolve-with-grill`](../config/ai-agents/skills/github-issue-resolve-with-grill/SKILL.md) | ワンショット: issueの実装計画を `grill-self` で詰めた上で、決定ログに沿って `github-issue-resolve` を実行する                       |
+
+### GitHub Pull Request
+
+| Skill                                                                                              | 用途                                                                                                |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                         | 現在のbranchからPull Requestを作成する                                                              |
+| [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                         | PRのworktree上で並列にreviewer subagentを実行し、統合レビューとインラインコメントを投稿する         |
+| [`github-pr-create-self-review`](../config/ai-agents/skills/github-pr-create-self-review/SKILL.md) | ワンショット: `github-pr-create` 実行後、作成されたPRに対してそのまま `github-pr-review` を実行する |
+| [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                               | PRの全問題（コンフリクト、CI失敗、レビューコメント）を専用worktree内で検出・修正する                |
+| [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                               | CIのステータスを確認し、失敗を分析して修正を適用する                                                |
+| [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md)       | PRのレビューコメントを確認し、対応・返信する                                                        |
+
+### Planning & Design
+
+| Skill                                                          | 用途                                                                                        |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [`grill-me`](../config/ai-agents/skills/grill-me/SKILL.md)     | 計画・設計について、すべての意思決定分岐が解消されるまで1問ずつユーザーに対話的に問いかける |
+| [`grill-self`](../config/ai-agents/skills/grill-self/SKILL.md) | 自律grill: agentが自分で調査し各設計判断を解消した上で、最後に決定ログを提示する            |
+
+### Docs & Notes
+
+| Skill                                                        | 用途                                                                                                              |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| [`docs-sync`](../config/ai-agents/skills/docs-sync/SKILL.md) | リポジトリ内のドキュメント（Markdown、docstring、OpenAPI、設定サンプル）を実装と差分比較し、乖離を更新する        |
+| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)     | 現在の会話の調査内容を、自己完結型の日本語Markdownファイル（`YYYYMMDD_*.md`）としてカレントディレクトリに保存する |
+
+### Cross-Agent Consultation
+
+これらはuser-invoked専用（`disable-model-invocation: true`）で、agentが自発的に起動することはありません。
+
+| Skill                                                          | 用途                                                                                                  |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [`ask-claude`](../config/ai-agents/skills/ask-claude/SKILL.md) | Claude Code (`claude -p`) に明示的なユーザー依頼へのセカンドオピニオンを求める                        |
+| [`ask-codex`](../config/ai-agents/skills/ask-codex/SKILL.md)   | Codex (`codex exec`, read-onlyサンドボックス) に明示的なユーザー依頼へのセカンドオピニオンを求める    |
+| [`ask-gemini`](../config/ai-agents/skills/ask-gemini/SKILL.md) | Antigravity CLI (`agy --sandbox -p`) 経由でGeminiに明示的なユーザー依頼へのセカンドオピニオンを求める |
+
+### Misc
+
+| Skill                                                                          | 用途                                                                                           |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| [`resume-other-agent`](../config/ai-agents/skills/resume-other-agent/SKILL.md) | 別のcoding agent（Codex / Claude Code）をsession IDで指定し、直前のcontextを復元してresumeする |
+| [`summarize-pdf`](../config/ai-agents/skills/summarize-pdf/SKILL.md)           | PDFファイルを要約する                                                                          |
+
+## Dependencies
+
+以下のskillはagentの `Skill` tool経由で他のskillを呼び出します。矢印はcallerからcalleeへ向かいます。
+
+```mermaid
+graph LR
+    git-commit-push --> git-commit
+    git-squash -. on conflict .-> git-fix-conflict
+    docs-sync -. on commit .-> git-commit
+
+    github-issue-discover --> github-issue-create
+    github-issue-resolve --> github-issue-create
+    github-issue-resolve --> github-pr-create
+    github-issue-resolve --> git-commit
+
+    github-issue-create-with-grill --> grill-self
+    github-issue-create-with-grill --> github-issue-create
+
+    github-issue-resolve-with-grill --> grill-self
+    github-issue-resolve-with-grill --> github-issue-resolve
+
+    github-pr-create-self-review --> github-pr-create
+    github-pr-create-self-review --> github-pr-review
+
+    github-pr-fix --> git-fix-conflict
+    github-pr-fix --> github-fix-ci
+    github-pr-fix --> github-resolve-pr-comment
+```
+
+### Caller → callee 表
+
+| Caller                            | Callee                                                             | タイミング                                                   |
+| --------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------ |
+| `git-commit-push`                 | `git-commit`                                                       | 常に（push前のcommitステップ）                               |
+| `git-squash`                      | `git-fix-conflict`                                                 | squash中にコンフリクトが発生した場合のみ                     |
+| `docs-sync`                       | `git-commit`                                                       | ユーザーがドキュメント更新のcommitを選択した場合             |
+| `github-issue-discover`           | `github-issue-create`                                              | 承認された候補ごとに1回ずつ（並列実行）                      |
+| `github-issue-resolve`            | `github-issue-create` _(間接的)_, `git-commit`, `github-pr-create` | 実装フェーズのcommitと最終的なPR作成                         |
+| `github-issue-create-with-grill`  | `grill-self`, `github-issue-create`                                | Phase 2で設計をgrill、Phase 3で決定ログを埋め込んでissue作成 |
+| `github-issue-resolve-with-grill` | `grill-self`, `github-issue-resolve`                               | Phase 2で設計をgrill、Phase 3で決定ログに沿って実装          |
+| `github-pr-create-self-review`    | `github-pr-create`, `github-pr-review`                             | ワンショットフローのPhase 1とPhase 3                         |
+| `github-pr-fix`                   | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment`   | 対応する問題が検出された場合のみ各calleeを実行               |
+
+### Standalone skills
+
+以下のskillは他のskillへ委譲しません。
+
+`ask-claude`, `ask-codex`, `ask-gemini`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `md-note`, `resume-other-agent`, `summarize-pdf`.
+
+注: `github-issue-update` はSKILL.md内で `github-issue-discover` / `github-pr-review` / `github-resolve-pr-comment` に言及していますが、これはスコープの境界を明示するためであり、意図的に呼び出さないようにしています。
+
+## Conventions
+
+- Skill名はkebab-caseで、ドメイン単位（`git-*`、`github-*`、いくつかの汎用skill）にスコープされます。
+- Front matter（`name`、`description`、`allowed-tools`）はagentが読む契約です。`description` はskillが正しくトリガーされるよう十分に具体的に書き、本体から呼び出すsub-skillは `allowed-tools` に `Skill(<dep>)` として記載してください。
+- 既存skillの挙動を拡張する場合は、ロジックを複製するのではなく `Skill` tool経由で元のskillを呼び出すことを優先してください。改善がすべてのagentに一箇所で行き渡ります。
