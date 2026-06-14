@@ -13,34 +13,34 @@ PR=""
 ONLY_UNRESOLVED=0
 
 while [[ $# -gt 0 ]]; do
-  case "$1" in
+    case "$1" in
     --repo)
-      REPO="$2"
-      shift 2
-      ;;
+        REPO="$2"
+        shift 2
+        ;;
     --pr)
-      PR="$2"
-      shift 2
-      ;;
+        PR="$2"
+        shift 2
+        ;;
     --only-unresolved)
-      ONLY_UNRESOLVED=1
-      shift
-      ;;
+        ONLY_UNRESOLVED=1
+        shift
+        ;;
     *)
-      echo "Unknown argument: $1" >&2
-      exit 2
-      ;;
-  esac
+        echo "Unknown argument: $1" >&2
+        exit 2
+        ;;
+    esac
 done
 
-if [[ -z "$REPO" ]]; then
-  echo "Missing required argument: --repo" >&2
-  exit 2
+if [[ -z $REPO ]]; then
+    echo "Missing required argument: --repo" >&2
+    exit 2
 fi
 
-if [[ -z "$PR" ]]; then
-  echo "Missing required argument: --pr" >&2
-  exit 2
+if [[ -z $PR ]]; then
+    echo "Missing required argument: --pr" >&2
+    exit 2
 fi
 
 OWNER="${REPO%%/*}"
@@ -48,16 +48,16 @@ NAME="${REPO##*/}"
 RESULT_FILE="$(mktemp)"
 trap 'rm -f "$RESULT_FILE" "$RESULT_FILE.new"' EXIT
 
-echo "[]" > "$RESULT_FILE"
+echo "[]" >"$RESULT_FILE"
 
 CURSOR="null"
 while :; do
-  PAGE_JSON="$(gh api graphql \
-    -F owner="$OWNER" \
-    -F name="$NAME" \
-    -F pr="$PR" \
-    -F cursor="$CURSOR" \
-    -f query='
+    PAGE_JSON="$(gh api graphql \
+        -F owner="$OWNER" \
+        -F name="$NAME" \
+        -F pr="$PR" \
+        -F cursor="$CURSOR" \
+        -f query='
       query($owner: String!, $name: String!, $pr: Int!, $cursor: String) {
         repository(owner: $owner, name: $name) {
           pullRequest(number: $pr) {
@@ -87,7 +87,7 @@ while :; do
       }
     ')"
 
-  PAGE_THREADS="$(echo "$PAGE_JSON" | jq '
+    PAGE_THREADS="$(echo "$PAGE_JSON" | jq '
     .data.repository.pullRequest.reviewThreads.nodes
     | map({
         thread_id: .id,
@@ -108,21 +108,21 @@ while :; do
       })
   ')"
 
-  jq --argjson page "$PAGE_THREADS" '. + $page' "$RESULT_FILE" > "$RESULT_FILE.new"
-  mv "$RESULT_FILE.new" "$RESULT_FILE"
+    jq --argjson page "$PAGE_THREADS" '. + $page' "$RESULT_FILE" >"$RESULT_FILE.new"
+    mv "$RESULT_FILE.new" "$RESULT_FILE"
 
-  HAS_NEXT="$(echo "$PAGE_JSON" | jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.hasNextPage')"
-  END_CURSOR="$(echo "$PAGE_JSON" | jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.endCursor')"
+    HAS_NEXT="$(echo "$PAGE_JSON" | jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.hasNextPage')"
+    END_CURSOR="$(echo "$PAGE_JSON" | jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.endCursor')"
 
-  if [[ "$HAS_NEXT" != "true" ]]; then
-    break
-  fi
+    if [[ $HAS_NEXT != "true" ]]; then
+        break
+    fi
 
-  CURSOR="$END_CURSOR"
+    CURSOR="$END_CURSOR"
 done
 
-if [[ "$ONLY_UNRESOLVED" -eq 1 ]]; then
-  jq '[ .[] | select(.is_resolved == false) ]' "$RESULT_FILE"
+if [[ $ONLY_UNRESOLVED -eq 1 ]]; then
+    jq '[ .[] | select(.is_resolved == false) ]' "$RESULT_FILE"
 else
-  cat "$RESULT_FILE"
+    cat "$RESULT_FILE"
 fi

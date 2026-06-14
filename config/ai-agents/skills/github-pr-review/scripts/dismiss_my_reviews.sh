@@ -28,28 +28,43 @@ REVIEW_IDS=()
 MESSAGE="Superseded by new review"
 
 while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --repo) REPO="$2"; shift 2 ;;
-    --pr) PR="$2"; shift 2 ;;
-    --review-id) REVIEW_IDS+=("$2"); shift 2 ;;
-    --message) MESSAGE="$2"; shift 2 ;;
-    *) echo "Unknown argument: $1" >&2; exit 2 ;;
-  esac
+    case "$1" in
+    --repo)
+        REPO="$2"
+        shift 2
+        ;;
+    --pr)
+        PR="$2"
+        shift 2
+        ;;
+    --review-id)
+        REVIEW_IDS+=("$2")
+        shift 2
+        ;;
+    --message)
+        MESSAGE="$2"
+        shift 2
+        ;;
+    *)
+        echo "Unknown argument: $1" >&2
+        exit 2
+        ;;
+    esac
 done
 
-if [[ -z "$REPO" || -z "$PR" ]]; then
-  echo "Missing required argument: --repo and --pr are required" >&2
-  exit 2
+if [[ -z $REPO || -z $PR ]]; then
+    echo "Missing required argument: --repo and --pr are required" >&2
+    exit 2
 fi
 
 # If no explicit IDs given, discover all of the authenticated user's
 # APPROVED/CHANGES_REQUESTED reviews on this PR.
 if [[ ${#REVIEW_IDS[@]} -eq 0 ]]; then
-  VIEWER=$(gh api graphql -f query='{ viewer { login } }' --jq '.data.viewer.login')
-  while IFS= read -r review_id; do
-    [[ -z "$review_id" ]] && continue
-    REVIEW_IDS+=("$review_id")
-  done < <(gh api "repos/${REPO}/pulls/${PR}/reviews" --jq "
+    VIEWER=$(gh api graphql -f query='{ viewer { login } }' --jq '.data.viewer.login')
+    while IFS= read -r review_id; do
+        [[ -z $review_id ]] && continue
+        REVIEW_IDS+=("$review_id")
+    done < <(gh api "repos/${REPO}/pulls/${PR}/reviews" --jq "
     [.[]
       | select(.user.login == \"${VIEWER}\")
       | select(.state == \"APPROVED\" or .state == \"CHANGES_REQUESTED\")
@@ -60,13 +75,13 @@ fi
 
 DISMISSED_COUNT=0
 if [[ ${#REVIEW_IDS[@]} -gt 0 ]]; then
-  for review_id in "${REVIEW_IDS[@]}"; do
-    echo "Dismissing existing review #${review_id}..." >&2
-    gh api -X PUT \
-      "repos/${REPO}/pulls/${PR}/reviews/${review_id}/dismissals" \
-      -f message="$MESSAGE" >/dev/null
-    DISMISSED_COUNT=$((DISMISSED_COUNT + 1))
-  done
+    for review_id in "${REVIEW_IDS[@]}"; do
+        echo "Dismissing existing review #${review_id}..." >&2
+        gh api -X PUT \
+            "repos/${REPO}/pulls/${PR}/reviews/${review_id}/dismissals" \
+            -f message="$MESSAGE" >/dev/null
+        DISMISSED_COUNT=$((DISMISSED_COUNT + 1))
+    done
 fi
 
 echo "Dismissed ${DISMISSED_COUNT} review(s)." >&2

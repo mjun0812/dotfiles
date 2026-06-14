@@ -10,18 +10,18 @@ if ! command -v code >/dev/null 2>&1; then
     exit 0
 fi
 
-if [[ ! -f "$EXTENSIONS_FILE" ]]; then
+if [[ ! -f $EXTENSIONS_FILE ]]; then
     echo "VS Code extensions file not found: $EXTENSIONS_FILE" >&2
     exit 1
 fi
 
 failed_extensions=()
 
-while IFS= read -r extension || [[ -n "$extension" ]]; do
+while IFS= read -r extension || [[ -n $extension ]]; do
     extension="${extension%%#*}"
     extension="${extension//[[:space:]]/}"
 
-    if [[ -z "$extension" ]]; then
+    if [[ -z $extension ]]; then
         continue
     fi
 
@@ -30,7 +30,7 @@ while IFS= read -r extension || [[ -n "$extension" ]]; do
     fi
 done <"$EXTENSIONS_FILE"
 
-if (( ${#failed_extensions[@]} > 0 )); then
+if ((${#failed_extensions[@]} > 0)); then
     echo "Failed to install VS Code extensions:" >&2
     printf '  %s\n' "${failed_extensions[@]}" >&2
     exit 1

@@ -25,16 +25,25 @@ REPO=""
 PR=""
 
 while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --repo) REPO="$2"; shift 2 ;;
-    --pr) PR="$2"; shift 2 ;;
-    *) echo "Unknown argument: $1" >&2; exit 2 ;;
-  esac
+    case "$1" in
+    --repo)
+        REPO="$2"
+        shift 2
+        ;;
+    --pr)
+        PR="$2"
+        shift 2
+        ;;
+    *)
+        echo "Unknown argument: $1" >&2
+        exit 2
+        ;;
+    esac
 done
 
-if [[ -z "$REPO" || -z "$PR" ]]; then
-  echo "Missing required argument: --repo and --pr are required" >&2
-  exit 2
+if [[ -z $REPO || -z $PR ]]; then
+    echo "Missing required argument: --repo and --pr are required" >&2
+    exit 2
 fi
 
 OWNER="${REPO%%/*}"
@@ -47,13 +56,13 @@ CURSOR="null"
 RESOLVED_COUNT=0
 
 while true; do
-  if [[ "$CURSOR" == "null" ]]; then
-    AFTER_ARG="null"
-  else
-    AFTER_ARG="\"$CURSOR\""
-  fi
+    if [[ $CURSOR == "null" ]]; then
+        AFTER_ARG="null"
+    else
+        AFTER_ARG="\"$CURSOR\""
+    fi
 
-  RESPONSE=$(gh api graphql -f query="
+    RESPONSE=$(gh api graphql -f query="
     query {
       repository(owner: \"$OWNER\", name: \"$NAME\") {
         pullRequest(number: $PR) {
@@ -73,8 +82,8 @@ while true; do
     }
   ")
 
-  # Collect thread ids that are outdated, unresolved, and authored by viewer.
-  THREAD_IDS=$(echo "$RESPONSE" | jq -r --arg viewer "$VIEWER" '
+    # Collect thread ids that are outdated, unresolved, and authored by viewer.
+    THREAD_IDS=$(echo "$RESPONSE" | jq -r --arg viewer "$VIEWER" '
     .data.repository.pullRequest.reviewThreads.nodes[]
     | select(.isResolved == false)
     | select(.isOutdated == true)
@@ -82,24 +91,24 @@ while true; do
     | .id
   ')
 
-  while IFS= read -r thread_id; do
-    [[ -z "$thread_id" ]] && continue
-    echo "Resolving outdated thread $thread_id..." >&2
-    gh api graphql -f query="
+    while IFS= read -r thread_id; do
+        [[ -z $thread_id ]] && continue
+        echo "Resolving outdated thread $thread_id..." >&2
+        gh api graphql -f query="
       mutation {
         resolveReviewThread(input: {threadId: \"$thread_id\"}) {
           thread { id isResolved }
         }
       }
     " >/dev/null
-    RESOLVED_COUNT=$((RESOLVED_COUNT + 1))
-  done <<< "$THREAD_IDS"
+        RESOLVED_COUNT=$((RESOLVED_COUNT + 1))
+    done <<<"$THREAD_IDS"
 
-  HAS_NEXT=$(echo "$RESPONSE" | jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.hasNextPage')
-  if [[ "$HAS_NEXT" != "true" ]]; then
-    break
-  fi
-  CURSOR=$(echo "$RESPONSE" | jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.endCursor')
+    HAS_NEXT=$(echo "$RESPONSE" | jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.hasNextPage')
+    if [[ $HAS_NEXT != "true" ]]; then
+        break
+    fi
+    CURSOR=$(echo "$RESPONSE" | jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.endCursor')
 done
 
 echo "Resolved $RESOLVED_COUNT outdated review thread(s)." >&2
