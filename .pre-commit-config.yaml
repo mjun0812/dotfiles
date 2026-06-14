@@ -1,0 +1,17 @@
+repos:
+  - repo: local
+    hooks:
+      - id: oxfmt
+        name: oxfmt
+        entry: oxfmt
+        language: system
+        types_or: [markdown, json, yaml, javascript, jsx, ts, tsx, css]
+        pass_filenames: true
+
+      - id: shfmt
+        name: shfmt
+        entry: shfmt -w -s -i 4
+        language: system
+        types: [shell]
+        exclude_types: [zsh]
+        pass_filenames: true
