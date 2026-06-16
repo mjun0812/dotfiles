@@ -158,6 +158,66 @@ config.keys = {
         mods = 'SHIFT',
         action = wezterm.action.SendString('\n')
     },
+    {
+        key = 'd',
+        mods = 'CMD',
+        action = wezterm.action.SplitHorizontal({ domain = 'CurrentPaneDomain' })
+    },
+    {
+        key = 'd',
+        mods = 'CMD|SHIFT',
+        action = wezterm.action.SplitVertical({ domain = 'CurrentPaneDomain' })
+    },
+    {
+        key = 'w',
+        mods = 'CMD',
+        action = wezterm.action.CloseCurrentPane({ confirm = false })
+    },
+    {
+        key = 'w',
+        mods = 'CMD|SHIFT',
+        action = wezterm.action.CloseCurrentTab({ confirm = true })
+    },
+    {
+        key = 'LeftArrow',
+        mods = 'CMD|ALT',
+        action = wezterm.action.ActivatePaneDirection('Left')
+    },
+    {
+        key = 'RightArrow',
+        mods = 'CMD|ALT',
+        action = wezterm.action.ActivatePaneDirection('Right')
+    },
+    {
+        key = 'UpArrow',
+        mods = 'CMD|ALT',
+        action = wezterm.action.ActivatePaneDirection('Up')
+    },
+    {
+        key = 'DownArrow',
+        mods = 'CMD|ALT',
+        action = wezterm.action.ActivatePaneDirection('Down')
+    },
+    {
+        key = 'LeftArrow',
+        mods = 'CMD|CTRL',
+        action = wezterm.action.AdjustPaneSize({ 'Left', 3 })
+    },
+    {
+        key = 'RightArrow',
+        mods = 'CMD|CTRL',
+        action = wezterm.action.AdjustPaneSize({ 'Right', 3 })
+    },
+    {
+        key = 'UpArrow',
+        mods = 'CMD|CTRL',
+        action = wezterm.action.AdjustPaneSize({ 'Up', 3 })
+    },
+    {
+        key = 'DownArrow',
+        mods = 'CMD|CTRL',
+        action = wezterm.action.AdjustPaneSize({ 'Down', 3 })
+    },
 }
 
 -- Hyperlink 抽出と処理

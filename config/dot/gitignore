@@ -98,3 +98,4 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/macos,linux,windows,vim
 
 .claude/settings.local.json
+.claude/plans
