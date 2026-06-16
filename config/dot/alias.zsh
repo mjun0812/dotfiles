@@ -48,6 +48,12 @@ alias pbp='pbpaste'
 alias df='df -kh'
 alias du='du -kh'
 
+# Visual diff
+diff() {
+  command diff -u "$@" | delta
+  return $pipestatus[1]
+}
+
 # Claude Code
 alias claude="claude --mcp-config=${HOME}/.claude/mcp.json"
 alias cc-commit='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit en"'
