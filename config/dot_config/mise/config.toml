@@ -8,6 +8,7 @@ pnpm = "latest"
 cmake = "latest"
 
 # Shell & CLI utilities
+dust = "latest"
 eza = "latest"
 jq = "latest"
 starship = "latest"
