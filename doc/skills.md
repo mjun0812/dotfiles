@@ -60,6 +60,18 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 | [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift       |
 | [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | Save the current conversation's research as a self-contained Japanese Markdown file (`YYYYMMDD_*.md`) in the cwd |
 
+### Japanese Writing
+
+| Skill                                                                                | Purpose                                                                                                                                      |
+| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`japanese-tech-writing`](../config/ai-agents/skills/japanese-tech-writing/SKILL.md) | Style guide for writing and revising Japanese technical prose (formatting, paragraph-driven argument, removing LLM-flavored filler)          |
+| [`stop-ai-slop-jp`](../config/ai-agents/skills/stop-ai-slop-jp/SKILL.md)             | Edit AI-generated Japanese back into human-written prose — fixes missing authorial stance, propositional H2s, false-balance, monotone rhythm |
+
+Sources:
+
+- `japanese-tech-writing` — based on [k16shikano/fd287c3133457c4fd8f5601d34aa817d](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d)
+- `stop-ai-slop-jp` — based on [iKora128/stop-ai-slop-jp](https://github.com/iKora128/stop-ai-slop-jp)
+
 ### Cross-Agent Consultation
 
 These skills are user-invoked only (`disable-model-invocation: true`) — the agent does not trigger them on its own.
@@ -122,7 +134,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`ask-claude`, `ask-codex`, `ask-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `md-note`, `resume-other-agent`, `summarize-pdf`.
+`ask-claude`, `ask-codex`, `ask-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `stop-ai-slop-jp`, `summarize-pdf`.
 
 Note: `github-issue-update` mentions `github-issue-discover` / `github-pr-review` / `github-resolve-pr-comment` in its SKILL.md only to clarify scope boundaries — it deliberately does not invoke them.
 
