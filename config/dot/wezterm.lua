@@ -34,7 +34,7 @@ config.initial_cols = 110
 -- titlebar
 config.window_frame = {
     font = wezterm.font({ family = "RobotoMonoJP", weight = "Bold" }),
-    font_size = 10.0,
+    font_size = 11.0,
     inactive_titlebar_bg = "none",
     active_titlebar_bg = "none",
 }
@@ -56,7 +56,7 @@ config.inactive_pane_hsb = {
 }
 
 -- タブの最大幅
-config.tab_max_width = 20
+config.tab_max_width = 30
 -- タブ上のタイトルを消す
 if wezterm.target_triple == 'aarch64-apple-darwin' then
     config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
@@ -90,11 +90,40 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
         end
     end
 
-    title = wezterm.truncate_right(title, max_width)
-    local space_after = string.rep(" ", math.max(0, max_width - #title - 1))
+    -- 現在のタブで最大のものを取得
+    local longest_width = 0
+    for _, t in ipairs(tabs) do
+        local p = t.active_pane
+        local t_title = p.title or ""
+
+        if t_title == "" then
+            local cwd = p.current_working_dir
+            if cwd then
+                local path = cwd.file_path or tostring(cwd)
+                t_title = path:match("([^/]+)/?$") or path
+            else
+                t_title = "untitled"
+            end
+        end
+
+        longest_width = math.max(longest_width, wezterm.column_width(t_title))
+    end
+
+    -- 左に 1、右に最低 1 の余白を含めた目標幅。
+    -- ただし max_width は超えない。
+    local target_width = math.min(max_width, longest_width + 2)
+
+    -- 左右の余白ぶんを除いた、タイトル本体に使える最大幅。
+    local title_max_width = math.max(1, target_width - 2)
+
+    title = wezterm.truncate_right(title, title_max_width)
+
+    local title_width = wezterm.column_width(title)
+    local space_after = string.rep(" ", math.max(0, target_width - title_width - 1))
 
     return {
         { Text = " " .. title .. space_after },
+        -- { Text = " " .. title .. " " },
     }
 end)
 
