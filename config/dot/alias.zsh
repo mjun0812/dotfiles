@@ -144,3 +144,40 @@ _refresh_ssh_auth_sock() {
     [ -S "$sock" ] && export SSH_AUTH_SOCK="$sock"
 }
 precmd_functions+=(_refresh_ssh_auth_sock)
+
+# tmux 内で SSH agent forwarding の SSH_AUTH_SOCK が古くなる問題を自己修復する。
+# 正常時は stat 1 回で即 return するためプロンプトは遅くならない。
+_refresh_ssh_auth_sock() {
+    [ -z "$TMUX" ] && return            # tmux 外は何もしない
+    [ -S "$SSH_AUTH_SOCK" ] && return   # 既に有効なら fork せず終了
+    local sock
+    sock=$(tmux show-environment SSH_AUTH_SOCK 2>/dev/null)
+    sock=${sock#SSH_AUTH_SOCK=}
+    [ -S "$sock" ] && export SSH_AUTH_SOCK="$sock"
+}
+precmd_functions+=(_refresh_ssh_auth_sock)
+
+
+# SSH セッションかどうか
+_is_ssh_session() {
+    [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]
+}
+
+# Term のタブタイトルを hostname:command にする
+_term_tab_title() {
+    local title="$1"
+    printf '\033]1;%s\033\\' "$title"
+}
+
+_term_tab_title_precmd() {
+    _is_ssh_session || return
+    _term_tab_title "$HOST:zsh"
+}
+
+_term_tab_title_preexec() {
+    _is_ssh_session || return
+    _term_tab_title "$HOST:$1"
+}
+
+precmd_functions+=(_term_tab_title_precmd)
+preexec_functions+=(_term_tab_title_preexec)
