@@ -132,3 +132,15 @@ function cd_git_worktree_fzf() {
 }
 zle -N cd_git_worktree_fzf
 alias cd_gwq='cd_git_worktree_fzf'
+
+# tmux 内で SSH agent forwarding の SSH_AUTH_SOCK が古くなる問題を自己修復する。
+# 正常時は stat 1 回で即 return するためプロンプトは遅くならない。
+_refresh_ssh_auth_sock() {
+    [ -z "$TMUX" ] && return            # tmux 外は何もしない
+    [ -S "$SSH_AUTH_SOCK" ] && return   # 既に有効なら fork せず終了
+    local sock
+    sock=$(tmux show-environment SSH_AUTH_SOCK 2>/dev/null)
+    sock=${sock#SSH_AUTH_SOCK=}
+    [ -S "$sock" ] && export SSH_AUTH_SOCK="$sock"
+}
+precmd_functions+=(_refresh_ssh_auth_sock)
