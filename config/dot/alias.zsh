@@ -166,17 +166,23 @@ _is_ssh_session() {
 # Term のタブタイトルを hostname:command にする
 _term_tab_title() {
     local title="$1"
-    printf '\033]1;%s\033\\' "$title"
+    if [[ -n "$TMUX" ]]; then
+        # tmux passthrough + OSC 1
+        printf '\033Ptmux;\033\033]1;%s\007\033\\' "$title"
+    else
+        # tmux 外では普通に OSC 1
+        printf '\033]1;%s\007' "$title"
+    fi
 }
 
 _term_tab_title_precmd() {
     _is_ssh_session || return
-    _term_tab_title "$HOST:zsh"
+    _term_tab_title "${HOST}@zsh"
 }
 
 _term_tab_title_preexec() {
     _is_ssh_session || return
-    _term_tab_title "$HOST:$1"
+    _term_tab_title "${HOST}@$1"
 }
 
 precmd_functions+=(_term_tab_title_precmd)
