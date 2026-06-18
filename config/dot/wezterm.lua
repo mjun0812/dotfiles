@@ -20,10 +20,10 @@ config.macos_window_background_blur = 30
 
 -- Font
 config.font = wezterm.font_with_fallback({
-	"RobotoMonoJP",
-	"Roboto Mono",
-	"Noto Color Emoji",
-	"Noto Sans CJK JP",
+    "RobotoMonoJP",
+    "Roboto Mono",
+    "Noto Color Emoji",
+    "Noto Sans CJK JP",
 })
 config.font_size = 12.0
 
@@ -33,36 +33,36 @@ config.initial_rows = 30
 config.initial_cols = 110
 -- titlebar
 config.window_frame = {
-	font = wezterm.font({ family = "RobotoMonoJP", weight = "Bold" }),
-	font_size = 12.0,
-	inactive_titlebar_bg = "none",
-	active_titlebar_bg = "none",
+    font = wezterm.font({ family = "RobotoMonoJP", weight = "Bold" }),
+    font_size = 10.0,
+    inactive_titlebar_bg = "none",
+    active_titlebar_bg = "none",
 }
 -- 背景グラデーション
 config.window_background_gradient = {
-	colors = { "#000000" },
+    colors = { "#000000" },
 }
 -- Windowの余白
 config.window_padding = {
-	left = '0.5cell',
-	right = '0.5cell',
-	top = '0.1cell',
-	bottom = '0',
+    left = '0.5cell',
+    right = '0.5cell',
+    top = '0.1cell',
+    bottom = '0',
 }
 -- 非active paneの設定
 config.inactive_pane_hsb = {
-	saturation = 0.9,
-	brightness = 0.3,
+    saturation = 0.9,
+    brightness = 0.3,
 }
 
 -- タブの最大幅
-config.tab_max_width = 16
+config.tab_max_width = 20
 -- タブ上のタイトルを消す
 if wezterm.target_triple == 'aarch64-apple-darwin' then
-	config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
-	-- config.window_decorations = "RESIZE"
+    config.window_decorations = "INTEGRATED_BUTTONS | RESIZE"
+    -- config.window_decorations = "RESIZE"
 elseif wezterm.target_triple == 'x86_64-unknown-linux-gnu' then
-	config.window_decorations = "RESIZE"
+    config.window_decorations = "RESIZE"
 end
 -- タブが一つのときタブバーを隠す
 config.hide_tab_bar_if_only_one_tab = false
@@ -76,211 +76,202 @@ config.show_tab_index_in_tab_bar = false
 config.use_fancy_tab_bar = true
 -- tabのtitle
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	local pane = tab.active_pane
+    local pane = tab.active_pane
 
-	local title = pane.title or ""
+    local title = pane.title or ""
 
-	if title == "" then
-		local cwd = pane.current_working_dir
-		if cwd then
-			local path = cwd.file_path or tostring(cwd)
-			title = path:match("([^/]+)/?$") or path
-		else
-			title = "untitled"
-		end
-	end
+    if title == "" then
+        local cwd = pane.current_working_dir
+        if cwd then
+            local path = cwd.file_path or tostring(cwd)
+            title = path:match("([^/]+)/?$") or path
+        else
+            title = "untitled"
+        end
+    end
 
-	-- ローカル側で ssh コマンドが前面にいる場合だけ "ssh " を付ける
-	local proc = pane.foreground_process_name or ""
-	local proc_name = proc:match("([^/\\]+)$") or proc
+    title = wezterm.truncate_right(title, max_width)
+    local space_after = string.rep(" ", math.max(0, max_width - #title - 1))
 
-	if proc_name == "ssh" then
-		title = "ssh " .. title
-	end
-
-	title = wezterm.truncate_right(title, max_width)
-
-	local space_after = string.rep(" ", math.max(0, max_width - #title - 1))
-
-	return {
-		{ Text = " " .. title .. space_after },
-	}
+    return {
+        { Text = " " .. title .. space_after },
+    }
 end)
 
 config.colors = {
-	-- ターミナルの文字色
-	foreground = "#eaeaea",
-	-- ターミナルの背景色
-	background = "#000000",
-	-- カーソル
-	cursor_bg = "#00a7ff",
-	cursor_border = "#00a7ff",
-	-- tab bar
-	tab_bar = {
-		background = "#000000",
-		-- タブの境界線を削除
-		inactive_tab_edge = "none",
-		active_tab = {
-			bg_color = "#292a35",
-			fg_color = "#eaeaea",
-			intensity = "Bold",
-		},
-		inactive_tab_hover = {
-			bg_color = '#3b3052',
-			fg_color = '#909090',
-			italic = true,
-		},
-		inactive_tab = {
-			bg_color = "rgba(0,0,0,0.0)",
-			fg_color = "#7b7b7b",
-			intensity = "Half",
-		},
-	},
-	-- colors
-	ansi = {
-		"#000000", -- black
-		"#fe533e", -- red
-		"#57dc76", -- green
-		"#fecb00", -- yellow
-		"#00a7ff", -- blue
-		"#ff4867", -- magenta
-		"#69d1fa", -- cyan
-		"#eaeaea", -- white
-	},
-	brights = {
-		"#7b7b7b", -- gray
-		"#fe533e", -- red
-		"#57dc76", -- green
-		"#fecb00", -- yellow
-		"#00a7ff", -- blue
-		"#ff4867", -- magenta
-		"#69d1fa", -- cyan
-		"#eaeaea", -- white
-	},
+    -- ターミナルの文字色
+    foreground = "#eaeaea",
+    -- ターミナルの背景色
+    background = "#000000",
+    -- カーソル
+    cursor_bg = "#00a7ff",
+    cursor_border = "#00a7ff",
+    -- tab bar
+    tab_bar = {
+        background = "#000000",
+        -- タブの境界線を削除
+        inactive_tab_edge = "none",
+        active_tab = {
+            bg_color = "#292a35",
+            fg_color = "#eaeaea",
+            intensity = "Normal",
+        },
+        inactive_tab_hover = {
+            bg_color = '#3b3052',
+            fg_color = '#909090',
+            italic = true,
+        },
+        inactive_tab = {
+            bg_color = "rgba(0,0,0,0.0)",
+            fg_color = "#7b7b7b",
+            intensity = "Half",
+        },
+    },
+    -- colors
+    ansi = {
+        "#000000", -- black
+        "#fe533e", -- red
+        "#57dc76", -- green
+        "#fecb00", -- yellow
+        "#00a7ff", -- blue
+        "#ff4867", -- magenta
+        "#69d1fa", -- cyan
+        "#eaeaea", -- white
+    },
+    brights = {
+        "#7b7b7b", -- gray
+        "#fe533e", -- red
+        "#57dc76", -- green
+        "#fecb00", -- yellow
+        "#00a7ff", -- blue
+        "#ff4867", -- magenta
+        "#69d1fa", -- cyan
+        "#eaeaea", -- white
+    },
 }
 
 -- tmuxなどのマウスレポーティング有効アプリでもCmd+クリックを横取りする
 config.bypass_mouse_reporting_modifiers = 'CMD'
 -- mouse bindings
 config.mouse_bindings = {
-	-- Ctrl-click will open the link under the mouse cursor
-	{
-		event = { Up = { streak = 1, button = 'Left' } },
-		mods = 'CTRL',
-		action = wezterm.action.OpenLinkAtMouseCursor,
-	},
-	{
-		event = { Up = { streak = 1, button = 'Left' } },
-		mods = 'CMD',
-		action = wezterm.action.OpenLinkAtMouseCursor,
-	},
+    -- Ctrl-click will open the link under the mouse cursor
+    {
+        event = { Up = { streak = 1, button = 'Left' } },
+        mods = 'CTRL',
+        action = wezterm.action.OpenLinkAtMouseCursor,
+    },
+    {
+        event = { Up = { streak = 1, button = 'Left' } },
+        mods = 'CMD',
+        action = wezterm.action.OpenLinkAtMouseCursor,
+    },
 }
 -- key binding
 config.keys = {
-	{
-		key = 'Enter',
-		mods = 'SHIFT',
-		action = wezterm.action.SendString('\n')
-	},
-	{
-		key = 'd',
-		mods = 'CMD',
-		action = wezterm.action.SplitHorizontal({ domain = 'CurrentPaneDomain' })
-	},
-	{
-		key = 'd',
-		mods = 'CMD|SHIFT',
-		action = wezterm.action.SplitVertical({ domain = 'CurrentPaneDomain' })
-	},
-	{
-		key = 'w',
-		mods = 'CMD',
-		action = wezterm.action.CloseCurrentPane({ confirm = false })
-	},
-	{
-		key = 'w',
-		mods = 'CMD|SHIFT',
-		action = wezterm.action.CloseCurrentTab({ confirm = true })
-	},
-	{
-		key = 'LeftArrow',
-		mods = 'CMD|ALT',
-		action = wezterm.action.ActivatePaneDirection('Left')
-	},
-	{
-		key = 'RightArrow',
-		mods = 'CMD|ALT',
-		action = wezterm.action.ActivatePaneDirection('Right')
-	},
-	{
-		key = 'UpArrow',
-		mods = 'CMD|ALT',
-		action = wezterm.action.ActivatePaneDirection('Up')
-	},
-	{
-		key = 'DownArrow',
-		mods = 'CMD|ALT',
-		action = wezterm.action.ActivatePaneDirection('Down')
-	},
-	{
-		key = 'LeftArrow',
-		mods = 'CMD|CTRL',
-		action = wezterm.action.AdjustPaneSize({ 'Left', 3 })
-	},
-	{
-		key = 'RightArrow',
-		mods = 'CMD|CTRL',
-		action = wezterm.action.AdjustPaneSize({ 'Right', 3 })
-	},
-	{
-		key = 'UpArrow',
-		mods = 'CMD|CTRL',
-		action = wezterm.action.AdjustPaneSize({ 'Up', 3 })
-	},
-	{
-		key = 'DownArrow',
-		mods = 'CMD|CTRL',
-		action = wezterm.action.AdjustPaneSize({ 'Down', 3 })
-	},
+    {
+        key = 'Enter',
+        mods = 'SHIFT',
+        action = wezterm.action.SendString('\n')
+    },
+    {
+        key = 'd',
+        mods = 'CMD',
+        action = wezterm.action.SplitHorizontal({ domain = 'CurrentPaneDomain' })
+    },
+    {
+        key = 'd',
+        mods = 'CMD|SHIFT',
+        action = wezterm.action.SplitVertical({ domain = 'CurrentPaneDomain' })
+    },
+    {
+        key = 'w',
+        mods = 'CMD',
+        action = wezterm.action.CloseCurrentPane({ confirm = false })
+    },
+    {
+        key = 'w',
+        mods = 'CMD|SHIFT',
+        action = wezterm.action.CloseCurrentTab({ confirm = true })
+    },
+    {
+        key = 'LeftArrow',
+        mods = 'CMD|ALT',
+        action = wezterm.action.ActivatePaneDirection('Left')
+    },
+    {
+        key = 'RightArrow',
+        mods = 'CMD|ALT',
+        action = wezterm.action.ActivatePaneDirection('Right')
+    },
+    {
+        key = 'UpArrow',
+        mods = 'CMD|ALT',
+        action = wezterm.action.ActivatePaneDirection('Up')
+    },
+    {
+        key = 'DownArrow',
+        mods = 'CMD|ALT',
+        action = wezterm.action.ActivatePaneDirection('Down')
+    },
+    {
+        key = 'LeftArrow',
+        mods = 'CMD|CTRL',
+        action = wezterm.action.AdjustPaneSize({ 'Left', 3 })
+    },
+    {
+        key = 'RightArrow',
+        mods = 'CMD|CTRL',
+        action = wezterm.action.AdjustPaneSize({ 'Right', 3 })
+    },
+    {
+        key = 'UpArrow',
+        mods = 'CMD|CTRL',
+        action = wezterm.action.AdjustPaneSize({ 'Up', 3 })
+    },
+    {
+        key = 'DownArrow',
+        mods = 'CMD|CTRL',
+        action = wezterm.action.AdjustPaneSize({ 'Down', 3 })
+    },
 }
 
 -- Hyperlink 抽出と処理
 local function extract_path(uri)
-	-- `$EDITOR:/path/to/file` → `/path/to/file`
-	local s, e = uri:find("^$EDITOR:")
-	if s then return uri:sub(e + 1) end
+    -- `$EDITOR:/path/to/file` → `/path/to/file`
+    local s, e = uri:find("^$EDITOR:")
+    if s then return uri:sub(e + 1) end
 
-	-- `file://hostname/path` → `/path`
-	s, e = uri:find("^file:")
-	if s then
-		local host_path = uri:sub(e + 3)
-		local slash = host_path:find("/")
-		return slash and host_path:sub(slash) or host_path
-	end
+    -- `file://hostname/path` → `/path`
+    s, e = uri:find("^file:")
+    if s then
+        local host_path = uri:sub(e + 3)
+        local slash = host_path:find("/")
+        return slash and host_path:sub(slash) or host_path
+    end
 
-	-- `http://` 等はスキップ
-	if uri:match("^[%w%+%-%.]+://") then return nil end
+    -- `http://` 等はスキップ
+    if uri:match("^[%w%+%-%.]+://") then return nil end
 
-	-- それ以外はそのままパスとみなす
-	return uri
+    -- それ以外はそのままパスとみなす
+    return uri
 end
 
 -- 行番号 (例: :42:7 や :128) を削除して OS が理解できる形に ---------------
 local function strip_line_numbers(path)
-	return path:gsub(":%d+:%d+$", "") -- :行:列
-		:gsub(":%d+$", "")         -- :行
+    return path:gsub(":%d+:%d+$", "") -- :行:列
+        :gsub(":%d+$", "")            -- :行
 end
 
 -- open-uri ハンドラ
 wezterm.on("open-uri", function(window, pane, uri)
-	local raw_path = extract_path(uri)
-	if not raw_path then return end -- URL などは既定動作
-	local clean_path = strip_line_numbers(raw_path)
+    local raw_path = extract_path(uri)
+    if not raw_path then return end -- URL などは既定動作
+    local clean_path = strip_line_numbers(raw_path)
 
-	-- OS 既定アプリで開く
-	wezterm.open_with(clean_path)
+    -- OS 既定アプリで開く
+    wezterm.open_with(clean_path)
 
-	return false -- ブラウザで開く等の既定アクションを抑制
+    return false -- ブラウザで開く等の既定アクションを抑制
 end)
 
 -- 既定ルールをベースにする
@@ -288,11 +279,11 @@ local hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- ファイルパス検出用ルールを追加
 table.insert(hyperlink_rules, {
-	--  ~ / ./ ../ C:\     で始まり、空白や<>\"' を除く任意文字列
-	--  オプションで :行 または :行:列 を繰り返し許可
-	regex = [[(?:~|/|\.{1,2}/|\w:[\\/])[^[:space:]'"<>]+(?::\d+(?::\d+)*)?]],
-	format = '$0', -- ← `$EDITOR:` は付けない
-	highlight = 0, -- 色を変えたいときは 1
+    --  ~ / ./ ../ C:\     で始まり、空白や<>\"' を除く任意文字列
+    --  オプションで :行 または :行:列 を繰り返し許可
+    regex = [[(?:~|/|\.{1,2}/|\w:[\\/])[^[:space:]'"<>]+(?::\d+(?::\d+)*)?]],
+    format = '$0', -- ← `$EDITOR:` は付けない
+    highlight = 0, -- 色を変えたいときは 1
 })
 
 config.hyperlink_rules = hyperlink_rules
