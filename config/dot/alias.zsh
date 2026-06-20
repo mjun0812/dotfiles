@@ -55,7 +55,7 @@ diff() {
 }
 
 # Claude Code
-alias claude="claude --mcp-config=${HOME}/.claude/mcp.json"
+alias claude="claude --mcp-config=${HOME}/.claude/mcp.json --allow-dangerously-skip-permissions"
 alias cc-commit='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit en"'
 alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit ja"'
 
