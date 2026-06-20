@@ -172,6 +172,20 @@ for agent_file in "$CLAUDE_AGENTS_SOURCE_DIR"/*.md(N); do
     agent_name=$(basename "$agent_file")
     ln -snfv "$agent_file" "$HOME/.claude/agents/$agent_name"
 done
+# Rules
+CLAUDE_RULES_SOURCE_DIR="$DOTPATH/config/ai-agents/claude/rules"
+cp -aLf "$HOME/.claude/rules" "$DOTPATH/.backup/claude_rules" 2>/dev/null || true
+mkdir -p "$HOME/.claude/rules"
+# Drop broken symlinks whose source rule was removed from the repo.
+for entry in "$HOME/.claude/rules"/*(@N); do
+    [ -e "$entry" ] || rm -f "$entry"
+done
+# Remove only the rules we manage, then relink (keeps locally-added rules).
+for rule_file in "$CLAUDE_RULES_SOURCE_DIR"/*.md(N); do
+    rule_name=$(basename "$rule_file")
+    rm -rf "$HOME/.claude/rules/$rule_name"
+    ln -snfv "$rule_file" "$HOME/.claude/rules/$rule_name"
+done
 
 ################ [Claude Code Plugins] ################
 log_section "Setting up Claude Code plugins..."
