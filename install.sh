@@ -147,7 +147,7 @@ cp -aLf "$HOME/.claude/skills" "$DOTPATH/.backup/claude_skills" 2>/dev/null || t
 cp -aLf "$HOME/.claude/mcp.json" "$DOTPATH/.backup/claude_mcp.json" && rm -rf "$HOME/.claude/mcp.json"
 cp -aLf "$HOME/.claude/statusline.py" "$DOTPATH/.backup/claude_statusline.py" && rm -rf "$HOME/.claude/statusline.py"
 mkdir -p "$HOME/.claude"
-ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.claude/CLAUDE.md"
+ln -snfv "$DOTPATH/config/ai-agents/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 ln -snfv "$DOTPATH/config/ai-agents/claude/settings.json" "$HOME/.claude/settings.json"
 ln -snfv "$DOTPATH/config/ai-agents/claude/mcp.json" "$HOME/.claude/mcp.json"
 ln -snfv "$DOTPATH/config/ai-agents/claude/statusline.py" "$HOME/.claude/statusline.py"
@@ -171,6 +171,20 @@ mkdir -p "$HOME/.claude/agents"
 for agent_file in "$CLAUDE_AGENTS_SOURCE_DIR"/*.md(N); do
     agent_name=$(basename "$agent_file")
     ln -snfv "$agent_file" "$HOME/.claude/agents/$agent_name"
+done
+# Rules
+CLAUDE_RULES_SOURCE_DIR="$DOTPATH/config/ai-agents/claude/rules"
+cp -aLf "$HOME/.claude/rules" "$DOTPATH/.backup/claude_rules" 2>/dev/null || true
+mkdir -p "$HOME/.claude/rules"
+# Drop broken symlinks whose source rule was removed from the repo.
+for entry in "$HOME/.claude/rules"/*(@N); do
+    [ -e "$entry" ] || rm -f "$entry"
+done
+# Remove only the rules we manage, then relink (keeps locally-added rules).
+for rule_file in "$CLAUDE_RULES_SOURCE_DIR"/*.md(N); do
+    rule_name=$(basename "$rule_file")
+    rm -rf "$HOME/.claude/rules/$rule_name"
+    ln -snfv "$rule_file" "$HOME/.claude/rules/$rule_name"
 done
 
 ################ [Claude Code Plugins] ################
