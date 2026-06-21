@@ -88,10 +88,17 @@ uv pip install -U \
     pymupdf \
     pynvim \
     'python-lsp-server[all]'
-UV_TOOLS=(ruff glances nvitop ty plamo-translate copier "headroom-ai[proxy,code]")
+UV_TOOLS=(ruff glances nvitop ty copier)
 for tool in "${UV_TOOLS[@]}"; do
     uv tool install -U $tool
 done
+if [ "$(uname -s)" = "Darwin" ]; then
+    uv tool install -U "headroom-ai[proxy,code,ml,pytorch-mps]"
+    uv tool install -U plamo-translate
+else
+    uv tool install -U "headroom-ai[proxy,code,ml]"
+fi
+
 cd $DOTPATH
 
 ################ [VSCode] ################

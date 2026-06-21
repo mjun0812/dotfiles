@@ -29,6 +29,8 @@
     <dict>
         <key>PATH</key>
         <string>/Users/mjun/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>HEADROOM_EMBEDDER_RUNTIME</key>
+        <string>pytorch_mps</string>
     </dict>
 </dict>
 </plist>
