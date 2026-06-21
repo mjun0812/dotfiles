@@ -37,6 +37,7 @@ lazygit = "latest"
 actionlint = "latest"
 aqua = "latest"
 chezmoi = "latest"
+container = { version = "latest", os = ["macos"] }
 gcloud = "latest"
 kubectl = "latest"
 pre-commit = "latest"
@@ -66,3 +67,4 @@ aqua.baked_registry = true
 trusted_config_paths = ["/"]
 minimum_release_age = "24h"
 minimum_release_age_excludes = ["claude", "codex", "aqua:google-antigravity/antigravity-cli"]
+auto_env = true
