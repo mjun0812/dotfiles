@@ -26,8 +26,6 @@
 - 起こり得ないケースのための過剰なエラー処理・エラーハンドリングをしない。
 - もっと短く書けるなら書き直す。
 
-自問すること: 「シニアエンジニアなら、これは複雑すぎると言うだろうか？」 答えが yes なら、シンプルにする。
-
 ### 3. 外科的な変更 / Surgical Changes
 
 必要な箇所だけを触る。自分の変更で生じた不要物だけ片付ける。
@@ -78,84 +76,14 @@ Plan modeのplanファイルはPostToolUse hookにより自動的に `YYYY-MM-DD
 - コードのフォーマットには `uvx ruff format`を使ってください．
 - コードのリンターには`uvx ruff check --fix` を使用すること。
 - コードの型チェックには`uvx ty check` を使用すること。
-
-### f-string
-
-文字列リテラルに変数を埋め込むときは，f-stringを使ってください．
-
-```python
-# Good
-log.info(f"Info: {info}")
-# Bad1
-log.info("Info: {}".format(info))
-# Bad2
-log.info("Info: %s" % (info))
-```
-
-### SQLAlchemy
-
-SQLAlchemy ORM は **2.0 スタイル**の記法を使用してください。
-
-```python
-# Good: 2.0 スタイル
-from sqlalchemy import select
-
-stmt = select(VectorModel).where(VectorModel.id == model_id)
-result = session.execute(stmt).scalar_one_or_none()
-
-# Bad: 1.x スタイル
-result = session.query(VectorModel).filter(VectorModel.id == model_id).first()
-```
-
-### 型ヒント
-
-**型ヒント**を必ず記述してください。Anyの使用は避け、具体的な型を指定してください。
-
-```python
-# Good: 型ヒントあり
-def get_model_by_id(session: Session, model_id: int) -> VectorModel | None:
-    stmt = select(VectorModel).where(VectorModel.id == model_id)
-    return session.execute(stmt).scalar_one_or_none()
-
-# Bad: 型ヒントなし
-def get_model_by_id(session, model_id):
-    stmt = select(VectorModel).where(VectorModel.id == model_id)
-    return session.execute(stmt).scalar_one_or_none()
-```
-
-### Docstring
-
-全ての関数やクラスにDocstringを記述してください．
-記述スタイルは**Google スタイル**で記述してください。
-
-### pytestモックライブラリ
-
-モックには **pytest-mock** を使用し、`unittest.mock` は直接使用しないでください。
-
-```python
-# Good: pytest-mock の mocker fixture を使用
-def test_example(mocker):
-    mock_func = mocker.patch("module.function")
-    mock_func.return_value = "mocked"
-
-# Bad: unittest.mock を直接使用
-from unittest.mock import patch
-
-def test_example():
-    with patch("module.function") as mock_func:
-        mock_func.return_value = "mocked"
-```
+- 文字列リテラルに変数を埋め込むときは，f-stringを使ってください．
+- SQLAlchemy ORM は **2.0 スタイル**の記法を使用してください。
+- **型ヒント**を必ず記述してください。Anyの使用は避け、具体的な型を指定してください。
+- 全ての関数やクラスにDocstringを記述してください．記述スタイルは**Google スタイル**で記述してください。
 
 ## Markdown
 
-フォマッターに`oxfmt`を使ってください．
-
-```bash
-# カレントディレクトリ以下すべてをフォーマット
-oxfmt
-# ファイル指定
-oxfmt [PATH]
-```
+- Formatterに`oxfmt`を使ってください．
 
 ## ShellScript
 
@@ -168,3 +96,12 @@ oxfmt [PATH]
 
 - 可能な限り、最新の公式ドキュメントや一次情報源を優先して参照してください。
 - 会話している言語に関わらず、英語・日本語の両方で検索を行ってください。
+
+## Skill
+
+- Agent skill を作成・編集するときは、コマンド例を最小限にする。
+- コマンド例は、次のいずれかを明確にする場合にだけ追加する。
+  - 入力・出力の形式
+  - 操作の順序
+  - 境界ケース
+- 網羅性のためだけに例を追加しない。
