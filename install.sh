@@ -17,10 +17,9 @@ if [ "$(uname -s)" = "Darwin" ]; then
     zsh $DOTPATH/script/install_homebrew.sh
 
     # karabiner-elements
-    mkdir -p "$HOME/.config/karabiner"
-    cp -aLf "$HOME/.config/karabiner/karabiner.json" "$DOTPATH/.backup/karabiner.json" 2>/dev/null || true
-    rm -rf "$HOME/.config/karabiner/karabiner.json"
-    ln -snfv "$DOTPATH/config/mac/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
+    cp -aLf "$HOME/.config/karabiner" "$DOTPATH/.backup/karabiner" 2>/dev/null || true
+    rm -rf "$HOME/.config/karabiner"
+    ln -snfv "$DOTPATH/config/mac/karabiner" "$HOME/.config/karabiner"
 fi
 
 # ############## [dotfiles] ##############
@@ -123,15 +122,11 @@ rm -f "$CURSOR_USER_DIR/settings.json" "$CURSOR_USER_DIR/keybindings.json"
 ln -snfv "$DOTPATH/config/cursor/settings.json" "$CURSOR_USER_DIR/settings.json"
 ln -snfv "$DOTPATH/config/cursor/keybindings.json" "$CURSOR_USER_DIR/keybindings.json"
 
-################ [Shared Agent Skills] ################
-log_section "Setting up shared agent skills..."
+################ [Agent Skills] ################
+log_section "Setting up agent skills..."
 AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
 cp -aLf "$HOME/.agents/skills" "$DOTPATH/.backup/agents_skills" 2>/dev/null || true
 mkdir -p "$HOME/.agents/skills"
-# Drop broken symlinks whose source skill was removed from the repo.
-for entry in "$HOME/.agents/skills"/*(@N); do
-    [ -e "$entry" ] || rm -f "$entry"
-done
 # Remove only the skills we manage, then relink (keeps locally-added skills).
 for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")
@@ -141,89 +136,19 @@ done
 
 ################ [Claude Code] ################
 log_section "Setting up Claude Code..."
-cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
-cp -aLf "$HOME/.claude/settings.json" "$DOTPATH/.backup/claude_settings.json" && rm -rf "$HOME/.claude/settings.json"
-cp -aLf "$HOME/.claude/skills" "$DOTPATH/.backup/claude_skills" 2>/dev/null || true
-cp -aLf "$HOME/.claude/mcp.json" "$DOTPATH/.backup/claude_mcp.json" && rm -rf "$HOME/.claude/mcp.json"
-cp -aLf "$HOME/.claude/statusline.py" "$DOTPATH/.backup/claude_statusline.py" && rm -rf "$HOME/.claude/statusline.py"
-mkdir -p "$HOME/.claude"
-ln -snfv "$DOTPATH/config/ai-agents/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
-ln -snfv "$DOTPATH/config/ai-agents/claude/settings.json" "$HOME/.claude/settings.json"
-ln -snfv "$DOTPATH/config/ai-agents/claude/mcp.json" "$HOME/.claude/mcp.json"
-ln -snfv "$DOTPATH/config/ai-agents/claude/statusline.py" "$HOME/.claude/statusline.py"
-# Skills
-mkdir -p "$HOME/.claude/skills"
-# Drop broken symlinks whose source skill was removed from the repo.
-for entry in "$HOME/.claude/skills"/*(@N); do
-    [ -e "$entry" ] || rm -f "$entry"
-done
-# Remove only the skills we manage, then relink (keeps locally-added skills).
-for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
-    skill_name=$(basename "$skill_dir")
-    rm -rf "$HOME/.claude/skills/$skill_name"
-    ln -snfv "$skill_dir" "$HOME/.claude/skills/$skill_name"
-done
-# Agents
-CLAUDE_AGENTS_SOURCE_DIR="$DOTPATH/config/ai-agents/claude/agents"
-cp -aLf "$HOME/.claude/agents" "$DOTPATH/.backup/claude_agents" 2>/dev/null || true
-rm -rf "$HOME/.claude/agents"
-mkdir -p "$HOME/.claude/agents"
-for agent_file in "$CLAUDE_AGENTS_SOURCE_DIR"/*.md(N); do
-    agent_name=$(basename "$agent_file")
-    ln -snfv "$agent_file" "$HOME/.claude/agents/$agent_name"
-done
-# Rules
-CLAUDE_RULES_SOURCE_DIR="$DOTPATH/config/ai-agents/claude/rules"
-cp -aLf "$HOME/.claude/rules" "$DOTPATH/.backup/claude_rules" 2>/dev/null || true
-mkdir -p "$HOME/.claude/rules"
-# Drop broken symlinks whose source rule was removed from the repo.
-for entry in "$HOME/.claude/rules"/*(@N); do
-    [ -e "$entry" ] || rm -f "$entry"
-done
-# Remove only the rules we manage, then relink (keeps locally-added rules).
-for rule_file in "$CLAUDE_RULES_SOURCE_DIR"/*.md(N); do
-    rule_name=$(basename "$rule_file")
-    rm -rf "$HOME/.claude/rules/$rule_name"
-    ln -snfv "$rule_file" "$HOME/.claude/rules/$rule_name"
-done
-
-################ [Claude Code Plugins] ################
-log_section "Setting up Claude Code plugins..."
-if command -v claude >/dev/null 2>&1; then
-    CLAUDE_SETTINGS_JSON="$DOTPATH/config/ai-agents/claude/settings.json"
-
-    # Ensure the built-in official marketplace is registered (missing on fresh installs)
-    if ! claude plugin marketplace list 2>/dev/null | grep -q "claude-plugins-official"; then
-        claude plugin marketplace add "anthropics/claude-plugins-official" || true
-    fi
-
-    # Add custom marketplaces declared in extraKnownMarketplaces
-    jq -r '.extraKnownMarketplaces // {} | to_entries[] | "\(.key)\t\(.value.source.repo)"' \
-        "$CLAUDE_SETTINGS_JSON" | while IFS=$'\t' read -r mp_name mp_repo; do
-        [ -z "$mp_name" ] && continue
-        if ! claude plugin marketplace list 2>/dev/null | grep -q "$mp_name"; then
-            claude plugin marketplace add "$mp_repo" || true
-        fi
-    done
-
-    # Refresh marketplace indexes so plugin lookups don't fail on stale cache
-    claude plugin marketplace update || true
-
-    # Install plugins enabled in enabledPlugins (user scope, idempotent)
-    jq -r '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key' \
-        "$CLAUDE_SETTINGS_JSON" | while IFS= read -r plugin; do
-        [ -z "$plugin" ] && continue
-        claude plugin install "$plugin" -s user || true
-    done
-else
-    echo "claude command not found; skipping plugin setup"
-fi
+zsh "$DOTPATH/script/install_claude_code.sh"
 
 ################ [Codex] ################
 log_section "Setting up Codex..."
-CODEX_CONFIG_TEMPLATE="$DOTPATH/config/ai-agents/codex/config.toml"
 CODEX_CONFIG_TARGET="$HOME/.codex/config.toml"
+CODEX_CONFIG_TEMPLATE="$DOTPATH/config/ai-agents/codex/config.toml"
+CODEX_AGENTS_SOURCE_DIR="$DOTPATH/config/ai-agents/codex/agents"
+cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
+cp -aLf "$HOME/.codex/skills" "$DOTPATH/.backup/codex_skills" 2>/dev/null || true
+cp -aLf "$HOME/.codex/agents" "$DOTPATH/.backup/codex_agents" 2>/dev/null || true
 mkdir -p "$HOME/.codex"
+mkdir -p "$HOME/.codex/skills"
+mkdir -p "$HOME/.codex/agents"
 # Copy or rewrite config.toml
 if [ -e "$CODEX_CONFIG_TARGET" ] || [ -L "$CODEX_CONFIG_TARGET" ]; then
     python3 "$DOTPATH/script/rewrite_config.py" "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
@@ -231,25 +156,14 @@ else
     cp "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
 fi
 # AGENTS.md
-cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 # Custom agents
-CODEX_AGENTS_SOURCE_DIR="$DOTPATH/config/ai-agents/codex/agents"
-cp -aLf "$HOME/.codex/agents" "$DOTPATH/.backup/codex_agents" 2>/dev/null || true
-rm -rf "$HOME/.codex/agents"
-mkdir -p "$HOME/.codex/agents"
 for agent_file in "$CODEX_AGENTS_SOURCE_DIR"/*.toml(N); do
     agent_name=$(basename "$agent_file")
+    rm -rf "$HOME/.codex/agents/$agent_name"
     ln -snfv "$agent_file" "$HOME/.codex/agents/$agent_name"
 done
 # Skills
-cp -aLf "$HOME/.codex/skills" "$DOTPATH/.backup/codex_skills" 2>/dev/null || true
-mkdir -p "$HOME/.codex/skills"
-# Drop broken symlinks whose source skill was removed from the repo.
-for entry in "$HOME/.codex/skills"/*(@N); do
-    [ -e "$entry" ] || rm -f "$entry"
-done
-# Remove only the skills we manage, then relink (keeps locally-added skills).
 for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")
     rm -rf "$HOME/.codex/skills/$skill_name"
@@ -273,10 +187,6 @@ cp -aLf "$HOME/.gemini/antigravity-cli/settings.json" "$DOTPATH/.backup/antigrav
 ln -snfv "$DOTPATH/config/ai-agents/gemini/antigravity-cli/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
 cp -aLf "$HOME/.gemini/antigravity-cli/skills" "$DOTPATH/.backup/antigravity_cli_skills" 2>/dev/null || true
 mkdir -p "$HOME/.gemini/antigravity-cli/skills"
-# Drop broken symlinks whose source skill was removed from the repo.
-for entry in "$HOME/.gemini/antigravity-cli/skills"/*(@N); do
-    [ -e "$entry" ] || rm -f "$entry"
-done
 # Remove only the skills we manage, then relink (keeps locally-added skills).
 for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")

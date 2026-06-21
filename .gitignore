@@ -26,3 +26,5 @@ config/dot_config/yazi/plugins
 config/dot_config/yazi/package.toml
 config/dot_config/mise/github_tokens.toml
 config/dot_config/uv/uv-receipt.json
+config/mac/karabiner/assets
+config/mac/karabiner/automatic_backups
