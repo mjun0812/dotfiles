@@ -82,4 +82,5 @@ hs.urlevent.bind("aerospace-workspace", function(_, params)
     showAeroSpaceWorkspaceHUD(params and params["ws"])
 end)
 
-require("chrome_vertical_tab_sidebar_toggle")
+-- chrome-vertical-tab-toggle (installed by install.sh on 20260621-114452)
+require("chrome-vertical-tab-toggle")

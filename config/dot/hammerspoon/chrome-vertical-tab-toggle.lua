@@ -1,6 +1,6 @@
 -- Chrome-Vertical-Tab-Sidebar-Toggle
 -- Hammerspoon script to toggle Chrome's native vertical tab sidebar
--- via keyboard shortcut and mouse left-edge hover.
+-- via keyboard shortcut and mouse edge hover.
 -- Uses macOS Accessibility API to find and press the sidebar button.
 
 -- ----------------------------------------------------------
@@ -26,7 +26,7 @@ local log            = hs.logger.new("chrome-sidebar", "info")
 -- remain registered, and they short-circuit immediately).
 local FEATURES = {
     keyboardToggle  = true,  -- Cmd+B (or configured TOGGLE_*) toggles the sidebar
-    mouseEdgeToggle = true,  -- Hover Chrome's left edge to expand, leave to collapse
+    mouseEdgeToggle = true,  -- Hover the configured mouse edge to expand, leave to collapse
 }
 
 -- Application names treated as "Chrome". The frontmost app must appear
@@ -253,11 +253,16 @@ local AX = {
     maxDepth = 15,
 }
 
--- Tuning for the mouse left-edge hover trigger.
+-- Tuning for the mouse edge hover trigger.
 local EDGE = {
-    -- Distance (in pixels) from the screen's left edge within which the
-    -- mouse is considered "on the edge". Once the mouse enters this band,
-    -- hover tracking begins.
+    -- Which edge opens the sidebar:
+    --   "tabBarRight": right edge of Chrome's vertical tab bar (default)
+    --   "windowLeft" : left edge of the Chrome window (legacy behavior)
+    triggerEdge = "tabBarRight",
+
+    -- Distance (in pixels) from the configured edge within which the mouse
+    -- is considered "on the edge". Once the mouse enters this band, hover
+    -- tracking begins.
     enterPx     = 5,
 
     -- Extra slack (pixels) beyond the live sidebar right edge before
@@ -528,7 +533,7 @@ local function toggleSidebar()
     if button then
         button:performAction("AXPress")
         -- User explicitly toggled; relinquish edge-ownership so the
-        -- "mouse left far away → auto-collapse" rule doesn't kick in.
+        -- mouse-edge auto-collapse rule doesn't kick in.
         runtime.openedByEdge = false
         runtime.sidebarRightX = nil  -- width may have changed; re-measure on next edge expand
     end
@@ -547,7 +552,7 @@ local function collapseSidebarIfOwned()
 end
 
 -- ----------------------------------------------------------
--- Mouse: Left-edge hover trigger
+-- Mouse: edge hover trigger
 -- ----------------------------------------------------------
 local function resetEdgeState()
     if runtime.edgeTimer then
@@ -557,12 +562,17 @@ local function resetEdgeState()
     runtime.isEdgeActive = false
 end
 
--- Get Chrome's focused window AXFrame (screen coordinates) or nil.
--- Used by the mouse poller to derive a window-relative X so the left-edge
--- trigger works regardless of where Chrome is positioned on screen.
-local function getChromeWindowFrame()
-    local win = getFocusedChromeWindow()
-    return win and win:attributeValue("AXFrame") or nil
+local function isMouseOnTriggerEdge(pos, win, winFrame)
+    if EDGE.triggerEdge == "windowLeft" then
+        local relativeX = pos.x - winFrame.x
+        return relativeX >= 0 and relativeX <= EDGE.enterPx
+    end
+
+    local tabFrame = findTabGroupFrame(win)
+    if not tabFrame then return false end
+
+    local distanceFromTabBarRight = math.abs(pos.x - (tabFrame.x + tabFrame.w))
+    return distanceFromTabBarRight <= EDGE.enterPx
 end
 
 local function mousePollCallback()
@@ -574,15 +584,12 @@ local function mousePollCallback()
     end
 
     local pos = mouse.absolutePosition()
-    local winFrame = getChromeWindowFrame()
+    local win = getFocusedChromeWindow()
+    if not win then return end
+    local winFrame = win:attributeValue("AXFrame")
     if not winFrame then return end
 
-    -- Distance from Chrome window's LEFT edge (not the screen's). This
-    -- lets the trigger work when Chrome is e.g. snapped to the right
-    -- half of the display.
-    local relativeX = pos.x - winFrame.x
-
-    if relativeX >= 0 and relativeX <= EDGE.enterPx and not runtime.isEdgeActive then
+    if isMouseOnTriggerEdge(pos, win, winFrame) and not runtime.isEdgeActive then
         -- Start tracking optimistically. State (collapsed vs expanded) is
         -- checked inside the wait callback to avoid AX traversal on every
         -- poll tick.
@@ -597,14 +604,14 @@ local function mousePollCallback()
             end
 
             local currentPos = mouse.absolutePosition()
-            local currentWinFrame = getChromeWindowFrame()
-            if not currentWinFrame or not isFrontChrome() then
+            local currentWin = getFocusedChromeWindow()
+            if not currentWin or not isFrontChrome() then
                 runtime.isEdgeActive = false
                 return
             end
 
-            local currentRelativeX = currentPos.x - currentWinFrame.x
-            if currentRelativeX < 0 or currentRelativeX > EDGE.enterPx then
+            local currentWinFrame = currentWin:attributeValue("AXFrame")
+            if not currentWinFrame or not isMouseOnTriggerEdge(currentPos, currentWin, currentWinFrame) then
                 runtime.isEdgeActive = false
                 return
             end
