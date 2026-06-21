@@ -6,13 +6,13 @@
 -- ----------------------------------------------------------
 -- Modules
 -- ----------------------------------------------------------
-local eventtap       = hs.eventtap
-local appWatcher     = hs.application.watcher
-local caffeinate     = hs.caffeinate
-local timer          = hs.timer
-local mouse          = hs.mouse
-local app            = hs.application
-local log            = hs.logger.new("chrome-sidebar", "info")
+local eventtap             = hs.eventtap
+local appWatcher           = hs.application.watcher
+local caffeinate           = hs.caffeinate
+local timer                = hs.timer
+local mouse                = hs.mouse
+local app                  = hs.application
+local log                  = hs.logger.new("chrome-sidebar", "info")
 
 -- ----------------------------------------------------------
 -- Configuration
@@ -24,15 +24,15 @@ local log            = hs.logger.new("chrome-sidebar", "info")
 -- feature has zero runtime cost when off. If both are false, the
 -- script effectively becomes a no-op (only the app/sleep watchers
 -- remain registered, and they short-circuit immediately).
-local FEATURES = {
-    keyboardToggle  = true,  -- Cmd+B (or configured TOGGLE_*) toggles the sidebar
-    mouseEdgeToggle = true,  -- Hover the configured mouse edge to expand, leave to collapse
+local FEATURES             = {
+    keyboardToggle  = true, -- Cmd+B (or configured TOGGLE_*) toggles the sidebar
+    mouseEdgeToggle = true, -- Hover the configured mouse edge to expand, leave to collapse
 }
 
 -- Application names treated as "Chrome". The frontmost app must appear
 -- here (with value true) to be considered a target for the sidebar
 -- toggle. Add custom Chromium-based browsers if needed.
-local TARGET_APPS = {
+local TARGET_APPS          = {
     ["Google Chrome"]        = true,
     ["Google Chrome Beta"]   = true,
     ["Google Chrome Canary"] = true,
@@ -49,14 +49,14 @@ local TARGET_APPS = {
 --   TOGGLE_KEY : the main key. Use a single character ("b", "s") or a
 --                named key from hs.keycodes.map ("tab", "f1", "space").
 -- ----------------------------------------------------------
-local TOGGLE_MODS    = {
+local TOGGLE_MODS          = {
     cmd   = true,
     ctrl  = false,
     alt   = false,
-    shift = false,
+    shift = true,
 }
-local TOGGLE_KEY     = "b"
-local TOGGLE_KEYCODE = hs.keycodes.map[TOGGLE_KEY]
+local TOGGLE_KEY           = "b"
+local TOGGLE_KEYCODE       = hs.keycodes.map[TOGGLE_KEY]
 
 -- AXTitle / AXDescription strings that identify Chrome's vertical-tab
 -- sidebar toggle button. Chrome localizes these by UI language.
@@ -69,7 +69,7 @@ local TOGGLE_KEYCODE = hs.keycodes.map[TOGGLE_KEY]
 -- Matching is case-insensitive and requires an EXACT string match
 -- (not substring) to avoid false positives on unrelated labels.
 -- All entries are stored in lowercase at lookup-build time below.
-local SIDEBAR_LABELS = {
+local SIDEBAR_LABELS       = {
     -- Sidebar is currently COLLAPSED. Button label = next action = "expand".
     -- Source: IDS_EXPAND_VERTICAL_TABS (translation id 7194343495483122559).
     collapsed = {
@@ -258,17 +258,17 @@ local EDGE = {
     -- Which edge opens the sidebar:
     --   "tabBarRight": right edge of Chrome's vertical tab bar (default)
     --   "windowLeft" : left edge of the Chrome window (legacy behavior)
-    triggerEdge = "tabBarRight",
+    triggerEdge         = "tabBarRight",
 
     -- Distance (in pixels) from the configured edge within which the mouse
     -- is considered "on the edge". Once the mouse enters this band, hover
     -- tracking begins.
-    enterPx     = 5,
+    enterPx             = 5,
 
     -- Extra slack (pixels) beyond the live sidebar right edge before
     -- collapsing. Without this, fast horizontal mouse motion that just
     -- grazes the sidebar boundary would trigger an immediate collapse.
-    exitMarginPx = 30,
+    exitMarginPx        = 30,
 
     -- How long (seconds) to wait after pressing the sidebar toggle
     -- before reading the expanded AXTabGroup frame. Chrome's AX cache
@@ -280,12 +280,12 @@ local EDGE = {
     -- sidebar is actually expanded. Acts as a debounce against
     -- accidental edge crossings. Lower = snappier but more prone to
     -- triggering during fast left-to-right mouse motion.
-    waitSeconds = 0.08,
+    waitSeconds         = 0.08,
 
     -- Interval (seconds) at which the mouse position is polled. Smaller
     -- = more responsive but more CPU; larger = less CPU but laggy edge
     -- detection.
-    pollSeconds = 0.05,
+    pollSeconds         = 0.05,
 }
 
 -- Watchdog that revives the mouse poller if it stops emitting heartbeats
@@ -362,21 +362,21 @@ local DELAY = {
 -- same Hammerspoon instance can't accidentally read or overwrite these.
 -- ----------------------------------------------------------
 local runtime = {
-    keyTap        = nil,  -- hs.eventtap that intercepts the toggle hotkey
+    keyTap        = nil, -- hs.eventtap that intercepts the toggle hotkey
     mousePoller   = nil,
     watchdogTimer = nil,
     edgeTimer     = nil,
     graceTimer    = nil,
-    pendingStart  = nil,                        -- deferred startServices() handle (cancellable)
-    pendingStop   = nil,                        -- deferred stopServices() handle (cancellable)
+    pendingStart  = nil,                       -- deferred startServices() handle (cancellable)
+    pendingStop   = nil,                       -- deferred stopServices() handle (cancellable)
     isEdgeActive  = false,
-    openedByEdge  = false,                      -- true if mouse-edge expanded the sidebar
-    isRestarting  = false,                      -- true while restartServices is in flight
-    inGrace       = false,                      -- true while a grace period is active
-    lastHeartbeat = timer.secondsSinceEpoch(),  -- last mouse poll timestamp
-    lastMissLog   = 0,                          -- last time we logged a "button not found" warning
-    sidebarRightX = nil,                        -- screen-coord X of the expanded sidebar's right edge
-                                                -- (nil = not measured yet → exit branch is inert)
+    openedByEdge  = false,                     -- true if mouse-edge expanded the sidebar
+    isRestarting  = false,                     -- true while restartServices is in flight
+    inGrace       = false,                     -- true while a grace period is active
+    lastHeartbeat = timer.secondsSinceEpoch(), -- last mouse poll timestamp
+    lastMissLog   = 0,                         -- last time we logged a "button not found" warning
+    sidebarRightX = nil,                       -- screen-coord X of the expanded sidebar's right edge
+    -- (nil = not measured yet → exit branch is inert)
 }
 
 -- Minimum seconds between repeated "button not found" log lines.
@@ -535,7 +535,7 @@ local function toggleSidebar()
         -- User explicitly toggled; relinquish edge-ownership so the
         -- mouse-edge auto-collapse rule doesn't kick in.
         runtime.openedByEdge = false
-        runtime.sidebarRightX = nil  -- width may have changed; re-measure on next edge expand
+        runtime.sidebarRightX = nil -- width may have changed; re-measure on next edge expand
     end
 end
 
@@ -548,7 +548,7 @@ local function collapseSidebarIfOwned()
         button:performAction("AXPress")
     end
     runtime.openedByEdge = false
-    runtime.sidebarRightX = nil  -- next expand re-measures
+    runtime.sidebarRightX = nil -- next expand re-measures
 end
 
 -- ----------------------------------------------------------
@@ -637,7 +637,7 @@ local function mousePollCallback()
                 -- stays nil and the exit branch is inert (mouse motion
                 -- can't close the sidebar yet).
                 timer.doAfter(EDGE.measureDelaySeconds, function()
-                    if not runtime.openedByEdge then return end  -- already collapsed
+                    if not runtime.openedByEdge then return end -- already collapsed
                     local win = getFocusedChromeWindow()
                     local frame = win and findTabGroupFrame(win)
                     if frame then
