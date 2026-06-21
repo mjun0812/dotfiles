@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
+
 brew install \
     coreutils \
     git \
@@ -47,8 +49,6 @@ brew install --cask \
 
 brew tap manaflow-ai/cmux
 brew install --cask cmux
-
-DOTPATH=$(cd "$(dirname "$0")/.." && pwd)
 
 # AltTabの設定を反映
 osascript -e 'quit app "AltTab"' >/dev/null 2>&1 || true

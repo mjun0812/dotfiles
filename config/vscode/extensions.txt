@@ -18,7 +18,6 @@ eamodio.gitlens
 enkia.tokyo-night
 esbenp.prettier-vscode
 formulahendry.code-runner
-github.copilot-chat
 github.vscode-github-actions
 github.vscode-pull-request-github
 golang.go

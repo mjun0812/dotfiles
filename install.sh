@@ -14,7 +14,7 @@ mkdir -p "$HOME/.cargo"
 mkdir -p "$HOME/.local/bin"
 
 if [ "$(uname -s)" = "Darwin" ]; then
-    zsh $DOTPATH/script/install_homebrew.sh
+    zsh $DOTPATH/script/install/install_homebrew.sh
 
     # karabiner-elements
     cp -aLf "$HOME/.config/karabiner" "$DOTPATH/.backup/karabiner" 2>/dev/null || true
@@ -41,7 +41,7 @@ done
 
 ################ [mise] ################
 log_section "Setting up mise..."
-$DOTPATH/script/install_mise.sh
+$DOTPATH/script/install/install_mise.sh
 source "$HOME/.zshrc"
 mise install
 mise reshim
@@ -65,7 +65,7 @@ PUPPETEER_SKIP_DOWNLOAD=1 bun install -g \
     typescript-language-server \
     typescript \
     oxfmt
-$DOTPATH/script/install_vp.sh
+$DOTPATH/script/install/install_vp.sh
 
 ################ [Playwright Browsers] ################
 log_section "Setting up Playwright browsers..."
@@ -77,7 +77,7 @@ fi
 
 ################ [Python] ################
 log_section "Setting up Python..."
-$DOTPATH/script/install_uv.sh
+$DOTPATH/script/install/install_uv.sh
 source "$HOME/.zshrc"
 cd $HOME
 uv venv --allow-existing
@@ -127,7 +127,6 @@ log_section "Setting up agent skills..."
 AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
 cp -aLf "$HOME/.agents/skills" "$DOTPATH/.backup/agents_skills" 2>/dev/null || true
 mkdir -p "$HOME/.agents/skills"
-# Remove only the skills we manage, then relink (keeps locally-added skills).
 for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")
     rm -rf "$HOME/.agents/skills/$skill_name"
@@ -136,39 +135,11 @@ done
 
 ################ [Claude Code] ################
 log_section "Setting up Claude Code..."
-zsh "$DOTPATH/script/install_claude_code.sh"
+zsh "$DOTPATH/script/setup_claude_code.sh"
 
 ################ [Codex] ################
 log_section "Setting up Codex..."
-CODEX_CONFIG_TARGET="$HOME/.codex/config.toml"
-CODEX_CONFIG_TEMPLATE="$DOTPATH/config/ai-agents/codex/config.toml"
-CODEX_AGENTS_SOURCE_DIR="$DOTPATH/config/ai-agents/codex/agents"
-cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" && rm -rf "$HOME/.codex/AGENTS.md"
-cp -aLf "$HOME/.codex/skills" "$DOTPATH/.backup/codex_skills" 2>/dev/null || true
-cp -aLf "$HOME/.codex/agents" "$DOTPATH/.backup/codex_agents" 2>/dev/null || true
-mkdir -p "$HOME/.codex"
-mkdir -p "$HOME/.codex/skills"
-mkdir -p "$HOME/.codex/agents"
-# Copy or rewrite config.toml
-if [ -e "$CODEX_CONFIG_TARGET" ] || [ -L "$CODEX_CONFIG_TARGET" ]; then
-    python3 "$DOTPATH/script/rewrite_config.py" "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
-else
-    cp "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
-fi
-# AGENTS.md
-ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
-# Custom agents
-for agent_file in "$CODEX_AGENTS_SOURCE_DIR"/*.toml(N); do
-    agent_name=$(basename "$agent_file")
-    rm -rf "$HOME/.codex/agents/$agent_name"
-    ln -snfv "$agent_file" "$HOME/.codex/agents/$agent_name"
-done
-# Skills
-for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
-    skill_name=$(basename "$skill_dir")
-    rm -rf "$HOME/.codex/skills/$skill_name"
-    ln -snfv "$skill_dir" "$HOME/.codex/skills/$skill_name"
-done
+zsh "$DOTPATH/script/setup_codex.sh"
 
 ################ [Gemini] ################
 log_section "Setting up Gemini..."

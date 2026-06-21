@@ -50,7 +50,7 @@ User-level launchd agents are managed under `config/mac/launchd/`. Each `*.plist
 ### Installation
 
 ```sh
-./script/install_launchd.sh
+./script/install/install_launchd.sh
 ```
 
 The script:
@@ -76,7 +76,7 @@ launchctl unload ~/Library/LaunchAgents/com.headroom.proxy.plist
 launchctl load   ~/Library/LaunchAgents/com.headroom.proxy.plist
 
 # Restart (after editing the plist in this repo, just re-run the installer)
-./script/install_launchd.sh
+./script/install/install_launchd.sh
 ```
 
 ### Viewing Logs

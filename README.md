@@ -64,9 +64,9 @@ cd ~/.dotfiles
 ./install.sh
 
 # First Install Only: Install VS Code extensions
-./script/install_vscode_extensions.sh
+./script/install/install_vscode_extensions.sh
 # First Install Only: For macOS
-./script/install_macOS.sh
+./script/install/install_macOS.sh
 
 # Optional: Login to GitHub CLI
 gh auth login
@@ -273,7 +273,7 @@ See [doc/nvim.md](doc/nvim.md) for Neovim configuration and keyboard shortcuts.
 
 VS Code extensions are managed in `config/vscode/extensions.txt`.
 
-`install.sh` runs `script/install_vscode_extensions.sh`, which installs missing extensions only and does not uninstall local extensions.
+`install.sh` runs `script/install/install_vscode_extensions.sh`, which installs missing extensions only and does not uninstall local extensions.
 
 To synchronize the installed extensions exactly with `config/vscode/extensions.txt`, run:
 

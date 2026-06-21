@@ -4,7 +4,7 @@ log_section() {
     print -P "%F{blue}%B==> %f%b%F{white}%B$1%f%b"
 }
 
-DOTPATH=$(cd $(dirname $0)/.. && pwd)
+DOTPATH=$(cd $(dirname $0)/../.. && pwd)
 LAUNCHD_SOURCE_DIR="$DOTPATH/config/mac/launchd"
 LAUNCHD_TARGET_DIR="$HOME/Library/LaunchAgents"
 

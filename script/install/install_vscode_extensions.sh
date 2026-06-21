@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOTPATH="$(cd "$SCRIPT_DIR/.." && pwd)"
+DOTPATH="$(cd "$SCRIPT_DIR/../.." && pwd)"
 EXTENSIONS_FILE="${1:-$DOTPATH/config/vscode/extensions.txt}"
 
 if ! command -v code >/dev/null 2>&1; then
