@@ -12,12 +12,14 @@ export PATH="/usr/local/cuda/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 export CUDA_HOME="/usr/local/cuda"
 
-# AMD GPU
+# ROCM
 export PATH=$PATH:/opt/rocm/bin
 
-# Apple Silicon Mac Homebrew
-if [ "$(uname)" = 'Darwin' ] && [ "$(uname -m)" = 'arm64' ]; then
+if [ "$(uname)" = 'Darwin' ]; then
+    # Apple Silicon Mac Homebrew
     eval "$(/opt/homebrew/bin/brew shellenv)"
+    # exclude other platform image using Apple Container
+    export CONTAINER_DEFAULT_PLATFORM=linux/arm64
 fi
 
 # WSL
@@ -25,12 +27,14 @@ if [ -e /usr/lib/wsl/lib ]; then
     export PATH="/usr/lib/wsl/lib:$PATH"
 fi
 
-# uv
+# rust
 [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.venv/bin:$PATH"
 # uv/cargo-dist 系インストーラに rc ファイルを書き換えさせない
 export INSTALLER_NO_MODIFY_PATH=1
+
+# uv
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.venv/bin:$PATH"
 
 # bun
 export BUN_INSTALL_BIN="$HOME/.bun/bin"
@@ -41,14 +45,8 @@ export PATH="$HOME/.bun/bin:$PATH"
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 
-# GCP SDK
-if [ -e "/usr/local/Caskroom/google-cloud-sdk" ]; then
-    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
-    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-fi
-if [ -e "$HOME/.config/gcloud/test-project-service-account.json" ]; then
-    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/test-project-service-account.json
-fi
+# Vite+ bin (https://viteplus.dev)
+[ -f "$HOME/.vite-plus/env" ] && . "$HOME/.vite-plus/env"
 
 # Android SDK
 export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
@@ -60,25 +58,25 @@ export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME:-$HOME/.con
 # eza
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 
+# zoxide
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
+
 # mise
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 
-# sheldon
+# sheldon (below line must after mise init)
 command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
-
-# Vite+ bin (https://viteplus.dev)
-[ -f "$HOME/.vite-plus/env" ] && . "$HOME/.vite-plus/env"
-
-# zoxide
-if [[ "$CLAUDECODE" != "1" ]]; then
-    command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
-fi
 
 # ######### zsh completion ##########
 if [ -d ~/.config/zsh_completions ]; then
     fpath=(~/.config/zsh_completions $fpath)
 fi
-autoload -Uz compinit && compinit
+autoload -Uz compinit
+if [[ -n $(print -r -- "${ZDOTDIR:-$HOME}/.zcompdump"(N.mh-24)) ]]; then
+    compinit -C
+else
+    compinit
+fi
 autoload -Uz bashcompinit && bashcompinit
 # AWS CLI completion
 if command -v aws_completer >/dev/null 2>&1; then
