@@ -89,7 +89,7 @@ uv pip install -U \
     pymupdf \
     pynvim \
     'python-lsp-server[all]'
-UV_TOOLS=(ruff glances nvitop ty plamo-translate copier)
+UV_TOOLS=(ruff glances nvitop ty plamo-translate copier "headroom-ai[proxy,code]")
 for tool in "${UV_TOOLS[@]}"; do
     uv tool install -U $tool
 done

@@ -7,11 +7,16 @@ mkdir -p "$COMPLETIONS_DIR"
 print -P "%F{blue}%B==> %f%b%F{white}%BUpdating zsh completions...%f%b"
 
 if command -v kubectl >/dev/null 2>&1; then
-    kubectl completion zsh > "$COMPLETIONS_DIR/_kubectl"
+    kubectl completion zsh >"$COMPLETIONS_DIR/_kubectl"
     echo "Updated: _kubectl ($(kubectl version --client -o json 2>/dev/null | python3 -c 'import sys,json; print(json.load(sys.stdin)["clientVersion"]["gitVersion"])' 2>/dev/null || echo 'unknown version'))"
 fi
 
 if command -v docker >/dev/null 2>&1; then
-    docker completion zsh > "$COMPLETIONS_DIR/_docker"
+    docker completion zsh >"$COMPLETIONS_DIR/_docker"
     echo "Updated: _docker ($(docker version --format '{{.Client.Version}}' 2>/dev/null || echo 'unknown version'))"
+fi
+
+if command -v mise >/dev/null 2>&1; then
+    mise completion zsh >"$COMPLETIONS_DIR/_mise"
+    echo "Updated: _mise ($(mise --version 2>/dev/null || echo 'unknown version'))"
 fi

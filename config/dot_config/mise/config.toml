@@ -13,6 +13,7 @@ eza = "latest"
 jq = "latest"
 starship = "latest"
 tmux = "latest"
+usage = "latest"
 yazi = "latest"
 yq = "latest"
 zoxide = "latest"
@@ -68,3 +69,7 @@ trusted_config_paths = ["/"]
 minimum_release_age = "24h"
 minimum_release_age_excludes = ["claude", "codex", "aqua:google-antigravity/antigravity-cli"]
 auto_env = true
+
+[tasks.headroom-proxy]
+description = "Start the Headroom proxy"
+run = "headroom proxy --host 127.0.0.1 --port 8787 --no-telemetry"
