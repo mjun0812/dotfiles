@@ -148,23 +148,16 @@ zsh "$DOTPATH/script/setup_claude_code.sh"
 log_section "Setting up Codex..."
 zsh "$DOTPATH/script/setup_codex.sh"
 
-################ [Gemini] ################
-log_section "Setting up Gemini..."
-cp -aLf "$HOME/.gemini/GEMINI.md" "$DOTPATH/.backup/GEMINI.md" && rm -rf "$HOME/.gemini/GEMINI.md"
-cp -aLf "$HOME/.gemini/commands" "$DOTPATH/.backup/gemini_commands" && rm -rf "$HOME/.gemini/commands"
-cp -aLf "$HOME/.gemini/skills" "$DOTPATH/.backup/gemini_skills" 2>/dev/null || true
-cp -aLf "$HOME/.gemini/settings.json" "$DOTPATH/.backup/gemini_settings.json" && rm -rf "$HOME/.gemini/settings.json"
-mkdir -p "$HOME/.gemini"
-ln -snfv "$DOTPATH/config/ai-agents/gemini/commands" "$HOME/.gemini/commands"
-ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.gemini/GEMINI.md"
-ln -snfv "$DOTPATH/config/ai-agents/gemini/settings.json" "$HOME/.gemini/settings.json"
-
 ################ [Antigravity CLI] ################
 log_section "Setting up Antigravity CLI..."
+cp -aLf "$HOME/.gemini/GEMINI.md" "$DOTPATH/.backup/GEMINI.md" && rm -rf "$HOME/.gemini/GEMINI.md"
+cp -aLf "$HOME/.gemini/skills" "$DOTPATH/.backup/gemini_skills" && rm -rf "$HOME/.gemini/skills"
 cp -aLf "$HOME/.gemini/antigravity-cli/settings.json" "$DOTPATH/.backup/antigravity_cli_settings.json" && rm -rf "$HOME/.gemini/antigravity-cli/settings.json"
-ln -snfv "$DOTPATH/config/ai-agents/gemini/antigravity-cli/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
-cp -aLf "$HOME/.gemini/antigravity-cli/skills" "$DOTPATH/.backup/antigravity_cli_skills" 2>/dev/null || true
+cp -aLf "$HOME/.gemini/antigravity-cli/skills" "$DOTPATH/.backup/antigravity_cli_skills" && rm -rf "$HOME/.gemini/antigravity-cli/skills"
+mkdir -p "$HOME/.gemini/antigravity-cli"
 mkdir -p "$HOME/.gemini/antigravity-cli/skills"
+ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.gemini/GEMINI.md"
+ln -snfv "$DOTPATH/config/ai-agents/gemini/antigravity-cli/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
 # Remove only the skills we manage, then relink (keeps locally-added skills).
 for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     skill_name=$(basename "$skill_dir")
