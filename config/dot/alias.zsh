@@ -59,9 +59,6 @@ alias claude="claude --mcp-config=${HOME}/.claude/mcp.json --allow-dangerously-s
 alias cc-commit='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit en"'
 alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit ja"'
 
-# Gemini-cli
-alias gemini-commit='command gemini -p "/aicommit en" -y --model=gemini-3.1-flash-lite --skip-trust'
-alias gemini-commit-ja='command gemini -p "/aicommit ja" -y --model=gemini-3.1-flash-lite --skip-trust'
 
 # Codex
 alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って英語でコミットしてください。"'
@@ -72,8 +69,10 @@ alias copilot-commit='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit
 alias copilot-commit-ja='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はJapaneseです。"'
 
 # Antigravity-cli (agy)
-alias agy-commit='command agy --dangerously-skip-permissions --add-dir . --model="Gemini 3.5 Flash (Low)" -p "/git-commit en"'
-alias agy-commit-ja='command agy --dangerously-skip-permissions --add-dir . --model="Gemini 3.5 Flash (Low)" -p "/git-commit ja"'
+alias agy-commit='command agy --dangerously-skip-permissions --add-dir . --model="Gemini 3.5 Flash (Low)" -p "git-commit skillを使って英語でコミットしてください。"'
+alias agy-commit-ja='command agy --dangerously-skip-permissions --add-dir . --model="Gemini 3.5 Flash (Low)" -p "git-commit skillを使って日本語でコミットしてください。"'
+alias gemini-commit='agy-commit'
+alias gemini-commit-ja='agy-commit-ja'
 
 # ai commands alias
 alias aicommit='cc-commit'
