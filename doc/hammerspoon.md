@@ -6,11 +6,11 @@ This document describes the Hammerspoon configuration and URL schemes.
 
 ## Configuration Location
 
-| Path                                                            | Description                                                     |
-| --------------------------------------------------------------- | --------------------------------------------------------------- |
-| `config/dot/hammerspoon/init.lua` (source)                      | Entry point. Registers URL handlers and loads sub-modules       |
-| `config/dot/hammerspoon/chrome_vertical_tab_sidebar_toggle.lua` | Chrome vertical tab sidebar toggle (`require`d from `init.lua`) |
-| `~/.hammerspoon/` (deployed)                                    | Symlinked from `config/dot/hammerspoon/` by `install.sh`        |
+| Path                                                    | Description                                                     |
+| ------------------------------------------------------- | --------------------------------------------------------------- |
+| `config/dot/hammerspoon/init.lua` (source)              | Entry point. Registers URL handlers and loads sub-modules       |
+| `config/dot/hammerspoon/chrome-vertical-tab-toggle.lua` | Chrome vertical tab sidebar toggle (`require`d from `init.lua`) |
+| `~/.hammerspoon/` (deployed)                            | Symlinked from `config/dot/hammerspoon/` by `install.sh`        |
 
 Edit files under `config/dot/hammerspoon/` directly. Since `~/.hammerspoon` is a symlink to the source directory, changes are picked up without re-running `install.sh` — just reload the config from the Hammerspoon menu bar (or `hs.reload()` in the console).
 
@@ -52,7 +52,7 @@ The AeroSpace configuration (`config/dot_config/aerospace/aerospace.toml`) calls
 | `exec-on-workspace-change`             | `hammerspoon://aerospace-workspace?ws=<num>` | Display workspace HUD on every workspace switch             |
 | Service mode `F` key (toggle floating) | `hammerspoon://center`                       | Re-center the window when it transitions to floating layout |
 
-The Raycast script `script/raycast/toggle_aerospace_float.sh` also calls `hammerspoon://center` after switching the focused window to the floating layout.
+The Raycast script `config/mac/raycast/toggle_aerospace_float.sh` also calls `hammerspoon://center` after switching the focused window to the floating layout.
 
 ## Workspace HUD Customization
 
@@ -75,14 +75,14 @@ The HUD is placed on the overlay window level (`hs.canvas.windowLevels.overlay`)
 
 ## Chrome Vertical Tab Sidebar Toggle
 
-`config/dot/hammerspoon/chrome_vertical_tab_sidebar_toggle.lua` toggles Chrome's native vertical-tab sidebar from the keyboard or by hovering the screen's left edge. The script uses the macOS Accessibility API to locate the sidebar's expand/collapse button (matched against Chromium's localized `IDS_EXPAND_VERTICAL_TABS` / `IDS_COLLAPSE_VERTICAL_TABS` strings) and presses it via `AXPress`.
+`config/dot/hammerspoon/chrome-vertical-tab-toggle.lua` toggles Chrome's native vertical-tab sidebar from the keyboard or by hovering the screen's left edge. The script uses the macOS Accessibility API to locate the sidebar's expand/collapse button (matched against Chromium's localized `IDS_EXPAND_VERTICAL_TABS` / `IDS_COLLAPSE_VERTICAL_TABS` strings) and presses it via `AXPress`.
 
 ### Triggers
 
-| Trigger               | Default | Description                                                                              |
-| --------------------- | ------- | ---------------------------------------------------------------------------------------- |
-| Keyboard hotkey       | `Cmd+B` | Toggle the sidebar while Chrome is frontmost                                             |
-| Mouse left-edge hover | enabled | Expand when the cursor reaches the left edge; collapse when it leaves the sidebar bounds |
+| Trigger               | Default       | Description                                                                              |
+| --------------------- | ------------- | ---------------------------------------------------------------------------------------- |
+| Keyboard hotkey       | `Cmd+Shift+B` | Toggle the sidebar while Chrome is frontmost                                             |
+| Mouse left-edge hover | enabled       | Expand when the cursor reaches the left edge; collapse when it leaves the sidebar bounds |
 
 Both triggers only fire when the frontmost app is in `TARGET_APPS` (Google Chrome and its Beta / Canary / Dev / Chromium variants by default).
 
@@ -106,7 +106,7 @@ All tunables live as `local` tables at the top of the script. Edit and reload Ha
 ### Troubleshooting
 
 - **Sidebar not toggled** — Chrome may show the button under a locale not in `SIDEBAR_LABELS`. Inspect the button's AXTitle/AXDescription with Hammerspoon's `hs.axuielement` and append the exact string (matching is case-insensitive but requires a full-string match, not substring).
-- **Hotkey doesn't fire** — `TOGGLE_MODS` is matched exactly; e.g. with `cmd = true` set, pressing `Cmd+Shift+B` will NOT trigger.
+- **Hotkey doesn't fire** — `TOGGLE_MODS` is matched exactly; e.g. with `cmd = true` and `shift = true` set, pressing `Cmd+B` will NOT trigger.
 - **Edge hover stops working after sleep** — the watchdog should revive it within `WATCHDOG.intervalSeconds + WATCHDOG.heartbeatTimeout` seconds; check `Console.app` for `chrome-sidebar` log entries.
 
 ## Adding New URL Handlers

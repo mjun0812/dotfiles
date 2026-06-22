@@ -273,7 +273,7 @@ See [doc/nvim.md](doc/nvim.md) for Neovim configuration and keyboard shortcuts.
 
 VS Code extensions are managed in `config/vscode/extensions.txt`.
 
-`install.sh` runs `script/install/install_vscode_extensions.sh`, which installs missing extensions only and does not uninstall local extensions.
+`script/install/install_vscode_extensions.sh` installs missing extensions only and does not uninstall local extensions.
 
 To synchronize the installed extensions exactly with `config/vscode/extensions.txt`, run:
 

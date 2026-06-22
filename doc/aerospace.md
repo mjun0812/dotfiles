@@ -125,9 +125,9 @@ end)
 
 The following Raycast scripts are available for AeroSpace management:
 
-| Script                      | Description                              |
-| --------------------------- | ---------------------------------------- |
-| `toggle_aerospace.sh`       | Toggle AeroSpace ON/OFF                  |
-| `toggle_aerospace_float.sh` | Toggle floating layout and center window |
-| `new_chrome.sh`             | Open new Chrome window in current space  |
-| `new_safari.sh`             | Open new Safari window in current space  |
+| Script                      | Description                                |
+| --------------------------- | ------------------------------------------ |
+| `toggle_aerospace.sh`       | Toggle AeroSpace ON/OFF                    |
+| `toggle_aerospace_float.sh` | Make focused window floating and center it |
+| `new_chrome.sh`             | Open new Chrome window in current space    |
+| `new_safari.sh`             | Open new Safari window in current space    |

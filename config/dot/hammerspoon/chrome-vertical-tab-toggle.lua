@@ -25,7 +25,7 @@ local log                  = hs.logger.new("chrome-sidebar", "info")
 -- script effectively becomes a no-op (only the app/sleep watchers
 -- remain registered, and they short-circuit immediately).
 local FEATURES             = {
-    keyboardToggle  = true, -- Cmd+B (or configured TOGGLE_*) toggles the sidebar
+    keyboardToggle  = true, -- Cmd+Shift+B (or configured TOGGLE_*) toggles the sidebar
     mouseEdgeToggle = true, -- Hover the configured mouse edge to expand, leave to collapse
 }
 
@@ -45,7 +45,7 @@ local TARGET_APPS          = {
 --   TOGGLE_MODS: which modifier keys MUST be held to trigger the toggle.
 --                Set each field to true / false explicitly. A keystroke
 --                only fires when its modifier mask matches this table
---                exactly (e.g. with cmd=true, Cmd+Shift+B does NOT fire).
+--                exactly (e.g. with cmd=true and shift=true, Cmd+B does NOT fire).
 --   TOGGLE_KEY : the main key. Use a single character ("b", "s") or a
 --                named key from hs.keycodes.map ("tab", "f1", "space").
 -- ----------------------------------------------------------
@@ -706,7 +706,7 @@ end
 -- We use hs.eventtap instead of hs.hotkey.bind because hs.hotkey installs
 -- a GLOBAL hotkey at the OS level: if its enable/disable lifecycle races
 -- with appWatcher events (which it can during fast app-switching), the
--- key stays captured even in other apps — e.g. Cmd+B then stops working
+-- key stays captured even in other apps — e.g. Cmd+Shift+B then stops working
 -- in VSCode. eventtap inspects every keyDown but only consumes it when
 -- frontmost == Chrome and the modifier mask + keycode match exactly, so
 -- non-Chrome contexts are guaranteed to receive the original key event.

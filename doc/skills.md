@@ -20,7 +20,6 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 | Skill                                                                      | Purpose                                                                               |
 | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | [`git-commit`](../config/ai-agents/skills/git-commit/SKILL.md)             | Stage and commit the current changes in appropriate units                             |
-| [`git-commit-push`](../config/ai-agents/skills/git-commit-push/SKILL.md)   | Run `git-commit`, then push the current branch                                        |
 | [`git-squash`](../config/ai-agents/skills/git-squash/SKILL.md)             | Squash / tidy commits on the current branch, force-with-lease push if needed          |
 | [`git-fix-conflict`](../config/ai-agents/skills/git-fix-conflict/SKILL.md) | Detect and resolve conflicts from merge, rebase, cherry-pick, revert, apply, PR, etc. |
 
@@ -55,10 +54,10 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 
 ### Docs & Notes
 
-| Skill                                                      | Purpose                                                                                                          |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift       |
-| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | Save the current conversation's research as a self-contained Japanese Markdown file (`YYYYMMDD_*.md`) in the cwd |
+| Skill                                                      | Purpose                                                                                                         |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift      |
+| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | Save the current conversation's research as a self-contained Japanese Markdown file under `configured note repository` configured note path |
 
 ### Japanese Writing
 
@@ -74,7 +73,7 @@ Sources:
 
 ### Cross-Agent Consultation
 
-These skills are user-invoked only (`disable-model-invocation: true`) — the agent does not trigger them on its own.
+These skills are user-invoked only — the agent does not trigger them on its own.
 
 | Skill                                                          | Purpose                                                                                              |
 | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
@@ -87,7 +86,6 @@ These skills are user-invoked only (`disable-model-invocation: true`) — the ag
 | Skill                                                                          | Purpose                                                                                      |
 | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
 | [`resume-other-agent`](../config/ai-agents/skills/resume-other-agent/SKILL.md) | Resume another coding agent (Codex / Claude Code) by session ID, replaying its prior context |
-| [`summarize-pdf`](../config/ai-agents/skills/summarize-pdf/SKILL.md)           | Summarize a PDF file                                                                         |
 
 ## Dependencies
 
@@ -95,7 +93,6 @@ The following skills invoke other skills through the agent's `Skill` tool. Arrow
 
 ```mermaid
 graph LR
-    git-commit-push --> git-commit
     git-squash -. on conflict .-> git-fix-conflict
 
     github-issue-discover --> github-issue-create
@@ -121,7 +118,6 @@ graph LR
 
 | Caller                            | Callee                                                                 | When                                                                                |
 | --------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `git-commit-push`                 | `git-commit`                                                           | Always (commit step before push)                                                    |
 | `git-squash`                      | `git-fix-conflict`                                                     | Only if a conflict surfaces during squash                                           |
 | `github-issue-discover`           | `github-issue-create`                                                  | One invocation per approved candidate (issued in parallel)                          |
 | `github-issue-resolve`            | `github-issue-create` _(indirectly)_, `git-commit`, `github-pr-create` | Implementation phase commits + final PR                                             |
@@ -134,7 +130,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`ask-claude`, `ask-codex`, `ask-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `stop-ai-slop-jp`, `summarize-pdf`.
+`ask-claude`, `ask-codex`, `ask-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `stop-ai-slop-jp`.
 
 Note: `github-issue-update` mentions `github-issue-discover` / `github-pr-review` / `github-resolve-pr-comment` in its SKILL.md only to clarify scope boundaries — it deliberately does not invoke them.
 

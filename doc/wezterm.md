@@ -6,24 +6,24 @@ The main configuration file is `config/dot/wezterm.lua`, which is linked to `~/.
 
 ## Settings
 
-| Setting                     | Value                                       |
-| --------------------------- | ------------------------------------------- |
-| Auto reload configuration   | Yes                                         |
-| Audible bell                | Disabled                                    |
-| Notification handling       | Always show                                 |
-| IME                         | Enabled                                     |
-| Quit when all windows close | No                                          |
-| Window close confirmation   | Never prompt                                |
-| Background opacity          | 0.70                                        |
-| macOS background blur       | 30                                          |
-| Font                        | RobotoMonoJP, Roboto Mono, Noto Color Emoji |
-| Font size                   | 12.0                                        |
-| Initial size                | 110 columns x 30 rows                       |
-| Tab max width               | 16                                          |
-| Hide tab bar for one tab    | No                                          |
-| Show tab close button       | No                                          |
-| Show new tab button         | No                                          |
-| Show tab index              | No                                          |
+| Setting                     | Value                                                         |
+| --------------------------- | ------------------------------------------------------------- |
+| Auto reload configuration   | Yes                                                           |
+| Audible bell                | Disabled                                                      |
+| Notification handling       | Always show                                                   |
+| IME                         | Enabled                                                       |
+| Quit when all windows close | No                                                            |
+| Window close confirmation   | Never prompt                                                  |
+| Background opacity          | 0.70                                                          |
+| macOS background blur       | 30                                                            |
+| Font                        | RobotoMonoJP, Roboto Mono, Noto Color Emoji, Noto Sans CJK JP |
+| Font size                   | 12.0                                                          |
+| Initial size                | 110 columns x 30 rows                                         |
+| Tab max width               | 30                                                            |
+| Hide tab bar for one tab    | No                                                            |
+| Show tab close button       | No                                                            |
+| Show new tab button         | No                                                            |
+| Show tab index              | No                                                            |
 
 ## Keyboard Shortcuts
 
