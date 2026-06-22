@@ -54,10 +54,10 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 
 ### Docs & Notes
 
-| Skill                                                      | Purpose                                                                                                         |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift      |
-| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | Save the current conversation's research as a self-contained Japanese Markdown file under `configured note repository` configured note path |
+| Skill                                                      | Purpose                                                                                                    |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift |
+| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | Save the current conversation's research as a self-contained Japanese Markdown file                        |
 
 ### Japanese Writing
 
