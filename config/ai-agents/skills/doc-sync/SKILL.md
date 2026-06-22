@@ -1,10 +1,9 @@
 ---
 name: doc-sync
 description: >-
-  リポジトリ内のドキュメントを実際の実装と比較し、乖離している箇所を検出して更新するSkill。デフォルトでは検出した全乖離を
-  確認なしで一括更新し、`--dry-run`指定時は更新せず差分のみ報告する。
-  ユーザーが「ドキュメントを更新」「READMEが古いので直して」「docstringを実装と
-  揃えて」のように依頼したら必ずこのSkillを使うこと。
+  リポジトリ内のドキュメントを実際の実装と比較し、乖離している箇所を検出して更新するSkill。
+  検出した全乖離を確認なしで一括更新し、`--dry-run`指定時は更新せず差分のみ報告する。
+  ユーザーが「ドキュメントを更新」「READMEが古いので直して」のように依頼したら必ずこのSkillを使うこと。
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash(find:*), Bash(rg:*), Bash(grep:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(head:*), Bash(tail:*), Bash(wc:*), Bash(oxfmt:*)
 ---
 
