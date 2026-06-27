@@ -71,15 +71,20 @@ Sources:
 - `japanese-tech-writing` — based on [k16shikano/fd287c3133457c4fd8f5601d34aa817d](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d)
 - `stop-ai-slop-jp` — based on [iKora128/stop-ai-slop-jp](https://github.com/iKora128/stop-ai-slop-jp)
 
-### Cross-Agent Consultation
+### Cross-Agent Consultation & Delegation
 
 These skills are user-invoked only — the agent does not trigger them on its own.
 
-| Skill                                                          | Purpose                                                                                              |
-| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| [`ask-claude`](../config/ai-agents/skills/ask-claude/SKILL.md) | Ask Claude Code (`claude -p`) for a second opinion on an explicit user request                       |
-| [`ask-codex`](../config/ai-agents/skills/ask-codex/SKILL.md)   | Ask Codex (`codex exec`, read-only sandbox) for a second opinion on an explicit user request         |
-| [`ask-gemini`](../config/ai-agents/skills/ask-gemini/SKILL.md) | Ask Gemini via Antigravity CLI (`agy --sandbox -p`) for a second opinion on an explicit user request |
+`ask-*` runs the target CLI read-only for a second opinion. `do-*` runs it with edit permissions to delegate work that mutates the working tree.
+
+| Skill                                                          | Purpose                                                                                                              |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [`ask-claude`](../config/ai-agents/skills/ask-claude/SKILL.md) | Ask Claude Code (`claude -p`) for a second opinion on an explicit user request                                       |
+| [`ask-codex`](../config/ai-agents/skills/ask-codex/SKILL.md)   | Ask Codex (`codex exec`, read-only sandbox) for a second opinion on an explicit user request                         |
+| [`ask-gemini`](../config/ai-agents/skills/ask-gemini/SKILL.md) | Ask Gemini via Antigravity CLI (`agy --sandbox -p`) for a second opinion on an explicit user request                 |
+| [`do-claude`](../config/ai-agents/skills/do-claude/SKILL.md)   | Delegate a coding task to Claude Code (`claude -p --permission-mode bypassPermissions`) with edit permissions        |
+| [`do-codex`](../config/ai-agents/skills/do-codex/SKILL.md)     | Delegate a coding task to Codex (`codex exec -s workspace-write`) with edit permissions                              |
+| [`do-gemini`](../config/ai-agents/skills/do-gemini/SKILL.md)   | Delegate a coding task to Gemini via Antigravity CLI (`agy -p --dangerously-skip-permissions`) with edit permissions |
 
 ### Misc
 
@@ -130,7 +135,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`ask-claude`, `ask-codex`, `ask-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `stop-ai-slop-jp`.
+`ask-claude`, `ask-codex`, `ask-gemini`, `do-claude`, `do-codex`, `do-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `stop-ai-slop-jp`.
 
 Note: `github-issue-update` mentions `github-issue-discover` / `github-pr-review` / `github-resolve-pr-comment` in its SKILL.md only to clarify scope boundaries — it deliberately does not invoke them.
 
