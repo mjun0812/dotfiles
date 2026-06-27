@@ -187,9 +187,6 @@ run = "layout floating"
 if.app-id = "com.apple.mail"
 run = "layout floating"
 [[on-window-detected]]
-if.app-id = "com.tinyspeck.slackmacgap"
-run = "layout floating"
-[[on-window-detected]]
 if.app-id = "com.linguee.DeepLCopyTranslator"
 run = "layout floating"
 [[on-window-detected]]
@@ -197,9 +194,5 @@ if.app-id = "jp.kiok.nani"
 run = "layout floating"
 [[on-window-detected]]
 if.app-id = "com.apple.systempreferences"
-run = "layout floating"
-[[on-window-detected]]
-# X.com
-if.app-id = "com.google.Chrome.app.lodlkdfmihgonocnmddehnfgiljnadcf"
 run = "layout floating"
 

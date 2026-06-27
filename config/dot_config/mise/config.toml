@@ -40,6 +40,7 @@ aqua = "latest"
 chezmoi = "latest"
 container = { version = "latest", os = ["macos"] }
 gcloud = "latest"
+imagemagick = "latest"
 kubectl = "latest"
 pre-commit = "latest"
 prek = "latest"
@@ -61,14 +62,11 @@ opencode = "latest"
 idiomatic_version_file_enable_tools = []
 pipx.uvx = true
 npm.package_manager = "bun"
-# Set registry_url for fetch latest version
-aqua.registry_url = "https://github.com/aquaproj/aqua-registry"
-aqua.registry_cache_ttl = "1d"
-aqua.baked_registry = true
 trusted_config_paths = ["/"]
 minimum_release_age = "24h"
 minimum_release_age_excludes = ["claude", "codex", "aqua:google-antigravity/antigravity-cli"]
 auto_env = true
+not_found_auto_install = false
 
 [tasks.headroom-proxy]
 description = "Start the Headroom proxy"
