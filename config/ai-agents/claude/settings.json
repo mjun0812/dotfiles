@@ -92,7 +92,10 @@
     ],
     "ask": [],
     "defaultMode": "auto",
-    "additionalDirectories": ["/tmp", "/private/tmp"]
+    "additionalDirectories": [
+      "/tmp",
+      "/private/tmp"
+    ]
   },
   "model": "claude-opus-4-7[1m]",
   "hooks": {
@@ -157,7 +160,8 @@
     "swift-lsp@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "document-skills@anthropic-agent-skills": true
+    "document-skills@anthropic-agent-skills": true,
+    "claude-code-setup@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -176,6 +180,7 @@
   "language": "japanese",
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
+  "awaySummaryEnabled": false,
   "plansDirectory": "./.claude/plans",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
@@ -183,6 +188,5 @@
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "awaySummaryEnabled": false
+  "skipAutoPermissionPrompt": true
 }
