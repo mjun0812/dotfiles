@@ -69,8 +69,8 @@ alias copilot-commit='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit
 alias copilot-commit-ja='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はJapaneseです。"'
 
 # Antigravity-cli (agy)
-alias agy-commit='command agy --dangerously-skip-permissions --cwd $(pwd) --model="Gemini 3.5 Flash (Low)" -p "git-commit skillを使って英語でコミットしてください。"'
-alias agy-commit-ja='command agy --dangerously-skip-permissions --cwd $(pwd) --model="Gemini 3.5 Flash (Low)" -p "git-commit skillを使って日本語でコミットしてください。"'
+alias agy-commit='command agy --dangerously-skip-permissions --model="Gemini 3.5 Flash (Low)" -p "cd $(pwd) && git-commit skillを使って英語でコミットしてください。"'
+alias agy-commit-ja='command agy --dangerously-skip-permissions --model="Gemini 3.5 Flash (Low)" -p "cd $(pwd) && git-commit skillを使って日本語でコミットしてください。"'
 alias gemini-commit='agy-commit'
 alias gemini-commit-ja='agy-commit-ja'
 
