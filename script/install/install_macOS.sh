@@ -13,8 +13,7 @@ brew install \
     tree \
     subversion \
     mactop \
-    htop \
-    neofetch
+    htop
 
 # Xcodeが入っているときのみインストール可能なのでinstallを分ける
 brew install \
