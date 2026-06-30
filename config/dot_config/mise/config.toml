@@ -37,7 +37,6 @@ lazygit = "latest"
 # Dev tooling
 actionlint = "latest"
 aqua = "latest"
-chezmoi = "latest"
 container = { version = "latest", os = ["macos"] }
 gcloud = "latest"
 imagemagick = "latest"
