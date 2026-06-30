@@ -37,6 +37,8 @@ require("lazy").setup({
         { import = "plugins.treesitter" },
         { import = "plugins.trouble" },
         { import = "plugins.which-key" },
+        { import = "plugins.colorful-winsep" },
+        { import = "plugins.vimade" },
     },
     -- Configure any other settings here. See the documentation for more details.
     -- colorscheme that will be used when installing plugins.
