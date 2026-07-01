@@ -6,6 +6,7 @@ repos:
         entry: oxfmt
         language: system
         types_or: [markdown, json, yaml, javascript, jsx, ts, tsx, css]
+        exclude: ^config/ai-agents/claude/settings\.json$
         pass_filenames: true
 
       - id: shfmt
