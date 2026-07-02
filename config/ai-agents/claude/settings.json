@@ -97,7 +97,7 @@
       "/private/tmp"
     ]
   },
-  "model": "claude-opus-4-7[1m]",
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "PostToolUse": [],
     "Notification": [
@@ -179,7 +179,7 @@
   },
   "language": "japanese",
   "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "effortLevel": "medium",
   "awaySummaryEnabled": false,
   "plansDirectory": "./.claude/plans",
   "tui": "fullscreen",
