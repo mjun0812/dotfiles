@@ -69,7 +69,6 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 Sources:
 
 - `japanese-tech-writing` — based on [k16shikano/fd287c3133457c4fd8f5601d34aa817d](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d)
-- `stop-ai-slop-jp` — based on [iKora128/stop-ai-slop-jp](https://github.com/iKora128/stop-ai-slop-jp)
 
 ### Cross-Agent Consultation & Delegation
 
