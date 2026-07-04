@@ -69,7 +69,6 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 出典:
 
 - `japanese-tech-writing` — [k16shikano/fd287c3133457c4fd8f5601d34aa817d](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d) を元にしている
-- `stop-ai-slop-jp` — [iKora128/stop-ai-slop-jp](https://github.com/iKora128/stop-ai-slop-jp) を元にしている
 
 ### Cross-Agent Consultation & Delegation
 
