@@ -9,6 +9,8 @@ allowed-tools: Read, Write, Task, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 
 # Pull Request 作成
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 このSkillは、現在のbranchからpull requestを作成するためのものです。PRのタイトルと説明文は、変更内容に基づいて自動生成されます。PRの説明文は、コードを参照しなくてもPRの内容が理解できるように、変更の目的、背景、内容をわかりやすく説明します。また、テスト方法や検証方法も具体的に記述し、コピペ可能なコマンドや手順を提供します。
 
 ## Arguments

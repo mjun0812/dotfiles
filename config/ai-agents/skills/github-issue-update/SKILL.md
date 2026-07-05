@@ -6,6 +6,8 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(date:*), Bash(ls:*), Bash(cat:*), B
 
 # GitHub Issue Update
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 open issueを点検し、次の3種類の更新を行うSkill。ユーザーから「open issueを整理して」「stale issueを片付けて」「ラベルを整理して」のような依頼があったらこのSkillを使うこと。
 
 1. **close**: 解決済み・重複・長期放置で閉じるべきもの

@@ -6,6 +6,8 @@ allowed-tools: Skill, Bash(gh:*), Bash(git:*), Bash(jq:*)
 
 # Pull Request Create + Self Review
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 PR作成とセルフレビューを直列実行するための薄いオーケストレーションSkill。
 **詳細ロジックは委譲先のSkillに従う**。本Skillでは順序制御と引き渡しのみを行い、PR作成手順やレビュー手順を独自に再実装しない。
 

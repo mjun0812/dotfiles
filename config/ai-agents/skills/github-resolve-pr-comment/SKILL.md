@@ -8,6 +8,8 @@ allowed-tools: Read, Edit, Write, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 
 # Resolve PR Review Comments
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 ## 引数
 
 - `PR number`: 対応するPR番号（任意、デフォルトは現在のブランチのPR）

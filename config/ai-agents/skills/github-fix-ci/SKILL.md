@@ -6,6 +6,8 @@ allowed-tools: Read, Edit, Write, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 
 # CI ステータス確認と失敗修正
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 ## 引数
 
 - `PR number`: 確認するPR番号（任意）

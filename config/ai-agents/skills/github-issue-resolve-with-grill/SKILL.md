@@ -6,6 +6,8 @@ allowed-tools: Skill, Bash(gh:*), Bash(git:*), Bash(jq:*)
 
 # Issue Resolve with Grill
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 「設計の自己grill → issue解決」を直列実行する薄いオーケストレーションSkill。
 **詳細ロジックは委譲先のSkillに従う**。本Skillでは順序制御と引き継ぎのみを行い、grill手順や実装・PR作成手順を独自に再実装しない。
 

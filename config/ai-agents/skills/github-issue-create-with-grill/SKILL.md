@@ -6,6 +6,8 @@ allowed-tools: Skill, Bash(gh:*), Bash(git:*)
 
 # Create GitHub Issue with Grill
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 「方針の自己grill → issue作成」を直列実行する薄いオーケストレーションSkill。
 **詳細ロジックは委譲先のSkillに従う**。本Skillでは順序制御と引き継ぎのみを行い、grill手順やテンプレート選択・ラベル判定・起票手順を独自に再実装しない。
 

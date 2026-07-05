@@ -6,6 +6,8 @@ allowed-tools: Skill, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(mkdir:*), Bash(r
 
 # GitHub Issue Resolve
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 issue番号を起点に、調査 → 実装 → PR作成までを順に進めるSkill。
 **個々の作業は既存Skillへ委譲する**。
 本Skillが担うのはフェーズ間の判断と引き継ぎだけであり、PR作成手順やcommit手順を独自に再実装しない。

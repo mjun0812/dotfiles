@@ -6,6 +6,8 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(find:*), B
 
 # GitHub Issue Discover
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 リポジトリを横断的にスキャンしてissue候補を抽出し、既存issueと重複しないものをユーザー承認の上で一括起票する。
 
 ## Arguments

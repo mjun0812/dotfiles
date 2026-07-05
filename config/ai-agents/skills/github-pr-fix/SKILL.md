@@ -6,6 +6,8 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 
 # GitHub PR Fix
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 このSkillは、指定されたPRの全問題（コンフリクト、CI失敗、レビューコメント）を自動検出して修正するためのものです。
 修正作業はPRごとに専用のGit worktree内で行われ、元の作業ツリーはPR情報の取得とworktreeの作成以外では使用しません。
 修正内容はPRの言語に合わせて生成され、ユーザーへの報告も同じ言語で行われます。

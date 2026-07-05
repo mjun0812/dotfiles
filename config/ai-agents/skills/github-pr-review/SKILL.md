@@ -8,6 +8,8 @@ allowed-tools: Task, Read, Write, AskUserQuestion, Bash(git:*), Bash(gh:*), Bash
 
 # Pull Request Review
 
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 PRのhead commitを worktree にチェックアウトし，必要に応じて専門Reviewer SubAgent を並列実行する．
 各 SubAgent はworktree内の実際のソースコードを参照しながらレビューを行う．
 SubAgentの結果を統合してレビューレポートとMust Fix の項目を inline comment として投稿する．
