@@ -22,6 +22,7 @@ Claude Codeに作業を依頼する際は、作業の大きさや複雑さに応
 
 ## 手順
 
+0. `which claude` で `claude` CLIの存在を確認し、見つからなければ直ちに中止してユーザーに伝える。
 1. 依頼内容を自己完結したプロンプトにまとめる。相手はこの会話の文脈を知らないため、背景・関連ファイルパス・成功条件を明示的に含める。
 2. 実行する:
 
@@ -34,11 +35,23 @@ Claude Codeに作業を依頼する際は、作業の大きさや複雑さに応
    EOF
    ```
 
-3. 実行結果と変更箇所をユーザーに提示する。
+   `--dry-run` 引数が指定された場合は、編集権限を与えず以下のように実行する。ファイルは一切変更されず、変更方針・変更予定箇所の提案のみを得る。
+
+   ```bash
+   claude --model "<モデル名>" -p \
+   --disallowedTools "Edit,Write,Bash" \
+   --add-dir "<target_directory>" \
+   --no-session-persistence <<'EOF'
+   <prompt>
+   EOF
+   ```
+
+3. 実行結果と変更箇所をユーザーに提示する。`--dry-run` 指定時は変更方針・変更予定箇所の提案のみを提示する。
 
 ## 注意
 
 - 編集権限あり。`--permission-mode bypassPermissions` ですべてのツール (Edit/Write/Bash等) を自動許可する。
 - `--add-dir` で作業対象ディレクトリへのアクセスを明示的に許可する。
+- `--dry-run` 指定時は `--disallowedTools "Edit,Write,Bash"` を付けて実行し、ファイルを変更せず提案のみを得る。
 - 委譲後の差分は呼び出し元エージェントが確認し、必要なら追加修正する。
 - CLI未導入・認証エラー・permission error等で実行できない場合は、エラー内容を伝えて中止する。

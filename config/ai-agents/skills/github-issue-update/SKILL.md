@@ -105,7 +105,7 @@ Summary例:
 - #125 -bug
 ```
 
-承認は AskUserQuestion で多段に取る:
+承認は AskUserQuestion で多段に取る（AskUserQuestionツールが使えない環境では、同等の選択肢をテキストで提示して回答を待つ）:
 
 1. 「すべて反映 / 個別選択 / すべてキャンセル / 詳細を見たい候補がある」
 2. 「個別選択」: 4件以下は multiSelect、5件以上は除外番号をテキスト入力（"Other"）

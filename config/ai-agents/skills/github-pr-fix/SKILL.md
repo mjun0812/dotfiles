@@ -1,6 +1,6 @@
 ---
 name: github-pr-fix
-description: PRの全問題（コンフリクト、CI失敗、レビューコメント）を自動検出してgit worktree内で修正するSkill。
+description: PRの全問題（コンフリクト、CI失敗、レビューコメント）を自動検出してgit worktree内で修正するSkill。ユーザーが「PRの問題を全部直して」「PRをまとめて修正して」のように依頼したら使うこと。個別のコンフリクト解消のみはgit-fix-conflict、CI修正のみはgithub-fix-ciを使う。
 allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*), Bash(bash:*), Bash(mkdir:*), Bash(rm:*), Bash(test:*), Bash(basename:*)
 ---
 
@@ -21,6 +21,7 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 ## 引数
 
 - `PR number`: 修正するPR番号（任意、デフォルトは現在のブランチのPR）
+- `--dry-run`: 問題の検出結果一覧（3節の結果）のみを提示し、worktree作成とサブSkill呼び出しを行わず終了する
 
 ## 0. 事前チェック
 
@@ -45,6 +46,8 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 
 ## 2. 修正用 worktree の作成
 
+`--dry-run` が指定された場合は、本節をスキップし、3節の検出のみを元の作業ツリーで実行して結果を提示した後に終了する。
+
 1. `<repo-root>/.tmp/<repo-name>-worktrees/pr-<number>-fix` を専用 worktree path とする。
 2. 同じ path の worktree が存在し、未commit変更がある場合は中止する。clean な場合のみ作り直してよい。
 3. PR head と base branch を fetch する:
@@ -67,7 +70,7 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 ## 3. 問題の検出
 
 3種類の問題を並列に検出し、検出結果に応じて Phase 4 で必要なSkillだけ呼び出す。
-検出は `<worktree-path>` を cwd とし、PR番号を明示して実行する。
+検出は `<worktree-path>` を cwd とし、PR番号を明示して実行する（`--dry-run` の場合は元の作業ツリーを cwd とする）。
 
 - **1. コンフリクト**: `mergeable` が `CONFLICTING` の場合のみ対応する。`MERGEABLE` / `UNKNOWN` はスキップする。
 - **2. CI失敗**: `FAILURE` / `CANCELLED` / `TIMED_OUT` の check がある場合のみ対応する。全て実行中の場合はステータスを報告し、セクション4のStep 2はスキップする。
@@ -84,6 +87,7 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 - base branch: `<base-ref-name>`
 - worktree 外のファイルを編集しない
 - commit / push は `<worktree-path>` 内の PR head branch から行う
+- push時は必ず `git push origin HEAD:<head-ref-name>` の形式でPR head branchへ明示的に反映すること（worktreeのlocal branch名は`pr-fix/<number>`でありPR head branch名と異なるため）
 
 ### Step 1: コンフリクトの解消
 

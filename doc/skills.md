@@ -99,7 +99,6 @@ The following skills invoke other skills through the agent's `Skill` tool. Arrow
 graph LR
     git-squash -. on conflict .-> git-fix-conflict
 
-    github-issue-discover --> github-issue-create
     github-issue-resolve --> github-issue-create
     github-issue-resolve --> github-pr-create
     github-issue-resolve --> git-commit
@@ -123,7 +122,6 @@ graph LR
 | Caller                            | Callee                                                                 | When                                                                                |
 | --------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `git-squash`                      | `git-fix-conflict`                                                     | Only if a conflict surfaces during squash                                           |
-| `github-issue-discover`           | `github-issue-create`                                                  | One invocation per approved candidate (issued in parallel)                          |
 | `github-issue-resolve`            | `github-issue-create` _(indirectly)_, `git-commit`, `github-pr-create` | Implementation phase commits + final PR                                             |
 | `github-issue-create-with-grill`  | `grill-self`, `github-issue-create`                                    | Phase 2 grills the design, Phase 3 creates the issue with the decision log embedded |
 | `github-issue-resolve-with-grill` | `grill-self`, `github-issue-resolve`                                   | Phase 2 grills the design, Phase 3 implements per the decision log                  |
@@ -134,9 +132,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`ask-claude`, `ask-codex`, `ask-gemini`, `do-claude`, `do-codex`, `do-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `stop-ai-slop-jp`.
-
-Note: `github-issue-update` mentions `github-issue-discover` / `github-pr-review` / `github-resolve-pr-comment` in its SKILL.md only to clarify scope boundaries — it deliberately does not invoke them.
+`ask-claude`, `ask-codex`, `ask-gemini`, `do-claude`, `do-codex`, `do-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `stop-ai-slop-jp`.
 
 ## Conventions
 

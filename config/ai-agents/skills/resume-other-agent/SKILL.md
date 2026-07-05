@@ -1,6 +1,6 @@
 ---
 name: resume-other-agent
-description: 別のcoding agent (Codex / Claude Code) のsession IDを受け取り、そのログから直前作業を復元してresumeするSkill。
+description: 別のcoding agent (Codex / Claude Code) のsession IDを受け取り、そのログから直前作業を復元してresumeするSkill。ユーザーが「前回のsessionから再開して」「Codexの続きをやって」のように依頼したら使うこと。
 allowed-tools: Bash, Read, Glob, Grep, Write, AskUserQuestion
 ---
 
@@ -18,7 +18,7 @@ CodexやClaude Codeの片方が止まった (rate limit / crash / context loss) 
 
 ### 1. session IDの決定
 
-引数で渡されていればそれを使う。渡されていない場合は `AskUserQuestion` で候補を提示してユーザーに選ばせる。
+引数で渡されていればそれを使う。渡されていない場合は `AskUserQuestion` で候補を提示してユーザーに選ばせる。AskUserQuestionが使えない環境では候補を一覧でテキスト表示し、番号で回答させる。
 
 候補は以下のログディレクトリから「自分以外のagent」かつ**現在のrepository (または cwd) で作業していたsession**を更新時刻順にいくつか挙げる。(新しいものが上)
 

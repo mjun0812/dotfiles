@@ -1,6 +1,9 @@
 ---
 name: github-pr-create
-description: Pull Requestを作成するSkill。現在のbranchからpull requestを作成する。言語指定可能。
+description: >-
+  Pull Requestを作成するSkill。現在のbranchからpull requestを作成する。言語指定可能。
+  ユーザーが「PR作って」「pull request作成して」のように依頼したら使うこと。
+  PR作成後のセルフレビューまで求められた場合はgithub-pr-create-self-reviewを使う。
 allowed-tools: Read, Write, Task, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(mktemp:*)
 ---
 
@@ -15,6 +18,7 @@ allowed-tools: Read, Write, Task, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 - `--draft`: draft PRとして作成（Optional）
 - `--reviewer <username>`: reviewerを指定（Optional、複数指定可）
 - `--label <name>`: labelを追加（Optional、複数指定可）
+- `--dry-run`: 生成したPRタイトル・本文・base/head branchのみを提示し、`gh pr create` を実行せず終了する
 
 ## 0. 事前チェック
 
@@ -64,6 +68,7 @@ PRタイトル、関連Issue、label候補はSubAgentに委譲して並列に作
 SubAgentにはPR作成、PR本文ファイルの書き出し、`gh pr create` の実行を行わせない。
 SubAgentはあくまでPRタイトル、関連Issue、labelの候補を生成する役割に限定し、PRの作成に必要な情報を提供することに専念する。
 最終的にPRタイトル、関連Issue、labelの最終決定はメイン会話側で行い、次のステップでPR本文の生成とPRの作成を行う。
+SubAgent機能が使えない環境では、同じ作業をメイン会話内で順に実行する。
 
 ### SubAgent1: タイトル候補の生成
 
@@ -93,6 +98,8 @@ SubAgentはあくまでPRタイトル、関連Issue、labelの候補を生成す
 - テストを実行していない場合は、未実行であることと理由を明記する
 
 ## 5. Pull Requestの作成
+
+`--dry-run` が指定された場合は、生成したPRタイトル・本文・base/head branchのみを提示し、`gh pr create` を実行せずに終了する。
 
 1. 生成したPR説明文は、先にMarkdownファイルへ書き出す:
    - 例: `/tmp/YYYYMMDD-HHMMSS-pr-body.md`
