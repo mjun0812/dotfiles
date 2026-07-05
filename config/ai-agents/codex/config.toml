@@ -64,7 +64,7 @@ command = "bunx"
 args = ["@playwright/mcp@latest"]
 
 [plugins."github@openai-curated"]
-enabled = true
+enabled = false
 
 [plugins."browser@openai-bundled"]
 enabled = true
