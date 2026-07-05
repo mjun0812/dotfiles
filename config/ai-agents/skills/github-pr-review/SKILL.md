@@ -1,6 +1,8 @@
 ---
 name: github-pr-review
-description: GitHubのpull request(PR)のコードレビューを行うSkill。worktreeを作成してソースコード全体を読みながら専門Reviewer SubAgentを並列実行し、統合されたレビューレポートとインラインコメントを投稿する。self reviewにも対応する。
+description: >-
+  GitHubのpull request(PR)のコードレビューを行うSkill。worktreeを作成してソースコード全体を読みながら専門Reviewer SubAgentを並列実行し、統合されたレビューレポートとインラインコメントを投稿する。self reviewにも対応する。
+  ユーザーが「このPRをレビューして」のように依頼したら使うこと。PRの問題修正まで求められた場合はgithub-pr-fixを使う。
 allowed-tools: Task, Read, Write, AskUserQuestion, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(jq:*), Bash(mkdir:*), Bash(rm:*), Bash(test:*), Bash(basename:*), Bash(bash:*), Bash(mktemp:*)
 ---
 
@@ -13,6 +15,7 @@ SubAgentの結果を統合してレビューレポートとMust Fix の項目を
 ## Arguments
 
 - `PR number`: レビューするPR番号 (optional, defaults to PR for current branch)
+- `--dry-run`: 統合レビューレポートとinline commentのプレビューをチャットに提示するのみで、`post_review.sh` 等の投稿スクリプト・dismiss・resolve操作を一切呼ばない（worktreeの後片付けは通常どおり行う）
 
 ## Task
 
@@ -51,6 +54,7 @@ SubAgentの結果を統合してレビューレポートとMust Fix の項目を
    ```
 
    `headRefName` は表示・報告用のメタデータとして扱い、checkout対象にはしない。fork PR や同名branchの衝突で別branchをレビューしないよう、worktreeの `HEAD` が `refs/pr-review/<number>/head` の commit SHA と一致することを確認する。
+   このとき取得した PR head の最新 commit SHA を `<latest-commit-sha>` として保持し、Phase 4.3 と Phase 5.3 で使用する。
 
 5. Phase 3 以降のレビュー対象ソースの参照は、すべて `<worktree-path>` 配下で行う。
 6. **worktree 作成に失敗した場合**: エラーをユーザーに表示して中断する（worktree なしのレビューは品質が大きく落ちるため，フォールバックは行わない）
@@ -79,6 +83,7 @@ gh api "repos/<owner>/<repo>/pulls/<number>/reviews" \
 
 SubAgent ツールを使い、PR の変更内容に関係する Review SubAgent を選択して並列起動する。起動対象は Phase 3.1 で収集した情報から判断する。
 判断に迷う場合は関連しそうな SubAgent を広めに起動する。大規模変更・横断変更・影響範囲が不明な変更では全 SubAgent を起動してよい。
+SubAgent機能が使えない環境では、各観点のレビューをメイン会話内で順に実施する。
 
 起動可能な SubAgent は以下の6つで、レビューカテゴリごとに特化した観点でレビューを行う。
 
@@ -135,9 +140,11 @@ SubAgent の severity は下書きとして扱い、上記条件に照らして 
 #### Phase 4.3: レビューレポートを生成する
 
 Phase 1.3 で選択したレポートテンプレートを読み込み、その先頭コメントの記述ルールに従って埋める。
-プレースホルダ `<reviewer-name>` は実行中のレビュワー名（Claude Code 実行時は `Claude`）、`<short-sha>` はPhase 2.3 で取得した最新 commit SHA の先頭 7 文字に置換する。
+プレースホルダ `<reviewer-name>` は実行中のレビュワー名（Claude Code 実行時は `Claude`）、`<short-sha>` はPhase 2 で取得した最新 commit SHA の先頭 7 文字に置換する。
 
 ### Phase 5: レビューを投稿する
+
+`--dry-run` が指定された場合は、Phase 5.1・5.2 で作成した統合レビューレポートとinline commentのプレビューをチャットに提示し、`post_review.sh` 等の投稿スクリプトを呼ばずに Phase 6 をスキップして Phase 7 に進む。
 
 レビューをGitHubに投稿する。レビューはinline commentとレビューレポート本文の2つの要素から構成される。
 inline comment, レビューレポート本文ともに、GitHub API へ直接渡すのではなく、一時ファイルに保存してから `--body-file` / `--comments-file` で渡すこと。

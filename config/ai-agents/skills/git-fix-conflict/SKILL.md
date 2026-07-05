@@ -1,10 +1,14 @@
 ---
 name: git-fix-conflict
-description: Git/GitHubのmerge、rebase、cherry-pick、revert、apply、PRなどで発生したコンフリクトを検出して解消するSkill。
+description: Git/GitHubのmerge、rebase、cherry-pick、revert、apply、PRなどで発生したコンフリクトを検出して解消するSkill。ユーザーが「コンフリクトを直して」「マージコンフリクトを解消して」のように依頼したら使うこと。
 allowed-tools: Read, Edit, Write, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(rg:*), Bash(head:*), Bash(tail:*), Bash(jq:*), Bash(test:*), Bash(make:*), Bash(npm:*), Bash(pnpm:*), Bash(yarn:*), Bash(go:*), Bash(cargo:*), Bash(uv:*)
 ---
 
 # Resolve Git Conflicts
+
+## Arguments
+
+- `--dry-run`: 検出したコンフリクトファイル一覧と解消方針の提案のみを提示し、ファイル編集・`git add`・commit・pushを一切行わない
 
 ## タスク
 
@@ -34,6 +38,8 @@ allowed-tools: Read, Edit, Write, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 4. **コンフリクトファイルの特定と分析**:
    - コンフリクト一覧: `git diff --name-only --diff-filter=U`
    - 各ファイルのコンフリクト領域を表示
+
+   `--dry-run` が指定された場合は、ここで検出したコンフリクトファイル一覧と解消方針の提案のみを提示し、ファイル編集・`git add`・commit・pushを一切行わず終了する。
 
 5. **各コンフリクトの解消**:
    - 各コンフリクトファイルについて:

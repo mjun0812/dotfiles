@@ -41,6 +41,8 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(find:*), B
 
 ### Phase 0: 前提情報の収集
 
+`gh auth status` で認証を確認し、未認証なら作業前に停止して案内する。
+
 並列で以下を取得する。
 
 - リポジトリ: `gh repo view --json name,owner --jq '.owner.login + "/" + .name'`
@@ -188,7 +190,7 @@ rg -n --no-heading -i -e '\bTODO\b' -e '\bFIXME\b' -e '\bXXX\b' -e '\bHACK\b' \
   - 新機能の提案 → `feature_request`
   - 不具合・脆弱性・既知のバグ → `bug_report`
   - テスト追加 → `test`
-- **本文ドラフト**: 選んだテンプレートのセクション見出し（リポジトリ内 `.github/ISSUE_TEMPLATE/` を優先、無ければ `github-issue-create` skill の `references/ISSUE_TEMPLATE[_JA]/` を参照）に背景・目的・参考情報（ファイルパス + 行番号、引用文）を流し込んだ Markdown を作る。フロントマターは含めない。情報が無いセクションは省略する
+- **本文ドラフト**: 選んだテンプレートのセクション見出し（リポジトリ内 `.github/ISSUE_TEMPLATE/` を優先、無ければ標準構成（背景 / 目的・期待する動作 / 現状・再現手順 / 参考情報）を使う）に背景・目的・参考情報（ファイルパス + 行番号、引用文）を流し込んだ Markdown を作る。フロントマターは含めない。情報が無いセクションは省略する
 - **ラベル候補**: テンプレートのフロントマターに記載のデフォルトラベル（例: `task` ならラベルなし、`bug_report` なら `bug`）を起点に、kind に合うものを Phase 0 の既存ラベル一覧から追加する（`enhancement`, `bug`, `documentation`, `test`, `security` など、実在するもののみ）
 
 ### Phase 5: ユーザーへの一覧提示と承認
@@ -211,7 +213,7 @@ rg -n --no-heading -i -e '\bTODO\b' -e '\bFIXME\b' -e '\bXXX\b' -e '\bHACK\b' \
 
 詳細本文を見たい候補があるかをユーザーに聞く前に、まず一覧だけ見てもらい採否を決めてもらう。多数の候補がある場合は1メッセージにすべて出す（途中で切らない）。
 
-採否の取得方法は **多段** で行う:
+採否の取得方法は **多段** で行う（AskUserQuestionツールが使えない環境では、同等の選択肢をテキストで提示して回答を待つ）:
 
 1. 「全件作成 / 個別選択 / 全件キャンセル / 詳細を見たい候補がある」を AskUserQuestion で聞く
 2. 「個別選択」が選ばれた場合、4件以下なら AskUserQuestion の multiSelect で直接、5件以上なら「除外したい番号をカンマ区切りで」とテキストで返してもらう（"Other" 入力を使う）
@@ -268,7 +270,7 @@ URLはMarkdownリンクではなく素のURL（クリックできる端末向け
 
 ## Failure modes に注意
 
-- **gh認証なし**: `gh auth status` で確認し、未認証なら作業前に停止して案内する
+- **gh認証なし**: Phase 0で確認済み
 - **public repoでないと困る**: シークレット候補をissueにする時、private repoかを確認する。public repoなら本文に証拠を貼る前にもう一段ユーザーに確認を取る
 - **巨大リポジトリ**: スキャン時間が長くなる。`--scope docs` などで絞ることをユーザーに案内する
 - **monorepo**: ファイル数が多くノイズが増える。優先度高のもの（security / docs明示）に絞る方が現実的

@@ -1,6 +1,6 @@
 ---
 name: git-squash
-description: 現在のbranchのcommitを自動でsquash・整理し、必要に応じてforce-with-leaseでpushするSkill。言語指定可能。
+description: 現在のbranchのcommitを自動でsquash・整理し、必要に応じてforce-with-leaseでpushするSkill。言語指定可能。ユーザーが「commitをsquashして」「commitを整理して」のように依頼したら使うこと。
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(cat:*), Bash(grep:*), Bash(rg:*)
 ---
 
@@ -14,6 +14,7 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(cat:*), Bash(grep:*), B
 - `language`: commitメッセージと報告の言語（例: "ja", "en"）。デフォルト: English
 - `--one` / `-1`: 対象commitを1つにsquashする
 - `--no-push`: squash後にpushしない
+- `--dry-run`: squash計画（グルーピング案と新しいcommitメッセージ案）のみを提示し、reset・commit・pushを一切行わない
 
 ## タスク
 
@@ -40,6 +41,8 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(cat:*), Bash(grep:*), B
    - 2行目は必ず空行にする
    - 3行目以降に具体的な変更内容を箇条書きで記述する
 
+   `--dry-run` が指定された場合は、ここまでのグルーピング案と新しいcommitメッセージ案のみを提示し、reset・commit・pushを一切行わず終了する。
+
 4. **squashの実行**:
    - `git reset --soft origin/<base-branch>` で対象commitを解除する
    - `--one` の場合は全変更を1つのcommitとして作成する
@@ -59,4 +62,4 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(cat:*), Bash(grep:*), B
 
 - ユーザー確認は原則行わない。危険な状態は自動判断で中止し、理由を報告する
 - `git push --force-with-lease` のみ使用し、`git push --force` は使用しない
-- squash中にconflictが発生した場合は `git-fix-conflict` Skill を使って解消する
+- squash中にconflictが発生した場合は `git-fix-conflict` Skill を使って解消する。本Skillの主手順（`reset --soft`主体）ではconflictは発生しない設計であり、万一発生した場合のみ委譲する

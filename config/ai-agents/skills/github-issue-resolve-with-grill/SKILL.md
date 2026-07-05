@@ -17,6 +17,7 @@ allowed-tools: Skill, Bash(gh:*), Bash(git:*), Bash(jq:*)
 - `issue` (必須): 解決対象のissue番号。先頭の `#` は省略可（例: `123` または `#123`）
 - `language` (任意): issueコメント・PR本文の言語（例: `ja`, `en`）。デフォルトは `ja`。`github-issue-resolve` にそのまま転送する
 - `--draft` (任意): draft PRとして作成（`github-issue-resolve` に転送）
+- `--dry-run` (任意): 指定時はそのまま `github-issue-resolve` へ転送する。`github-issue-resolve` は調査と実装方針の提示で停止し、worktree作成以降を実行しない
 
 ## Task
 
@@ -38,7 +39,7 @@ gh issue view <number> --json number,title,state,body,labels,comments,url
 
 ### Phase 3: issue解決（github-issue-resolve に委譲）
 
-1. Skillツールで `github-issue-resolve` Skillを起動し、`issue` / `language` / `--draft` をそのまま転送する。
+1. Skillツールで `github-issue-resolve` Skillを起動し、`issue` / `language` / `--draft` / `--dry-run` をそのまま転送する。
 2. その際、Phase 2 の意思決定ログを実装方針として引数に添え、`github-issue-resolve` 側の「実装方針を決める」工程ではログの決定に従うよう指示する。grillで解決済みの論点を再検討させない。
 3. 確信度 low の「要確認」項目も判断材料としてそのまま引き継ぐ。
 

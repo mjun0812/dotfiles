@@ -1,6 +1,6 @@
 ---
 name: github-fix-ci
-description: CIのステータスを確認し、失敗を分析して自動修正するSkill。
+description: CIのステータスを確認し、失敗を分析して自動修正するSkill。ユーザーが「CIを直して」「CIが落ちているので修正して」のように依頼したら使うこと。
 allowed-tools: Read, Edit, Write, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*)
 ---
 
@@ -9,7 +9,8 @@ allowed-tools: Read, Edit, Write, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 ## 引数
 
 - `PR number`: 確認するPR番号（任意）
-- `--no-commit`: 修正後のコミットとプッシュをスキップ（任意）
+- `--no-commit`: 修正後のコミットとプッシュをスキップ（任意）。ファイル自体は修正される（commit/pushのみスキップ）
+- `--dry-run`: 失敗分析と修正方針の提示までで終了し、ファイル編集・commit・pushを一切行わない
 
 ## タスク
 
@@ -61,6 +62,8 @@ PRモードでは `gh pr view <number> --json headRefName,headRefOid` で head b
 - **ビルドエラー**: コンパイルまたはバンドルの問題を特定
 - **型エラー**: 型の不一致とその箇所を特定
 - **その他**: その他のエラータイプを分類
+
+`--dry-run` が指定された場合は、ここまでの失敗分析と修正方針の提示までで終了し、ファイル編集・commit・pushを一切行わない。
 
 ### Phase 6: 問題の修正
 

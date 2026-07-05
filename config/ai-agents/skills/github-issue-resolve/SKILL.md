@@ -19,6 +19,7 @@ issue番号を起点に、調査 → 実装 → PR作成までを順に進める
 - `issue` (必須): 解決対象のissue番号。先頭の `#` は省略可（例: `123` または `#123`）
 - `language` (任意): issueコメント・PR本文の言語（例: `ja`, `en`）。デフォルトは `ja`。`github-pr-create` にもそのまま転送する
 - `--draft` (任意): draft PRとして作成（`github-pr-create` に転送）
+- `--dry-run` (任意): 指定時はPhase 1の調査と実装方針の提示で停止し、worktree作成以降（Phase 2〜）は一切実行しない
 
 ## Task
 
@@ -35,6 +36,7 @@ issue番号を起点に、調査 → 実装 → PR作成までを順に進める
    - 仕様が曖昧な場合は、コードベースを探索し、推奨の方針で判断する
    - どうしても実装不能な情報が欠けている場合のみ中止し、欠落情報を具体的に伝え、ユーザーに質問する
 3. 実装方針は**簡潔に**ユーザーへ提示する。確認は取らず Phase 2 に進む。
+   - `--dry-run` が指定された場合はここで停止し、Phase 2以降は実行しない。
 
 ### Phase 2: worktreeの作成
 
@@ -77,7 +79,7 @@ issue番号を起点に、調査 → 実装 → PR作成までを順に進める
 
 ### Phase 4: PR作成（github-pr-create に委譲）
 
-1. Skillツールで `github-pr-create` Skillを起動する
+1. Skillツールで `github-pr-create` Skillを起動する（Skillツールが使えない環境では、委譲先skillのSKILL.mdを直接読み込み、その手順に従って実行する）
 2. 受け取った引数を以下のように転送する:
    - `language`: そのまま転送
    - `--draft`: 指定されていれば転送

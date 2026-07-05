@@ -22,13 +22,14 @@ Claude Codeに相談する際は、作業の大きさや複雑さに応じてモ
 
 ## 手順
 
+0. `which claude` で `claude` CLIの存在を確認し、見つからなければ直ちに中止してユーザーに伝える。
 1. 相談内容を自己完結したプロンプトにまとめる。相手はこの会話の文脈を知らないため、背景・関連ファイルパス・質問を明示的に含める。
 2. 実行する:
 
    ```bash
    claude --model "<モデル名>" -p \
    --tools "Read,Grep,Glob" \
-   --disallowedTools "Edit,Write,MultiEdit,Bash" \
+   --disallowedTools "Edit,Write,Bash" \
    --permission-mode "dontAsk" \
    --no-session-persistence <<'EOF'
    <prompt>

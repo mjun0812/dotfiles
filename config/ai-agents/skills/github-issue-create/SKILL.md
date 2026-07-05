@@ -1,6 +1,9 @@
 ---
 name: github-issue-create
-description: ユーザーから情報を収集してGitHub Issueを作成するSkill。
+description: >-
+  ユーザーから情報を収集してGitHub Issueを作成するSkill。
+  ユーザーが「issue作って」「バグ報告を起票して」のように依頼したら使うこと。
+  複数候補の一括起票はgithub-issue-discover、issue解決からPR作成まではgithub-issue-resolveを使う。
 allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*), Read
 ---
 
@@ -36,6 +39,7 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*), Re
    - リポジトリ情報: `gh repo view --json name,owner --jq '.owner.login + "/" + .name'`
    - 利用可能なラベル一覧: `gh label list --limit 100 --json name,description --jq '.[] | "\(.name)\t\(.description // "")"'`
    - リポジトリ内Issueテンプレートの有無: `ls .github/ISSUE_TEMPLATE/ 2>/dev/null || echo "none"`
+   - `gh auth status` が失敗した場合は作業を停止し、認証を案内する
 
 2. **ユーザーからの自由入力**: AskUserQuestion ではなく **自由テキスト入力** でIssueの概要を受け取る。次のようにプロンプトを出す:
 
