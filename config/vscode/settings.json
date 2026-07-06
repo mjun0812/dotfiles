@@ -113,7 +113,7 @@
   "editor.bracketPairColorization.enabled": true,
   "editor.cursorBlinking": "phase",
   "editor.cursorSmoothCaretAnimation": "on",
-  "editor.fontFamily": "'RobotoMonoJP', 'RobotoMono JP Nerd', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontFamily": "'RobotoMonoLineSeed', 'RobotoMonoJP', 'RobotoMono JP Nerd', Menlo, Monaco, 'Courier New', monospace",
   "editor.fontLigatures": false,
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
@@ -135,7 +135,9 @@
   "editor.tokenColorCustomizations": {
     "textMateRules": [
       {
-        "scope": ["string.quoted.docstring.multi.python"],
+        "scope": [
+          "string.quoted.docstring.multi.python"
+        ],
         "settings": {
           "fontStyle": "italic",
           "foreground": "#107a84"
@@ -160,7 +162,11 @@
     "*.tmpl": "gotmpl"
   },
   "files.autoGuessEncoding": true,
-  "files.candidateGuessEncodings": ["utf8", "shiftjis", "eucjp"],
+  "files.candidateGuessEncodings": [
+    "utf8",
+    "shiftjis",
+    "eucjp"
+  ],
   "git-graph.date.format": "ISO Date & Time",
   "git.autofetch": "all",
   "git.confirmSync": false,
@@ -186,11 +192,17 @@
     "go": "~/.local/share/mise/shims/go"
   },
   "go.formatTool": "gofumpt",
-  "go.lintFlags": ["--fast"],
+  "go.lintFlags": [
+    "--fast"
+  ],
   "go.lintTool": "golangci-lint",
   "go.toolsManagement.autoUpdate": true,
   "gopls": {
-    "templateExtensions": ["tmpl", "gohtml", "gotmpl"],
+    "templateExtensions": [
+      "tmpl",
+      "gohtml",
+      "gotmpl"
+    ],
     "ui.semanticTokens": true
   },
   "js/ts.updateImportsOnFileMove.enabled": "always",
@@ -230,44 +242,87 @@
   "latex-workshop.latex.recipes": [
     {
       "name": "platex_no_pbibtex",
-      "tools": ["platex", "platex", "platex", "dvipdfmx"]
+      "tools": [
+        "platex",
+        "platex",
+        "platex",
+        "dvipdfmx"
+      ]
     },
     {
       "name": "platex_pbibtex",
-      "tools": ["platex", "pbibtex", "platex", "platex", "dvipdfmx"]
+      "tools": [
+        "platex",
+        "pbibtex",
+        "platex",
+        "platex",
+        "dvipdfmx"
+      ]
     },
     {
       "name": "uplatex_pbibtex",
-      "tools": ["uplatex", "pbibtex", "uplatex", "uplatex", "dvipdfmx"]
+      "tools": [
+        "uplatex",
+        "pbibtex",
+        "uplatex",
+        "uplatex",
+        "dvipdfmx"
+      ]
     },
     {
       "name": "uplatex_biber",
-      "tools": ["uplatex", "biber", "uplatex", "uplatex", "dvipdfmx"]
+      "tools": [
+        "uplatex",
+        "biber",
+        "uplatex",
+        "uplatex",
+        "dvipdfmx"
+      ]
     },
     {
       "name": "uplatex_no_pbibtex",
-      "tools": ["uplatex", "uplatex", "uplatex", "dvipdfmx"]
+      "tools": [
+        "uplatex",
+        "uplatex",
+        "uplatex",
+        "dvipdfmx"
+      ]
     },
     {
       "name": "lualatex_pbibtex",
-      "tools": ["lualatex", "pbibtex", "lualatex", "lualatex"]
+      "tools": [
+        "lualatex",
+        "pbibtex",
+        "lualatex",
+        "lualatex"
+      ]
     },
     {
       "name": "lualatex_no_pbibtex",
-      "tools": ["lualatex", "lualatex", "lualatex"]
+      "tools": [
+        "lualatex",
+        "lualatex",
+        "lualatex"
+      ]
     },
     {
       "name": "make",
-      "tools": ["make"]
+      "tools": [
+        "make"
+      ]
     },
     {
       "name": "latexmk",
-      "tools": ["latexmk"]
+      "tools": [
+        "latexmk"
+      ]
     }
   ],
   "latex-workshop.latex.tools": [
     {
-      "args": ["%DOCFILE%.dvi"],
+      "args": [
+        "%DOCFILE%.dvi"
+      ],
       "command": "dvipdfmx",
       "name": "dvipdfmx"
     },
@@ -284,22 +339,41 @@
       "name": "platex"
     },
     {
-      "args": ["--bblencoding=utf8", "-u", "-U", "--output_safechars", "%DOCFILE%"],
+      "args": [
+        "--bblencoding=utf8",
+        "-u",
+        "-U",
+        "--output_safechars",
+        "%DOCFILE%"
+      ],
       "command": "biber",
       "name": "biber"
     },
     {
-      "args": ["-kanji=utf8", "%DOCFILE%"],
+      "args": [
+        "-kanji=utf8",
+        "%DOCFILE%"
+      ],
       "command": "pbibtex",
       "name": "pbibtex"
     },
     {
-      "args": ["-synctex=1", "-kanji=utf8", "-interaction=nonstopmode", "%DOC%"],
+      "args": [
+        "-synctex=1",
+        "-kanji=utf8",
+        "-interaction=nonstopmode",
+        "%DOC%"
+      ],
       "command": "uplatex",
       "name": "uplatex"
     },
     {
-      "args": ["-synctex=1", "-shell-escape", "-interaction=nonstopmode", "%DOC%"],
+      "args": [
+        "-synctex=1",
+        "-shell-escape",
+        "-interaction=nonstopmode",
+        "%DOC%"
+      ],
       "command": "lualatex",
       "name": "lualatex"
     },
@@ -309,7 +383,10 @@
       "name": "make"
     },
     {
-      "args": ["-silent", "%DOC%"],
+      "args": [
+        "-silent",
+        "%DOC%"
+      ],
       "command": "latexmk",
       "name": "latexmk"
     }
@@ -322,7 +399,9 @@
   "markdown-pdf.footerTemplate": "<div style=\"font-size: 9px; margin: 0 auto;\"> <span class='pageNumber'></span></div>",
   "markdown-pdf.headerTemplate": "<div style=\"font-size: 9px; margin-left: 1cm;\"> <span class='title'></span></div> <div style=\"font-size: 9px; margin-left: auto; margin-right: 1cm; \"> <span class='date'></span></div>",
   "markdown-pdf.highlightStyle": "atom-one-dark.css",
-  "markdown-pdf.styles": ["~/.dotfiles/templates/github-markdown.css"],
+  "markdown-pdf.styles": [
+    "~/.dotfiles/templates/github-markdown.css"
+  ],
   "markdown-pdf.stylesRelativePathFile": true,
   "markdown-preview-enhanced.previewTheme": "one-dark.css",
   "markdown.extension.print.theme": "dark",

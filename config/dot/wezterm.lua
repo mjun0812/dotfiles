@@ -20,10 +20,10 @@ config.macos_window_background_blur = 30
 
 -- Font
 config.font = wezterm.font_with_fallback({
-    "RobotoMonoJP",
-    "Roboto Mono",
-    "Noto Color Emoji",
-    "Noto Sans CJK JP",
+    { family = "RobotoMonoPlex",     weight = "Regular" },
+    { family = "RobotoMonoLineSeed", weight = "Regular" },
+    { family = "RobotoMonoJP",       weight = 'Regular' },
+    { family = "Roboto Mono",        weight = 'Regular' },
 })
 config.font_size = 12.0
 
@@ -33,7 +33,7 @@ config.initial_rows = 30
 config.initial_cols = 110
 -- titlebar
 config.window_frame = {
-    font = wezterm.font({ family = "RobotoMonoJP", weight = "Bold" }),
+    font = wezterm.font({ family = "RobotoMonoLineSeed", weight = "Bold" }),
     font_size = 11.0,
     inactive_titlebar_bg = "none",
     active_titlebar_bg = "none",
