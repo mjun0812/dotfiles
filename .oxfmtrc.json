@@ -1,3 +1,7 @@
 {
-  "ignorePatterns": ["config/ai-agents/claude/settings.json"]
+  "ignorePatterns": [
+    "config/ai-agents/claude/settings.json",
+    "config/vscode/settings.json",
+    "config/vscode/keybindings.json"
+  ]
 }
