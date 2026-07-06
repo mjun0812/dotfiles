@@ -183,7 +183,7 @@
   },
   "language": "japanese",
   "alwaysThinkingEnabled": true,
-  "effortLevel": "medium",
+  "effortLevel": "high",
   "awaySummaryEnabled": false,
   "plansDirectory": "./.claude/plans",
   "tui": "fullscreen",
