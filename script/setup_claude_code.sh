@@ -26,6 +26,7 @@ ln -snfv "$DOTPATH/config/ai-agents/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 ln -snfv "$DOTPATH/config/ai-agents/claude/settings.json" "$HOME/.claude/settings.json"
 ln -snfv "$DOTPATH/config/ai-agents/claude/mcp.json" "$HOME/.claude/mcp.json"
 ln -snfv "$DOTPATH/config/ai-agents/claude/statusline.py" "$HOME/.claude/statusline.py"
+ln -snfv "$DOTPATH/config/ai-agents/claude/subagent_statusline.py" "$HOME/.claude/subagent_statusline.py"
 
 # Skills
 for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do

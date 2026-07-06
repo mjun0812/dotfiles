@@ -150,6 +150,10 @@
     "command": "~/.claude/statusline.py",
     "padding": 0
   },
+  "subagentStatusLine": {
+    "type": "command",
+    "command": "~/.claude/subagent_statusline.py"
+  },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
