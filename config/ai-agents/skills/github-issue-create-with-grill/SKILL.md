@@ -20,6 +20,7 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 - `language` (任意): issueのタイトル・本文の言語（例: `ja`, `en`）。デフォルトは `en`。`github-issue-create` にそのまま転送する
 - `--label <name>` (任意、複数指定可): ラベル追加指定。`github-issue-create` にそのまま転送する
 - `--assignee <username>` (任意、複数指定可): 担当者指定。`github-issue-create` にそのまま転送する
+- `--dry-run` (任意): Issueを作成せず、生成したタイトル・本文・ラベル・担当者の提示で終了する。`github-issue-create` にそのまま転送する
 
 ## Task
 
@@ -40,7 +41,7 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 
 ### Phase 3: issue作成（github-issue-create に委譲）
 
-1. Skillツールで `github-issue-create` Skillを起動する。`language` / `--label` / `--assignee` をそのまま転送する。
+1. Skillツールで `github-issue-create` Skillを起動する。`language` / `--label` / `--assignee` / `--dry-run` をそのまま転送する。
 2. その際、Phase 1 の下書き素材に **Phase 2 の意思決定ログを追記したもの** を「下書き素材」として渡し、`github-issue-create` 側のテンプレート判定・本文生成にそのまま乗せる。grillで解決済みの論点を再検討させない。
 3. `github-issue-create` の本文生成では、選択されたテンプレートのセクションに加えて、意思決定ログを以下の構造で挿入するよう指示する:
    - **Design Decisions / 設計上の決定事項**: 採択された決定を「論点 / 決定 / 根拠 / 確信度」の表で再掲

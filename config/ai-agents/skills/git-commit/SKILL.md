@@ -1,7 +1,7 @@
 ---
 name: git-commit
 description: 現在の変更を確認して、コミットするSkill。git commitを実行する際に使用する。
-allowed-tools: Bash(git status:*), Bash(git add:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
+allowed-tools: Bash(git status:*), Bash(git add:*), Bash(git branch:*), Bash(git diff:*), Bash(git commit:*)
 ---
 
 # git commit

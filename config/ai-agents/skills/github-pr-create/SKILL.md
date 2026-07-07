@@ -20,7 +20,7 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 - `--draft`: draft PRとして作成（Optional）
 - `--reviewer <username>`: reviewerを指定（Optional、複数指定可）
 - `--label <name>`: labelを追加（Optional、複数指定可）
-- `--dry-run`: 生成したPRタイトル・本文・base/head branchのみを提示し、`gh pr create` を実行せず終了する
+- `--dry-run`: 生成したPRタイトル・本文・base/head branchのみを提示し、pushや `gh pr create` を実行せず終了する
 
 ## 0. 事前チェック
 
@@ -53,6 +53,7 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 
 ## 1. リモートへのpush
 
+- `--dry-run` が指定された場合はpushを行わず、以降の差分取得はローカルのcommitと `origin/<base-branch>` の比較のみで行う
 - `git push` または `git push -u origin <current-branch>` で現在のbranchをpushする
 - 通常のpushが失敗し、履歴書き換えが必要な場合のみ、ユーザーに確認して `git push --force-with-lease` を実行する
 

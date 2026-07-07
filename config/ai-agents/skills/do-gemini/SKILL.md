@@ -1,7 +1,7 @@
 ---
 name: do-gemini
 description: Gemini (Antigravity CLI, agy) に作業を委譲して結果を得るSkill。ユーザーが「Geminiにやらせて」「Geminiに作業を任せて」と明示的に依頼したときのみ使用する。エージェント自身の判断で自発的に使わないこと。自分自身がGemini (Antigravity) の場合は使わない。
-allowed-tools: Bash(agy:*)
+allowed-tools: Bash(agy:*), Bash(git status:*), Bash(git diff:*)
 disable-model-invocation: true
 ---
 
@@ -37,7 +37,7 @@ agy --model "<モデル名>" \
 EOF
 ```
 
-3. 実行結果と変更箇所をユーザーに提示する。`--dry-run` 指定時は変更計画の提案のみを提示する。
+3. 実行結果と変更箇所をユーザーに提示する。`--dry-run` 指定時は、実行後に `git status --short` と `git diff --stat` で意図しない変更が発生していないことを確認した上で、変更計画の提案のみを提示する。意図しない変更があればその旨を警告し、差分を提示する。
 
 ## 注意
 

@@ -47,7 +47,7 @@ session IDで「自分以外のagent」かつ現在のrepo/cwdに紐づくログ
 
 ### 5. 出力
 
-`references/resumed-session-template.md` の書式で `.ai-handoff/resumed-session.md` に保存する。
+`references/resumed-session-template.md` の書式で `.ai-handoff/resumed-session.md` に保存する。既存の `.ai-handoff/resumed-session.md` がある場合は、上書きする前にユーザーに確認する。
 
 ### 6. 続行前の報告
 

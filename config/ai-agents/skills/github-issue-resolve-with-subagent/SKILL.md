@@ -1,7 +1,7 @@
 ---
 name: github-issue-resolve-with-subagent
 description: GitHub issueを起点に「調査 → worktree作成 → 実装 → PR作成」を一気通貫で実行するSkill。実装とPR作成をSubAgentに委譲して実行する。「#N をsubagentで解決して」「実装をsubagentに任せてissueからPRまで」のような依頼に使う。
-allowed-tools: Task, Read, Write, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*)
+allowed-tools: Task, Read, Write, Bash(gh:*), Bash(git:*), Bash(jq:*)
 ---
 
 # GitHub Issue Resolve with SubAgent

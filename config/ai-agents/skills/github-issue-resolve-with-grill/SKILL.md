@@ -1,7 +1,7 @@
 ---
 name: github-issue-resolve-with-grill
 description: GitHub issueを起点に、実装前にgrill-self skillで設計の分岐点を徹底的に自己解決し、その意思決定ログに基づいてgithub-issue-resolve skillで「worktree作成 → 実装 → PR作成」まで一気通貫で実行するオーケストレーションSkill。ユーザーが「設計を詰めてから#Nを解決して」「grillしてからissueを実装して」「github-issue-resolve-with-grillして」のように依頼した際に使用する。単独でgrillのみ／issue解決のみを求められた場合は使わない。
-allowed-tools: Skill, Bash(gh:*), Bash(git:*), Bash(jq:*)
+allowed-tools: Skill, Bash(gh:*), Bash(git:*)
 ---
 
 # Issue Resolve with Grill

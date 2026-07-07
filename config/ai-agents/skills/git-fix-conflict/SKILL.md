@@ -33,6 +33,7 @@ allowed-tools: Read, Edit, Write, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 3. **コンフリクト解消の開始または継続**:
    - すでにコンフリクト中の場合は、その進行中の操作を継続して解消する
    - PRが `CONFLICTING` でまだコンフリクト中でない場合は、`git merge origin/<base-branch>` で開始する
+     - ただし `--dry-run` 指定時はmergeを開始せず、`git merge-tree --write-tree --name-only HEAD origin/<base-branch>` でコンフリクトファイルを非破壊的に検出する（作業ツリーを変更しない）
    - rebase 中のコンフリクトは解消対象に含める。ただし、新規に rebase を開始しない
 
 4. **コンフリクトファイルの特定と分析**:
