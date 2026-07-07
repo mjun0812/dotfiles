@@ -11,6 +11,15 @@ data = json.load(sys.stdin)
 
 R = "\033[0m"
 DIM = "\033[2m"
+CYAN = "\033[36m"
+GREEN = "\033[32m"
+RED = "\033[31m"
+
+STATUS_GLYPHS = {
+    "running": f"{CYAN}●{R}",
+    "completed": f"{GREEN}✓{R}",
+    "failed": f"{RED}✗{R}",
+}
 
 
 def find_model(transcript: Path) -> str | None:
@@ -68,6 +77,9 @@ for task in data.get("tasks", []):
     name = task.get("name") or agent_type(subagents_dir / f"agent-{task_id}.meta.json")
     short = shorten(model)
     head = f"{name} {DIM}[{short}]{R}" if name else f"{DIM}[{short}]{R}"
+    glyph = STATUS_GLYPHS.get(task.get("status"))
+    if glyph:
+        head = f"{glyph} {head}"
     description = task.get("description") or task.get("label")
     content = f"{head}  {description}" if description else head
     right_parts = []
