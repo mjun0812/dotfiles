@@ -3,7 +3,8 @@ name: github-issue-create
 description: >-
   ユーザーから情報を収集してGitHub Issueを作成するSkill。
   ユーザーが「issue作って」「バグ報告を起票して」のように依頼したら使うこと。
-  複数候補の一括起票はgithub-issue-discover、issue解決からPR作成まではgithub-issue-resolveを使う。
+  複数候補の一括起票はgithub-issue-discover、issue解決からPR作成まではgithub-issue-resolve、
+  作成済みissueの磨き上げはgithub-issue-polishを使う。
 allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(bat:*), Read
 ---
 
