@@ -38,14 +38,13 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 
 ### GitHub Pull Request
 
-| Skill                                                                                              | Purpose                                                                                               |
-| -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                         | Create a Pull Request from the current branch                                                         |
-| [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                         | Run parallel reviewer subagents over a PR worktree and post an integrated review with inline comments |
-| [`github-pr-create-self-review`](../config/ai-agents/skills/github-pr-create-self-review/SKILL.md) | One-shot: `github-pr-create` followed by `github-pr-review` against the resulting PR                  |
-| [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                               | Detect and fix all PR problems (conflicts, CI failures, review comments) inside a dedicated worktree  |
-| [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                               | Inspect CI status, analyze failures, and apply fixes                                                  |
-| [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md)       | Triage PR review comments and respond / address them                                                  |
+| Skill                                                                                        | Purpose                                                                                               |
+| -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                   | Create a Pull Request from the current branch                                                         |
+| [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                   | Run parallel reviewer subagents over a PR worktree and post an integrated review with inline comments |
+| [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                         | Detect and fix all PR problems (conflicts, CI failures, review comments) inside a dedicated worktree  |
+| [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                         | Inspect CI status, analyze failures, and apply fixes                                                  |
+| [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md) | Triage PR review comments and respond / address them                                                  |
 
 ### Planning & Design
 
@@ -111,9 +110,6 @@ graph LR
     github-issue-resolve-with-grill --> grill-self
     github-issue-resolve-with-grill --> github-issue-resolve
 
-    github-pr-create-self-review --> github-pr-create
-    github-pr-create-self-review --> github-pr-review
-
     github-pr-fix --> git-fix-conflict
     github-pr-fix --> github-fix-ci
     github-pr-fix --> github-resolve-pr-comment
@@ -127,7 +123,6 @@ graph LR
 | `github-issue-resolve`            | `github-issue-create` _(indirectly)_, `git-commit`, `github-pr-create` | Implementation phase commits + final PR                                             |
 | `github-issue-create-with-grill`  | `grill-self`, `github-issue-create`                                    | Phase 2 grills the design, Phase 3 creates the issue with the decision log embedded |
 | `github-issue-resolve-with-grill` | `grill-self`, `github-issue-resolve`                                   | Phase 2 grills the design, Phase 3 implements per the decision log                  |
-| `github-pr-create-self-review`    | `github-pr-create`, `github-pr-review`                                 | Phase 1 and Phase 3 of the one-shot flow                                            |
 | `github-pr-fix`                   | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment`       | Each callee runs only if the corresponding problem is detected                      |
 
 ### Standalone skills

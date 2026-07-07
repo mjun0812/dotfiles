@@ -3,7 +3,6 @@ name: github-pr-create
 description: >-
   Pull Requestを作成するSkill。現在のbranchからpull requestを作成する。言語指定可能。
   ユーザーが「PR作って」「pull request作成して」のように依頼したら使うこと。
-  PR作成後のセルフレビューまで求められた場合はgithub-pr-create-self-reviewを使う。
 allowed-tools: Read, Write, Task, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(mktemp:*)
 ---
 

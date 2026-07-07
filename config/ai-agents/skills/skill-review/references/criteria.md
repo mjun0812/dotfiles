@@ -53,7 +53,7 @@ description: PRを作成するSkill。
 description: >-
   現在のbranchからPull Requestを作成するSkill。
   ユーザーが「PR作って」「pull request作成して」と依頼したら使うこと。
-  レビューまで求められた場合はこのskillではなくgithub-pr-create-self-reviewを使う。
+  レビューまで求められた場合はこのskillではなくgithub-pr-reviewを使う。
 ```
 
 ## 3. コマンド例の量
