@@ -1,6 +1,7 @@
 {
   "ignorePatterns": [
     "config/ai-agents/claude/settings.json",
+    "config/dot_config/nvim/lazy-lock.json",
     "config/vscode/settings.json",
     "config/vscode/keybindings.json"
   ]

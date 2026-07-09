@@ -16,3 +16,13 @@ repos:
         types: [shell]
         exclude_types: [zsh]
         pass_filenames: true
+
+      # p10k.zsh: powerlevel10k configureが生成するファイルのため対象外
+      # alias.zsh: zshの短縮for構文がshfmt v3.13ではパースできないため対象外
+      - id: shfmt-zsh
+        name: shfmt (zsh)
+        entry: shfmt -w -s -i 4 --ln=zsh
+        language: system
+        types: [zsh]
+        exclude: ^config/dot/(p10k|alias)\.zsh$
+        pass_filenames: true
