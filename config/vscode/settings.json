@@ -113,7 +113,7 @@
   "editor.bracketPairColorization.enabled": true,
   "editor.cursorBlinking": "phase",
   "editor.cursorSmoothCaretAnimation": "on",
-  "editor.fontFamily": "'RobotoMonoLineSeed', 'RobotoMonoJP', 'RobotoMono JP Nerd', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontFamily": "'RobotoMonoLineSeed', 'RobotoMonoPlex', 'RobotoMonoJP', 'RobotoMono JP Nerd', Menlo, Monaco, 'Courier New', monospace",
   "editor.fontLigatures": false,
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",

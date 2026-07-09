@@ -39,7 +39,8 @@ actionlint = "latest"
 aqua = "latest"
 container = { version = "latest", os = ["macos"] }
 gcloud = "latest"
-imagemagick = "latest"
+imagemagick = { version = "latest", os = ["macos"] }
+"aqua:imagemagick" = { version = "latest", os = ["linux"] }
 kubectl = "latest"
 pre-commit = "latest"
 prek = "latest"
