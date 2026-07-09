@@ -17,3 +17,6 @@ fi
 
 # Vite+ bin (https://viteplus.dev)
 [ -f "$HOME/.vite-plus/env" ] && . "$HOME/.vite-plus/env"
+
+# mise shims: 非interactiveシェル (Claude Code等) でもmise管理ツールを解決できるようにする
+export PATH="$HOME/.local/share/mise/shims:$PATH"
