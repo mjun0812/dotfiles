@@ -6,7 +6,15 @@ repos:
         entry: oxfmt
         language: system
         types_or: [markdown, json, yaml, javascript, jsx, ts, tsx, css]
-        exclude: ^config/ai-agents/claude/settings\.json$
+        # .oxfmtrc.jsonのignorePatternsと同期させること
+        # (除外ファイルのみが渡るとoxfmtが「対象なし」でexit 2になるため)
+        exclude: |
+          (?x)^(
+            config/ai-agents/claude/settings\.json|
+            config/dot_config/nvim/lazy-lock\.json|
+            config/vscode/settings\.json|
+            config/vscode/keybindings\.json
+          )$
         pass_filenames: true
 
       - id: shfmt
