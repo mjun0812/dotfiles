@@ -17,10 +17,8 @@ return {
             ensure_installed = { "copilot", "lua_ls", "ruff", "ty", "oxfmt" },
         },
         keys = {
-            { "<C-space>", "<cmd>lua vim.lsp.completion.get()  <CR>", mode = "i" },
-            { "gh",        "<cmd>lua vim.lsp.buf.hover()       <CR>" },
-            { "gd",        "<cmd>lua vim.lsp.buf.definition()  <CR>" },
-            { "gD",        "<cmd>lua vim.lsp.buf.declaration() <CR>" },
+            { "gh", "<cmd>lua vim.lsp.buf.hover()       <CR>" },
+            { "gD", "<cmd>lua vim.lsp.buf.declaration() <CR>" },
         },
     },
 }

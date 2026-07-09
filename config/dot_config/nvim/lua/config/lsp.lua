@@ -19,8 +19,19 @@ vim.api.nvim_create_autocmd("LspAttach", {
         { buffer = buf, desc = "Show hover documentation" })
     end
 
-    if client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+    -- Copilot等のinline completion (ghost text)
+    -- ポップアップ補完はblink.cmpが担うため vim.lsp.completion は有効化しない
+    if client:supports_method("textDocument/inlineCompletion") then
+      vim.lsp.inline_completion.enable(true, { bufnr = buf })
+      vim.keymap.set("i", "<Tab>", function()
+        if vim.lsp.inline_completion.get() then
+          return
+        end
+        if require("blink.cmp").snippet_forward() then
+          return
+        end
+        return "<Tab>"
+      end, { buffer = buf, expr = true, desc = "Accept inline completion" })
     end
 
     -- Auto-format ("lint") on save.
