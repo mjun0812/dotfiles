@@ -1,59 +1,70 @@
 #!/usr/bin/env python3
 
-"""Codex の設定ファイルにある dotfiles-managed ブロックを書き換える。"""
+"""Codex の管理設定をローカル設定ファイルへマージする。"""
 
 from __future__ import annotations
 
 import argparse
-import re
+from copy import deepcopy
 import sys
 from pathlib import Path
 
-START_MARKER = "# dotfiles-managed:start"
-END_MARKER = "# dotfiles-managed:end"
-BLOCK_PATTERN = re.compile(
-    rf"(?ms)^{re.escape(START_MARKER)}\n.*?^{re.escape(END_MARKER)}\n?"
-)
+from tomlkit import TOMLDocument, dumps, parse
+from tomlkit.container import Container
+from tomlkit.exceptions import TOMLKitError
+from tomlkit.items import Table
+
+LOCAL_STATE_TABLES = frozenset({"desktop", "projects"})
+LEGACY_MARKERS = frozenset({"# dotfiles-managed:start", "# dotfiles-managed:end"})
 
 
-def extract_managed_block(text: str, source: str) -> str:
-    """テキストから managed ブロックを抽出する。
-
-    Args:
-        text: managed ブロックを含む想定の入力テキスト。
-        source: エラーメッセージに表示する入力元の識別子。
-
-    Returns:
-        末尾の空行を除いた managed ブロック。
-
-    Raises:
-        ValueError: managed ブロックが見つからない場合。
-    """
-
-    match = BLOCK_PATTERN.search(text)
-    if match is None:
-        raise ValueError(f"{source} に {START_MARKER} と {END_MARKER} が必要です。")
-    return match.group(0).rstrip()
-
-
-def replace_managed_block(target_text: str, managed_block: str, source: str) -> str:
-    """対象テキスト内の managed ブロックを置き換える。
+def validate_managed_config(config: TOMLDocument, source: str) -> None:
+    """管理設定にローカル状態テーブルが含まれないことを確認する。
 
     Args:
-        target_text: 既存の設定テキスト。
-        managed_block: テンプレートから抽出した managed ブロック。
-        source: エラーメッセージに表示する入力元の識別子。
-
-    Returns:
-        managed ブロックを置き換えた後の設定テキスト。
+        config: dotfiles で管理する Codex 設定。
+        source: エラーメッセージに表示する設定ファイルの識別子。
 
     Raises:
-        ValueError: managed ブロックが見つからない場合。
+        ValueError: ローカル状態テーブルが含まれる場合。
     """
 
-    if BLOCK_PATTERN.search(target_text) is None:
-        raise ValueError(f"{source} に {START_MARKER} と {END_MARKER} が必要です。")
-    return BLOCK_PATTERN.sub(f"{managed_block}\n", target_text, count=1)
+    managed_state_tables = sorted(LOCAL_STATE_TABLES.intersection(config))
+    if managed_state_tables:
+        table_names = ", ".join(managed_state_tables)
+        raise ValueError(
+            f"{source} にローカル状態テーブルを含めないでください: {table_names}"
+        )
+
+
+def merge_tables(target: Container, managed: Container) -> None:
+    """管理対象の値だけを既存設定へ再帰的にマージする。
+
+    Args:
+        target: Codex が更新する既存のローカル設定。
+        managed: dotfiles で管理する設定。
+    """
+
+    for key, managed_value in managed.items():
+        target_value = target.get(key)
+        if isinstance(managed_value, Table) and isinstance(target_value, Table):
+            merge_tables(target_value, managed_value)
+            continue
+        target[key] = deepcopy(managed_value)
+
+
+def remove_legacy_markers(text: str) -> str:
+    """旧方式の管理マーカーを設定テキストから除去する。
+
+    Args:
+        text: TOML として整形済みの設定テキスト。
+
+    Returns:
+        旧方式の管理マーカーを含まない設定テキスト。
+    """
+
+    lines = (line for line in text.splitlines() if line not in LEGACY_MARKERS)
+    return "\n".join(lines) + "\n"
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -67,15 +78,15 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     """
 
     parser = argparse.ArgumentParser(
-        description="Codex の設定ファイルにある dotfiles-managed ブロックを書き換えます。"
+        description="Codex の管理設定を既存のローカル設定へマージします。"
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="ファイルは更新せず、書き換え結果を標準出力へ表示します。",
+        help="ファイルは更新せず、マージ結果を標準出力へ表示します。",
     )
-    parser.add_argument("template", help="managed 設定テンプレートのパス。")
-    parser.add_argument("target", help="その場で書き換えるローカル設定ファイルのパス。")
+    parser.add_argument("template", help="dotfiles で管理する設定テンプレートのパス。")
+    parser.add_argument("target", help="Codex が更新するローカル設定ファイルのパス。")
     return parser.parse_args(argv[1:])
 
 
@@ -94,15 +105,12 @@ def main(argv: list[str]) -> int:
         template_path = Path(args.template)
         target_path = Path(args.target)
 
-        template_text = template_path.read_text(encoding="utf-8")
-        target_text = target_path.read_text(encoding="utf-8")
-        managed_block = extract_managed_block(template_text, str(template_path))
-        rendered_text = replace_managed_block(
-            target_text,
-            managed_block,
-            str(target_path),
-        )
-    except ValueError as error:
+        managed_config = parse(template_path.read_text(encoding="utf-8"))
+        target_config = parse(target_path.read_text(encoding="utf-8"))
+        validate_managed_config(managed_config, str(template_path))
+        merge_tables(target_config, managed_config)
+        rendered_text = remove_legacy_markers(dumps(target_config))
+    except (OSError, TOMLKitError, ValueError) as error:
         print(error, file=sys.stderr)
         return 1
 

@@ -1,14 +1,13 @@
-# dotfiles-managed:start
 #:schema https://developers.openai.com/codex/config-schema.json
 
-model = "gpt-5.5"
+model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 web_search = "live"
 allow_login_shell = true
-approvals_reviewer = "user"
+approvals_reviewer = "auto_review"
 suppress_unstable_features_warning = true
 
 [features]
@@ -80,10 +79,3 @@ enabled = true
 
 [plugins."chrome@openai-bundled"]
 enabled = true
-# dotfiles-managed:end
-
-[projects."/Users/mjun/.dotfiles"]
-trust_level = "trusted"
-
-[projects."/home/mjun/.dotfiles"]
-trust_level = "trusted"

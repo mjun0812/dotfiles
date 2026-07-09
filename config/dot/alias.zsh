@@ -61,6 +61,7 @@ alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions 
 
 
 # Codex
+alias codex-full='command codex --sandbox danger-full-access --ask-for-approval never'
 alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って英語でコミットしてください。"'
 alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って日本語でコミットしてください。"'
 

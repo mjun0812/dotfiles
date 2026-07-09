@@ -16,9 +16,9 @@ cp -aLf "$HOME/.codex/agents" "$DOTPATH/.backup/codex_agents" 2>/dev/null || tru
 mkdir -p "$HOME/.codex"
 mkdir -p "$HOME/.codex/skills"
 mkdir -p "$HOME/.codex/agents"
-# Copy or rewrite config.toml
+# Copy or merge config.toml
 if [ -e "$CODEX_CONFIG_TARGET" ] || [ -L "$CODEX_CONFIG_TARGET" ]; then
-    python3 "$DOTPATH/script/rewrite_config.py" "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
+    uv run --with tomlkit python3 "$DOTPATH/script/rewrite_config.py" "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
 else
     cp "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
 fi
