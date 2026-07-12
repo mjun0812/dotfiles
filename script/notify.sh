@@ -10,7 +10,7 @@ set -euo pipefail
 # Usage:
 #   ./notify.sh "TITLE" "MESSAGE"
 #   ./notify.sh --osc "TITLE" "MESSAGE"      # force OSC, write to terminal/dev-tty
-#   ./notify.sh --native "TITLE" "MESSAGE"   # force native (ignore SSH)
+#   ./notify.sh --native "TITLE" "MESSAGE"   # force native (ignore SSH; clickable on macOS/WezTerm with alerter)
 #   ./notify.sh --emit-osc "TITLE" "MESSAGE" # print raw OSC payload to stdout only
 #                                            # (for Claude Code terminalSequence; no terminal/native output)
 
@@ -108,7 +108,30 @@ esac
 # Send native notification based on OS
 case "$OS_TYPE" in
 mac)
-    osascript -e "display notification \"${MESSAGE}\" with title \"${TITLE}\""
+    PANE_ID="${WEZTERM_PANE:-}"
+    if [[ -z $PANE_ID && ${TERM_PROGRAM:-} == "WezTerm" ]] && command -v wezterm >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+        CURRENT_TTY="$(ps -o tty= -p "$PPID" 2>/dev/null | tr -d ' ')"
+        if [[ -n $CURRENT_TTY && $CURRENT_TTY != "??" ]]; then
+            [[ $CURRENT_TTY == /dev/* ]] || CURRENT_TTY="/dev/$CURRENT_TTY"
+            PANE_ID="$(wezterm cli list --format json 2>/dev/null | jq -r --arg tty "$CURRENT_TTY" 'first(.[] | select(.tty_name == $tty) | .pane_id) // empty' 2>/dev/null || true)"
+        fi
+    fi
+
+    ALERTER_BIN="$(command -v alerter || true)"
+    if [[ -z $ALERTER_BIN ]]; then
+        for candidate in /opt/homebrew/bin/alerter /usr/local/bin/alerter; do
+            if [[ -x $candidate ]]; then
+                ALERTER_BIN="$candidate"
+                break
+            fi
+        done
+    fi
+    if [[ $PANE_ID =~ ^[0-9]+$ && -n $ALERTER_BIN ]]; then
+        nohup "$HOME/.dotfiles/script/alerter-wezterm-notify.sh" "$TITLE" "$MESSAGE" "$PANE_ID" \
+            >/dev/null 2>&1 </dev/null &
+    else
+        osascript -e "display notification \"${MESSAGE}\" with title \"${TITLE}\""
+    fi
     ;;
 linux)
     if command -v notify-send &>/dev/null; then

@@ -15,6 +15,8 @@ brew install \
     mactop \
     htop
 
+brew install vjeantet/tap/alerter
+
 # Xcodeが入っているときのみインストール可能なのでinstallを分ける
 brew install \
     swiftlint
