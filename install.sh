@@ -34,6 +34,12 @@ done
 log_section "Setting up config..."
 for d in "$DOTPATH"/config/dot_config/*; do
     app=$(basename "$d")
+    if [ "$app" = "herdr" ]; then
+        mkdir -p "$CONFIG_DIR/$app"
+        rm -rf "$CONFIG_DIR/$app/config.toml"
+        ln -snfv "$d/config.toml" "$CONFIG_DIR/$app/config.toml"
+        continue
+    fi
     cp -aLf "$CONFIG_DIR/$app" "$DOTPATH/.backup/$app" 2>/dev/null || true
     rm -rf "$CONFIG_DIR/$app"
     ln -snfv "$d" "$CONFIG_DIR/$app"
@@ -97,6 +103,16 @@ if [ "$(uname -s)" = "Darwin" ]; then
     uv tool install -U plamo-translate
 else
     uv tool install -U "headroom-ai[proxy,code,ml]"
+fi
+
+################ [launchd] ################
+if [ "$(uname -s)" = "Darwin" ]; then
+    log_section "Setting up launchd agents..."
+    if ! mise bootstrap macos launchd-agents apply --yes; then
+        launchd_agent="$HOME/Library/LaunchAgents/dev.mise.headroom-proxy.plist"
+        launchctl bootstrap "gui/$(id -u)" "$launchd_agent"
+        launchctl enable "gui/$(id -u)/dev.mise.headroom-proxy"
+    fi
 fi
 
 cd $DOTPATH

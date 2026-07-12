@@ -45,38 +45,37 @@ See [Raycast Script Commands](https://manual.raycast.com/script-commands) for th
 
 ## launchd
 
-User-level launchd agents are managed under `config/mac/launchd/`. Each `*.plist` is symlinked to `~/Library/LaunchAgents/` and loaded automatically.
+User-level launchd agents are declared in `config/dot_config/mise/config.toml` and managed by mise. mise generates the plist files under `~/Library/LaunchAgents/` and loads them with `launchctl`.
 
 ### Installation
 
 ```sh
-./script/install/install_launchd.sh
+mise bootstrap macos launchd-agents apply --yes
 ```
 
-The script:
-
-- Symlinks every `config/mac/launchd/*.plist` into `~/Library/LaunchAgents/`.
-- Backs up any pre-existing file at the target to `.backup/LaunchAgents/`.
-- Unloads the previous agent (if loaded) and re-loads the new plist with `launchctl load`.
+`install.sh` runs this command automatically on macOS after installing Headroom.
 
 ### Managed Agents
 
-| Label                | Purpose                                           |
-| -------------------- | ------------------------------------------------- |
-| `com.headroom.proxy` | Run `headroom proxy` on `127.0.0.1:8787` at login |
+| Label                     | Purpose                                           |
+| ------------------------- | ------------------------------------------------- |
+| `dev.mise.headroom-proxy` | Run `headroom proxy` on `127.0.0.1:8787` at login |
+
+The generated plist is `~/Library/LaunchAgents/dev.mise.headroom-proxy.plist`.
 
 ### Manual Operations
 
 ```sh
 # Status
-launchctl list | grep com.headroom.proxy
+mise bootstrap macos launchd-agents status
+launchctl print gui/$(id -u)/dev.mise.headroom-proxy
+
+# Apply changes
+mise bootstrap macos launchd-agents apply --yes
 
 # Stop / Start
-launchctl unload ~/Library/LaunchAgents/com.headroom.proxy.plist
-launchctl load   ~/Library/LaunchAgents/com.headroom.proxy.plist
-
-# Restart (after editing the plist in this repo, just re-run the installer)
-./script/install/install_launchd.sh
+launchctl bootout gui/$(id -u)/dev.mise.headroom-proxy
+mise bootstrap macos launchd-agents apply --yes
 ```
 
 ### Viewing Logs
@@ -97,5 +96,5 @@ log stream --predicate 'process == "headroom"' --debug --info
 If a process exits immediately and `process == "headroom"` returns nothing, search by launchd label instead:
 
 ```sh
-log show --predicate 'subsystem == "com.apple.xpc.launchd" AND eventMessage CONTAINS "com.headroom.proxy"' --last 1h
+log show --predicate 'subsystem == "com.apple.xpc.launchd" AND eventMessage CONTAINS "dev.mise.headroom-proxy"' --last 1h
 ```

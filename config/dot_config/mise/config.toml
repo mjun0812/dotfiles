@@ -39,6 +39,7 @@ actionlint = "latest"
 aqua = "latest"
 container = { version = "latest", os = ["macos"] }
 gcloud = "latest"
+herdr = "latest"
 imagemagick = { version = "latest", os = ["macos"] }
 "aqua:imagemagick" = { version = "latest", os = ["linux"] }
 kubectl = "latest"
@@ -72,7 +73,7 @@ experimental = true
 
 [tasks.headroom-proxy]
 description = "Start the Headroom proxy"
-run = "headroom proxy --host 127.0.0.1 --port 8787 --no-telemetry"
+run = "headroom proxy --host 127.0.0.1 --port 8787 --no-telemetry --disable-kompress"
 
 [bootstrap.packages]
 # For macOS
@@ -96,3 +97,9 @@ run = "headroom proxy --host 127.0.0.1 --port 8787 --no-telemetry"
 "brew:watch" = "latest"
 "brew-cask:iterm2" = "latest"
 
+[bootstrap.macos.launchd.agents.headroom-proxy]
+program = "~/.local/bin/headroom"
+args = ["proxy", "--host", "127.0.0.1", "--port", "8787", "--no-telemetry", "--disable-kompress"]
+run_at_load = true
+keep_alive = true
+environment = { PATH = "/Users/mjun/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin", HEADROOM_EMBEDDER_RUNTIME = "pytorch_mps" }
