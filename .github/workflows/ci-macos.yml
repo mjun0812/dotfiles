@@ -46,7 +46,11 @@ jobs:
           echo "=== Checking .config symlinks ==="
           for d in config/dot_config/*; do
             name=$(basename "$d")
-            if [[ -L "$HOME/.config/$name" ]]; then
+            target="$HOME/.config/$name"
+            if [[ "$name" = "herdr" ]]; then
+              target="$target/config.toml"
+            fi
+            if [[ -L "$target" ]]; then
               echo "✓ .config/$name is a symlink"
             else
               echo "✗ .config/$name is NOT a symlink"
