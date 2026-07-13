@@ -88,7 +88,6 @@ fi
 
 ################ [Python] ################
 log_section "Setting up Python..."
-$DOTPATH/script/install/install_uv.sh
 source "$HOME/.zshrc"
 cd $HOME
 uv venv --allow-existing

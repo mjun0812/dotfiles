@@ -6,6 +6,7 @@ node = "lts"
 bun = "latest"
 pnpm = "latest"
 cmake = "latest"
+uv = "latest"
 
 # Shell & CLI utilities
 dust = "latest"
