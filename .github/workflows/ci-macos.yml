@@ -65,6 +65,12 @@ jobs:
           mise --version
           echo "✓ mise is installed"
 
+      - name: Verify mise bootstrap packages
+        run: |
+          echo "=== Checking mise bootstrap packages ==="
+          source "$HOME/.zshrc"
+          mise bootstrap packages status
+
       - name: Verify uv installation
         run: |
           echo "=== Checking uv ==="

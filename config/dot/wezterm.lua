@@ -20,10 +20,10 @@ config.macos_window_background_blur = 30
 
 -- Font
 config.font = wezterm.font_with_fallback({
-    { family = "RobotoMonoLineSeed", weight = "Regular" },
-    { family = "RobotoMonoPlex",     weight = "Regular" },
-    { family = "RobotoMonoJP",       weight = 'Regular' },
-    { family = "Roboto Mono",        weight = 'Regular' },
+    { family = "RobotoMonoLineSeed-Mono", weight = "Regular" },
+    { family = "RobotoMonoPlex-Mono",     weight = "Regular" },
+    { family = "RobotoMonoJP",            weight = 'Regular' },
+    { family = "Roboto Mono",             weight = 'Regular' },
 })
 config.font_size = 12.0
 

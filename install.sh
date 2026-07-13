@@ -53,6 +53,11 @@ mise install
 mise reshim
 source "$HOME/.zshrc"
 
+if [ "$(uname -s)" = "Darwin" ]; then
+    log_section "Applying mise bootstrap packages..."
+    mise bootstrap packages apply --yes
+fi
+
 ################ [Zsh Completion Update] ################
 $DOTPATH/script/update_completions.sh
 

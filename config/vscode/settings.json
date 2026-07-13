@@ -497,5 +497,6 @@
   "workbench.tree.indent": 16,
   "workbench.tree.renderIndentGuides": "always",
   "workbench.view.alwaysShowHeaderActions": true,
-  "terminal.integrated.rescaleOverlappingGlyphs": false
+  "terminal.integrated.rescaleOverlappingGlyphs": false,
+  "terminal.integrated.fontFamily": "'RobotoMonoLineSeed-Mono','RobotoMonoPlex-Mono','RobotoMonoJP', 'RobotoMono JP Nerd', Menlo, Monaco, 'Courier New', monospace"
 }
