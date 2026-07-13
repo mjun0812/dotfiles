@@ -74,7 +74,11 @@ jobs:
           cd /home/testuser/.dotfiles
           for d in config/dot_config/*; do
             name=$(basename "$d")
-            if [[ -L "/home/testuser/.config/$name" ]]; then
+            target="/home/testuser/.config/$name"
+            if [[ "$name" = "herdr" ]]; then
+              target="$target/config.toml"
+            fi
+            if [[ -L "$target" ]]; then
               echo "✓ .config/$name is a symlink"
             else
               echo "✗ .config/$name is NOT a symlink"
