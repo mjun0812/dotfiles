@@ -54,8 +54,8 @@ shfmt = "latest"
 "github:router-for-me/CLIProxyAPI" = "latest"
 
 # AI coding agents
-claude = "latest"
-codex = "latest"
+"aqua:anthropics/claude-code" = "latest"
+"aqua:openai/codex" = "latest"
 opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = "latest"
 "npm:@github/copilot" = "latest"
@@ -77,6 +77,7 @@ run = "headroom proxy --host 127.0.0.1 --port 8787 --no-telemetry --disable-komp
 
 [bootstrap.packages]
 # For macOS
+"brew:alerter" = "latest"
 "brew:coreutils" = "latest"
 "brew:curl" = "latest"
 "brew:ffmpeg" = "latest"
