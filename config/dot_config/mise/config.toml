@@ -61,6 +61,14 @@ opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = "latest"
 "npm:@github/copilot" = "latest"
 
+# Python CLI tools
+"pipx:ruff" = "latest"
+"pipx:glances" = "latest"
+"pipx:nvitop" = "latest"
+"pipx:ty" = "latest"
+"pipx:copier" = "latest"
+"pipx:plamo-translate" = { version = "latest", os = ["macos"] }
+
 [settings]
 idiomatic_version_file_enable_tools = []
 pipx.uvx = true
@@ -78,7 +86,7 @@ experimental = true
 
 [tasks.headroom-proxy]
 description = "Start the Headroom proxy"
-run = "headroom proxy --host 127.0.0.1 --port 8787 --no-telemetry --disable-kompress"
+run = "headroom proxy --host 127.0.0.1 --port 8787 --no-telemetry --disable-kompress --lossless"
 
 [bootstrap.packages]
 # For macOS
@@ -103,7 +111,6 @@ run = "headroom proxy --host 127.0.0.1 --port 8787 --no-telemetry --disable-komp
 "brew-cask:alt-tab" = "latest"
 "brew-cask:bettertouchtool" = "latest"
 "brew-cask:chatgpt" = "latest"
-"brew-cask:codex-app" = "latest"
 "brew-cask:font-roboto-mono-nerd-font" = "latest"
 "brew-cask:hammerspoon" = "latest"
 "brew-cask:homerow" = "latest"
@@ -116,11 +123,11 @@ run = "headroom proxy --host 127.0.0.1 --port 8787 --no-telemetry --disable-komp
 "brew-cask:cursor" = "latest"
 
 [bootstrap.macos.launchd.agents.headroom-proxy]
-program = "~/.local/bin/headroom"
-args = ["proxy", "--host", "127.0.0.1", "--port", "8787", "--no-telemetry", "--disable-kompress"]
+program = "~/.local/share/mise/shims/headroom"
+args = ["proxy", "--host", "127.0.0.1", "--port", "8787", "--no-telemetry", "--disable-kompress", "--lossless"]
 run_at_load = true
 keep_alive = true
-environment = { PATH = "/Users/mjun/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin", HEADROOM_EMBEDDER_RUNTIME = "pytorch_mps" }
+environment = { HEADROOM_EMBEDDER_RUNTIME = "pytorch_mps" }
 
 [bootstrap.brew.taps]
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"

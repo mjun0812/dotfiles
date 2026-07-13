@@ -56,6 +56,14 @@ source "$HOME/.zshrc"
 if [ "$(uname -s)" = "Darwin" ]; then
     log_section "Applying mise bootstrap packages..."
     mise bootstrap packages apply --yes
+
+    ################ [launchd] ################
+    log_section "Setting up launchd agents..."
+    if ! mise bootstrap macos launchd-agents apply --yes; then
+        launchd_agent="$HOME/Library/LaunchAgents/dev.mise.headroom-proxy.plist"
+        launchctl bootstrap "gui/$(id -u)" "$launchd_agent"
+        launchctl enable "gui/$(id -u)/dev.mise.headroom-proxy"
+    fi
 fi
 
 ################ [Zsh Completion Update] ################
@@ -98,26 +106,6 @@ uv pip install -U \
     pymupdf \
     pynvim \
     'python-lsp-server[all]'
-UV_TOOLS=(ruff glances nvitop ty copier)
-for tool in "${UV_TOOLS[@]}"; do
-    uv tool install -U $tool
-done
-if [ "$(uname -s)" = "Darwin" ]; then
-    uv tool install -U "headroom-ai[proxy,code,ml,pytorch-mps]"
-    uv tool install -U plamo-translate
-else
-    uv tool install -U "headroom-ai[proxy,code,ml]"
-fi
-
-################ [launchd] ################
-if [ "$(uname -s)" = "Darwin" ]; then
-    log_section "Setting up launchd agents..."
-    if ! mise bootstrap macos launchd-agents apply --yes; then
-        launchd_agent="$HOME/Library/LaunchAgents/dev.mise.headroom-proxy.plist"
-        launchctl bootstrap "gui/$(id -u)" "$launchd_agent"
-        launchctl enable "gui/$(id -u)/dev.mise.headroom-proxy"
-    fi
-fi
 
 cd $DOTPATH
 

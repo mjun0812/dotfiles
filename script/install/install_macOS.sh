@@ -2,53 +2,28 @@
 
 DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 
-brew install \
-    coreutils \
-    git \
-    curl \
-    wget \
-    llvm \
-    ninja \
-    cmake \
-    tree \
-    subversion \
-    mactop \
-    htop
-
+# mise bootstrap で解決できない tap 側の formula/cask
 brew install vjeantet/tap/alerter
-
-# Xcodeが入っているときのみインストール可能なのでinstallを分ける
-brew install \
-    swiftlint
 
 brew install --cask \
     nikitabobko/tap/aerospace \
-    alt-tab \
     balenaetcher \
-    bettertouchtool \
     clipy \
-    font-roboto-mono-nerd-font \
     ghostty \
-    hammerspoon \
     inkscape \
-    iterm2 \
     karabiner-elements \
     raycast \
     wezterm@nightly \
     xquartz \
-    cursor \
-    visual-studio-code \
     notion \
     obsidian \
-    ollama-app \
     nani \
     deepl \
-    chatgpt \
     claude \
-    azookey \
-    homerow
+    azookey
 
 brew tap manaflow-ai/cmux
+brew trust manaflow-ai/cmux
 brew install --cask cmux
 
 # AltTabの設定を反映
