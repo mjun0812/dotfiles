@@ -86,13 +86,6 @@ session_end)
     ;;
 esac
 
-# Claude Code hooks do not have a TTY, so local macOS notifications must be
-# sent directly instead of being returned as a terminalSequence.
-if [[ $(uname -s) == Darwin* && -z ${SSH_CONNECTION:-} && -z ${SSH_CLIENT:-} && -z ${SSH_TTY:-} ]]; then
-    ~/.dotfiles/script/notify.sh --native "$TITLE" "$BODY" >/dev/null 2>&1 || true
-    exit 0
-fi
-
 # OSC 通知ペイロード(OSC 9/777 判定・サニタイズ・tmux パススルー込み)を生成する。
 # hook の子プロセスの stdout は TTY に繋がっておらず、OSC を直接書いても届かないため、
 # Claude Code の hook 出力プロトコルである terminalSequence JSON として返し、
