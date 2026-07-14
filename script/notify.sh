@@ -33,6 +33,7 @@ esac
 
 TITLE="${1:-Claude Code}"
 MESSAGE="${2:-Notification}"
+SESSION_ID="${3:-}"
 
 # Determine if we should use OSC notification
 USE_OSC=$([[ $FORCE_MODE == "osc" || $FORCE_MODE == "emit" || ($FORCE_MODE == "auto" && (-n ${SSH_CONNECTION:-} || -n ${SSH_CLIENT:-} || -n ${SSH_TTY:-})) ]] && printf 'true' || printf 'false')
@@ -108,7 +109,36 @@ esac
 # Send native notification based on OS
 case "$OS_TYPE" in
 mac)
-    osascript -e "display notification \"${MESSAGE}\" with title \"${TITLE}\""
+    PANE_ID="${WEZTERM_PANE:-}"
+    if [[ -z $PANE_ID && ${TERM_PROGRAM:-} == "WezTerm" ]] && command -v wezterm >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+        CURRENT_TTY="$(ps -o tty= -p "$PPID" 2>/dev/null | tr -d ' ')"
+        if [[ -n $CURRENT_TTY && $CURRENT_TTY != "??" ]]; then
+            [[ $CURRENT_TTY == /dev/* ]] || CURRENT_TTY="/dev/$CURRENT_TTY"
+            PANE_ID="$(wezterm cli list --format json 2>/dev/null | jq -r --arg tty "$CURRENT_TTY" 'first(.[] | select(.tty_name == $tty) | .pane_id) // empty' 2>/dev/null || true)"
+        fi
+    fi
+
+    ALERTER_BIN="$(command -v alerter || true)"
+    if [[ -z $ALERTER_BIN ]]; then
+        for candidate in /opt/homebrew/bin/alerter /usr/local/bin/alerter; do
+            if [[ -x $candidate ]]; then
+                ALERTER_BIN="$candidate"
+                break
+            fi
+        done
+    fi
+
+    if [[ $PANE_ID =~ ^[0-9]+$ && $SESSION_ID =~ ^[[:alnum:]_-]+$ ]] && command -v open >/dev/null 2>&1; then
+        nohup open -g "hammerspoon://claude-wezterm-capture?session=${SESSION_ID}&pane=${PANE_ID}" \
+            >/dev/null 2>&1 </dev/null &
+    fi
+
+    if [[ $PANE_ID =~ ^[0-9]+$ && -n $SESSION_ID && -n $ALERTER_BIN ]]; then
+        nohup "$HOME/.dotfiles/script/alerter-wezterm-notify.sh" "$TITLE" "$MESSAGE" "$PANE_ID" "$SESSION_ID" \
+            >/dev/null 2>&1 </dev/null &
+    else
+        osascript -e "display notification \"${MESSAGE}\" with title \"${TITLE}\""
+    fi
     ;;
 linux)
     if command -v notify-send &>/dev/null; then
