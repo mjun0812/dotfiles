@@ -106,7 +106,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/capture-claude-wezterm-hook.sh"
+            "command": "~/.dotfiles/script/wezterm/capture-claude-wezterm-hook.sh"
           }
         ]
       }

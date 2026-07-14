@@ -31,5 +31,5 @@ RESULT="$(
 ACTIVATION_TYPE="$(printf '%s' "$RESULT" | jq -r '.activationType // empty' 2>/dev/null || true)"
 
 if [[ $ACTIVATION_TYPE == contentsClicked || $ACTIVATION_TYPE == actionClicked ]]; then
-    "$HOME/.dotfiles/script/activate-wezterm-pane.sh" "$PANE_ID" "$SESSION_ID"
+    "$HOME/.dotfiles/script/wezterm/activate-wezterm-pane.sh" "$PANE_ID" "$SESSION_ID"
 fi

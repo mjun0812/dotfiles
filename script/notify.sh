@@ -134,7 +134,7 @@ mac)
     fi
 
     if [[ $PANE_ID =~ ^[0-9]+$ && -n $SESSION_ID && -n $ALERTER_BIN ]]; then
-        nohup "$HOME/.dotfiles/script/alerter-wezterm-notify.sh" "$TITLE" "$MESSAGE" "$PANE_ID" "$SESSION_ID" \
+        nohup "$HOME/.dotfiles/script/wezterm/alerter-wezterm-notify.sh" "$TITLE" "$MESSAGE" "$PANE_ID" "$SESSION_ID" \
             >/dev/null 2>&1 </dev/null &
     else
         osascript -e "display notification \"${MESSAGE}\" with title \"${TITLE}\""
