@@ -121,13 +121,35 @@ run = "headroom proxy --host 127.0.0.1 --port 8787 --no-telemetry --disable-komp
 "brew-cask:visual-studio-code" = "latest"
 "brew-cask:mjun0812/roboto-mono-jp/font-roboto-mono-jp" = "latest"
 "brew-cask:cursor" = "latest"
+"brew-cask:chatgpt-classic" = "latest"
+"brew-cask:clipy" = "latest"
+"brew-cask:ghostty" = "latest"
+"brew-cask:balenaetcher" = "latest"
+"brew-cask:notion" = "latest"
+"brew-cask:obsidian" = "latest"
+"brew-cask:nani" = "latest"
+"brew-cask:deepl" = "latest"
+"brew-cask:claude" = "latest"
+"brew:vjeantet/tap/alerter" = "latest"
+"brew-cask:codexbar" = "latest"
+"brew-cask:discord" = "latest"
 
 [bootstrap.macos.launchd.agents.headroom-proxy]
 program = "~/.local/share/mise/shims/headroom"
-args = ["proxy", "--host", "127.0.0.1", "--port", "8787", "--no-telemetry", "--disable-kompress", "--lossless"]
+args = [
+  "proxy",
+  "--host",
+  "127.0.0.1",
+  "--port",
+  "8787",
+  "--no-telemetry",
+  "--disable-kompress",
+  "--lossless",
+]
 run_at_load = true
 keep_alive = true
 environment = { HEADROOM_EMBEDDER_RUNTIME = "pytorch_mps" }
 
 [bootstrap.brew.taps]
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
+"vjeantet/tap" = "https://github.com/vjeantet/homebrew-tap.git"
