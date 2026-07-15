@@ -66,13 +66,10 @@
       "Read",
       "Search",
       "Edit(./.claude/plans/**)",
-      "Write(./.claude/plans/**)",
       "Read(/tmp/**)",
       "Edit(/tmp/**)",
-      "Write(/tmp/**)",
       "Read(/private/tmp/**)",
-      "Edit(/private/tmp/**)",
-      "Write(/private/tmp/**)"
+      "Edit(/private/tmp/**)"
     ],
     "deny": [
       "Read(.env)",
@@ -97,7 +94,7 @@
       "/private/tmp"
     ]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "claude-opus-4-7",
   "hooks": {
     "PostToolUse": [],
     "SessionStart": [

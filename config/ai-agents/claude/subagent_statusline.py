@@ -5,7 +5,6 @@ import json
 import re
 import sys
 import time
-from pathlib import Path
 
 data = json.load(sys.stdin)
 
@@ -22,35 +21,10 @@ STATUS_GLYPHS = {
 }
 
 
-def find_model(transcript: Path) -> str | None:
-    """Transcript内の最初のassistantメッセージからモデルIDを取得する(無ければNone)."""
-    try:
-        with transcript.open() as f:
-            for line in f:
-                try:
-                    entry = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
-                model = entry.get("message", {}).get("model")
-                if model and model != "<synthetic>":
-                    return model
-    except OSError:
-        pass
-    return None
-
-
 def shorten(model_id: str) -> str:
     """モデルIDを表示用の短い名前にする(例: claude-haiku-4-5-20251001 -> haiku-4-5)."""
     m = re.match(r"claude-([a-z]+(?:-\d+)*?)(?:-\d{8})?$", model_id)
     return m.group(1) if m else model_id
-
-
-def agent_type(meta_path: Path) -> str | None:
-    """meta.jsonからagent種別(例: general-purpose)を取得する(読めなければNone)."""
-    try:
-        return json.loads(meta_path.read_text()).get("agentType")
-    except (OSError, json.JSONDecodeError):
-        return None
 
 
 def humanize_tokens(count: int) -> str:
@@ -60,21 +34,12 @@ def humanize_tokens(count: int) -> str:
     return str(count)
 
 
-transcript_path = data.get("transcript_path")
-session_id = data.get("session_id")
-if not transcript_path or not session_id:
-    sys.exit(0)
-
-subagents_dir = Path(transcript_path).parent / session_id / "subagents"
-
 for task in data.get("tasks", []):
     task_id = task.get("id")
-    if not task_id:
+    model = task.get("model")
+    if not task_id or not model:
         continue
-    model = find_model(subagents_dir / f"agent-{task_id}.jsonl")
-    if not model:
-        continue
-    name = task.get("name") or agent_type(subagents_dir / f"agent-{task_id}.meta.json")
+    name = task.get("name") or task.get("type")
     short = shorten(model)
     head = f"{name} {DIM}[{short}]{R}" if name else f"{DIM}[{short}]{R}"
     glyph = STATUS_GLYPHS.get(task.get("status"))
