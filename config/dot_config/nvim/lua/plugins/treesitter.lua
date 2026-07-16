@@ -27,7 +27,10 @@ return {
       }
 
       local ensure_installed = {
+        "markdown",
         "markdown_inline",
+        "rst",
+        "typst",
         "bash",
         "python",
         "lua",

@@ -28,6 +28,7 @@ require("lazy").setup({
         { import = "plugins.conform" },
         { import = "plugins.fern" },
         { import = "plugins.gitsigns" },
+        { import = "plugins.image" },
         { import = "plugins.lualine" },
         { import = "plugins.mason" },
         { import = "plugins.sidekick" },
