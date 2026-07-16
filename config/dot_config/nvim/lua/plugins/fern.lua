@@ -24,6 +24,14 @@ return {
       vim.api.nvim_create_autocmd('FileType', {
         pattern = 'fern',
         callback = function()
+          -- Fernのバッファでrを押したら再読み込み
+          vim.keymap.set(
+              'n',
+              'r',
+              '<Plug>(fern-action-reload)',
+              { buffer = true, remap = true, desc = 'Reload Fern' }
+          )
+
           -- FernのバッファでVを押したら縦分割でファイルを開く
           vim.keymap.set(
               'n',
@@ -38,6 +46,13 @@ return {
           vim.opt_local.signcolumn = 'no'
           vim.opt_local.foldcolumn = "0"
 
+        end,
+      })
+
+      vim.api.nvim_create_autocmd('FocusGained', {
+        group = vim.api.nvim_create_augroup('my.fern', {}),
+        callback = function()
+          vim.cmd([[FernDo normal <F5> -drawer -stay]])
         end,
       })
     end
