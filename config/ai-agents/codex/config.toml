@@ -14,6 +14,7 @@ collaboration_modes = true
 shell_snapshot = true
 multi_agent = true
 remote_control = true
+hooks = true
 
 [agents]
 max_threads = 16
@@ -34,10 +35,10 @@ hide_rate_limit_model_nudge = true
 [tui]
 status_line = [
   "model-with-reasoning",
-  "context-used",
   "used-tokens",
-  "weekly-limit",
+  "context-used",
   "five-hour-limit",
+  "weekly-limit",
   "current-dir",
   "git-branch",
 ]

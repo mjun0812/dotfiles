@@ -1,1 +1,3 @@
+#:schema https://mise.en.dev/schema/mise.json
+
 auto_env = true
