@@ -49,11 +49,17 @@ return {
         "regex",
       }
 
+      local supported_languages = {}
+      for _, language in ipairs(ts.get_available()) do
+        supported_languages[language] = true
+      end
+
       local installing = {} ---@type table<string, boolean>
 
-      --- runtimepath 上にパーサーが存在するか確認
-      local function has_parser(lang)
-        return #vim.api.nvim_get_runtime_file(("parser/%s.*"):format(lang), false) > 0
+      --- バッファでパーサーを利用できるか確認
+      local function has_parser(buf, lang)
+        local ok, parser = pcall(vim.treesitter.get_parser, buf, lang)
+        return ok and parser ~= nil
       end
 
       --- バッファに treesitter を適用
@@ -61,7 +67,7 @@ return {
         if not vim.api.nvim_buf_is_valid(buf) then
           return
         end
-        pcall(vim.treesitter.start, buf, lang)
+        vim.treesitter.start(buf, lang)
         vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
       end
 
@@ -69,7 +75,7 @@ return {
       local function wait_and_attach(buf, lang)
         local tries = 0
         local function poll()
-          if has_parser(lang) then
+          if has_parser(buf, lang) then
             installing[lang] = nil
             vim.notify(("TS parser ready: %s"):format(lang), vim.log.levels.INFO)
             attach(buf, lang)
@@ -102,7 +108,7 @@ return {
 
       -- ensure_installed のパーサーを自動インストール
       for _, lang in ipairs(ensure_installed) do
-        if not has_parser(lang) then
+        if supported_languages[lang] and not has_parser(0, lang) then
           pcall(ts.install, { lang }, { summary = false })
         end
       end
@@ -119,7 +125,10 @@ return {
           end
 
           local lang = vim.treesitter.language.get_lang(ft) or ft
-          if has_parser(lang) then
+          if not supported_languages[lang] then
+            return
+          end
+          if has_parser(args.buf, lang) then
             attach(args.buf, lang)
           else
             auto_install(args.buf, lang)

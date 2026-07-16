@@ -25,6 +25,7 @@ vim.g.maplocalleader = "\\"
 require("lazy").setup({
     spec = {
         { import = "plugins.blink-cmp" },
+        { import = "plugins.conform" },
         { import = "plugins.fern" },
         { import = "plugins.gitsigns" },
         { import = "plugins.lualine" },

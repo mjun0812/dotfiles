@@ -1,2 +1,4 @@
+#:schema https://mise.en.dev/schema/mise.json
+
 [tools]
 "pipx:headroom-ai" = { version = "latest", extras = "proxy,code,ml" }
