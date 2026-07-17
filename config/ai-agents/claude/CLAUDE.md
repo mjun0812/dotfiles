@@ -41,6 +41,7 @@
   - codex: Codex CLIへの移譲。modelではなくsubagent_typeで指定する。
     - codex-worker: ユーザーが明示的にCodexへの作業委譲を依頼したときのみ使用する
     - codex:codex-rescue: 行き詰まったとき、セカンドオピニオンや別実装案が欲しいときに自発的に使用してよい
+- メイン会話がFableなどopusより上位のモデルの場合でも、SubAgentに指定するのはopusまでとする。上位モデルをSubAgentに指定しない。
 
 ## Versioning
 
