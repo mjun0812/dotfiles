@@ -1,14 +1,15 @@
 ---
 name: github-issue-resolve-with-subagent
-description: GitHub issueを起点に「調査 → worktree作成 → 実装 → PR作成」を一気通貫で実行するSkill。実装とPR作成をSubAgentに委譲して実行する。「#N をsubagentで解決して」「実装をsubagentに任せてissueからPRまで」のような依頼に使う。
-allowed-tools: Task, Read, Write, Bash(gh:*), Bash(git:*), Bash(jq:*)
+description: GitHub issueを起点に「調査 → worktree作成 → 実装 → PR作成」を一気通貫で実行するSkill。実装はSubAgentに委譲し、commitとPR作成はgit-commit・github-pr-create skillに連結して実行する。「#N をsubagentで解決して」「実装をsubagentに任せてissueからPRまで」のような依頼に使う。
+allowed-tools: Task, Read, Write, Bash(gh:*), Bash(git:*), Bash(jq:*), Skill(git-commit), Skill(github-pr-create)
 ---
 
 # GitHub Issue Resolve with SubAgent
 
 issue番号を起点に、調査 → 実装 → PR作成までを順に進めるSkill。
-メイン会話が担うのは調査・worktree作成・SubAgentへの引き継ぎ・結果検証・クリーンアップであり、**実装(Phase 3)とPR作成(Phase 4)はSubAgent(Taskツール)に委譲する**。
-SubAgent機能が使えない環境では、各SubAgentの作業をメイン会話内で同じ手順で順に実施する。
+メイン会話が担うのは調査・worktree作成・SubAgentへの引き継ぎ・結果検証・クリーンアップであり、**実装(Phase 3)はSubAgent(Taskツール)に委譲し、commitとPR作成(Phase 4)は`git-commit` skillと`github-pr-create` skillに連結する**。
+SubAgent機能が使えない環境では、SubAgentの作業をメイン会話内で同じ手順で順に実施する。
+Skill toolが使えない環境では、連結先skillのSKILL.mdを直接読み込み、その手順に従って実行する。
 
 ## Arguments
 
@@ -79,28 +80,18 @@ modelはメイン会話と同等のモデルをデフォルトとする。定型
    - Review SubAgentとDebug SubAgentの結果を受け取り、問題がなければ「実装完了」としてPhase 4に進む。
    - 問題があればImplementation SubAgentに修正を依頼し、再度Review SubAgentとDebug SubAgentで検証する。両SubAgentの指摘がなくなるまで、実装と検証を繰り返す。
 
-### Phase 4: PR作成
+### Phase 4: commitとPR作成（git-commit / github-pr-create に連結）
 
-PRの作成をSubAgentに委譲する。SubAgentはPhase 3で作成された変更をcommit・pushし、PRタイトル・本文を生成してPRを作成する。
-SubAgentはPR作成後、PRのURL・タイトル・base/head branchを返す。
+メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で、以下の順に連結先skillを起動する。
 
-1. **SubAgentに以下の情報をpromptで渡す**:
-   - worktreeの絶対パス（すべての `git` / `gh` 操作をこのパス配下で実行する）
-   - 作業branch名とbase branch名
-   - issue番号（PR本文に `Closes #N` を含めるため）
-   - `language`（PRタイトル・本文の言語）
-   - `--draft` の指定有無
-2. **SubAgentへの作業指示**（promptに含める）:
-   - `git status` と `git diff` で変更内容を把握し、worktree内の変更をすべてstageしてcommitを作成する。commitメッセージはConventional Commits形式で、変更内容を具体的に要約する
-   - `git push -u origin <branch-name>` でpushする
-   - `git diff --stat origin/<base-branch>..HEAD` と `git log origin/<base-branch>..HEAD` で変更内容を把握する
-   - PRタイトルはConventional Commits形式で、変更内容を要約して生成する
-   - PR本文は、repositoryのPR template（`.github/pull_request_template.md` 等）があればそれに従い、なければ「目的・背景・主な変更点・テスト方法」の構成で生成する。コードを参照しなくても内容が理解できるように書き、`Closes #<issue-number>` を含める。テスト方法は実行したコマンドと結果をコピペ可能な形式で記載する。ただしCIで自動実行されるlint・format・型チェックは記載せず（そのチェック設定自体を変更した場合を除く）、CIが検証しない動作確認の手順と結果を書く
-   - PR本文は一時ファイルへ書き出し、`--body-file` で渡す。`--body` への直接埋め込みは禁止
-   - `gh pr create --base <base-branch> --title "<title>" --body-file <file> --assignee @me` で作成する（`--draft` 指定時は付与する）
-   - 完了報告として「PRのURL・タイトル・base/head branch」を返す
+1. **`git-commit` skillでcommitを作成する**:
+   - 対象はPhase 3でworktree内に作られたすべての変更
+2. **`github-pr-create` skillでPRを作成する**:
+   - `language`（PRタイトル・本文の言語）と `--draft` の指定有無を引数として渡す
+   - push・PRタイトルと本文の生成・PR作成の実行はすべて連結先skillが行う。手順をこちらで再実装しない
 3. **メイン会話で結果を検証する**:
-   - 返されたPR URLを `gh pr view <url> --json url,state` で確認する
+   - 作成されたPRのURLを `gh pr view <url> --json url,state` で確認する
+   - PR本文に `Closes #<issue-number>` が含まれるか確認し、無ければ `gh pr edit <url> --body-file <修正した本文ファイル>` で追記する
    - PR作成に失敗した場合はworktreeをクリーンアップせず（手動修正の余地を残す）、ユーザーにエラーを伝えて中止する
 
 ### Phase 5: 結果の表示
