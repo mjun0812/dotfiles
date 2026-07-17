@@ -25,15 +25,15 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 
 ### GitHub Issue
 
-| Skill                                                                                                          | Purpose                                                                                                                           |
-| -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)                               | Gather information from the user and create a GitHub Issue                                                                        |
-| [`github-issue-create-with-grill`](../config/ai-agents/skills/github-issue-create-with-grill/SKILL.md)         | One-shot: `grill-self` the design for a new issue, then `github-issue-create` with the decision log embedded                      |
-| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md)                           | Scan the repo for issue-worthy items, dedupe vs existing issues, and bulk-create with approval (`--auto` skips)                   |
-| [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)                               | Review open issues and close / annotate stale, resolved, duplicate, or outdated issues                                            |
-| [`github-issue-polish`](../config/ai-agents/skills/github-issue-polish/SKILL.md)                               | Polish an issue until it is implementable as-is: codebase investigation, design decisions, trial implementation in a worktree     |
-| [`github-issue-resolve`](../config/ai-agents/skills/github-issue-resolve/SKILL.md)                             | End-to-end: investigate → discuss-or-implement decision → worktree → implement → PR for a given issue                             |
-| [`github-issue-resolve-with-subagent`](../config/ai-agents/skills/github-issue-resolve-with-subagent/SKILL.md) | End-to-end: investigate → worktree → implement → PR for a given issue, delegating the implement and PR-create phases to subagents |
+| Skill                                                                                                          | Purpose                                                                                                                                                                                    |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)                               | Gather information from the user and create a GitHub Issue                                                                                                                                 |
+| [`github-issue-create-with-grill`](../config/ai-agents/skills/github-issue-create-with-grill/SKILL.md)         | One-shot: `grill-self` the design for a new issue, then `github-issue-create` with the decision log embedded                                                                               |
+| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md)                           | Scan the repo for issue-worthy items, dedupe vs existing issues, and bulk-create with approval (`--auto` skips)                                                                            |
+| [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)                               | Review open issues and close / annotate stale, resolved, duplicate, or outdated issues                                                                                                     |
+| [`github-issue-polish`](../config/ai-agents/skills/github-issue-polish/SKILL.md)                               | Polish an issue until it is implementable as-is: codebase investigation, design decisions, trial implementation in a worktree                                                              |
+| [`github-issue-resolve`](../config/ai-agents/skills/github-issue-resolve/SKILL.md)                             | End-to-end: investigate → discuss-or-implement decision → worktree → implement → PR for a given issue                                                                                      |
+| [`github-issue-resolve-with-subagent`](../config/ai-agents/skills/github-issue-resolve-with-subagent/SKILL.md) | End-to-end: investigate → worktree → implement → PR for a given issue; implementation runs in subagents with a review/debug loop, commit and PR chain to `git-commit` / `github-pr-create` |
 
 ### GitHub Pull Request
 
@@ -104,6 +104,9 @@ graph LR
     github-issue-resolve --> github-pr-create
     github-issue-resolve --> git-commit
 
+    github-issue-resolve-with-subagent --> github-pr-create
+    github-issue-resolve-with-subagent --> git-commit
+
     github-issue-create-with-grill --> grill-self
     github-issue-create-with-grill --> github-issue-create
 
@@ -114,18 +117,19 @@ graph LR
 
 ### Caller → callee table
 
-| Caller                           | Callee                                                           | When                                                                                |
-| -------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `git-squash`                     | `git-fix-conflict`                                               | Only if a conflict surfaces during squash                                           |
-| `github-issue-resolve`           | `git-commit`, `github-pr-create`                                 | Implementation phase commits + final PR                                             |
-| `github-issue-create-with-grill` | `grill-self`, `github-issue-create`                              | Phase 2 grills the design, Phase 3 creates the issue with the decision log embedded |
-| `github-pr-fix`                  | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | Each callee runs only if the corresponding problem is detected                      |
+| Caller                               | Callee                                                           | When                                                                                |
+| ------------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `git-squash`                         | `git-fix-conflict`                                               | Only if a conflict surfaces during squash                                           |
+| `github-issue-resolve`               | `git-commit`, `github-pr-create`                                 | Implementation phase commits + final PR                                             |
+| `github-issue-resolve-with-subagent` | `git-commit`, `github-pr-create`                                 | Phase 4 commits the worktree changes and creates the final PR                       |
+| `github-issue-create-with-grill`     | `grill-self`, `github-issue-create`                              | Phase 2 grills the design, Phase 3 creates the issue with the decision log embedded |
+| `github-pr-fix`                      | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | Each callee runs only if the corresponding problem is detected                      |
 
 ### Standalone skills
 
 These skills do not delegate to other skills:
 
-`ask-claude`, `ask-codex`, `ask-gemini`, `do-claude`, `do-codex`, `do-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-resolve-with-subagent`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
+`ask-claude`, `ask-codex`, `ask-gemini`, `do-claude`, `do-codex`, `do-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 
