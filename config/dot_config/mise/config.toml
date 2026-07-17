@@ -92,5 +92,5 @@ description = "Start the Headroom proxy"
 run = """
 headroom proxy --host 127.0.0.1 --port 8787 \
   --no-telemetry --disable-kompress --lossless \
-  --code-aware --intercept-tool-results
+  --mode token --code-aware --intercept-tool-results
 """

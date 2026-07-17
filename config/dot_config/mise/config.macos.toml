@@ -58,7 +58,8 @@ args = [
   "127.0.0.1",
   "--port",
   "8787",
-  "--mode token",
+  "--mode",
+  "token",
   "--no-telemetry",
   "--disable-kompress",
   "--lossless",
@@ -72,3 +73,7 @@ environment = { HEADROOM_EMBEDDER_RUNTIME = "pytorch_mps" }
 [bootstrap.brew.taps]
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
 "vjeantet/tap" = "https://github.com/vjeantet/homebrew-tap.git"
+
+[tasks.no-sleep-mac]
+description = "No Sleep Mode for macOS"
+run = "caffeinate -dims"
