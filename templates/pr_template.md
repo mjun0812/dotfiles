@@ -12,4 +12,4 @@
 
 ## Test Instructions
 
-<!-- Describe how this PR was tested. Include the commands you ran and their results in a copy-pasteable format. If tests were not run, state that explicitly and explain why. -->
+<!-- Describe how this PR was tested. Include the commands you ran and their results in a copy-pasteable format. Do not list lint, format, or type checks that CI runs automatically (unless the PR changes those check configurations themselves); describe only the verification steps and results that CI does not cover. If tests were not run, state that explicitly and explain why. -->
