@@ -61,7 +61,7 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 ### Phase 3: 実装
 
 実装には以下のSubAgentを使用する。SubAgent同士は直接やり取りできないため、検証結果の受け取りと修正依頼はすべてメイン会話が仲介する。
-modelはメイン会話と同等のモデルをデフォルトとする。定型的・機械的な作業 (typo修正、単純な置換など) に限り、Implementation SubAgentにより軽量なモデルを指定してよい。Review SubAgentとDebug SubAgentは常にメイン会話と同等のモデルを使う。model指定ができない環境では指定せずに起動する。
+modelの選択は、環境のグローバル指示 (CLAUDE.md, AGENTS.md等) にSubAgentのモデル指針があればそれを最優先する。指針が無ければメイン会話と同等のモデルをデフォルトとし、定型的・機械的な作業 (typo修正、単純な置換など) に限り、Implementation SubAgentにより軽量なモデルを指定してよい。Review SubAgentとDebug SubAgentにはImplementation SubAgentと同等以上のモデルを使う。model指定ができない環境では指定せずに起動する。
 
 - **Implementation SubAgent**: 実装を行うSubAgent。実装に行き詰まった場合はメイン会話に相談し、必要に応じてSubAgentを再起動する。
 - **Review SubAgent**: Implementation SubAgentが実装した変更を敵対的にコードレビューし、問題点をメイン会話に返すSubAgent。
