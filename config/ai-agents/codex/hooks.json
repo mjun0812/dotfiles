@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.codex/hooks/rtk-rewrite.sh",
+            "timeout": 5,
+            "statusMessage": "Rewriting Bash command with RTK"
+          }
+        ]
+      }
+    ]
+  }
+}
