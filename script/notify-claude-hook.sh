@@ -3,15 +3,15 @@ set -euo pipefail
 
 # notify-claude-hook.sh
 #
-# Claude Code の hook (Notification / Stop / StopFailure / SessionEnd) から
+# Claude Code の hook (Notification / Stop / StopFailure) から
 # stdin で渡される JSON を読み、リポジトリ名・セッションID短縮・実メッセージ/
-# 最終発話・エラー情報を含むリッチな通知を notify.sh 経由で送出する。
+# エラー情報を含むリッチな通知を notify.sh 経由で送出する。
 #
 # Usage:
 #   notify-claude-hook.sh <event>
-#     event: notification | stop | stop_failure | session_end
+#     event: notification | stop | stop_failure
 
-EVENT="${1:-stop}"
+EVENT="${1:-notification}"
 INPUT="$(cat || true)"
 
 jq_get() {
@@ -20,38 +20,12 @@ jq_get() {
 
 CWD="$(jq_get '.cwd')"
 SESSION_ID="$(jq_get '.session_id')"
-TRANSCRIPT_PATH="$(jq_get '.transcript_path')"
 MESSAGE="$(jq_get '.message')"
 ERROR_TYPE="$(jq_get '.error_type')"
 ERROR_MESSAGE="$(jq_get '.error_message')"
-REASON="$(jq_get '.reason')"
 
 REPO="$(basename "${CWD:-unknown}")"
 SHORT_SID="${SESSION_ID:0:8}"
-
-# transcript (JSONL) から最後の assistant の text content を抽出。失敗時は空。
-# sed はロケール非依存 (LC_ALL=C) で実行し、無効バイト混入でも
-# "illegal byte sequence" で落ちないようにする。head -c で途中切断された
-# 不完全マルチバイトは iconv -c で除去し、最後の || true で pipefail を吸収する。
-last_assistant_text() {
-    local path="$1"
-    [[ -z $path || ! -f $path ]] && return 0
-    jq -rs '
-    [ .[] | select((.message.role // .role) == "assistant") ]
-    | last
-    | ((.message.content // .content)
-       | if type == "array" then
-           [ .[] | select(.type == "text") | .text ] | join(" ")
-         elif type == "string" then .
-         else "" end)
-    // ""
-  ' "$path" 2>/dev/null |
-        tr '\n' ' ' |
-        LC_ALL=C sed 's/  */ /g; s/^ *//; s/ *$//' |
-        head -c 160 |
-        iconv -f UTF-8 -t UTF-8 -c 2>/dev/null ||
-        true
-}
 
 case "$EVENT" in
 notification)
@@ -60,8 +34,7 @@ notification)
     ;;
 stop)
     TITLE="✅ Claude Code [${REPO}]${SHORT_SID:+ #${SHORT_SID}}"
-    BODY="$(last_assistant_text "$TRANSCRIPT_PATH")"
-    [[ -z $BODY ]] && BODY="タスクが完了しました"
+    BODY="次の指示を待っています"
     ;;
 stop_failure)
     TITLE="⚠️ Claude Code [${REPO}]${SHORT_SID:+ #${SHORT_SID}}"
@@ -75,10 +48,6 @@ stop_failure)
         BODY="応答がエラーで打ち切られました"
     fi
     BODY="$(printf '%s' "$BODY" | tr '\n' ' ' | LC_ALL=C sed 's/  */ /g; s/^ *//; s/ *$//' | head -c 200 | iconv -f UTF-8 -t UTF-8 -c 2>/dev/null || true)"
-    ;;
-session_end)
-    TITLE="⚠️ Claude Code [${REPO}]${SHORT_SID:+ #${SHORT_SID}}"
-    BODY="bypass permissions が無効化されました${REASON:+ (${REASON})}"
     ;;
 *)
     TITLE="Claude Code [${REPO}]"

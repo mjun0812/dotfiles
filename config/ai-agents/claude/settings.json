@@ -95,9 +95,20 @@
       "/private/tmp"
     ]
   },
-  "model": "claude-opus-4-7",
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "PostToolUse": [],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "*",
@@ -141,17 +152,6 @@
           }
         ]
       }
-    ],
-    "SessionEnd": [
-      {
-        "matcher": "bypass_permissions_disabled",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.dotfiles/script/notify-claude-hook.sh session_end"
-          }
-        ]
-      }
     ]
   },
   "statusLine": {
@@ -192,14 +192,14 @@
   },
   "language": "japanese",
   "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "effortLevel": "medium",
   "awaySummaryEnabled": false,
   "plansDirectory": "./.claude/plans",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
   "remoteControlAtStartup": true,
-  "inputNeededNotifEnabled": true,
+  "inputNeededNotifEnabled": false,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true
 }
