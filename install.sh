@@ -105,6 +105,7 @@ uv pip install -U \
     wheel \
     pymupdf \
     pynvim \
+    PyYAML \
     'python-lsp-server[all]'
 
 cd $DOTPATH

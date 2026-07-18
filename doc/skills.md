@@ -90,7 +90,7 @@ These skills are user-invoked only — the agent does not trigger them on its ow
 | Skill                                                                          | Purpose                                                                                                                                 |
 | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
 | [`resume-other-agent`](../config/ai-agents/skills/resume-other-agent/SKILL.md) | Resume another coding agent (Codex / Claude Code) by session ID, replaying its prior context                                            |
-| [`skill-review`](../config/ai-agents/skills/skill-review/SKILL.md)             | Audit a skill (`SKILL.md` and companion files) against quality criteria and report per-criterion verdicts — review only, no edits       |
+| [`skill-review`](../config/ai-agents/skills/skill-review/SKILL.md)             | Validate Agent Skills compliance and report per-criterion verdicts, including trigger conflicts with nearby skills — no edits           |
 | [`wezterm-control`](../config/ai-agents/skills/wezterm-control/SKILL.md)       | Drive wezterm panes / tabs / windows via `wezterm cli`: split, focus, resize, read pane contents, send commands and verify their output |
 
 ## Dependencies
@@ -135,4 +135,5 @@ These skills do not delegate to other skills:
 
 - Skill names use kebab-case and are scoped by domain (`git-*`, `github-*`, plus a few generic ones).
 - Front matter (`name`, `description`, `allowed-tools`) is the contract the agent reads — keep `description` rich enough to trigger correctly, and list `Skill(<dep>)` in `allowed-tools` for any sub-skill the body invokes.
+- Client-specific fields such as `allowed-tools` may be ignored by unsupported agents. When present, follow the target client's current syntax and grant only the tools and command scopes the skill requires.
 - When extending an existing skill's behavior, prefer calling the original skill via the `Skill` tool rather than duplicating its logic, so all agents pick up improvements in one place.
