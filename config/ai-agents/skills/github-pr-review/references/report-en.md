@@ -2,15 +2,16 @@
 
 <!--
 Authoring rules:
-- The final review only contains Must Fix items (only findings the verifier judged confirmed).
+- The final review only contains Required Changes (only findings the verifier judged confirmed).
 - `[reviewer category]` must be **bold**; multi-category: `**[correctness / security]**`.
-- If there are no Must Fix items, keep the heading and write "N/A".
-- Each Must Fix item must include `Reason` / `Impact` / `Action` / `Confidence` / `Evidence`.
-- Confidence must be `high` or `medium`; do not include findings with weak confidence in the final review.
-- `Evidence` is the execution path that actually reaches the problem (a chain of `file:line`).
+- If there are no Required Changes, keep the heading and write "N/A".
+- Each Required Change must include `Problem` / `Completion condition`.
+- `Problem` combines the triggering condition, cause, and concrete harm.
+- `Completion condition` describes the state that demonstrates the problem is resolved, not an implementation method.
+- Do not include the internal `Evidence` used by the Finder and verifier in the final review.
 - If CI has failing checks, mention it in one line in the Summary.
-- Do not create Should Fix or Question sections in the final review.
-- Only Must Fix items become inline comments.
+- Do not create other finding sections in the final review.
+- Only Required Changes become inline comments.
 -->
 
 ## Summary
@@ -21,14 +22,11 @@ Authoring rules:
 
 <!-- APPROVE or REQUEST_CHANGES -->
 
-## Must Fix
+## Required Changes
 
 - 1: `filename:line` - **[reviewer category]** Description of the issue
-  - Reason: ...
-  - Impact: ...
-  - Action: ...
-  - Confidence: high | medium
-  - Evidence: chain of `file:line` -> `file:line`
+  - Problem: ...
+  - Completion condition: ...
 
 ---
 
