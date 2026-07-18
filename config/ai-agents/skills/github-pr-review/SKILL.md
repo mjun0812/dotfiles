@@ -154,10 +154,11 @@ SubAgent機能が使えない環境では、各観点のレビューをメイン
 
 #### Phase 4.2: レビューレポートに記述するVerdictの判定
 
-- 指摘事項が 1 件以上 → `REQUEST_CHANGES`
-- `Must Fix` が 0 件 → `APPROVE`
+- 指摘事項が1件以上 → `REQUEST_CHANGES`
+- 指摘事項が0件 → `APPROVE`
 
-**重要**: レビューレポートに記述するVerdictは `APPROVE` / `REQUEST_CHANGES` の 2 択のみ。`COMMENT` は使用しない(self review でも同様)。GitHub API へ渡すevent種別は Phase 5.2 で決定する。
+**重要**: レビューレポートに記述するVerdictは `APPROVE` / `REQUEST_CHANGES` の 2 択のみ。`COMMENT` は使用しない(self review でも同様)。
+GitHub API へ渡すevent種別は Phase 5.2 で決定する。
 
 #### Phase 4.3: レビューレポートを生成する
 
@@ -167,10 +168,12 @@ Phase 3.1 で取得した CI に失敗がある場合は、概要にその旨を
 
 ### Phase 5: レビューを投稿する
 
-`--dry-run` が指定された場合は、Phase 4.3 で生成した統合レビューレポートと Phase 5.1 で作成した inline comment のプレビューをチャットに提示し、`post_review.sh` 等の投稿スクリプトを呼ばずに Phase 6 をスキップして Phase 7 に進む。
-
 レビューをGitHubに投稿する。レビューはinline commentとレビューレポート本文の2つの要素から構成される。
-inline comment, レビューレポート本文ともに、GitHub API へ直接渡すのではなく、一時ファイルに保存してから `--body-file` / `--comments-file` で渡すこと。
+inline comment, レビューレポート本文ともに、GitHub API へ直接渡すのではなく、
+一時ファイルに保存してから `--body-file` / `--comments-file` で渡すこと。
+
+`--dry-run` が指定された場合は、Phase 4.3 で生成した統合レビューレポートと Phase 5.1 で作成した inline comment のプレビューをチャットに提示し、
+`post_review.sh` 等の投稿スクリプトを呼ばずに Phase 6 をスキップして Phase 7 に進む。
 
 #### Phase 5.1: inline commentsを作成
 
