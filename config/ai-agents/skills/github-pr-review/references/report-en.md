@@ -3,7 +3,6 @@
 <!--
 Authoring rules:
 - The final review only contains Required Changes (only findings the verifier judged confirmed).
-- `[reviewer category]` must be **bold**; multi-category: `**[correctness / security]**`.
 - If there are no Required Changes, keep the heading and write "N/A".
 - Each Required Change must include `Problem` / `Completion condition`.
 - `Problem` combines the triggering condition, cause, and concrete harm.
@@ -24,7 +23,7 @@ Authoring rules:
 
 ## Required Changes
 
-- 1: `filename:line` - **[reviewer category]** Description of the issue
+- 1: `filename:line` - **Description of the issue**
   - Problem: ...
   - Completion condition: ...
 
