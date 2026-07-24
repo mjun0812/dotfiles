@@ -46,7 +46,6 @@
 "brew-cask:nani" = "latest"
 "brew-cask:deepl" = "latest"
 "brew-cask:claude" = "latest"
-"brew:vjeantet/tap/alerter" = "latest"
 "brew-cask:codexbar" = "latest"
 "brew-cask:discord" = "latest"
 "brew-cask:betterdisplay" = "latest"
@@ -75,7 +74,6 @@ environment = { HEADROOM_EMBEDDER_RUNTIME = "pytorch_mps" }
 
 [bootstrap.brew.taps]
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
-"vjeantet/tap" = "https://github.com/vjeantet/homebrew-tap.git"
 
 [tasks.no-sleep-mac]
 description = "No Sleep Mode for macOS"
