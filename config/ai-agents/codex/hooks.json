@@ -1,5 +1,25 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/wezterm/capture-claude-wezterm-hook.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/notify-codex-hook.sh turn_start"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "^Bash$",
@@ -9,6 +29,26 @@
             "command": "rtk hook claude",
             "timeout": 5,
             "statusMessage": "Rewriting Bash command with RTK"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/notify-codex-hook.sh permission"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/notify-codex-hook.sh stop"
           }
         ]
       }
