@@ -20,12 +20,15 @@ install_cask() {
 # mise bootstrap で解決できない cask (mise の brew-cask shim では扱えないもの)
 # - karabiner-elements / xquartz / azookey: .pkg installer が非対話 sudo を要求する
 # - mactex-no-gui: pkg installer choices が未サポート (加えて sudo も要求する)
+# - raycast: url が拡張子なしの dmg (releases.raycast.com/.../download?build=arm) で、
+#   mise が展開できず app artifact 'Raycast.app' was not found になる
 # - nikitabobko/tap/aerospace / ci7lus/miraktest/miraktest: tap 側が Homebrew API メタデータを公開していない
 CASKS=(
     nikitabobko/tap/aerospace
     ci7lus/miraktest/miraktest
     karabiner-elements
     mactex-no-gui
+    raycast
     xquartz
     azookey
 )

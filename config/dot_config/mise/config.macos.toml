@@ -51,7 +51,6 @@
 "brew-cask:discord" = "latest"
 "brew-cask:betterdisplay" = "latest"
 "brew-cask:inkscape" = "latest"
-"brew-cask:raycast" = "latest"
 "brew-cask:wezterm@nightly" = "latest"
 
 [bootstrap.macos.launchd.agents.headroom-proxy]
