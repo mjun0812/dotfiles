@@ -4,6 +4,7 @@
 
 ### not ignore ###
 !README.md
+!CLAUDE.md
 !install.sh
 !.gitignore
 !.gitmodules
