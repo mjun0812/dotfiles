@@ -56,3 +56,4 @@ script/sync_vscode_extensions.sh --dry-run
 
 - スクリプトはzsh (`#!/usr/bin/env zsh`)。pre-commitのshfmt (`-s -i 4`) が `.sh` はshebangからのzsh自動判定で、`.zsh` は `--ln=zsh` 指定でフォーマットする。ただし `p10k.zsh` (生成ファイル) と `alias.zsh` (shfmtが未対応のzsh構文を含む) は対象外。
 - oxfmtの対象外ファイルは `.oxfmtrc.json` の `ignorePatterns` に定義されている (`config/ai-agents/claude/settings.json` など)。フォーマッタが壊す設定ファイルを追加する場合はここに登録する。
+- `main` にはrulesetでレビュー必須が設定されているが、owner (mjun0812) はこれをbypassしてよい。PRは `gh pr merge --admin` でmergeし、軽微な変更は `main` へ直接commit・pushして構わない。
