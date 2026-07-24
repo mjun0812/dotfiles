@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "zsh ~/.codex/hooks/rtk-rewrite.sh",
+            "command": "rtk hook claude",
             "timeout": 5,
             "statusMessage": "Rewriting Bash command with RTK"
           }
