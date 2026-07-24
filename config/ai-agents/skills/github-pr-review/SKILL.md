@@ -16,7 +16,6 @@ Finder SubAgentが出した指摘候補は，1件ずつ Verifier SubAgent が反
 
 - `PR number`: レビューするPR番号 (optional, defaults to PR for current branch)
 - `--dry-run`: レビューレポートをチャットに提示するのみで、`post_review.sh` 等の投稿スクリプト・dismiss・resolve操作を一切呼ばない(worktreeの後片付けは通常どおり行う)
-- `--run-tests`: 静的検証で`uncertain`になった候補に限り、verifierによるテスト実行を許可する。PRがforkからのもの(head repoが別owner)の場合は無効化して警告する。既定ではworktree内のコードを一切実行しない
 
 ## Task
 
@@ -86,17 +85,12 @@ Finderが発見した指摘から候補を確定する。
 - カテゴリは表示用情報として扱い、候補の重複統合やverifierの判定に使用しない
 - 各候補と自分の既存未resolve threadを照合し、同じ根本原因の会話だけをVerifierの反証材料とする
 
-**静的な敵対的検証**: 候補1件ごとに `pr-reviewer-verifier` を並列起動して反証を試みる。
+**敵対的検証**: 候補1件ごとに `pr-reviewer-verifier` を1つずつ起動して反証を試みる。
 
 - 選別の結果、候補が0件ならこのステップをスキップする
-- 各 verifier には、候補1件の全文(証拠チェーンと関連するCI情報を含む)、同じ根本原因の既存threadと会話(ある場合)、worktree のパス、PRのタイトル・本文、base / head の commit SHA、テスト実行の許可有無を渡す
-- 最初の検証では、すべてのverifierに「worktree内のコードを一切実行しない」と明示して渡す
-
-**テストによる再検証**: `--run-tests` が指定され、かつfork PRでない場合に限り、静的検証で`uncertain`になった候補を1件ずつ再検証する。
-
-- verifierには同じ入力とテスト実行の許可を渡す
-- verifierは静的な調査で決着しない場合だけ、関連する最小のテストや再現コードを実行する
-- 複数のverifierにコードを同時実行させない
+- 各 verifier には、候補1件の全文(証拠チェーンと関連するCI情報を含む)、同じ根本原因の既存threadと会話(ある場合)、worktree のパス、PRのタイトル・本文、base / head の commit SHAを渡す
+- verifierには、worktree内で検証に必要なコマンドと、関連する最小のテストや再現コードの実行を許可する
+- verifierがコードを実行した場合は、コマンドと結果を内部の根拠に残す
 
 最終verdictが`confirmed`の候補のみ通過させる。`refuted` / `uncertain`は破棄する。
 
