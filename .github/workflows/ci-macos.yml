@@ -69,7 +69,8 @@ jobs:
         run: |
           echo "=== Checking mise bootstrap packages ==="
           source "$HOME/.zshrc"
-          mise bootstrap packages status
+          # --missing: 未インストールのpackageが残っていたらexit 1
+          mise bootstrap packages status --missing
 
       - name: Verify uv installation
         run: |
