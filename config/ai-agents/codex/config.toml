@@ -33,6 +33,8 @@ inherit = "all"
 hide_rate_limit_model_nudge = true
 
 [tui]
+# 通知は hooks.json から notify-codex-hook.sh 経由で送るため、組み込み通知は使わない。
+notifications = false
 status_line = [
   "model-with-reasoning",
   "used-tokens",
