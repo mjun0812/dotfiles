@@ -4,6 +4,7 @@
 Authoring rules:
 - The final review only contains Required Changes (only findings the verifier judged confirmed).
 - If there are no Required Changes, keep the heading and write "N/A".
+- Add a short category label describing the main harm to each Required Change.
 - Each Required Change must include `Problem` / `Completion condition`.
 - `Problem` combines the triggering condition, cause, and concrete harm.
 - `Completion condition` describes the state that demonstrates the problem is resolved, not an implementation method.
@@ -23,7 +24,7 @@ Authoring rules:
 
 ## Required Changes
 
-- 1: `filename:line` - **Description of the issue**
+- 1: `filename:line` - **[Category] Description of the issue**
   - Problem: ...
   - Completion condition: ...
 
