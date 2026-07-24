@@ -18,22 +18,14 @@ install_cask() {
 }
 
 # mise bootstrap で解決できない cask (mise の brew-cask shim では扱えないもの)
-# - inkscape: cask DSL の version.csv.second が未サポート
 # - karabiner-elements / xquartz / azookey: .pkg installer が非対話 sudo を要求する
-# - mactex-no-gui: pkg installer choices が未サポート
-# - raycast: cask shim が Raycast.app を検出できない
-# - wezterm@nightly: cask 内の bash_completion DSL が未サポート
-# - betterdisplay: cask 内の auto_updates DSL が未サポート
+# - mactex-no-gui: pkg installer choices が未サポート (加えて sudo も要求する)
 # - nikitabobko/tap/aerospace / ci7lus/miraktest/miraktest: tap 側が Homebrew API メタデータを公開していない
 CASKS=(
     nikitabobko/tap/aerospace
     ci7lus/miraktest/miraktest
-    betterdisplay
-    inkscape
     karabiner-elements
     mactex-no-gui
-    raycast
-    wezterm@nightly
     xquartz
     azookey
 )
