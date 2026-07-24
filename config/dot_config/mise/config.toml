@@ -94,3 +94,6 @@ headroom proxy --host 127.0.0.1 --port 8787 \
   --no-telemetry --disable-kompress --lossless \
   --mode token --code-aware --intercept-tool-results
 """
+
+[bootstrap.packages]
+"brew-cask:drawio" = "latest"
