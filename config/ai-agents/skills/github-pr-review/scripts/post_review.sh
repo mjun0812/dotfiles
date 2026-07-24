@@ -11,7 +11,7 @@
 #     [--comments-file <path-to-comments-json>]
 #
 # To dismiss existing reviews, use scripts/dismiss_my_reviews.sh separately.
-# To resolve outdated threads, use scripts/resolve_outdated_threads.sh.
+# To resolve threads replaced by this review, use scripts/resolve_review_threads.sh.
 #
 # Comments JSON shape (array):
 #   [
@@ -21,9 +21,9 @@
 #
 # - "side" is optional. Default is "RIGHT" (post-change). Use "LEFT" to comment
 #   on a deleted line in the original file.
-# - Comments whose (path, line, side) is not part of the PR diff are demoted to
-#   the review body under a dedicated section instead of being posted inline,
-#   so that a single invalid entry does not fail the whole review.
+# - Comments whose (path, line, side) is not part of the PR diff are omitted
+#   from inline comments. The review body is not modified because it already
+#   contains every finding.
 #
 # On success, prints the PR HTML URL to stdout.
 
@@ -104,13 +104,11 @@ PAYLOAD_FILE=$(mktemp)
 PR_FILES_FILE=$(mktemp)
 SPLIT_FILE=$(mktemp)
 VALID_COMMENTS_FILE=$(mktemp)
-INVALID_COMMENTS_FILE=$(mktemp)
-SUPP_BODY_FILE=$(mktemp)
-trap 'rm -f "$PAYLOAD_FILE" "$PR_FILES_FILE" "$SPLIT_FILE" "$VALID_COMMENTS_FILE" "$INVALID_COMMENTS_FILE" "$SUPP_BODY_FILE"' EXIT
+trap 'rm -f "$PAYLOAD_FILE" "$PR_FILES_FILE" "$SPLIT_FILE" "$VALID_COMMENTS_FILE"' EXIT
 
 # Preflight: split inline comments into (valid, invalid) by checking whether
-# (path, line, side) is part of the PR diff. Invalid entries are demoted to
-# the review body under "inline 化できなかった指摘 / Comments that could not be inlined".
+# (path, line, side) is part of the PR diff. Invalid entries are omitted from
+# inline comments without changing the review body.
 if [[ -n $COMMENTS_FILE ]]; then
     gh api "repos/${REPO}/pulls/${PR}/files" --paginate >"$PR_FILES_FILE"
 
@@ -157,22 +155,12 @@ if [[ -n $COMMENTS_FILE ]]; then
   ' "$PR_FILES_FILE" >"$SPLIT_FILE"
 
     jq '.valid' "$SPLIT_FILE" >"$VALID_COMMENTS_FILE"
-    jq '.invalid' "$SPLIT_FILE" >"$INVALID_COMMENTS_FILE"
 
-    INVALID_COUNT=$(jq 'length' "$INVALID_COMMENTS_FILE")
+    INVALID_COUNT=$(jq '.invalid | length' "$SPLIT_FILE")
     VALID_COUNT=$(jq 'length' "$VALID_COMMENTS_FILE")
 
     if [[ $INVALID_COUNT -gt 0 ]]; then
-        echo "Warning: ${INVALID_COUNT} inline comment(s) target lines not in the PR diff; demoting them to the review body." >&2
-        {
-            cat "$BODY_FILE"
-            printf '\n\n---\n\n'
-            printf '### inline 化できなかった指摘 / Comments that could not be inlined\n\n'
-            printf '以下の指摘は，対象行が PR の diff に含まれていないため inline コメントとして投稿できませんでした。\n'
-            printf 'The following comments could not be posted inline because the target lines are not part of the PR diff:\n\n'
-            jq -r '.[] | "- `\(.path):\(.line)\(if (.side // "RIGHT") != "RIGHT" then " (side=\(.side))" else "" end)`\n\n\(.body)\n"' "$INVALID_COMMENTS_FILE"
-        } >"$SUPP_BODY_FILE"
-        BODY_FILE="$SUPP_BODY_FILE"
+        echo "Warning: ${INVALID_COUNT} inline comment(s) target lines not in the PR diff; omitting them from inline comments. Findings remain in the review body." >&2
     fi
 
     if [[ $VALID_COUNT -eq 0 ]]; then
