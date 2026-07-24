@@ -61,9 +61,9 @@ alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions 
 
 
 # Codex
-alias codex-full='command codex --sandbox danger-full-access --ask-for-approval never'
-alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って英語でコミットしてください。"'
-alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って日本語でコミットしてください。"'
+alias codex-full='command codex --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust'
+alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox --dangerously-bypass-hook-trust -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って英語でコミットしてください。"'
+alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox --dangerously-bypass-hook-trust -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って日本語でコミットしてください。"'
 
 # Copilot-cli
 alias copilot-commit='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はEnglishです。"'

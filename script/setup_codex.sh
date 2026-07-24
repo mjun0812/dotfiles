@@ -15,7 +15,6 @@ cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" 2>/dev/null 
 cp -aLf "$HOME/.codex/skills" "$DOTPATH/.backup/codex_skills" 2>/dev/null && rm -rf "$HOME/.codex/skills"
 cp -aLf "$HOME/.codex/agents" "$DOTPATH/.backup/codex_agents" 2>/dev/null && rm -rf "$HOME/.codex/agents"
 cp -aLf "$HOME/.codex/hooks.json" "$DOTPATH/.backup/hooks_codex.json" 2>/dev/null && rm -rf "$HOME/.codex/hooks.json"
-cp -aLf "$HOME/.codex/hooks" "$DOTPATH/.backup/codex_hooks" 2>/dev/null && rm -rf "$HOME/.codex/hooks"
 
 mkdir -p "$HOME/.codex"
 mkdir -p "$HOME/.codex/skills"
@@ -47,4 +46,3 @@ done
 
 # Hooks
 ln -snfv "$DOTPATH/config/ai-agents/codex/hooks.json" "$HOME/.codex/hooks.json"
-ln -snfv "$DOTPATH/config/ai-agents/codex/hooks" "$HOME/.codex/hooks"
