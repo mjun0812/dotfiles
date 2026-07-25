@@ -66,28 +66,20 @@ The generated plists are `~/Library/LaunchAgents/<label>.plist`.
 
 ### CLIProxyAPI configuration
 
-The live config is `~/.config/cli-proxy-api/config.yaml`. It holds API keys and is rewritten in place by the management API, so it is not tracked in this repo — create it manually before applying the launchd agent:
+The config is tracked at `config/dot_config/cli-proxy-api/config.yaml` and linked to `~/.config/cli-proxy-api/config.yaml` by `install.sh`. Only the file is linked (like herdr) because the app downloads runtime assets (`static/`) next to it; the directory itself stays real.
 
-```sh
-mkdir -p ~/.config/cli-proxy-api
-cat >~/.config/cli-proxy-api/config.yaml <<'EOF'
-host: "127.0.0.1"
-port: 8317
-auth-dir: "~/.cli-proxy-api"
-api-keys: []
-EOF
-```
+Tracking it is safe only while the config holds no secrets: credentials live in `auth-dir` (`~/.cli-proxy-api/`, outside the repo). Keep it that way — do not add client `api-keys` values or a `remote-management.secret-key` (the management API rewrites the config in place, which would dirty the repo through the symlink). If either becomes necessary, move the config out of the repo first.
 
 The full option reference is `~/.local/share/mise/installs/github-router-for-me-cli-proxy-api/latest/config.example.yaml`.
 
 The agent resolves the config via its `working_directory`, but interactive logins run from your shell's cwd, so pass `-config` explicitly:
 
 ```sh
-cli-proxy-api -config ~/.config/cli-proxy-api/config.yaml -claude-login
+cli-proxy-api -config ~/.config/cli-proxy-api/config.yaml -codex-login
 mise run cli-proxy-api-restart # reload the agent after logging in
 ```
 
-Note: create the config before `mise bootstrap macos launchd-agents apply`; without a config the binary exits immediately and `KeepAlive` respawns it in a loop.
+Note: the config symlink must exist before `mise bootstrap macos launchd-agents apply`; without a config the binary exits immediately and `KeepAlive` respawns it in a loop. `install.sh` runs the steps in that order.
 
 ### Manual Operations
 

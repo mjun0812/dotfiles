@@ -40,6 +40,14 @@ for d in "$DOTPATH"/config/dot_config/*; do
         ln -snfv "$d/config.toml" "$CONFIG_DIR/$app/config.toml"
         continue
     fi
+    # cli-proxy-api downloads runtime assets (static/) next to its config,
+    # so link only config.yaml and keep the directory itself real.
+    if [ "$app" = "cli-proxy-api" ]; then
+        mkdir -p "$CONFIG_DIR/$app"
+        rm -rf "$CONFIG_DIR/$app/config.yaml"
+        ln -snfv "$d/config.yaml" "$CONFIG_DIR/$app/config.yaml"
+        continue
+    fi
     cp -aLf "$CONFIG_DIR/$app" "$DOTPATH/.backup/$app" 2>/dev/null || true
     rm -rf "$CONFIG_DIR/$app"
     ln -snfv "$d" "$CONFIG_DIR/$app"

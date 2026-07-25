@@ -50,6 +50,9 @@ jobs:
             if [[ "$name" = "herdr" ]]; then
               target="$target/config.toml"
             fi
+            if [[ "$name" = "cli-proxy-api" ]]; then
+              target="$target/config.yaml"
+            fi
             if [[ -L "$target" ]]; then
               echo "✓ .config/$name is a symlink"
             else
