@@ -58,10 +58,24 @@ diff() {
 alias claude="claude --mcp-config=${HOME}/.claude/mcp.json --allow-dangerously-skip-permissions"
 alias cc-commit='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit en"'
 alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit ja"'
-
+claude-headroom() {
+    ANTHROPIC_BASE_URL=http://127.0.0.1:8787 command claude --mcp-config="${HOME}/.claude/mcp.json" --allow-dangerously-skip-permissions "$@"
+}
 
 # Codex
-alias codex-full='command codex --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust'
+codex-full() {
+    command codex --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
+}
+codex-headroom() {
+    command codex \
+        -c model_provider=headroom \
+        -c 'model_providers.headroom.name="headroom"' \
+        -c 'model_providers.headroom.base_url="http://127.0.0.1:8787/v1"' \
+        "$@"
+}
+codex-headroom-full() {
+    codex-headroom --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
+}
 alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox --dangerously-bypass-hook-trust -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って英語でコミットしてください。"'
 alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox --dangerously-bypass-hook-trust -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って日本語でコミットしてください。"'
 
