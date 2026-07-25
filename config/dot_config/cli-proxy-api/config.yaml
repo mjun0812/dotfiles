@@ -1,0 +1,14 @@
+# CLIProxyAPI config for the dev.mise.cli-proxy-api launchd agent.
+# Credentials live in auth-dir, outside the repo.
+# Keep secrets out of this file — no client api-keys, and no
+# remote-management.secret-key (enabling the management API would let it
+# rewrite this file through the symlink). Full reference:
+# ~/.local/share/mise/installs/github-router-for-me-cli-proxy-api/latest/config.example.yaml
+host: "127.0.0.1"
+port: 8317
+auth-dir: "~/.cli-proxy-api"
+api-keys: []
+remote-management:
+  # The management API stays disabled (no secret-key); skip the bundled
+  # control panel download so nothing is fetched into static/ from GitHub.
+  disable-control-panel: true
