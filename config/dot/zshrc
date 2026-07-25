@@ -65,7 +65,9 @@ command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 
 # zoxide (below line must after mise init)
-command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
+if [[ -o interactive ]] && command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init zsh --cmd cd)"
+fi
 
 # ######### zsh completion ##########
 if [ -d ~/.config/zsh_completions ]; then
