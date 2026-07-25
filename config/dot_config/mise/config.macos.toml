@@ -1,7 +1,7 @@
 #:schema https://mise.en.dev/schema/mise.json
 
 [tools]
-"pipx:headroom-ai" = { version = "latest", extras = "proxy,code,ml,pytorch-mps" }
+"pipx:headroom-ai" = { version = "latest", extras = "proxy,code", postinstall = "launchctl kickstart -k gui/$(id -u)/dev.mise.headroom-proxy 2>/dev/null || true" }
 "pipx:plamo-translate" = "latest"
 
 [bootstrap.packages]
@@ -70,7 +70,7 @@ args = [
 ]
 run_at_load = true
 keep_alive = true
-environment = { HEADROOM_EMBEDDER_RUNTIME = "pytorch_mps" }
+kickstart = true
 
 [bootstrap.brew.taps]
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
