@@ -55,7 +55,7 @@ shfmt = "latest"
 "aqua:aws/aws-cli" = "latest"
 "github:WGUNDERWOOD/tex-fmt" = "latest"
 "github:runpod/runpodctl" = "latest"
-"github:router-for-me/CLIProxyAPI" = "latest"
+"github:router-for-me/CLIProxyAPI" = { version = "latest", postinstall = "command -v launchctl >/dev/null 2>&1 && launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api 2>/dev/null || true" }
 "github:rtk-ai/rtk" = "latest"
 
 # AI coding agents

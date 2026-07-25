@@ -60,8 +60,34 @@ mise bootstrap macos launchd-agents apply --yes
 | Label                     | Purpose                                           |
 | ------------------------- | ------------------------------------------------- |
 | `dev.mise.headroom-proxy` | Run `headroom proxy` on `127.0.0.1:8787` at login |
+| `dev.mise.cli-proxy-api`  | Run CLIProxyAPI on `127.0.0.1:8317` at login      |
 
-The generated plist is `~/Library/LaunchAgents/dev.mise.headroom-proxy.plist`.
+The generated plists are `~/Library/LaunchAgents/<label>.plist`.
+
+### CLIProxyAPI configuration
+
+The live config is `~/.config/cli-proxy-api/config.yaml`. It holds API keys and is rewritten in place by the management API, so it is not tracked in this repo — create it manually before applying the launchd agent:
+
+```sh
+mkdir -p ~/.config/cli-proxy-api
+cat >~/.config/cli-proxy-api/config.yaml <<'EOF'
+host: "127.0.0.1"
+port: 8317
+auth-dir: "~/.cli-proxy-api"
+api-keys: []
+EOF
+```
+
+The full option reference is `~/.local/share/mise/installs/github-router-for-me-cli-proxy-api/latest/config.example.yaml`.
+
+The agent resolves the config via its `working_directory`, but interactive logins run from your shell's cwd, so pass `-config` explicitly:
+
+```sh
+cli-proxy-api -config ~/.config/cli-proxy-api/config.yaml -claude-login
+mise run cli-proxy-api-restart # reload the agent after logging in
+```
+
+Note: create the config before `mise bootstrap macos launchd-agents apply`; without a config the binary exits immediately and `KeepAlive` respawns it in a loop.
 
 ### Manual Operations
 
@@ -88,6 +114,9 @@ log stream --predicate 'process == "headroom"' --info
 
 # Show the last hour
 log show --predicate 'process == "headroom"' --info --last 1h
+
+# CLIProxyAPI
+log show --predicate 'process == "cli-proxy-api"' --info --last 1h
 
 # Include debug-level entries
 log stream --predicate 'process == "headroom"' --debug --info
