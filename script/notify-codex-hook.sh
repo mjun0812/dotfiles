@@ -89,4 +89,4 @@ permission)
     ;;
 esac
 
-~/.dotfiles/script/notify.sh "$TITLE" "$BODY" "$SESSION_ID" >/dev/null 2>&1 || true
+~/.dotfiles/script/notify.sh "$TITLE" "$BODY" "$SESSION_ID" ~/.dotfiles/assets/notify-codex.png >/dev/null 2>&1 || true

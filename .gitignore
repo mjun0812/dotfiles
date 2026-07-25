@@ -13,6 +13,8 @@
 !.pre-commit-config.yaml
 !.oxfmtrc.json
 
+!assets
+!assets/**
 !config
 !config/**
 !doc
