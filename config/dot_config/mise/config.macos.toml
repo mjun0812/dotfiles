@@ -78,3 +78,7 @@ environment = { HEADROOM_EMBEDDER_RUNTIME = "pytorch_mps" }
 [tasks.no-sleep-mac]
 description = "No Sleep Mode for macOS"
 run = "caffeinate -dims"
+
+[tasks.headroom-restart]
+description = "Restart the Headroom proxy launchd agent"
+run = "launchctl kickstart -k gui/$(id -u)/dev.mise.headroom-proxy"
