@@ -71,6 +71,7 @@ opencode = "latest"
 "pipx:nvitop" = "latest"
 "pipx:ty" = "latest"
 "pipx:copier" = "latest"
+"npm:@xai-official/grok" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
