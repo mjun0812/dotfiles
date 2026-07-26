@@ -203,11 +203,6 @@ config.keys = {
         action = wezterm.action.SendString('\n')
     },
     {
-        key = 'o',
-        mods = 'CMD|SHIFT',
-        action = wezterm.action.EmitEvent('open-wrapped-link')
-    },
-    {
         key = 'd',
         mods = 'CMD',
         action = wezterm.action.SplitHorizontal({ domain = 'CurrentPaneDomain' })
@@ -296,91 +291,15 @@ local function strip_line_numbers(path)
         :gsub(":%d+$", "")            -- :行
 end
 
--- 折り返しで途切れた URI/path を pane の論理行から復元する。
--- wezterm の hyperlink_rules は物理行単位で適用されるため、折り返した URL は
--- 1 行目部分しかリンク化されない。クリック時に渡ってくる「途中で切れた文字列」を
--- 起点に論理行を走査し、空白等が出現するまで延長して完全な文字列に戻す。
-local function recover_full_uri(pane, partial)
-    if not partial or #partial < 4 then return partial end
-    local dims = pane:get_dimensions()
-    local text = pane:get_logical_lines_as_text(dims.viewport_rows + 200)
-    local s = text:find(partial, 1, true)
-    if not s then return partial end
-    local extended = text:sub(s):match("^([^%s'\"<>]+)")
-    if extended and #extended > #partial then
-        return extended
-    end
-    return partial
-end
-
 -- open-uri ハンドラ
 wezterm.on("open-uri", function(window, pane, uri)
-    local recovered = recover_full_uri(pane, uri)
-
-    local raw_path = extract_path(recovered)
+    local raw_path = extract_path(uri)
     if raw_path then
         wezterm.open_with(strip_line_numbers(raw_path))
         return false
     end
 
-    -- http(s)/mailto などで折り返し復元が効いた場合は復元後の URI で開く
-    if recovered ~= uri then
-        wezterm.open_with(recovered)
-        return false
-    end
-
-    -- 復元の必要がなければ wezterm 既定動作 (ブラウザ起動など) にまかせる
-end)
-
--- 画面内に存在するリンク候補を論理行ベースで全部拾い、選択して開くピッカー。
--- マウスクリックでは復元できないケース (partial が論理行内に複数出現する等) の保険。
-local function collect_links(pane)
-    local dims = pane:get_dimensions()
-    local text = pane:get_logical_lines_as_text(dims.viewport_rows + 200)
-    local seen, links = {}, {}
-    local function push(s)
-        if s and s ~= "" and not seen[s] then
-            seen[s] = true
-            table.insert(links, s)
-        end
-    end
-    for line in text:gmatch("[^\n]+") do
-        for url in line:gmatch("%a[%w%+%-%.]+://[^%s'\"<>]+") do
-            push(url)
-        end
-        for path in line:gmatch("[%w~%./\\:_%-]+") do
-            if path:match("^/") or path:match("^~") or path:match("^%.%.?/")
-                or path:match("^%a:[\\/]") then
-                push(path)
-            end
-        end
-    end
-    return links
-end
-
-wezterm.on("open-wrapped-link", function(window, pane)
-    local links = collect_links(pane)
-    if #links == 0 then
-        window:toast_notification("wezterm", "リンク候補なし", nil, 2000)
-        return
-    end
-    local choices = {}
-    for _, l in ipairs(links) do
-        table.insert(choices, { label = l, id = l })
-    end
-    window:perform_action(
-        wezterm.action.InputSelector({
-            title = "Open link",
-            choices = choices,
-            fuzzy = true,
-            action = wezterm.action_callback(function(_, _, id, _)
-                if not id or id == "" then return end
-                local raw = extract_path(id) or id
-                wezterm.open_with(strip_line_numbers(raw))
-            end),
-        }),
-        pane
-    )
+    -- http(s)/mailto などは wezterm 既定動作 (ブラウザ起動など) にまかせる
 end)
 
 -- 既定ルールをベースにする
@@ -388,9 +307,9 @@ local hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- ファイルパス検出用ルールを追加
 table.insert(hyperlink_rules, {
-    --  ~ / ./ ../ C:\     で始まり、空白や<>\"' を除く任意文字列
+    --  ~ / ./ ../ C:\     で始まり、空白や<>\"'() を除く任意文字列
     --  オプションで :行 または :行:列 を繰り返し許可
-    regex = [[(?:~|/|\.{1,2}/|\w:[\\/])[^[:space:]'"<>]+(?::\d+(?::\d+)*)?]],
+    regex = [[(?:~|/|\.{1,2}/|\w:[\\/])[^[:space:]'"<>()]+(?::\d+(?::\d+)*)?]],
     format = '$0', -- ← `$EDITOR:` は付けない
     highlight = 0, -- 色を変えたいときは 1
 })
