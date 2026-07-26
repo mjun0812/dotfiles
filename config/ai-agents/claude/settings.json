@@ -104,7 +104,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "rtk hook claude"
+            "command": "~/.dotfiles/script/rtk-hook-claude.sh"
           }
         ]
       }
@@ -202,7 +202,7 @@
   },
   "language": "japanese",
   "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "awaySummaryEnabled": false,
   "plansDirectory": "./.claude/plans",
   "tui": "fullscreen",
