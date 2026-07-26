@@ -13,20 +13,16 @@ if [[ -z $output ]] ||
     exit 0
 fi
 
-permission_mode=$(print -rn -- "$input" | jq -r '.permission_mode // "default"' 2>/dev/null)
-missing_decision="ask"
-
-# Keep bypass mode non-interactive while prompting for other rewritten commands.
-if [[ $permission_mode == "bypassPermissions" ]]; then
-    missing_decision="allow"
-fi
-
+# Auto-allow every RTK rewrite that would otherwise require confirmation.
 print -rn -- "$output" |
-    jq -c --arg decision "$missing_decision" '
+    jq -c '
         if .hookSpecificOutput.updatedInput != null
-            and .hookSpecificOutput.permissionDecision == null
+            and (
+                .hookSpecificOutput.permissionDecision == null
+                or .hookSpecificOutput.permissionDecision == "ask"
+            )
         then
-            .hookSpecificOutput.permissionDecision = $decision
+            .hookSpecificOutput.permissionDecision = "allow"
         else
             .
         end
