@@ -2,3 +2,4 @@
 
 [tools]
 "pipx:headroom-ai" = { version = "latest", extras = "proxy,code,ml" }
+"github:router-for-me/CLIProxyAPI" = "latest"

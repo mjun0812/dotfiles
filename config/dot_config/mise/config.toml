@@ -55,7 +55,6 @@ shfmt = "latest"
 "aqua:aws/aws-cli" = "latest"
 "github:WGUNDERWOOD/tex-fmt" = "latest"
 "github:runpod/runpodctl" = "latest"
-"github:router-for-me/CLIProxyAPI" = { version = "latest", postinstall = "command -v launchctl >/dev/null 2>&1 && launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api 2>/dev/null || true" }
 "github:rtk-ai/rtk" = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
 
@@ -65,6 +64,7 @@ shfmt = "latest"
 opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = "latest"
 "npm:@github/copilot" = "latest"
+"npm:@xai-official/grok" = "latest"
 
 # Python CLI tools
 "pipx:ruff" = "latest"
@@ -72,7 +72,6 @@ opencode = "latest"
 "pipx:nvitop" = "latest"
 "pipx:ty" = "latest"
 "pipx:copier" = "latest"
-"npm:@xai-official/grok" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
@@ -96,6 +95,3 @@ headroom proxy --host 127.0.0.1 --port 8787 \
   --no-telemetry --disable-kompress --lossless \
   --mode token --code-aware --intercept-tool-results
 """
-
-[bootstrap.packages]
-"brew-cask:drawio" = "latest"
