@@ -61,6 +61,13 @@ alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions 
 claude-headroom() {
     ANTHROPIC_BASE_URL=http://127.0.0.1:8787 command claude --mcp-config="${HOME}/.claude/mcp.json" --allow-dangerously-skip-permissions "$@"
 }
+claudex() {
+    env \
+        ANTHROPIC_BASE_URL="http://127.0.0.1:8317" \
+        ANTHROPIC_AUTH_TOKEN="$CLIPROXY_API_KEY" \
+        CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
+        claude --mcp-config=${HOME}/.claude/mcp.json --allow-dangerously-skip-permissions --model "gpt-5.6-luna(xhigh)" "$@"
+}
 
 # Codex
 codex-full() {
