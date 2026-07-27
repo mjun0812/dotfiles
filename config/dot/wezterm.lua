@@ -26,6 +26,8 @@ config.font = wezterm.font_with_fallback({
 	{ family = "Roboto Mono", weight = "Regular" },
 })
 config.font_size = 12.0
+-- 豆腐Fontの警告を無効化
+config.warn_about_missing_glyphs = false
 
 -- Window Settings
 -- size
