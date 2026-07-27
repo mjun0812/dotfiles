@@ -88,6 +88,10 @@ fi
 if command -v gwq >/dev/null 2>&1; then
     source <(gwq completion zsh)
 fi
+# mise completion
+if command -v mise >/dev/null 2>&1; then
+    source <(mise completion zsh)
+fi
 
 [ -f ~/.alias.zsh ] && source ~/.alias.zsh
 [ -f ~/.opt.zsh ] && source ~/.opt.zsh

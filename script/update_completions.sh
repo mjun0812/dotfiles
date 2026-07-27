@@ -15,8 +15,3 @@ if command -v docker >/dev/null 2>&1; then
     docker completion zsh >"$COMPLETIONS_DIR/_docker"
     echo "Updated: _docker ($(docker version --format '{{.Client.Version}}' 2>/dev/null || echo 'unknown version'))"
 fi
-
-if command -v mise >/dev/null 2>&1; then
-    mise completion zsh >"$COMPLETIONS_DIR/_mise"
-    echo "Updated: _mise ($(mise --version 2>/dev/null || echo 'unknown version'))"
-fi
