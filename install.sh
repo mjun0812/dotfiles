@@ -62,16 +62,9 @@ mise reshim
 source "$HOME/.zshrc"
 
 if [ "$(uname -s)" = "Darwin" ]; then
-    log_section "Applying mise bootstrap packages..."
+    log_section "Applying mise bootstrap..."
     mise bootstrap packages apply --yes
-
-    ################ [launchd] ################
-    log_section "Setting up launchd agents..."
-    if ! mise bootstrap macos launchd-agents apply --yes; then
-        launchd_agent="$HOME/Library/LaunchAgents/dev.mise.headroom-proxy.plist"
-        launchctl bootstrap "gui/$(id -u)" "$launchd_agent"
-        launchctl enable "gui/$(id -u)/dev.mise.headroom-proxy"
-    fi
+    mise bootstrap launchd apply --yes
 fi
 
 ################ [Zsh Completion Update] ################

@@ -2,6 +2,7 @@
 
 [tools]
 "pipx:headroom-ai" = { version = "latest", extras = "proxy,code", postinstall = "launchctl kickstart -k gui/$(id -u)/dev.mise.headroom-proxy 2>/dev/null || true" }
+"github:router-for-me/CLIProxyAPI" = { version = "latest", postinstall = "launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api 2>/dev/null || true" }
 "pipx:plamo-translate" = "latest"
 
 [bootstrap.packages]
@@ -27,6 +28,7 @@
 "brew-cask:alt-tab" = "latest"
 "brew-cask:bettertouchtool" = "latest"
 "brew-cask:chatgpt" = "latest"
+"brew-cask:drawio" = "latest"
 "brew-cask:font-roboto-mono-nerd-font" = "latest"
 "brew-cask:hammerspoon" = "latest"
 "brew-cask:homerow" = "latest"
