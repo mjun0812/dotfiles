@@ -24,6 +24,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      # 実マシン・Ubuntu CIと同様に ~/.dotfiles でリポジトリを参照できるようにする
+      # (mise postinstallやnotify系スクリプトは ~/.dotfiles 配下のパスを前提とする)
+      - name: Link repository to ~/.dotfiles
+        run: |
+          ln -s "$GITHUB_WORKSPACE" "$HOME/.dotfiles"
+
       - name: Run install script
         run: |
           ./install.sh
@@ -74,6 +80,14 @@ jobs:
           source "$HOME/.zshrc"
           # --missing: 未インストールのpackageが残っていたらexit 1
           mise bootstrap packages status --missing
+
+      - name: Verify yobirin profiles
+        run: |
+          echo "=== Checking yobirin profiles ==="
+          source "$HOME/.zshrc"
+          yobirin list
+          yobirin list --json | jq -e '.bundles | map(.profile) | (index("claude") != null) and (index("codex") != null)' >/dev/null
+          echo "✓ yobirin default + claude/codex profiles are installed"
 
       - name: Verify uv installation
         run: |
