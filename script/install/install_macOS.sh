@@ -36,10 +36,6 @@ for cask in "${CASKS[@]}"; do
     install_cask "$cask"
 done
 
-# vjeantet/tap/alerter も tap 側が Homebrew API メタデータを公開しておらず、
-# mise bootstrap では解決できない (formula 側なので brew install で入れる)
-brew list alerter >/dev/null 2>&1 || brew install vjeantet/tap/alerter
-
 # manaflow-ai/cmux tap のみ登録 (cask 本体は未使用)
 brew tap manaflow-ai/cmux >/dev/null 2>&1 || true
 brew trust manaflow-ai/cmux >/dev/null 2>&1 || true

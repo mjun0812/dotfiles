@@ -109,10 +109,10 @@ stop_failure)
     ;;
 esac
 
-# Claude Code hookはTTYを持たないため、ローカルmacOSではalerterを直接起動する。
+# Claude Code hookはTTYを持たないため、ローカルmacOSではyobirinを直接起動する。
 # セッション開始時にHammerspoonへ保存したWezTerm windowへ、通知クリックで戻る。
 if [[ $(uname -s) == Darwin* && -z ${SSH_CONNECTION:-} && -z ${SSH_CLIENT:-} && -z ${SSH_TTY:-} ]]; then
-    ~/.dotfiles/script/notify.sh --native "$TITLE" "$BODY" "$SESSION_ID" ~/.dotfiles/assets/notify-claude.png >/dev/null 2>&1 || true
+    ~/.dotfiles/script/notify.sh --native "$TITLE" "$BODY" "$SESSION_ID" claude >/dev/null 2>&1 || true
     exit 0
 fi
 

@@ -8,13 +8,14 @@ set -euo pipefail
 # - Local sessions: OS-native notifications (macOS/Linux/Windows/WSL)
 #
 # Usage:
-#   ./notify.sh "TITLE" "MESSAGE" [SESSION_ID] [APP_ICON]
+#   ./notify.sh "TITLE" "MESSAGE" [SESSION_ID] [PROFILE]
 #   ./notify.sh --osc "TITLE" "MESSAGE"      # force OSC, write to terminal/dev-tty
 #   ./notify.sh --native "TITLE" "MESSAGE"   # force native (ignore SSH)
 #   ./notify.sh --emit-osc "TITLE" "MESSAGE" # print raw OSC payload to stdout only
 #                                            # (for Claude Code terminalSequence; no terminal/native output)
 #
-# APP_ICON は macOS の alerter に渡す通知アイコンのパス。OSC 通知やその他の OS では無視される。
+# PROFILE は macOS の yobirin 通知プロファイル名 (claude / codex)。アイコンと名義の
+# 出し分けに使う。OSC 通知やその他の OS では無視される。
 
 # Parse force mode flag
 FORCE_MODE="auto"
@@ -36,7 +37,7 @@ esac
 TITLE="${1:-Claude Code}"
 MESSAGE="${2:-Notification}"
 SESSION_ID="${3:-}"
-APP_ICON="${4:-}"
+PROFILE="${4:-}"
 
 # Determine if we should use OSC notification
 USE_OSC=$([[ $FORCE_MODE == "osc" || $FORCE_MODE == "emit" || ($FORCE_MODE == "auto" && (-n ${SSH_CONNECTION:-} || -n ${SSH_CLIENT:-} || -n ${SSH_TTY:-})) ]] && printf 'true' || printf 'false')
@@ -121,11 +122,12 @@ mac)
         fi
     fi
 
-    ALERTER_BIN="$(command -v alerter || true)"
-    if [[ -z $ALERTER_BIN ]]; then
-        for candidate in /opt/homebrew/bin/alerter /usr/local/bin/alerter; do
+    # hook経由はPATHが薄いことがあるため、bundle symlinkとmise shimsへ明示的にfallbackする。
+    YOBIRIN_BIN="$(command -v yobirin || true)"
+    if [[ -z $YOBIRIN_BIN ]]; then
+        for candidate in "$HOME/.local/bin/yobirin" "$HOME/.local/share/mise/shims/yobirin"; do
             if [[ -x $candidate ]]; then
-                ALERTER_BIN="$candidate"
+                YOBIRIN_BIN="$candidate"
                 break
             fi
         done
@@ -136,8 +138,8 @@ mac)
             >/dev/null 2>&1 </dev/null &
     fi
 
-    if [[ $PANE_ID =~ ^[0-9]+$ && -n $SESSION_ID && -n $ALERTER_BIN ]]; then
-        nohup "$HOME/.dotfiles/script/wezterm/alerter-wezterm-notify.sh" "$TITLE" "$MESSAGE" "$PANE_ID" "$SESSION_ID" "$APP_ICON" \
+    if [[ $PANE_ID =~ ^[0-9]+$ && -n $SESSION_ID && -n $YOBIRIN_BIN ]]; then
+        nohup "$HOME/.dotfiles/script/wezterm/yobirin-wezterm-notify.sh" "$TITLE" "$MESSAGE" "$PANE_ID" "$SESSION_ID" "$PROFILE" \
             >/dev/null 2>&1 </dev/null &
     else
         osascript -e "display notification \"${MESSAGE}\" with title \"${TITLE}\""
