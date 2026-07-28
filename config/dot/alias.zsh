@@ -66,6 +66,10 @@ claudex() {
         ANTHROPIC_BASE_URL="http://127.0.0.1:8317" \
         ANTHROPIC_AUTH_TOKEN="$CLIPROXY_API_KEY" \
         CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
+        ANTHROPIC_DEFAULT_FABLE_MODEL="gpt-5.6-sol" \
+        ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-5.6-sol" \
+        ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-5.6-luna" \
+        ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-5.6-luna" \
         claude --mcp-config=${HOME}/.claude/mcp.json --allow-dangerously-skip-permissions --model "gpt-5.6-luna(xhigh)" "$@"
 }
 

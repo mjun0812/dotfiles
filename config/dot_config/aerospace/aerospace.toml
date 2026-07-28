@@ -151,7 +151,10 @@ alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
 alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-monitor
-alt-shift-tab = ['move-node-to-monitor --wrap-around next', 'focus-monitor --wrap-around next']
+alt-shift-tab = [
+  'move-node-to-monitor --wrap-around next',
+  'focus-monitor --wrap-around next',
+]
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 alt-shift-semicolon = 'mode service'
@@ -162,12 +165,16 @@ alt-shift-semicolon = 'mode service'
 esc = ['reload-config', 'mode main']
 r = ['flatten-workspace-tree', 'mode main'] # reset layout
 # f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
-f = ['layout floating tiling', '''exec-and-forget
+f = [
+  'layout floating tiling',
+  '''exec-and-forget
     layout="$(aerospace list-windows --focused --format "%{window-layout}" | tr -d "[:space:]")"
     if [ "$layout" = "floating" ]; then
         open -g "hammerspoon://center"
     fi
-    ''', 'mode main']
+    ''',
+  'mode main',
+]
 
 alt-shift-h = ['join-with left', 'mode main']
 alt-shift-j = ['join-with down', 'mode main']
@@ -196,3 +203,7 @@ run = "layout floating"
 if.app-id = "com.apple.systempreferences"
 run = "layout floating"
 
+# See: https://ghostty.org/docs/help/macos-tiling-wms
+[[on-window-detected]]
+if.app-id = "com.mitchellh.ghostty"
+run = ["layout tiling"]
