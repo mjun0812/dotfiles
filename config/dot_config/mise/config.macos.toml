@@ -4,7 +4,7 @@
 "pipx:headroom-ai" = { version = "latest", extras = "proxy,code", postinstall = "launchctl kickstart -k gui/$(id -u)/dev.mise.headroom-proxy 2>/dev/null || true" }
 "github:router-for-me/CLIProxyAPI" = { version = "latest", postinstall = "launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api 2>/dev/null || true" }
 "pipx:plamo-translate" = "latest"
-"github:mjun0812/yobirin" = { version = "latest", postinstall = "~/.local/share/mise/shims/yobirin install && ~/.local/share/mise/shims/yobirin install --profile claude --icon ~/.dotfiles/assets/notify-claude.png && ~/.local/share/mise/shims/yobirin install --profile codex --icon ~/.dotfiles/assets/notify-codex.png" }
+"github:mjun0812/yobirin" = { version = "latest", asset_pattern = "yobirin", minimum_release_age = "0s", postinstall = "yobirin install && yobirin install --profile claude --icon ~/.dotfiles/assets/notify-claude.png && yobirin install --profile codex --icon ~/.dotfiles/assets/notify-codex.png" }
 
 [bootstrap.packages]
 # For macOS
