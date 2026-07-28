@@ -35,15 +35,19 @@ fi
 GROUP_ID="${SESSION_ID:-pane-${PANE_ID}}"
 
 # yobirin は --timeout 省略時に無期限待機するため、hook からは必ず明示指定する。
-RESULT="$(
+# $( ) はyobirinの遅延exit (結果出力後約1秒の再起動防御) までwaitpidで待ってしまい、
+# 通知クリックからpane活性化までその分遅れる。process substitution + read なら
+# 結果JSONの1行目が届いた瞬間に先へ進める (yobirin 1.0.1以降は結果を即時flushする。
+# それ以前でもexit時に届くため従来と同じ挙動に落ちるだけで壊れない)。
+read -r RESULT < <(
     "$YOBIRIN_BIN" \
         ${PROFILE:+--profile "$PROFILE"} \
         --title "$TITLE" \
         --message "$MESSAGE" \
         --group "dotfiles-wezterm-${GROUP_ID}" \
         --timeout 300 \
-        2>/dev/null || true
-)"
+        2>/dev/null
+) || true
 RESULT_TYPE="$(printf '%s' "$RESULT" | jq -r '.result // empty' 2>/dev/null || true)"
 
 if [[ $RESULT_TYPE == clicked || $RESULT_TYPE == action ]]; then
