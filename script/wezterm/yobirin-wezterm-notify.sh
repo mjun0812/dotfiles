@@ -37,18 +37,20 @@ GROUP_ID="${SESSION_ID:-pane-${PANE_ID}}"
 # yobirin は --timeout 省略時に無期限待機するため、hook からは必ず明示指定する。
 # $( ) はyobirinの遅延exit (結果出力後約1秒の再起動防御) までwaitpidで待ってしまい、
 # 通知クリックからpane活性化までその分遅れる。process substitution + read なら
-# 結果JSONの1行目が届いた瞬間に先へ進める (yobirin 1.0.1以降は結果を即時flushする。
-# それ以前でもexit時に届くため従来と同じ挙動に落ちるだけで壊れない)。
-read -r RESULT < <(
+# 結果の1行目が届いた瞬間に先へ進める (yobirinは結果を即時flushする)。
+# --print result (yobirin v1.2.0以降) で結果種別の生値だけを受け取り、jqでの解析を省く。
+# --exit-code を使わないのも同じ理由: 終了コードはプロセス終了 (遅延exit後) まで
+# 確定しないため、即時readの最適化が失われる。
+read -r RESULT_TYPE < <(
     "$YOBIRIN_BIN" \
         ${PROFILE:+--profile "$PROFILE"} \
         --title "$TITLE" \
         --message "$MESSAGE" \
         --group "dotfiles-wezterm-${GROUP_ID}" \
         --timeout 300 \
+        --print result \
         2>/dev/null
 ) || true
-RESULT_TYPE="$(printf '%s' "$RESULT" | jq -r '.result // empty' 2>/dev/null || true)"
 
 if [[ $RESULT_TYPE == clicked || $RESULT_TYPE == action ]]; then
     "$HOME/.dotfiles/script/wezterm/activate-wezterm-pane.sh" "$PANE_ID" "$SESSION_ID"
