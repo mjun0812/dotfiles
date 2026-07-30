@@ -12,7 +12,7 @@ set -euo pipefail
 #     event: turn_start | notification | stop | stop_failure
 
 # 応答がこの秒数未満で終わったターンでは stop の通知を出さない。
-MIN_ELAPSED_SEC=60
+MIN_ELAPSED_SEC=180
 
 EVENT="${1:-notification}"
 INPUT="$(cat || true)"
