@@ -12,7 +12,7 @@ set -euo pipefail
 #     event: turn_start | notification | stop | stop_failure
 
 # 応答がこの秒数未満で終わったターンでは stop の通知を出さない。
-MIN_ELAPSED_SEC=60
+MIN_ELAPSED_SEC=180
 
 EVENT="${1:-notification}"
 INPUT="$(cat || true)"
@@ -43,11 +43,18 @@ if [[ $SESSION_ID =~ ^[[:alnum:]_-]+$ ]]; then
     TURN_FILE="${TMPDIR:-/tmp}/claude-turn-${SESSION_ID}"
 fi
 
-# UserPromptSubmit ではターン開始時刻の記録だけを行う。
+# UserPromptSubmit ではターン開始時刻の記録と、前のターンの通知の後始末を行う。
 # このイベントの stdout はプロンプトへの追加コンテキストとして扱われるため、何も出力しない。
 if [[ $EVENT == "turn_start" ]]; then
     if [[ -n $TURN_FILE ]]; then
         date +%s >"$TURN_FILE"
+    fi
+    # 通知をクリックせず会話を再開した場合、応答待ちのyobirinプロセスへSIGTERMを送り、
+    # 古い通知をプロセスごとキャンセルする (yobirin v1.3.0以降: 自分の通知を通知センター
+    # から削除してcanceledで終了する)。group文字列がargvに載っているためPID管理は不要。
+    # セッションIDはUUID固定長のため、別セッションIDへの前方一致誤爆は起きない。
+    if [[ $SESSION_ID =~ ^[[:alnum:]_-]+$ ]]; then
+        pkill -f "dotfiles-wezterm-${SESSION_ID}" 2>/dev/null || true
     fi
     exit 0
 fi
