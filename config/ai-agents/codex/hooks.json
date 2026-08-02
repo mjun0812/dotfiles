@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.dotfiles/script/rtk-hook-codex.py",
+            "command": "~/.venv/bin/python3 ~/.dotfiles/script/rtk-hook-codex.py",
             "timeout": 10,
             "statusMessage": "Rewriting Bash command with RTK"
           }
