@@ -1,23 +1,34 @@
 ---
 name: github-issue-resolve
-description: GitHub issueを起点に「調査 → worktree作成 → 実装 → PR作成」を一気通貫で実行するSkill。実装はSubAgentに委譲し、commitとPR作成はgit-commit・github-pr-create skillに連結して実行する。「#N を解決して」「issueから実装してPRまで」のような複合依頼に使う。
+description: GitHub issueまたは設計doc (markdown) を起点に「調査 → worktree作成 → 実装 → PR作成」を一気通貫で実行するSkill。実装はSubAgentに委譲し、commitとPR作成はgit-commit・github-pr-create skillに連結して実行する。「#N を解決して」「issueから実装してPRまで」「この設計docを実装して」のような複合依頼に使う。
 allowed-tools: Task, Read, Write, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Skill(git-commit), Skill(github-pr-create)
 ---
 
 # GitHub Issue Resolve
 
-issue番号を起点に、調査 → 実装 → PR作成までを順に進めるSkill。
+issue番号または設計doc (markdownファイル) を起点に、調査 → 実装 → PR作成までを順に進めるSkill。
 メイン会話が担うのは調査・worktree作成・SubAgentへの引き継ぎ・結果検証・クリーンアップであり、**実装(Phase 3)はSubAgentに委譲し、commitとPR作成(Phase 4)は`git-commit` skillと`github-pr-create` skillに連結する**。
 SubAgent機能が使えない環境では、SubAgentの作業をメイン会話内で同じ手順で順に実施する。
 Skill toolが使えない環境では、連結先skillのSKILL.mdを直接読み込み、その手順に従って実行する。
 
 ## Arguments
 
-- `issue` (必須): 解決対象のissue番号。先頭の `#` は省略可 (例: `123` または `#123`)
+- `source` (必須): 解決対象のissue番号または設計doc (markdown) のファイルパス
+  - issue番号: 先頭の `#` は省略可 (例: `123` または `#123`)
+  - markdownパス: 例 `doc/plans/add-oauth-login.md`。数字のみ (`#` 付き含む) ならissue番号、それ以外はファイルパスとして判別する
 - `--draft` (任意): draft PRとして作成
 - `--dry-run` (任意): 指定時はPhase 1の調査と実装方針の提示で停止し、worktree作成以降 (Phase 2〜) は一切実行しない
 
 GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
+### doc mode
+
+sourceがmarkdownパスの場合はdoc modeとして動作し、issueの取得を行わずdocの内容を実装の起点とする。以降の手順で「issue」と書かれた箇所は次のように読み替える:
+
+- タイトル: docの先頭見出し (無ければファイル名)
+- 本文: docの全文
+- コメント・label・assignees: 無しとして扱う
+- issue番号を使う箇所 (branch名の `<issue-number>`、PR本文の `Closes #<issue-number>`) は読み替えず、各Phaseに記載したdoc mode固有の手順に従う
 
 ## Task
 
@@ -25,11 +36,13 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 
 1. 以下を取得して状況を確認する:
    - リポジトリ情報: `gh repo view --json defaultBranchRef,nameWithOwner --jq '{default: .defaultBranchRef.name, repo: .nameWithOwner}'`
-   - 対象issue: `gh issue view <number> --json number,title,state,body,labels,assignees,comments,url`
+   - 対象source:
+     - issue番号の場合: `gh issue view <number> --json number,title,state,body,labels,assignees,comments,url`
+     - markdownパスの場合: ファイルをReadする。存在しない場合は中止し、パスをユーザーに確認する
    - 現在のbranch: `git branch --show-current`
    - 既存worktree: `git worktree list --porcelain`
    - issueが `state: CLOSED` の場合は中止し、ユーザーに「issue #N は既にclosedです」と通知する。
-2. issueのタイトルと本文から出力言語を決める。主に日本語なら日本語、それ以外または判定が曖昧な場合は英語とし、issueコメントとPR作成に使う。
+2. sourceのタイトルと本文から出力言語を決める。主に日本語なら日本語、それ以外または判定が曖昧な場合は英語とし、issueコメントとPR作成に使う。
 3. 取得したissue本文・コメント・labelを読み、実装方針が明確か、実装に必要な情報が揃っているかを判断する:
    - 受け入れ基準・期待動作・既存コメントの合意事項を抽出する
    - コードを読めば確認できる事実は、コードベースを探索して自分で解決する
@@ -44,10 +57,10 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 ### Phase 2: worktreeの作成
 
 1. **branch名を決定する**:
-   - 形式: `<type>/<issue-number>-<slug>`
+   - 形式: `<type>/<issue-number>-<slug>` (doc modeでは `<type>/<slug>`)
      - `<type>`: issueのlabelやタイトルから推定する。Conventional Commitsで使われるものにする。 (`fix`, `feat`, `docs`, `chore`, `refactor` 等。判別不能なら `feat`)
      - `<slug>`: issueタイトルからkebab-caseで生成 (英数字とハイフンのみ、40文字以内)
-   - 例: `feat/123-add-oauth-login`, `fix/456-handle-empty-response`
+   - 例: `feat/123-add-oauth-login`, `fix/456-handle-empty-response`, `feat/add-oauth-login` (doc mode)
    - 既に同名のlocal branchがある場合は末尾に `-2`, `-3` を付けて衝突を避ける
 2. **worktreeのパスを決定する**:
    - 形式: `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`
@@ -86,7 +99,7 @@ Phase 3の間は以下の制約を守る。
 
 1. **implementerの起動**: テンプレートに以下を合成して起動する
    - worktreeの絶対パス、base branch名と作業branch名
-   - issueの番号・タイトル・本文・コメントの要約
+   - sourceのタイトル・本文・コメントの要約 (issueの場合は番号も)
    - 担当タスクの説明と受け入れ基準、Phase 1で決めた実装方針
    - タスクに関係する検証コマンド
    - これまでのImplementation Notes (あれば)
@@ -119,14 +132,14 @@ Phase 3の間は以下の制約を守る。
    - push・PRタイトルと本文の生成・PR作成の実行はすべて連結先skillが行う。手順をこちらで再実装しない
 3. **メイン会話で結果を検証する**:
    - 作成されたPRのURLを `gh pr view <url> --json url,state` で確認する
-   - PR本文に `Closes #<issue-number>` が含まれるか確認し、無ければ `gh pr edit <url> --body-file <修正した本文ファイル>` で追記する
+   - PR本文に `Closes #<issue-number>` が含まれるか確認し、無ければ `gh pr edit <url> --body-file <修正した本文ファイル>` で追記する (doc modeではこの確認をスキップする)
    - PR作成に失敗した場合はworktreeをクリーンアップせず (手動修正の余地を残す)、ユーザーにエラーを伝えて中止する
 
 ### Phase 5: 結果の表示
 
 以下を簡潔にまとめて出力する:
 
-- **Issue**: #N タイトル / URL
+- **Source**: #N タイトル / URL (doc modeではdocのパスとタイトル)
 - **Branch**: 作成したbranch名
 - **PR**: 作成したPRのURL
 - **変更概要**: ファイル数、追加/削除行数 (`git diff --stat <base>..HEAD` の結果)

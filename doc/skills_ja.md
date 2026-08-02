@@ -25,13 +25,13 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 
 ### GitHub Issue
 
-| Skill                                                                                | 用途                                                                                                                                                                                                               |
-| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)     | ユーザーから情報を収集してGitHub Issueを作成する                                                                                                                                                                   |
-| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md) | リポジトリをスキャンしてissue化すべき事項を発見し、既存issueとの重複を除いた上で承認のもと一括起票する（`--auto` で承認をスキップ）                                                                                |
-| [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)     | open issueを点検し、古い・解決済み・重複・陳腐化したissueをclose／追記する                                                                                                                                         |
-| [`github-issue-polish`](../config/ai-agents/skills/github-issue-polish/SKILL.md)     | issueを「issueだけで実装できる」状態まで磨き上げる: コードベース調査・設計判断・worktreeでのお試し実装                                                                                                             |
-| [`github-issue-resolve`](../config/ai-agents/skills/github-issue-resolve/SKILL.md)   | 一気通貫: 指定issueの調査 → worktree作成 → 実装 → PR作成。実装はタスクごとにimplementer/reviewer SubAgentを構造化ハンドオフと上限付き差し戻しで回し、commitとPR作成は `git-commit` / `github-pr-create` に連結する |
+| Skill                                                                                | 用途                                                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)     | ユーザーから情報を収集してGitHub Issueを作成する                                                                                                                                                                                                |
+| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md) | リポジトリをスキャンしてissue化すべき事項を発見し、既存issueとの重複を除いた上で承認のもと一括起票する（`--auto` で承認をスキップ）                                                                                                             |
+| [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)     | open issueを点検し、古い・解決済み・重複・陳腐化したissueをclose／追記する                                                                                                                                                                      |
+| [`github-issue-polish`](../config/ai-agents/skills/github-issue-polish/SKILL.md)     | issueまたは設計doc (markdownパス) を「それだけで実装できる」状態まで磨き上げる: コードベース調査・設計判断・worktreeでのお試し実装                                                                                                              |
+| [`github-issue-resolve`](../config/ai-agents/skills/github-issue-resolve/SKILL.md)   | 一気通貫: 指定issueまたは設計doc (markdownパス) の調査 → worktree作成 → 実装 → PR作成。実装はタスクごとにimplementer/reviewer SubAgentを構造化ハンドオフと上限付き差し戻しで回し、commitとPR作成は `git-commit` / `github-pr-create` に連結する |
 
 ### GitHub Pull Request
 

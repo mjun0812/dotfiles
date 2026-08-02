@@ -1,9 +1,9 @@
 ---
 name: github-issue-polish
 description: >-
-  GitHub issueを「issueだけで実装できる」状態まで磨き上げるSkill。
-  コードベース調査・設計判断・worktreeでのお試し実装で修正方針を検証し、承認を得てからissue本文を書き換える。
-  ユーザーが「issueを磨いて」「#Nをpolishして」「issueを実装できるレベルに詰めて」のように依頼したら使うこと。
+  GitHub issueまたは設計doc (markdown) を「それだけで実装できる」状態まで磨き上げるSkill。
+  コードベース調査・設計判断・worktreeでのお試し実装で修正方針を検証し、承認を得てから本文を書き換える。
+  ユーザーが「issueを磨いて」「#Nをpolishして」「issueを実装できるレベルに詰めて」「この設計docを磨いて」のように依頼したら使うこと。
   起票はgithub-issue-create、実装からPR作成まではgithub-issue-resolveを使う。
 allowed-tools: Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Read, Write, Edit, Glob, Grep, AskUserQuestion
 ---
@@ -12,14 +12,25 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), B
 
 GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
-指定されたissueを、実装者が追加調査なしで着手できる「issueだけで実装できる」状態まで磨き上げるSkill。コードベース調査で原因と変更箇所を特定し、設計の分岐点を根拠付きで決定し、worktreeでのお試し実装で修正方針を検証した上で、承認を得てissue本文を書き換える。
+指定されたissueまたは設計doc (markdown) を、実装者が追加調査なしで着手できる「それだけで実装できる」状態まで磨き上げるSkill。コードベース調査で原因と変更箇所を特定し、設計の分岐点を根拠付きで決定し、worktreeでのお試し実装で修正方針を検証した上で、承認を得て本文を書き換える。
 
 ## Arguments
 
-- `issue` (必須): 対象のissue番号。先頭の `#` は省略可 (例: `123` または `#123`)
-- `language` (任意): 磨き上げ後の本文の言語 (例: `ja`, `en`)。デフォルトは元issue本文の言語に合わせる
+- `source` (必須): 対象のissue番号または設計doc (markdown) のファイルパス
+  - issue番号: 先頭の `#` は省略可 (例: `123` または `#123`)
+  - markdownパス: 例 `doc/plans/add-oauth-login.md`。数字のみ (`#` 付き含む) ならissue番号、それ以外はファイルパスとして判別する
+- `language` (任意): 磨き上げ後の本文の言語 (例: `ja`, `en`)。デフォルトは元の本文の言語に合わせる
 - `--skip-trial` (任意): お試し実装 (Phase 4) を省略する
-- `--dry-run` (任意): 磨いた本文の提示 (Phase 5) で停止し、issueへの書き込みは一切行わない
+- `--dry-run` (任意): 磨いた本文の提示 (Phase 5) で停止し、issue・docへの書き込みは一切行わない
+
+### doc mode
+
+sourceがmarkdownパスの場合はdoc modeとして動作し、GitHubを使わずdocファイルそのものを磨き上げ対象とする。以降の手順で「issue」と書かれた箇所は次のように読み替える:
+
+- タイトル: docの先頭見出し (無ければファイル名)
+- 本文: docの全文
+- コメント・labelは無しとして扱う
+- issueへの書き込みはdocファイルの上書きに置き換える。GitHub操作を伴う箇所は各Phaseに記載したdoc mode固有の手順に従う
 
 ## Target Structure
 
@@ -42,9 +53,11 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 
 以下を取得して状況を確認する:
 
-- gh認証確認: `gh auth status` (失敗時は停止し、認証を案内する)
-- リポジトリ情報: `gh repo view --json defaultBranchRef,nameWithOwner`
-- 対象issue: `gh issue view <number> --json number,state,title,body,labels,comments,url`
+- gh認証確認: `gh auth status` (失敗時は停止し、認証を案内する。doc modeではスキップ)
+- default branch: `gh repo view --json defaultBranchRef,nameWithOwner` (doc modeでghが失敗する場合は `git symbolic-ref --short refs/remotes/origin/HEAD` で取得し、それも失敗したら現在のbranchを使う)
+- 対象source:
+  - issue番号の場合: `gh issue view <number> --json number,state,title,body,labels,comments,url`
+  - markdownパスの場合: ファイルをReadする。存在しない場合は中止し、パスをユーザーに確認する
 - issueが `state: CLOSED` の場合は中止し、「issue #N は既にclosedです」と報告する
 
 ### Phase 1: ギャップ分析
@@ -71,7 +84,7 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 
 `--skip-trial` 指定時はこのPhaseを省略する。修正方針の実現可能性を一時worktreeで検証する:
 
-1. worktreeを作成する: branch名は `polish/<issue-number>-trial`、パスは `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存branch・worktreeと衝突する場合は末尾に `-2`, `-3` を付ける
+1. worktreeを作成する: branch名は `polish/<issue-number>-trial` (doc modeでは `polish/<slug>-trial`、slugはdocファイル名から)、パスは `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存branch・worktreeと衝突する場合は末尾に `-2`, `-3` を付ける
    - `git worktree add -b <branch-name> <worktree-path> <default-branch>`
 2. worktree内で修正方針の最小実装を行い、テスト方針に沿ったテストを実行して結果を確認する
 3. 検証結果 (実行したテスト・結果・気付いた落とし穴・方針の修正点) を「検証メモ」用に要約する。diff全文はissueに載せず、鍵になる数行のスニペットのみ許可する
@@ -97,14 +110,14 @@ AskUserQuestionで承認を取る (AskUserQuestionが使えない環境では、
 
 承認後に反映する:
 
-- 本文はエスケープ問題を避けるため一時ファイル経由で上書きする: `gh issue edit <number> --body-file <tmpfile>`
-- 変更点サマリを `gh issue comment` で1件追記する (body編集はwatcherに通知されないため、通知とトレーサビリティをコメントで補う)
+- issueの場合: 本文はエスケープ問題を避けるため一時ファイル経由で上書きし (`gh issue edit <number> --body-file <tmpfile>`)、変更点サマリを `gh issue comment` で1件追記する (body編集はwatcherに通知されないため、通知とトレーサビリティをコメントで補う)
+- doc modeの場合: docファイルを磨き上げ後の本文で上書きする。コメント追記は行わない (変更履歴はgitで追える)
 
 ### Phase 7: 結果報告
 
 以下を簡潔にまとめて出力する:
 
-- **Issue**: #N タイトル / URL
+- **Source**: #N タイトル / URL (doc modeではdocのパスとタイトル)
 - **変更点サマリ**: 追加・変更したセクション
 - **要確認事項**: 意思決定ログで確信度が低い項目の一覧
 - **別issue化の提案**: Phase 2で見つけたスコープ外の問題 (あれば)
