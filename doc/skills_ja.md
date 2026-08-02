@@ -37,13 +37,13 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 
 ### GitHub Pull Request
 
-| Skill                                                                                        | 用途                                                                                 |
-| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                   | 現在のbranchからPull Requestを作成する                                               |
-| [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                   | 汎用reviewerで指摘を発見・検証し、以前のレビューを最新スナップショットへ置き換える   |
-| [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                         | PRの全問題（コンフリクト、CI失敗、レビューコメント）を専用worktree内で検出・修正する |
-| [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                         | CIのステータスを確認し、失敗を分析して修正を適用する                                 |
-| [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md) | PRのレビューコメントを確認し、対応・返信する                                         |
+| Skill                                                                                        | 用途                                                                                                         |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                   | 現在のbranchからPull Requestを作成する                                                                       |
+| [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                   | 並列reviewerで要修正の指摘と規約・品質の提案を発見・検証し、以前のレビューを最新スナップショットへ置き換える |
+| [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                         | PRの全問題（コンフリクト、CI失敗、レビューコメント）を専用worktree内で検出・修正する                         |
+| [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                         | CIのステータスを確認し、失敗を分析して修正を適用する                                                         |
+| [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md) | PRのレビューコメントを確認し、対応・返信する                                                                 |
 
 ### Planning & Design
 
