@@ -30,6 +30,14 @@ assignees: ""
 - Related issues or areas that may need attention
 -->
 
+## Acceptance Criteria
+
+<!-- Describe the conditions that define when this bug is "fixed" using bullet points or a checklist.
+Example:
+- [ ] Running the steps to reproduce no longer causes the error
+- [ ] Add a regression test and all tests pass
+-->
+
 ---
 
 <!-- The following is optional. The more information provided, the faster and more accurately we can fix it. -->
