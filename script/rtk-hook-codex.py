@@ -206,7 +206,12 @@ def main() -> int:
         return 0
 
     command, tool_input = bash_input
-    if not is_safe_command(command):
+    # With bypassPermissions every command is already approved, so auto-allow
+    # changes nothing; skip the read-only allowlist and let RTK's own support
+    # check decide what to rewrite.
+    if hook_input.get("permission_mode") != "bypassPermissions" and not is_safe_command(
+        command
+    ):
         return 0
 
     rewritten = rewrite_command(command)
