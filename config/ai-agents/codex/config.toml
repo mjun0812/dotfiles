@@ -7,7 +7,7 @@ approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 web_search = "live"
 allow_login_shell = true
-suppress_unstable_features_warning = false
+suppress_unstable_features_warning = true
 
 [features]
 collaboration_modes = true
@@ -53,18 +53,22 @@ insert_newline = ["ctrl-j", "ctrl-m", "enter", "shift-enter", "alt-enter"]
 [mcp_servers.chrome-devtools]
 command = "bunx"
 args = ["chrome-devtools-mcp@latest"]
+startup_timeout_sec = 120
 
 [mcp_servers.context7]
 command = "bunx"
 args = ["@upstash/context7-mcp@latest"]
+startup_timeout_sec = 120
 
 [mcp_servers.drawio]
 command = "bunx"
 args = ["@drawio/mcp@latest"]
+startup_timeout_sec = 120
 
 [mcp_servers.playwright]
 command = "bunx"
 args = ["@playwright/mcp@latest"]
+startup_timeout_sec = 120
 
 [plugins."github@openai-curated"]
 enabled = false
