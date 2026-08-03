@@ -28,7 +28,7 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 sourceがmarkdownパスの場合はdoc modeとして動作し、GitHubを使わずdocファイルそのものを磨き上げ対象とする。以降の手順で「issue」と書かれた箇所は次のように読み替える:
 
 - タイトル: docの先頭見出し (無ければファイル名)
-- 本文: docの全文
+- 本文: docの全文 (冒頭にYAML frontmatterがある場合はそれを除いた部分)
 - コメント・labelは無しとして扱う
 - issueへの書き込みはdocファイルの上書きに置き換える。GitHub操作を伴う箇所は各Phaseに記載したdoc mode固有の手順に従う
 
@@ -111,7 +111,7 @@ AskUserQuestionで承認を取る (AskUserQuestionが使えない環境では、
 承認後に反映する:
 
 - issueの場合: 本文はエスケープ問題を避けるため一時ファイル経由で上書きし (`gh issue edit <number> --body-file <tmpfile>`)、変更点サマリを `gh issue comment` で1件追記する (body編集はwatcherに通知されないため、通知とトレーサビリティをコメントで補う)
-- doc modeの場合: docファイルを磨き上げ後の本文で上書きする。コメント追記は行わない (変更履歴はgitで追える)
+- doc modeの場合: docファイルを磨き上げ後の本文で上書きする。docの冒頭にYAML frontmatterと先頭見出しがある場合はそのまま保持し、それ以降の本文だけを書き換える。コメント追記は行わない (変更履歴はgitで追える)
 
 ### Phase 7: 結果報告
 

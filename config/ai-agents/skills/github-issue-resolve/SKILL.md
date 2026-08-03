@@ -26,7 +26,7 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 sourceがmarkdownパスの場合はdoc modeとして動作し、issueの取得を行わずdocの内容を実装の起点とする。以降の手順で「issue」と書かれた箇所は次のように読み替える:
 
 - タイトル: docの先頭見出し (無ければファイル名)
-- 本文: docの全文
+- 本文: docの全文 (冒頭にYAML frontmatterがある場合はそれを除いた部分)
 - コメント・label・assignees: 無しとして扱う
 - issue番号を使う箇所 (branch名の `<issue-number>`、PR本文の `Closes #<issue-number>`) は読み替えず、各Phaseに記載したdoc mode固有の手順に従う
 
