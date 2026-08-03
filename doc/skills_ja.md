@@ -52,11 +52,11 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 
 ### Docs & Notes
 
-| Skill                                                      | 用途                                                                                                       |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | リポジトリ内のドキュメント（Markdown、docstring、OpenAPI、設定サンプル）を実装と差分比較し、乖離を更新する |
-| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | 現在の会話の調査内容を、自己完結型の日本語Markdownファイルとして保存する                                   |
-| [`steering`](../config/ai-agents/skills/steering/SKILL.md) | `.mjun/steering/` をプロジェクトの永続メモリとして生成 (Bootstrap)・drift検出付きで追記更新 (Sync) する    |
+| Skill                                                      | 用途                                                                                                                                                                 |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | リポジトリ内のドキュメント（Markdown、docstring、OpenAPI、設定サンプル）を実装と差分比較し、乖離を更新する                                                           |
+| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | 現在の会話の調査内容を、自己完結型の日本語Markdownファイルとして保存する                                                                                             |
+| [`steering`](../config/ai-agents/skills/steering/SKILL.md) | `.mjun/steering/` をプロジェクトの永続メモリとして生成 (Bootstrap)・drift検出付きで追記更新 (Sync) する。コード内に証拠のあるドメインのcustom steeringも自動作成する |
 
 ### Japanese Writing
 

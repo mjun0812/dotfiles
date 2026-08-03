@@ -52,11 +52,11 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 
 ### Docs & Notes
 
-| Skill                                                      | Purpose                                                                                                         |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift      |
-| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | Save the current conversation's research as a self-contained Japanese Markdown file                             |
-| [`steering`](../config/ai-agents/skills/steering/SKILL.md) | Maintain `.mjun/steering/` as persistent project memory: bootstrap from the codebase, sync with drift detection |
+| Skill                                                      | Purpose                                                                                                                                                            |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift                                                         |
+| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | Save the current conversation's research as a self-contained Japanese Markdown file                                                                                |
+| [`steering`](../config/ai-agents/skills/steering/SKILL.md) | Maintain `.mjun/steering/` as persistent project memory: bootstrap from the codebase, sync with drift detection, auto-create evidence-based custom domain steering |
 
 ### Japanese Writing
 
