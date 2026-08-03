@@ -38,6 +38,10 @@
   - Terra: 設計判断や曖昧な要件(アーキ設計、複数ファイル横断リファクタ、難しいデバッグ)
 - メイン会話がGPT 5.6 solなどTerraより上位のモデルの場合でも、SubAgentに指定するのはTerraまでとする。上位モデルをSubAgentに指定しない。
 
+## Tool
+
+- skillや指示に登場する `AskUserQuestion` は `request_user_input` に読み替えること。
+
 ## Versioning
 
 - バージョン番号を扱う際は Semantic Versioning 2.0.0 に従うこと。

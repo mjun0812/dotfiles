@@ -6,28 +6,35 @@ description: >-
 allowed-tools: Read, Write, Task, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat:*), Bash(eza:*), Bash(grep:*), Bash(head:*), Bash(tail:*), Bash(mktemp:*)
 ---
 
-# Pull Request 作成
-
-GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+# Create Pull Request
 
 このSkillは、現在のbranchからpull requestを作成するためのものです。PRのタイトルと説明文は、変更内容に基づいて自動生成されます。PRの説明文は、コードを参照しなくてもPRの内容が理解できるように、変更の目的、背景、内容をわかりやすく説明します。また、テスト方法や検証方法も具体的に記述し、コピペ可能なコマンドや手順を提供します。
+
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
 ## Arguments
 
 - `language`: PRのタイトルと説明文の言語（例: "ja", "en"）。デフォルト: "English"
-- `--base <branch>`: PRのbase branchを明示指定（Optional、未指定時はrepositoryのdefault branch）
 - `--draft`: draft PRとして作成（Optional）
-- `--reviewer <username>`: reviewerを指定（Optional、複数指定可）
-- `--label <name>`: labelを追加（Optional、複数指定可）
 - `--dry-run`: 生成したPRタイトル・本文・base/head branchのみを提示し、pushや `gh pr create` を実行せず終了する
+
+base branchは引数ではなく自動推定で決定する（事前チェック2を参照）。ユーザーが会話で明示した場合（「developに向けてPRを作って」等）はそれを最優先する。
 
 ## 0. 事前チェック
 
 1. **default branch上での実行を防止**:
    - 現在のbranchがdefault branch（`main`, `master` 等）の場合、PRを作成せずエラーメッセージを出して中止
-2. **base branchの決定**:
-   - `--base <branch>` が指定されている場合はそのbranchを使用する
-   - 未指定の場合はrepositoryのdefault branchを使用する: `gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'`
+2. **base branchの自動推定**:
+   - ユーザーが会話でbase branchを明示した場合は、それを推定より優先して使用する
+   - 明示が無い場合は、HEADの分岐元をmerge-baseの距離で推定する:
+     1. base候補を列挙する: repositoryのdefault branch（`gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'`）、open PRのhead branch（`gh pr list --json headRefName`）、リポジトリに存在する長命branch（`develop`, `release/*` など）。現在のbranch自身は除く
+     2. 各候補Bについて `git merge-base HEAD origin/B` を取り、`<merge-base>..HEAD` のcommit数（= PRに入るcommit数）を数える
+     3. commit数が最小（かつ1以上）の候補をbaseに選ぶ。同数の場合は「open PRを持つbranch > default branch」の優先順位で決める
+   - 以下のいずれかに該当する場合は推定を打ち切り、AskUserQuestionで候補branchを選択肢として提示してユーザーに確認する:
+     - 最小commit数の候補が複数残り、優先順位でも1つに決まらない
+     - base候補が1つも見つからない
+     - 選定したbaseの `origin/<base>..HEAD` に、今回の作業と無関係なcommitが混ざっている
+   - 決定後、選定したbaseとその理由、`git log --oneline origin/<base>..HEAD` の一覧を必ず報告する（推定が誤っていればユーザーがここで気付ける）
    - tracking branch（`@{upstream}`）はpush先の判定にだけ使い、PRのbase branchとして扱わない。feature branchのupstreamは通常 `origin/<current-branch>` であり、baseに使うと `origin/<base>..HEAD` が空になるため
 3. **既存PRの確認**:
    - `gh pr view --json url,state` で既存のPRを確認
@@ -65,30 +72,24 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 
 ## 3. PRタイトル、関連Issue、Labelの生成
 
-PRタイトル、関連Issue、label候補はSubAgentに委譲して並列に作成する。
-3つのSubAgentは候補と根拠だけを返し、最終的な統合・判断・PR本文の生成はメイン会話側で行う。
-SubAgentにはPR作成、PR本文ファイルの書き出し、`gh pr create` の実行を行わせない。
-SubAgentはあくまでPRタイトル、関連Issue、labelの候補を生成する役割に限定し、PRの作成に必要な情報を提供することに専念する。
-最終的にPRタイトル、関連Issue、labelの最終決定はメイン会話側で行い、次のステップでPR本文の生成とPRの作成を行う。
-SubAgent機能が使えない環境では、同じ作業をメイン会話内で順に実行する。
+`2. 変更内容の取得` で得た差分とcommitを根拠に、以下を順に決定する。
 
-### SubAgent1: タイトル候補の生成
+### タイトル
 
-- commitとブランチの差分の内容を要約した簡潔なタイトル候補を生成する
-- PRのタイトルはConventional Commits規約に従った候補を生成する
-- 1つのcommitのみの場合、そのcommitメッセージをベースにした候補を生成する
+- Conventional Commits規約に従い、commitとブランチの差分の内容を要約した簡潔なタイトルにする
+- 1つのcommitのみの場合、そのcommitメッセージをベースにする
 
-### SubAgent2: 関連Issueの検出
+### 関連Issue
 
 - branch名からIssue番号を抽出する（例: `feature/123-add-something` → `#123`）
 - commitメッセージから `fix #456`, `closes #789`, `refs #101` 等のキーワードを検出する
-- PRの変更内容に基づいて `gh issue list` のタイトル・本文を分析し、関連するIssue候補を検索する
+- `gh issue list --state open --json number,title` のタイトルを変更内容と突き合わせ、関連するIssueを探す
+- open issueが大量にある場合は、検索条件を絞るか、この突き合わせのみSubAgentに委譲してよい
 
-### SubAgent3: labelの自動提案
+### Label
 
-- リポジトリのlabelを取得し、その中から候補を選定する: `gh label list --json name`
-- 変更内容に基づくlabel候補を提案する
-- ユーザーが `--label` で明示的に指定した場合はそのlabelを必ず使用する
+- リポジトリのlabelを取得し、その中から選定する: `gh label list --json name,description`
+- 存在しないlabelは付与しない。合うlabelが無い場合は付与しない
 
 ## 4. 説明文の生成
 
@@ -118,9 +119,10 @@ SubAgent機能が使えない環境では、同じ作業をメイン会話内で
      --body-file /tmp/YYYYMMDD-HHMMSS-pr-body.md \
      --assignee @me \
      [--draft] \
-     [--reviewer <username>] \
-     [--label <name>]
+     [--label <name> ...]
    ```
+
+   labelはステップ3で決定した自動判定の結果を付与する（該当labelが無い場合は付与しない）
 
 ## 6. 結果の表示
 
@@ -128,9 +130,8 @@ SubAgent機能が使えない環境では、同じ作業をメイン会話内で
 
 - 作成したPRのURL
 - タイトル
-- base branch → head branch
+- base branch → head branch（baseを推定で決めた場合はその理由）
 - 関連Issue（検出された場合）
 - assignee（`@me`）
-- reviewer（指定された場合）
-- label（指定された場合）
+- label（自動付与された場合）
 - 変更の概要（ファイル数、追加行数、削除行数）
