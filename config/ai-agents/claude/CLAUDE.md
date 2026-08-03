@@ -43,6 +43,10 @@
     - codex:codex-rescue: 行き詰まったとき、セカンドオピニオンや別実装案が欲しいときに自発的に使用してよい
 - メイン会話がFableなどopusより上位のモデルの場合でも、SubAgentに指定するのはopusまでとする。上位モデルをSubAgentに指定しない。
 
+## Tool
+
+- skillや指示に登場する `request_user_input` は `AskUserQuestion` に読み替えること。
+
 ## Versioning
 
 - バージョン番号を扱う際は Semantic Versioning 2.0.0 に従うこと。
