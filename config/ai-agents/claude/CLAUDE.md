@@ -63,6 +63,12 @@ Plan modeのplanファイルはPostToolUse hookにより自動的に `YYYY-MM-DD
 
 例: `2024-06-15-add-github-issue-create-command.md`
 
+## Steering
+
+- リポジトリに `.mjun/steering/` が存在する場合、配下の `*.md` をすべてプロジェクトメモリとして読み込むこと。
+- coreファイルは `product.md` (目的・価値)、`tech.md` (技術スタック・規約)、`structure.md` (構成パターン)。ドメイン別のcustomファイルもcoreと同格に扱うこと。
+- steeringの作成・更新は `steering` skillで行うこと。手動で書き換えない。
+
 ## Web Search
 
 - 可能な限り、最新の公式ドキュメントや一次情報源を優先して参照してください。
