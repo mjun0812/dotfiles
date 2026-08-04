@@ -73,16 +73,12 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 
 これらはuser-invoked専用で、agentが自発的に起動することはありません。
 
-`ask-*` は対象CLIをread-onlyで呼び出し、セカンドオピニオンを得るためのskillです。`do-*` は編集権限付きで呼び出し、ワーキングツリーを変更する作業を委譲するためのskillです。
+デフォルトはread-onlyの相談モードで、ユーザーが作業の実行を明示的に依頼したときだけ編集権限付きの委譲モードで実行します。自分自身と同じCLIのskillは使いません。
 
-| Skill                                                          | 用途                                                                                                             |
-| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| [`ask-claude`](../config/ai-agents/skills/ask-claude/SKILL.md) | Claude Code (`claude -p`) に明示的なユーザー依頼へのセカンドオピニオンを求める                                   |
-| [`ask-codex`](../config/ai-agents/skills/ask-codex/SKILL.md)   | Codex (`codex exec`, read-onlyサンドボックス) に明示的なユーザー依頼へのセカンドオピニオンを求める               |
-| [`ask-gemini`](../config/ai-agents/skills/ask-gemini/SKILL.md) | Antigravity CLI (`agy --sandbox -p`) 経由でGeminiに明示的なユーザー依頼へのセカンドオピニオンを求める            |
-| [`do-claude`](../config/ai-agents/skills/do-claude/SKILL.md)   | Claude Code (`claude -p --permission-mode bypassPermissions`) に編集権限付きでコーディング作業を委譲する         |
-| [`do-codex`](../config/ai-agents/skills/do-codex/SKILL.md)     | Codex (`codex exec -s workspace-write`) に編集権限付きでコーディング作業を委譲する                               |
-| [`do-gemini`](../config/ai-agents/skills/do-gemini/SKILL.md)   | Antigravity CLI (`agy -p --dangerously-skip-permissions`) 経由でGeminiに編集権限付きでコーディング作業を委譲する |
+| Skill                                                  | 用途                                                                                       |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| [`claude`](../config/ai-agents/skills/claude/SKILL.md) | Claude Code (`claude -p`) への相談 (read-only) と、編集権限付きの作業委譲                  |
+| [`codex`](../config/ai-agents/skills/codex/SKILL.md)   | Codex (`codex exec`) への相談 (read-onlyサンドボックス) と、`workspace-write` での作業委譲 |
 
 ### Misc
 
@@ -122,7 +118,7 @@ graph LR
 
 以下のskillは他のskillへ委譲しません。
 
-`ask-claude`, `ask-codex`, `ask-gemini`, `do-claude`, `do-codex`, `do-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
+`claude`, `codex`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 

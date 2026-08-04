@@ -73,16 +73,12 @@ Sources:
 
 These skills are user-invoked only — the agent does not trigger them on its own.
 
-`ask-*` runs the target CLI read-only for a second opinion. `do-*` runs it with edit permissions to delegate work that mutates the working tree.
+Each skill defaults to a read-only consultation mode, and runs with edit permissions only when the user explicitly asks to delegate work. An agent never uses the skill for its own CLI.
 
-| Skill                                                          | Purpose                                                                                                              |
-| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| [`ask-claude`](../config/ai-agents/skills/ask-claude/SKILL.md) | Ask Claude Code (`claude -p`) for a second opinion on an explicit user request                                       |
-| [`ask-codex`](../config/ai-agents/skills/ask-codex/SKILL.md)   | Ask Codex (`codex exec`, read-only sandbox) for a second opinion on an explicit user request                         |
-| [`ask-gemini`](../config/ai-agents/skills/ask-gemini/SKILL.md) | Ask Gemini via Antigravity CLI (`agy --sandbox -p`) for a second opinion on an explicit user request                 |
-| [`do-claude`](../config/ai-agents/skills/do-claude/SKILL.md)   | Delegate a coding task to Claude Code (`claude -p --permission-mode bypassPermissions`) with edit permissions        |
-| [`do-codex`](../config/ai-agents/skills/do-codex/SKILL.md)     | Delegate a coding task to Codex (`codex exec -s workspace-write`) with edit permissions                              |
-| [`do-gemini`](../config/ai-agents/skills/do-gemini/SKILL.md)   | Delegate a coding task to Gemini via Antigravity CLI (`agy -p --dangerously-skip-permissions`) with edit permissions |
+| Skill                                                  | Purpose                                                                                   |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| [`claude`](../config/ai-agents/skills/claude/SKILL.md) | Consult Claude Code (`claude -p`, read-only) or delegate work to it with edit permissions |
+| [`codex`](../config/ai-agents/skills/codex/SKILL.md)   | Consult Codex (`codex exec`, read-only sandbox) or delegate work via `workspace-write`    |
 
 ### Misc
 
@@ -122,7 +118,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`ask-claude`, `ask-codex`, `ask-gemini`, `do-claude`, `do-codex`, `do-gemini`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
+`claude`, `codex`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 
