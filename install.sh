@@ -75,16 +75,6 @@ ya pkg add yazi-rs/plugins:mime-ext
 
 ################ [Node] ################
 log_section "Setting up Node..."
-# md-to-pdf depends on puppeteer; skip the bundled Chromium download because
-# Playwright is installed separately below (and CI containers lack `unzip`).
-PUPPETEER_SKIP_DOWNLOAD=1 bun install -g \
-    neovim \
-    md-to-pdf@latest \
-    pyright \
-    prettier@latest \
-    typescript-language-server \
-    typescript \
-    oxfmt
 $DOTPATH/script/install/install_vp.sh
 
 ################ [Playwright Browsers] ################
