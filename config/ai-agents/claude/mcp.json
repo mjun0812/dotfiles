@@ -13,10 +13,6 @@
     "drawio": {
       "command": "bunx",
       "args": ["@drawio/mcp"]
-    },
-    "playwright": {
-      "command": "bunx",
-      "args": ["@playwright/mcp@latest"]
     }
   }
 }

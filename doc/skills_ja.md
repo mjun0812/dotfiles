@@ -82,11 +82,12 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 
 ### Misc
 
-| Skill                                                                          | 用途                                                                                                                    |
-| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| [`resume-other-agent`](../config/ai-agents/skills/resume-other-agent/SKILL.md) | 別のcoding agent（Codex / Claude Code）をsession IDで指定し、直前のcontextを復元してresumeする                          |
-| [`skill-review`](../config/ai-agents/skills/skill-review/SKILL.md)             | Agent skillの仕様適合性を検証し、周辺skillとの発動競合を含む観点ごとの判定をレポートする。評価のみで編集はしない        |
-| [`wezterm-control`](../config/ai-agents/skills/wezterm-control/SKILL.md)       | weztermのpane/tab/windowを `wezterm cli` で操作する。分割・フォーカス・リサイズ・内容の読み取り・コマンド送信と結果検証 |
+| Skill                                                                          | 用途                                                                                                                          |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| [`agent-browser`](../config/ai-agents/skills/agent-browser/SKILL.md)           | `agent-browser` CLIによるブラウザ自動化 (upstreamのstubをvendor。使い方は `agent-browser skills get core` で実行時に読み込む) |
+| [`resume-other-agent`](../config/ai-agents/skills/resume-other-agent/SKILL.md) | 別のcoding agent（Codex / Claude Code）をsession IDで指定し、直前のcontextを復元してresumeする                                |
+| [`skill-review`](../config/ai-agents/skills/skill-review/SKILL.md)             | Agent skillの仕様適合性を検証し、周辺skillとの発動競合を含む観点ごとの判定をレポートする。評価のみで編集はしない              |
+| [`wezterm-control`](../config/ai-agents/skills/wezterm-control/SKILL.md)       | weztermのpane/tab/windowを `wezterm cli` で操作する。分割・フォーカス・リサイズ・内容の読み取り・コマンド送信と結果検証       |
 
 ## Dependencies
 
@@ -118,7 +119,7 @@ graph LR
 
 以下のskillは他のskillへ委譲しません。
 
-`claude`, `codex`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
+`agent-browser`, `claude`, `codex`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 

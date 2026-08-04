@@ -65,11 +65,6 @@ command = "bunx"
 args = ["@drawio/mcp@latest"]
 startup_timeout_sec = 120
 
-[mcp_servers.playwright]
-command = "bunx"
-args = ["@playwright/mcp@latest"]
-startup_timeout_sec = 120
-
 [plugins."github@openai-curated"]
 enabled = false
 

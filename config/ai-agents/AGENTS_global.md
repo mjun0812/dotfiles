@@ -52,6 +52,7 @@
 ## Tool
 
 - skillや指示に登場する `AskUserQuestion` は `request_user_input` に読み替えること。
+- ブラウザ操作には優先的に `agent-browser` skillを使うこと。通信解析・performance trace・heap snapshotなど、chrome-devtools MCPにしかない機能が必要なときだけ `chrome-devtools` MCPを使う。
 - `Web Search`:
   - 可能な限り、最新の公式ドキュメントや一次情報源を優先して参照すること。
   - 会話している言語に関わらず、英語・日本語の両方で検索を行ってください。
