@@ -57,6 +57,13 @@ shfmt = "latest"
 "github:runpod/runpodctl" = "latest"
 "github:rtk-ai/rtk" = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
+"npm:md-to-pdf" = { version = "latest", install_env = { PUPPETEER_SKIP_DOWNLOAD = "1" } }
+"npm:neovim" = "latest"
+"npm:oxfmt" = "latest"
+"npm:prettier" = "latest"
+"npm:pyright" = "latest"
+"npm:typescript" = "latest"
+"npm:typescript-language-server" = "latest"
 
 # AI coding agents
 "aqua:anthropics/claude-code" = "latest"
