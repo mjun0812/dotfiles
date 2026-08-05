@@ -85,6 +85,13 @@ if command -v bunx >/dev/null 2>&1; then
     bunx playwright install chromium || echo "playwright chromium install skipped (unsupported platform)"
 fi
 
+################ [agent-browser] ################
+log_section "Setting up agent-browser..."
+# Detects the Playwright chromium installed above; downloads Chrome for Testing otherwise.
+if command -v agent-browser >/dev/null 2>&1; then
+    agent-browser install || echo "agent-browser browser install skipped"
+fi
+
 ################ [Python] ################
 log_section "Setting up Python..."
 source "$HOME/.zshrc"

@@ -66,6 +66,7 @@ shfmt = "latest"
 "npm:typescript-language-server" = "latest"
 
 # AI coding agents
+"npm:agent-browser" = "latest"
 "aqua:anthropics/claude-code" = "latest"
 "aqua:openai/codex" = "latest"
 opencode = "latest"
