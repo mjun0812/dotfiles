@@ -46,10 +46,11 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 
 ### Planning & Design
 
-| Skill                                                          | 用途                                                                                        |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| [`grill-me`](../config/ai-agents/skills/grill-me/SKILL.md)     | 計画・設計について、すべての意思決定分岐が解消されるまで1問ずつユーザーに対話的に問いかける |
-| [`grill-self`](../config/ai-agents/skills/grill-self/SKILL.md) | 自律grill: agentが自分で調査し各設計判断を解消した上で、最後に決定ログを提示する            |
+| Skill                                                                    | 用途                                                                                        |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| [`experiment-plan`](../config/ai-agents/skills/experiment-plan/SKILL.md) | 機械学習実験の未決事項を一つずつ確認し、検証可能な計画書を `.mjun/experiments/` へ保存する  |
+| [`grill-me`](../config/ai-agents/skills/grill-me/SKILL.md)               | 計画・設計について、すべての意思決定分岐が解消されるまで1問ずつユーザーに対話的に問いかける |
+| [`grill-self`](../config/ai-agents/skills/grill-self/SKILL.md)           | 自律grill: agentが自分で調査し各設計判断を解消した上で、最後に決定ログを提示する            |
 
 ### Docs & Notes
 
@@ -120,7 +121,7 @@ graph LR
 
 以下のskillは他のskillへ委譲しません。
 
-`agent-browser`, `claude`, `codex`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `self-review`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
+`agent-browser`, `claude`, `codex`, `doc-sync`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `self-review`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 
