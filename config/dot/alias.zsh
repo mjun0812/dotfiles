@@ -87,6 +87,7 @@ codex-headroom() {
 codex-headroom-full() {
     codex-headroom --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
 }
+alias codex='codex-full'
 alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox --dangerously-bypass-hook-trust -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って英語でコミットしてください。"'
 alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox --dangerously-bypass-hook-trust -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って日本語でコミットしてください。"'
 
