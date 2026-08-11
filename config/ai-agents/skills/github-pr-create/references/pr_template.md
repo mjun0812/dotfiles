@@ -1,15 +1,23 @@
 ## Overview and Background
 
-<!-- Briefly describe the purpose and background of this PR. Keep it concise (2-4 sentences), and explain what changed and why. -->
+<!-- State the result this PR achieves, followed by the previous behavior, trigger, cause, and user or operational impact. Do not repeat the same information as separate summary and background text. -->
 
 ## Related Issues
 
-<!-- List related Issues. Use "Closes #xxx" for Issues resolved by this PR, "Related to #xxx" for referenced Issues. -->
+<!-- Use "Closes #xxx" for Issues resolved by this PR and "Related to #xxx" for referenced Issues. Write "None" when there are no related Issues. -->
+
+## Implementation Approach
+
+<!-- Explain the approach and why it was selected. Include relevant constraints or rejected alternatives when the decision is not obvious. -->
 
 ## Changes
 
-<!-- Describe the changes made in this PR as bullet points. Group them appropriately by file, feature, or area. -->
+<!-- Summarize the main changes by behavior or responsibility rather than restating the diff file by file. -->
 
-## Test Instructions
+## Impact
 
-<!-- Describe how this PR was tested. Include the commands you ran and their results in a copy-pasteable format. If tests were not run, state that explicitly and explain why. -->
+<!-- Describe the relevant user-facing, compatibility, performance, security, deployment, and known limitation impacts. State what remains unaffected. -->
+
+## Validation Results
+
+<!-- Describe what was validated, how it was validated, and the observed results. Include before/after evidence for bug fixes or performance changes when possible. If tests were not run, state that explicitly and explain why. -->

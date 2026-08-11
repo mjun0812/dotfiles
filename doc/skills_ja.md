@@ -38,7 +38,7 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 
 | Skill                                                                                        | 用途                                                                                                                              |
 | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                   | 現在のbranchからPull Requestを作成する                                                                                            |
+| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                   | 現在のbranchからPull Requestを作成し、概要・背景、関連Issue、実装方針、変更内容、影響範囲、検証結果の6項目で本文を記述する        |
 | [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                   | 並列reviewerで要修正の指摘とmergeをブロックすべき規約・品質の指摘を発見・検証し、以前のレビューを最新スナップショットへ置き換える |
 | [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                         | PRの全問題(コンフリクト、CI失敗、レビューコメント)を専用worktree内で検出・修正する                                                |
 | [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                         | CIのステータスを確認し、失敗を分析して修正を適用する                                                                              |

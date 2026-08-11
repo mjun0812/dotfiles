@@ -8,7 +8,7 @@ allowed-tools: Read, Write, Task, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 
 # Create Pull Request
 
-このSkillは、現在のbranchからpull requestを作成するためのものです。PRのタイトルと説明文は、変更内容に基づいて自動生成されます。PRの説明文は、コードを参照しなくてもPRの内容が理解できるように、変更の目的、背景、内容をわかりやすく説明します。また、テスト方法や検証方法も具体的に記述し、コピペ可能なコマンドや手順を提供します。
+このSkillは、現在のbranchからpull requestを作成するためのものです。PRのタイトルと説明文は、変更内容に基づいて自動生成されます。PRの説明文は、コードを参照しなくてもPRの内容が理解できるように、概要・背景、関連Issue、実装方針、変更内容、影響範囲、検証結果を説明します。
 
 GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
@@ -55,6 +55,8 @@ base branchは引数ではなく自動推定で決定する（事前チェック
    - repositoryにPR templateが存在しない場合、指定言語に応じて以下を使用:
      - English: [`references/pr_template.md`](references/pr_template.md)
      - Japanese: [`references/pr_template_ja.md`](references/pr_template_ja.md)
+   - repositoryのtemplateに「4. 説明文の生成」で定める6項目と同義の見出しがある場合は、その見出しを原文のまま使用する
+   - 同義の見出しがない項目は指定言語の見出しを補い、6項目を所定の順序で記載する。repository固有の追加項目は削除しない
 7. Conventional Commits規約 [`references/conventional_commits.md`](references/conventional_commits.md)
 
 ## 1. リモートへのpush
@@ -84,6 +86,7 @@ base branchは引数ではなく自動推定で決定する（事前チェック
 - branch名からIssue番号を抽出する（例: `feature/123-add-something` → `#123`）
 - commitメッセージから `fix #456`, `closes #789`, `refs #101` 等のキーワードを検出する
 - `gh issue list --state open --json number,title` のタイトルを変更内容と突き合わせ、関連するIssueを探す
+- 検出したIssueはタイトルだけで判断せず、本文を読んで問題、背景、受け入れ条件を確認する
 - open issueが大量にある場合は、検索条件を絞るか、この突き合わせのみSubAgentに委譲してよい
 
 ### Label
@@ -93,13 +96,20 @@ base branchは引数ではなく自動推定で決定する（事前チェック
 
 ## 4. 説明文の生成
 
-- **PR template**: 事前チェックで選択したtemplateのフォーマットと言語に従う（repositoryのtemplateは指定言語では翻訳しない）
+- **PR template**: 事前チェックで選択したtemplateの言語とrepository固有の追加項目に従う（repositoryのtemplateは指定言語では翻訳しない）
 - `2. 変更内容の取得` で取得した差分概要、commit一覧、詳細差分を根拠にして本文を生成する
-- コードを参照しなくてもPRの内容が理解できるよう、変更の目的、背景、主な変更点、影響範囲をわかりやすく説明する
-- 関連Issue候補がある場合は、解決するIssueには `Closes #xxx`、参照のみのIssueには `Related to #xxx` を使う
-- テスト方法や検証方法は具体的に記述し、実行したコマンドと結果をコピペ可能な形式で記載する
+- 本文には、以下の6項目を必ずこの順序で記載する。小さいPRでも項目を省略せず、内容を簡潔にする
+  1. **概要・背景 / Overview and Background**: 最初にこのPRで実現する結果を述べ、続けて変更前の挙動、発生条件、原因、利用者や運用への影響を説明する。同じ内容を概要と背景として繰り返さない
+  2. **関連Issue / Related Issues**: 解決するIssueには `Closes #xxx`、参照のみのIssueには `Related to #xxx` を使う。関連Issueがない場合は、指定言語で該当なしと明記する
+  3. **実装方針 / Implementation Approach**: 解決方法を概念的に説明し、その方法を選んだ理由を記載する。非自明な設計判断がある場合は、制約や採用しなかった案の理由も記載する
+  4. **変更内容 / Changes**: diffをファイル単位で言い換えるだけではなく、変わる挙動や責務ごとに主な変更をまとめる
+  5. **影響範囲 / Impact**: user-facing change、互換性、performance、security、deployment、既知の制約から該当するものを記載し、影響しない範囲も明確にする
+  6. **検証結果 / Validation Results**: 何をどの方法で検証し、どの結果になったかを記載する。bug修正やperformance変更では、可能な限り変更前後を比較できる再現結果、log、数値を示す
+- 検証で実行したコマンドと結果は、コピペ可能な形式で記載する
 - CIで自動実行されるlint・format・型チェックは記載しない（そのチェック設定自体を変更したPRを除く）。記載するのはCIが検証しない動作確認の手順と結果
 - テストを実行していない場合は、未実行であることと理由を明記する
+- diff、commit、関連Issueから確認できない事実を推測で補わない。本文の理解に必要な情報が不足する場合はユーザーに確認する
+- PR作成前に、6項目が所定の順序で存在し、templateの説明コメントや未記入のplaceholderが残っていないことを確認する
 
 ## 5. Pull Requestの作成
 
