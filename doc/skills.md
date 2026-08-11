@@ -46,10 +46,11 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 
 ### Planning & Design
 
-| Skill                                                          | Purpose                                                                                                             |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| [`grill-me`](../config/ai-agents/skills/grill-me/SKILL.md)     | Interactively grill the user about a plan / design, one question at a time, until every decision branch is resolved |
-| [`grill-self`](../config/ai-agents/skills/grill-self/SKILL.md) | Autonomous grill: the agent investigates and resolves each design decision itself, then presents a decision log     |
+| Skill                                                                    | Purpose                                                                                                                |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| [`experiment-plan`](../config/ai-agents/skills/experiment-plan/SKILL.md) | Interview the user one decision at a time and save a testable machine-learning experiment plan to `.mjun/experiments/` |
+| [`grill-me`](../config/ai-agents/skills/grill-me/SKILL.md)               | Interactively grill the user about a plan / design, one question at a time, until every decision branch is resolved    |
+| [`grill-self`](../config/ai-agents/skills/grill-self/SKILL.md)           | Autonomous grill: the agent investigates and resolves each design decision itself, then presents a decision log        |
 
 ### Docs & Notes
 
@@ -120,7 +121,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`agent-browser`, `claude`, `codex`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `self-review`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
+`agent-browser`, `claude`, `codex`, `doc-sync`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `self-review`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 
