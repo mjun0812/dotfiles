@@ -22,26 +22,27 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 | [`git-commit`](../config/ai-agents/skills/git-commit/SKILL.md)             | 現在の変更を適切な単位でstaging・commitする                                                |
 | [`git-squash`](../config/ai-agents/skills/git-squash/SKILL.md)             | 現在のbranchのcommitをsquash・整理し、必要なら force-with-lease でpushする                 |
 | [`git-fix-conflict`](../config/ai-agents/skills/git-fix-conflict/SKILL.md) | merge、rebase、cherry-pick、revert、apply、PR などで発生したコンフリクトを検出して解消する |
+| [`self-review`](../config/ai-agents/skills/self-review/SKILL.md)           | 未commit変更または指定commitをsnapshot化し、独立した2つのFinderで敵対的にreviewする        |
 
 ### GitHub Issue
 
 | Skill                                                                                | 用途                                                                                                                                                                                                                                            |
 | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)     | ユーザーから情報を収集してGitHub Issueを作成する（`--local` でGitHubに起票せず `.mjun/issues/` へmarkdown保存）                                                                                                                                 |
-| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md) | リポジトリをスキャンしてissue化すべき事項を発見し、既存issueとの重複を除いた上で承認のもと一括起票する（`--auto` で承認をスキップ）                                                                                                             |
+| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md) | リポジトリをスキャンしてissue化すべき事項を発見し、重複を除いた上で承認のもと一括起票する (`--auto` で承認を省略し、`--local` で `.mjun/issues/` へmarkdown保存)                                                                                |
 | [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)     | open issueを点検し、古い・解決済み・重複・陳腐化したissueをclose／追記する                                                                                                                                                                      |
 | [`github-issue-polish`](../config/ai-agents/skills/github-issue-polish/SKILL.md)     | issueまたは設計doc (markdownパス) を「それだけで実装できる」状態まで磨き上げる: コードベース調査・設計判断・worktreeでのお試し実装                                                                                                              |
 | [`github-issue-resolve`](../config/ai-agents/skills/github-issue-resolve/SKILL.md)   | 一気通貫: 指定issueまたは設計doc (markdownパス) の調査 → worktree作成 → 実装 → PR作成。実装はタスクごとにimplementer/reviewer SubAgentを構造化ハンドオフと上限付き差し戻しで回し、commitとPR作成は `git-commit` / `github-pr-create` に連結する |
 
 ### GitHub Pull Request
 
-| Skill                                                                                        | 用途                                                                                                         |
-| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                   | 現在のbranchからPull Requestを作成する                                                                       |
-| [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                   | 並列reviewerで要修正の指摘と規約・品質の提案を発見・検証し、以前のレビューを最新スナップショットへ置き換える |
-| [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                         | PRの全問題（コンフリクト、CI失敗、レビューコメント）を専用worktree内で検出・修正する                         |
-| [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                         | CIのステータスを確認し、失敗を分析して修正を適用する                                                         |
-| [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md) | PRのレビューコメントを確認し、対応・返信する                                                                 |
+| Skill                                                                                        | 用途                                                                                                                              |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                   | 現在のbranchからPull Requestを作成する                                                                                            |
+| [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                   | 並列reviewerで要修正の指摘とmergeをブロックすべき規約・品質の指摘を発見・検証し、以前のレビューを最新スナップショットへ置き換える |
+| [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                         | PRの全問題(コンフリクト、CI失敗、レビューコメント)を専用worktree内で検出・修正する                                                |
+| [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                         | CIのステータスを確認し、失敗を分析して修正を適用する                                                                              |
+| [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md) | PRのレビューコメントを確認し、対応・返信する                                                                                      |
 
 ### Planning & Design
 
@@ -119,7 +120,7 @@ graph LR
 
 以下のskillは他のskillへ委譲しません。
 
-`agent-browser`, `claude`, `codex`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
+`agent-browser`, `claude`, `codex`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `self-review`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 

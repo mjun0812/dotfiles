@@ -10,6 +10,11 @@ CODEX_CONFIG_TARGET="$HOME/.codex/config.toml"
 CODEX_CONFIG_TEMPLATE="$DOTPATH/config/ai-agents/codex/config.toml"
 CODEX_AGENTS_SOURCE_DIR="$DOTPATH/config/ai-agents/codex/agents"
 
+# Purge dangling symlinks (left after their sources were removed); they make the backup cp -L fail
+for link in "$HOME/.codex/skills"/*(@N) "$HOME/.codex/agents"/*(@N); do
+    [ -e "$link" ] || rm -f "$link"
+done
+
 # backup
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" 2>/dev/null && rm -rf "$HOME/.codex/AGENTS.md"
 cp -aLf "$HOME/.codex/skills" "$DOTPATH/.backup/codex_skills" 2>/dev/null && rm -rf "$HOME/.codex/skills"

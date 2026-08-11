@@ -7,6 +7,11 @@ log_section() {
 DOTPATH=$(cd "$(dirname "$0")/.." && pwd)
 AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
 
+# Purge dangling symlinks (left after their sources were removed); they make the backup cp -L fail
+for link in "$HOME/.claude/skills"/*(@N) "$HOME/.claude/agents"/*(@N) "$HOME/.claude/rules"/*(@N); do
+    [ -e "$link" ] || rm -f "$link"
+done
+
 # Backup
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
 cp -aLf "$HOME/.claude/mcp.json" "$DOTPATH/.backup/claude_mcp.json" && rm -rf "$HOME/.claude/mcp.json"
