@@ -2,20 +2,21 @@
 
 <!--
 Authoring rules:
-- Required Changes only contains findings the verifier judged confirmed.
-- Standards Suggestions only contains suggestions from the Standards SubAgent. They do not block merge and do not affect the Verdict.
-- If either section has no items, keep the heading and write "N/A".
+- Findings only contains findings from the Finder and Standards SubAgent that the verifier judged confirmed.
+- Findings from the Standards SubAgent also block merge and affect the Verdict.
+- If Findings has no items, keep the heading and write "N/A".
 - Add a short category label describing the main harm or kind to each item.
-- Each Required Change must include `Problem` / `Execution path` / `Completion condition`.
-- Each Standards Suggestion must include `Problem` / `Basis` / `Suggestion`, numbered from S1.
-- `Problem` combines the triggering condition, cause, and concrete harm.
+- List Finder findings first and Standards findings second, numbering all Findings sequentially from 1.
+- Each Finder finding must include `Problem` / `Execution path` / `Completion condition`.
+- Each Standards finding must include `Problem` / `Basis` / `Completion condition`.
+- A Finder finding's `Problem` combines the triggering condition, cause, and concrete harm.
+- A Standards finding's `Problem` combines the facts visible in the diff and why deferring it until after merge is unsafe.
 - `Execution path` traces the runtime path that reaches the problem as a chain of `file:line`.
 - `Completion condition` describes the state that demonstrates the problem is resolved, not an implementation method.
-- Do not include the Finder's and verifier's raw `Evidence` or verification logs in the final review. Present reachability as a polished `Execution path`.
-- Include `Verification details` only in inline comments, never in the final review.
+- Do not include the Finder's and verifier's raw `Evidence` or verification logs in the review body or inline comments. Present reachability as a polished `Execution path`.
 - If CI has failing checks, mention it in one line in the Summary.
-- Do not create finding sections other than Required Changes and Standards Suggestions in the final review.
-- Only Required Changes and Standards Suggestions become inline comments.
+- Do not create finding sections other than Findings in the final review.
+- Only Findings become inline comments.
 -->
 
 ## Summary
@@ -26,21 +27,21 @@ Authoring rules:
 
 <!-- APPROVE or REQUEST_CHANGES -->
 
-## Required Changes
+## Findings
+
+<!-- Findings from the Finder -->
 
 - 1: `filename:line` - **[Category] Description of the issue**
   - Problem: ...
   - Execution path: `file:line` (note) -> `file:line` (note)
   - Completion condition: ...
 
-## Standards Suggestions
+<!-- Findings from the Standards SubAgent. They are unsafe to defer past merge and block merge. -->
 
-<!-- Non-blocking suggestions. Addressing them is optional. -->
-
-- S1: `filename:line` - **[Category] Description of the issue**
+- 2: `filename:line` - **[Category] Description of the issue**
   - Problem: ...
   - Basis: ...
-  - Suggestion: ...
+  - Completion condition: ...
 
 ---
 

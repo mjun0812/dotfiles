@@ -17,31 +17,32 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 
 ### Git
 
-| Skill                                                                      | Purpose                                                                               |
-| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [`git-commit`](../config/ai-agents/skills/git-commit/SKILL.md)             | Stage and commit the current changes in appropriate units                             |
-| [`git-squash`](../config/ai-agents/skills/git-squash/SKILL.md)             | Squash / tidy commits on the current branch, force-with-lease push if needed          |
-| [`git-fix-conflict`](../config/ai-agents/skills/git-fix-conflict/SKILL.md) | Detect and resolve conflicts from merge, rebase, cherry-pick, revert, apply, PR, etc. |
+| Skill                                                                      | Purpose                                                                                       |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [`git-commit`](../config/ai-agents/skills/git-commit/SKILL.md)             | Stage and commit the current changes in appropriate units                                     |
+| [`git-squash`](../config/ai-agents/skills/git-squash/SKILL.md)             | Squash / tidy commits on the current branch, force-with-lease push if needed                  |
+| [`git-fix-conflict`](../config/ai-agents/skills/git-fix-conflict/SKILL.md) | Detect and resolve conflicts from merge, rebase, cherry-pick, revert, apply, PR, etc.         |
+| [`self-review`](../config/ai-agents/skills/self-review/SKILL.md)           | Adversarially review uncommitted changes or one specified commit with two independent Finders |
 
 ### GitHub Issue
 
 | Skill                                                                                | Purpose                                                                                                                                                                                                                                                                          |
 | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)     | Gather information from the user and create a GitHub Issue (`--local` saves a markdown doc to `.mjun/issues/` instead)                                                                                                                                                           |
-| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md) | Scan the repo for issue-worthy items, dedupe vs existing issues, and bulk-create with approval (`--auto` skips)                                                                                                                                                                  |
+| [`github-issue-discover`](../config/ai-agents/skills/github-issue-discover/SKILL.md) | Scan the repo for issue-worthy items, dedupe candidates, and bulk-create with approval (`--auto` skips; `--local` saves markdown docs to `.mjun/issues/`)                                                                                                                        |
 | [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)     | Review open issues and close / annotate stale, resolved, duplicate, or outdated issues                                                                                                                                                                                           |
 | [`github-issue-polish`](../config/ai-agents/skills/github-issue-polish/SKILL.md)     | Polish an issue or design doc (markdown path) until it is implementable as-is: codebase investigation, design decisions, trial implementation in a worktree                                                                                                                      |
 | [`github-issue-resolve`](../config/ai-agents/skills/github-issue-resolve/SKILL.md)   | End-to-end: investigate → worktree → implement → PR for a given issue or design doc (markdown path); implementation loops per task through implementer/reviewer subagents with structured handoffs and bounded retries, commit and PR chain to `git-commit` / `github-pr-create` |
 
 ### GitHub Pull Request
 
-| Skill                                                                                        | Purpose                                                                                                                                       |
-| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                   | Create a Pull Request from the current branch                                                                                                 |
-| [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                   | Find merge-blocking issues and standards suggestions with parallel reviewers, verify each candidate, and replace the previous review snapshot |
-| [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                         | Detect and fix all PR problems (conflicts, CI failures, review comments) inside a dedicated worktree                                          |
-| [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                         | Inspect CI status, analyze failures, and apply fixes                                                                                          |
-| [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md) | Triage PR review comments and respond / address them                                                                                          |
+| Skill                                                                                        | Purpose                                                                                                                                                   |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                   | Create a Pull Request from the current branch                                                                                                             |
+| [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                   | Find merge-blocking issues and merge-blocking standards findings with parallel reviewers, verify each candidate, and replace the previous review snapshot |
+| [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                         | Detect and fix all PR problems (conflicts, CI failures, review comments) inside a dedicated worktree                                                      |
+| [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                         | Inspect CI status, analyze failures, and apply fixes                                                                                                      |
+| [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md) | Triage PR review comments and respond / address them                                                                                                      |
 
 ### Planning & Design
 
@@ -119,7 +120,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`agent-browser`, `claude`, `codex`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
+`agent-browser`, `claude`, `codex`, `doc-sync`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-discover`, `github-issue-polish`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `grill-me`, `grill-self`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `self-review`, `skill-review`, `steering`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 
