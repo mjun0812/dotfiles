@@ -6,11 +6,14 @@ This document describes the Hammerspoon configuration and URL schemes.
 
 ## Configuration Location
 
-| Path                                                    | Description                                                     |
-| ------------------------------------------------------- | --------------------------------------------------------------- |
-| `config/dot/hammerspoon/init.lua` (source)              | Entry point. Registers URL handlers and loads sub-modules       |
-| `config/dot/hammerspoon/chrome-vertical-tab-toggle.lua` | Chrome vertical tab sidebar toggle (`require`d from `init.lua`) |
-| `~/.hammerspoon/` (deployed)                            | Symlinked from `config/dot/hammerspoon/` by `install.sh`        |
+| Path                                                    | Description                                                       |
+| ------------------------------------------------------- | ----------------------------------------------------------------- |
+| `config/dot/hammerspoon/init.lua` (source)              | Entry point. Enables IPC and `require`s the feature modules below |
+| `config/dot/hammerspoon/claude-wezterm-focus.lua`       | Return to the WezTerm window/pane from a Claude Code notification |
+| `config/dot/hammerspoon/center-window.lua`              | Center the focused window (`hammerspoon://center`)                |
+| `config/dot/hammerspoon/aerospace-workspace-hud.lua`    | AeroSpace workspace number HUD                                    |
+| `config/dot/hammerspoon/chrome-vertical-tab-toggle.lua` | Chrome vertical tab sidebar toggle                                |
+| `~/.hammerspoon/` (deployed)                            | Symlinked from `config/dot/hammerspoon/` by `install.sh`          |
 
 Edit files under `config/dot/hammerspoon/` directly. Since `~/.hammerspoon` is a symlink to the source directory, changes are picked up without re-running `install.sh` — just reload the config from the Hammerspoon menu bar (or `hs.reload()` in the console).
 
@@ -56,7 +59,7 @@ The Raycast script `config/mac/raycast/toggle_aerospace_float.sh` also calls `ha
 
 ## Workspace HUD Customization
 
-The workspace HUD is rendered with `hs.canvas`. Adjust the following local values inside `showAeroSpaceWorkspaceHUD` in `config/dot/hammerspoon/init.lua` to tweak its appearance:
+The workspace HUD is rendered with `hs.canvas`. Adjust the following local values inside `showAeroSpaceWorkspaceHUD` in `config/dot/hammerspoon/aerospace-workspace-hud.lua` to tweak its appearance:
 
 | Variable                             | Default                        | Description                                      |
 | ------------------------------------ | ------------------------------ | ------------------------------------------------ |
@@ -111,7 +114,7 @@ All tunables live as `local` tables at the top of the script. Edit and reload Ha
 
 ## Adding New URL Handlers
 
-To expose a new automation as a URL scheme, register it with `hs.urlevent.bind` in `config/dot/hammerspoon/init.lua`:
+To expose a new automation as a URL scheme, create a new module under `config/dot/hammerspoon/` that registers the handler with `hs.urlevent.bind`, then `require` it from `init.lua`:
 
 ```lua
 hs.urlevent.bind("my-action", function(_, params)
