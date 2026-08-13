@@ -121,7 +121,7 @@ function fzf-zoxide-cd() {
 zle -N fzf-zoxide-cd
 bindkey '^f' fzf-zoxide-cd
 
-# [ctrl + j] cd repository alias
+# [ctrl + ]] cd repository alias
 function cd_repo_ghq_fzf() {
     local ghq_root=$(ghq root)
     local repo_path=$(ghq list | fzf --preview "eza -l -g -a --icons $ghq_root/{} | awk '{print \$8\" \"\$9}'")
@@ -138,7 +138,7 @@ function cd_repo_ghq_fzf() {
     fi
 }
 zle -N cd_repo_ghq_fzf
-bindkey '^j' cd_repo_ghq_fzf
+bindkey '^]' cd_repo_ghq_fzf
 alias cd_repo='cd_repo_ghq_fzf'
 
 # cd git worktree with gwq
