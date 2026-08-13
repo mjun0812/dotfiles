@@ -231,7 +231,7 @@ fzf-zoxide-cd
 # ghqで管理しているリポジトリをfzfで選択してcdする
 # cd for ghq repository
 cd_repo
-# Ctrl+j でも同様の操作が可能
+# Ctrl+] でも同様の操作が可能
 
 # gwq + fzf
 # gwqで管理しているワークツリーをfzfで選択してcdする
