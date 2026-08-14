@@ -81,6 +81,12 @@ run_at_load = true
 keep_alive = true
 kickstart = true
 
+[bootstrap.macos.launchd.agents.codex-remote-control]
+program = "~/.codex/packages/standalone/current/codex"
+args = ["app-server", "daemon", "start"]
+run_at_load = true
+kickstart = true
+
 [bootstrap.brew.taps]
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
 

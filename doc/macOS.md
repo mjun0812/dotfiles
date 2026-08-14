@@ -45,22 +45,23 @@ See [Raycast Script Commands](https://manual.raycast.com/script-commands) for th
 
 ## launchd
 
-User-level launchd agents are declared in `config/dot_config/mise/config.toml` and managed by mise. mise generates the plist files under `~/Library/LaunchAgents/` and loads them with `launchctl`.
+User-level launchd agents are declared in `config/dot_config/mise/config.macos.toml` and managed by mise. mise generates the plist files under `~/Library/LaunchAgents/` and loads them with `launchctl`.
 
 ### Installation
 
 ```sh
-mise bootstrap macos launchd-agents apply --yes
+mise bootstrap launchd apply --yes
 ```
 
 `install.sh` runs this command automatically on macOS after installing Headroom.
 
 ### Managed Agents
 
-| Label                     | Purpose                                           |
-| ------------------------- | ------------------------------------------------- |
-| `dev.mise.headroom-proxy` | Run `headroom proxy` on `127.0.0.1:8787` at login |
-| `dev.mise.cli-proxy-api`  | Run CLIProxyAPI on `127.0.0.1:8317` at login      |
+| Label                           | Purpose                                           |
+| ------------------------------- | ------------------------------------------------- |
+| `dev.mise.headroom-proxy`       | Run `headroom proxy` on `127.0.0.1:8787` at login |
+| `dev.mise.cli-proxy-api`        | Run CLIProxyAPI on `127.0.0.1:8317` at login      |
+| `dev.mise.codex-remote-control` | Start the Codex Remote Control daemon at login    |
 
 The generated plists are `~/Library/LaunchAgents/<label>.plist`.
 
@@ -79,21 +80,21 @@ cli-proxy-api -config ~/.config/cli-proxy-api/config.yaml -codex-login
 mise run cli-proxy-api-restart # reload the agent after logging in
 ```
 
-Note: the config symlink must exist before `mise bootstrap macos launchd-agents apply`; without a config the binary exits immediately and `KeepAlive` respawns it in a loop. `install.sh` runs the steps in that order.
+Note: the config symlink must exist before `mise bootstrap launchd apply`; without a config the binary exits immediately and `KeepAlive` respawns it in a loop. `install.sh` runs the steps in that order.
 
 ### Manual Operations
 
 ```sh
 # Status
-mise bootstrap macos launchd-agents status
+mise bootstrap launchd status
 launchctl print gui/$(id -u)/dev.mise.headroom-proxy
 
 # Apply changes
-mise bootstrap macos launchd-agents apply --yes
+mise bootstrap launchd apply --yes
 
 # Stop / Start
 launchctl bootout gui/$(id -u)/dev.mise.headroom-proxy
-mise bootstrap macos launchd-agents apply --yes
+mise bootstrap launchd apply --yes
 ```
 
 ### Viewing Logs
@@ -119,3 +120,25 @@ If a process exits immediately and `process == "headroom"` returns nothing, sear
 ```sh
 log show --predicate 'subsystem == "com.apple.xpc.launchd" AND eventMessage CONTAINS "dev.mise.headroom-proxy"' --last 1h
 ```
+
+## Codex Remote Control
+
+Codex is installed by mise through the Aqua backend. The postinstall hook points the managed standalone package path at the exact mise installation and enables the Remote Control daemon:
+
+```text
+mise/Aqua Codex package
+  -> ~/.codex/packages/standalone/current
+  -> Codex Remote Control daemon
+```
+
+Do not run `codex app-server daemon bootstrap --remote-control` or `codex remote-control start`; both enable the standalone updater and create a second version authority. Use the managed daemon lifecycle commands instead:
+
+```sh
+codex app-server daemon enable-remote-control
+codex app-server daemon start
+codex app-server daemon version
+```
+
+`mise upgrade` updates the managed link and restarts the daemon. Run it when no active Codex turn should be interrupted.
+
+Start a new Remote Control session with `codex --remote unix://`. Add `resume` or `fork` to the command to resume or fork a stored session.

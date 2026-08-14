@@ -68,7 +68,11 @@ shfmt = "latest"
 # AI coding agents
 "npm:agent-browser" = "latest"
 "aqua:anthropics/claude-code" = "latest"
-"aqua:openai/codex" = "latest"
+"aqua:openai/codex" = { version = "latest", postinstall = '''
+if [ "$(uname -s)" = "Darwin" ]; then
+    zsh ~/.dotfiles/script/setup_codex_remote.sh "$MISE_TOOL_INSTALL_PATH"
+fi
+''' }
 opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = "latest"
 "npm:@github/copilot" = "latest"
