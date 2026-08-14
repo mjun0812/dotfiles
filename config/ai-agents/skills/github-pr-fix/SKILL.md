@@ -6,7 +6,7 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 
 # GitHub PR Fix
 
-指定されたPRの全問題 (コンフリクト、CI失敗、レビューコメント) を自動検出して修正するSkill。
+指定されたPRの全問題(コンフリクト、CI失敗、レビューコメント)を自動検出して修正するSkill。
 修正作業はPRごとの専用Git worktree内で行い、修正内容はPRの言語に合わせて生成し、ユーザーへの報告も同じ言語で行う。
 **3つのサブSkillを正しい順序でオーケストレーションし、検出された問題に対応するSkillだけを呼び出す**。
 
@@ -14,14 +14,12 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 - `github-fix-ci`: CI失敗の修正
 - `github-resolve-pr-comment`: レビューコメントへの対応
 
-**重要**: 修正・commit・pushは必ず専用worktree内で行う。Skillを起動した元の作業ツリーでは、PR情報の取得とworktree作成以外のファイル編集・commit・pushを行わない。
+修正・commit・pushは必ず専用worktree内で行う。Skillを起動した元の作業ツリーでは、PR情報の取得とworktree作成以外のファイル編集・commit・pushを行わない。
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
 ## Arguments
 
-- `PR number` (任意): 修正するPR番号。省略時は現在のブランチに紐づくPRを対象とする
-- `--dry-run` (任意): 指定時はPhase 4の問題検出の結果一覧の提示で停止し、worktree作成とサブSkill呼び出しを行わない
-
-GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+- `PR number` (Optional): 修正するPR番号。省略時は現在のブランチに紐づくPRを対象とする
 
 ## Task
 
@@ -51,31 +49,16 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 
 ### Phase 3: 修正用worktreeの作成
 
-`--dry-run` が指定された場合は、本Phaseをスキップし、Phase 4の検出のみを元の作業ツリーで実行して結果を提示した後に終了する。
-
 1. `<repo-root>/.tmp/<repo-name>-worktrees/pr-<number>-fix` を専用 worktree path とする。
 2. 同じ path の worktree が存在し、未commit変更がある場合は中止する。clean な場合のみ作り直してよい。
-3. PR head と base branch を fetch する:
-
-   ```bash
-   git fetch origin +pull/<number>/head:refs/pr-fix/<number>/head
-   git fetch origin +<base-ref-name>:refs/pr-fix/<number>/base
-   ```
-
-4. 専用 worktree は、`headRefName` ではなく fetch済みの `refs/pr-fix/<number>/head` から専用local branchを作って checkout する:
-
-   ```bash
-   git worktree add -B pr-fix/<number> <worktree-path> refs/pr-fix/<number>/head
-   ```
-
-   `headRefName` はPR head branch名としてpush先の判定に使う。checkout対象にはしない。fork PR や同名branchの衝突で別branchを修正しないよう、worktreeの `HEAD` が `refs/pr-fix/<number>/head` の commit SHA と一致することを確認する。
-
+3. PR head と base branch を fetch する: `git fetch origin +pull/<number>/head:refs/pr-fix/<number>/head` および `git fetch origin +<base-ref-name>:refs/pr-fix/<number>/base`
+4. `git worktree add -B pr-fix/<number> <worktree-path> refs/pr-fix/<number>/head` で、`headRefName` ではなく fetch済みの ref から専用local branchを作って checkout する。`headRefName` はPR head branch名としてpush先の判定に使う。checkout対象にはしない。fork PR や同名branchの衝突で別branchを修正しないよう、worktreeの `HEAD` が `refs/pr-fix/<number>/head` の commit SHA と一致することを確認する。
 5. Phase 4 以降は、すべての操作を `<worktree-path>` 配下で実行する。
 
 ### Phase 4: 問題の検出
 
 3種類の問題を並列に検出し、検出結果に応じて Phase 5 で必要なSkillだけ呼び出す。
-検出は `<worktree-path>` を cwd とし、PR番号を明示して実行する (`--dry-run` の場合は元の作業ツリーを cwd とする)。
+検出は `<worktree-path>` を cwd とし、PR番号を明示して実行する。
 
 - **1. コンフリクト**: `mergeable` が `CONFLICTING` の場合のみ対応する。`MERGEABLE` / `UNKNOWN` はスキップする。
 - **2. CI失敗**: `FAILURE` / `CANCELLED` / `TIMED_OUT` の check がある場合のみ対応する。全て実行中の場合はステータスを報告し、Phase 5 の Step 2 はスキップする。
@@ -121,15 +104,7 @@ Phase 4で未解決スレッドが検出された場合のみ:
 
 ### Phase 6: 最終確認
 
-1. `<worktree-path>` 内で最終状態を確認する:
-
-   ```bash
-   git status --short
-   git log --oneline --max-count=5
-   gh pr view <number> --json url,mergeable,mergeStateStatus
-   gh pr checks <number>
-   ```
-
+1. `<worktree-path>` 内で未commit変更と直近のcommitを確認し、`gh pr view <number> --json url,mergeable,mergeStateStatus` と `gh pr checks <number>` でPRの最終状態を確認する
 2. commit 済みだが未pushの変更が残っている場合は、`<worktree-path>` 内から `git push <push-remote> HEAD:<head-ref-name>` で PR head branch へ push する
 3. 未commit変更が残っている場合は、対象サブSkillの失敗として扱い、内容を検出された言語で報告する
 
@@ -141,18 +116,7 @@ Phase 4で未解決スレッドが検出された場合のみ:
 
 修正が完了した場合も、途中のエラーまたはユーザーの中止により中断した場合も行う:
 
-1. Phase 3でfetchした一時refを削除する:
-
-   ```bash
-   git update-ref -d refs/pr-fix/<number>/head
-   git update-ref -d refs/pr-fix/<number>/base
-   ```
-
-2. worktree と local branch を削除する:
-
-   ```bash
-   git worktree remove --force <worktree-path>
-   git branch -D pr-fix/<number>
-   ```
-
-3. クリーンアップに失敗した場合は、失敗した項目をユーザーに警告する
+1. Phase 3でfetchした一時refを削除する: `git update-ref -d refs/pr-fix/<number>/head` および `git update-ref -d refs/pr-fix/<number>/base`
+2. `git worktree remove --force <worktree-path>`
+3. `git branch -D pr-fix/<number>`
+4. クリーンアップに失敗した場合は、失敗した項目をユーザーに警告する
