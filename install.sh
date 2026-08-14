@@ -65,6 +65,9 @@ if [ "$(uname -s)" = "Darwin" ]; then
     log_section "Applying mise bootstrap..."
     mise bootstrap packages apply --yes
     mise bootstrap launchd apply --yes
+elif [ "$(uname -s)" = "Linux" ]; then
+    log_section "Applying mise bootstrap..."
+    mise bootstrap systemd apply --yes
 fi
 
 ################ [Zsh Completion Update] ################
