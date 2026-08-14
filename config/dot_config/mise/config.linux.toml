@@ -3,3 +3,10 @@
 [tools]
 "pipx:headroom-ai" = { version = "latest", extras = "proxy,code,ml" }
 "github:router-for-me/CLIProxyAPI" = "latest"
+
+[bootstrap.linux.systemd.units.codex-remote-control]
+description = "Start the Codex Remote Control daemon"
+type = "oneshot"
+remain_after_exit = true
+exec_start = "~/.codex/packages/standalone/current/codex app-server daemon start"
+exec_stop = "~/.codex/packages/standalone/current/codex app-server daemon stop"

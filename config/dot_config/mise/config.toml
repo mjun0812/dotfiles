@@ -69,9 +69,17 @@ shfmt = "latest"
 "npm:agent-browser" = "latest"
 "aqua:anthropics/claude-code" = "latest"
 "aqua:openai/codex" = { version = "latest", postinstall = '''
-if [ "$(uname -s)" = "Darwin" ]; then
-    zsh ~/.dotfiles/script/setup_codex_remote.sh "$MISE_TOOL_INSTALL_PATH"
-fi
+set -eu
+
+current="${CODEX_HOME:-$HOME/.codex}/packages/standalone/current"
+
+mkdir -p "$(dirname "$current")"
+ln -sfn bin/codex "$MISE_TOOL_INSTALL_PATH/codex"
+ln -sfn "$MISE_TOOL_INSTALL_PATH" "$current"
+
+"$current/codex" app-server daemon enable-remote-control
+"$current/codex" app-server daemon restart
+"$current/codex" app-server daemon version
 ''' }
 opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = "latest"

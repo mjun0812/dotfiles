@@ -123,7 +123,7 @@ log show --predicate 'subsystem == "com.apple.xpc.launchd" AND eventMessage CONT
 
 ## Codex Remote Control
 
-Codex is installed by mise through the Aqua backend. The postinstall hook points the managed standalone package path at the exact mise installation and enables the Remote Control daemon:
+Codex is installed by mise through the Aqua backend on macOS and Linux. The inline postinstall hook points the managed standalone package path at the exact mise installation and enables the Remote Control daemon:
 
 ```text
 mise/Aqua Codex package
@@ -142,3 +142,5 @@ codex app-server daemon version
 `mise upgrade` updates the managed link and restarts the daemon. Run it when no active Codex turn should be interrupted.
 
 Start a new Remote Control session with `codex --remote unix://`. Add `resume` or `fork` to the command to resume or fork a stored session.
+
+macOS starts the daemon with a LaunchAgent. Linux uses the systemd user service declared in `config/dot_config/mise/config.linux.toml`.

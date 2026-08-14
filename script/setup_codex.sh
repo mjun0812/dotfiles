@@ -51,7 +51,3 @@ done
 
 # Hooks
 ln -snfv "$DOTPATH/config/ai-agents/codex/hooks.json" "$HOME/.codex/hooks.json"
-
-if [[ $OSTYPE == darwin* ]]; then
-    zsh "$DOTPATH/script/setup_codex_remote.sh" "$(mise where aqua:openai/codex)"
-fi
