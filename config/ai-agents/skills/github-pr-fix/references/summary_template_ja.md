@@ -11,7 +11,3 @@
 - `abc1234` - merge: mainとのコンフリクトを解消
 - `def5678` - fix: CI失敗を修正
 - `ghi9012` - fix: レビューコメントに対応
-
-### Worktree
-
-- `/path/to/repo-worktrees/pr-123-fix`
