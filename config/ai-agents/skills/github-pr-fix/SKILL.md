@@ -39,7 +39,6 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 7. 最終サマリー用テンプレートを検出された言語に応じて決定する:
    - English/default: [`references/summary_template.md`](references/summary_template.md)
    - Japanese: [`references/summary_template_ja.md`](references/summary_template_ja.md)
-8. PRの初期ステータスサマリーを検出された言語で表示
 
 ### Phase 2: 修正用worktreeの作成
 
