@@ -1,1 +1,3 @@
 minimum-release-age=10080
+minimum-release-age-exclude[]=vite-plus
+minimum-release-age-exclude[]=@voidzero-dev/*
