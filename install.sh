@@ -78,7 +78,7 @@ ya pkg add yazi-rs/plugins:mime-ext
 
 ################ [Node] ################
 log_section "Setting up Node..."
-$DOTPATH/script/install/install_vp.sh
+$DOTPATH/script/install/install_vp.sh || echo "vp install/upgrade failed (ignored)"
 
 ################ [Playwright Browsers] ################
 log_section "Setting up Playwright browsers..."
