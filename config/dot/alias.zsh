@@ -74,11 +74,16 @@ claudex() {
 }
 
 # Codex
+# alias codex='codex-full' は関数定義より後に置くこと。
+# 前に置くと関数本体のパース時にaliasが展開されて無限再帰する。
+codex() {
+    command codex --remote unix:// "$@"
+}
 codex-full() {
-    command codex --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
+    codex --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
 }
 codex-headroom() {
-    command codex \
+    codex \
         -c model_provider=headroom \
         -c 'model_providers.headroom.name="headroom"' \
         -c 'model_providers.headroom.base_url="http://127.0.0.1:8787/v1"' \
