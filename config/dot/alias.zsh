@@ -82,8 +82,10 @@ codex() {
 codex-full() {
     codex --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
 }
+# headroomはapp-serverを経由しない。remote接続では-cオーバーライドが
+# daemonへ転送されず、model_provider指定が無視されるため。
 codex-headroom() {
-    codex \
+    command codex \
         -c model_provider=headroom \
         -c 'model_providers.headroom.name="headroom"' \
         -c 'model_providers.headroom.base_url="http://127.0.0.1:8787/v1"' \
