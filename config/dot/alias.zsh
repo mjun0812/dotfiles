@@ -74,9 +74,16 @@ claudex() {
 }
 
 # Codex
-codex-full() {
-    command codex --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
+# alias codex='codex-full' は関数定義より後に置くこと。
+# 前に置くと関数本体のパース時にaliasが展開されて無限再帰する。
+codex() {
+    command codex --remote unix:// "$@"
 }
+codex-full() {
+    codex --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
+}
+# headroomはapp-serverを経由しない。remote接続では-cオーバーライドが
+# daemonへ転送されず、model_provider指定が無視されるため。
 codex-headroom() {
     command codex \
         -c model_provider=headroom \
