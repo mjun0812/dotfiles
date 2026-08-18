@@ -1,7 +1,9 @@
 #!/usr/bin/env zsh
 
-DOTPATH=$(cd $(dirname $0)/../.. && pwd)
-COMPLETIONS_DIR="$DOTPATH/config/dot_config/zsh_completions"
+COMPLETIONS_DIR="$HOME/.config/zsh_completions"
+# 旧構成ではdotfiles内へのsymlinkだった。実ディレクトリに置き換える
+# (宙吊りsymlinkをmkdir -pが辿ってrepo内にディレクトリを再生成するのを防ぐ)
+[ -L "$COMPLETIONS_DIR" ] && rm -f "$COMPLETIONS_DIR"
 mkdir -p "$COMPLETIONS_DIR"
 
 print -P "%F{blue}%B==> %f%b%F{white}%BUpdating zsh completions...%f%b"
