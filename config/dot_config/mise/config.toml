@@ -42,7 +42,7 @@ actionlint = "latest"
 aqua = "latest"
 container = { version = "latest", os = ["macos"] }
 gcloud = "latest"
-herdr = "latest"
+herdr = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup_herdr.sh' }
 imagemagick = { version = "latest", os = ["macos"] }
 "aqua:imagemagick" = { version = "latest", os = ["linux"] }
 kubectl = "latest"
