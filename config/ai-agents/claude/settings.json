@@ -104,7 +104,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/rtk-hook-claude.sh"
+            "command": "~/.dotfiles/script/rtk-hook.sh"
           }
         ]
       }
