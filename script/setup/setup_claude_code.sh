@@ -4,7 +4,7 @@ log_section() {
     print -P "%F{blue}%B==> %f%b%F{white}%B$1%f%b"
 }
 
-DOTPATH=$(cd "$(dirname "$0")/.." && pwd)
+DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
 
 # Purge dangling symlinks (left after their sources were removed); they make the backup cp -L fail

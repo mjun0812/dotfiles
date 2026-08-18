@@ -139,7 +139,7 @@ mac)
     fi
 
     if [[ $PANE_ID =~ ^[0-9]+$ && -n $SESSION_ID && -n $YOBIRIN_BIN ]]; then
-        nohup "$HOME/.dotfiles/script/wezterm/yobirin-wezterm-notify.sh" "$TITLE" "$MESSAGE" "$PANE_ID" "$SESSION_ID" "$PROFILE" \
+        nohup "$HOME/.dotfiles/script/notify/yobirin-wezterm-notify.sh" "$TITLE" "$MESSAGE" "$PANE_ID" "$SESSION_ID" "$PROFILE" \
             >/dev/null 2>&1 </dev/null &
     else
         osascript -e "display notification \"${MESSAGE}\" with title \"${TITLE}\""

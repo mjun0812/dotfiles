@@ -119,7 +119,7 @@ esac
 # Claude Code hookはTTYを持たないため、ローカルmacOSではyobirinを直接起動する。
 # セッション開始時にHammerspoonへ保存したWezTerm windowへ、通知クリックで戻る。
 if [[ $(uname -s) == Darwin* && -z ${SSH_CONNECTION:-} && -z ${SSH_CLIENT:-} && -z ${SSH_TTY:-} ]]; then
-    ~/.dotfiles/script/notify.sh --native "$TITLE" "$BODY" "$SESSION_ID" claude >/dev/null 2>&1 || true
+    ~/.dotfiles/script/notify/notify.sh --native "$TITLE" "$BODY" "$SESSION_ID" claude >/dev/null 2>&1 || true
     exit 0
 fi
 
@@ -128,7 +128,7 @@ fi
 # Claude Code の hook 出力プロトコルである terminalSequence JSON として返し、
 # TTY に直結した Claude Code 本体にターミナルへ送出させる。
 # (Claude Code がサポートする terminalSequence は OSC 0/1/2/9/99/777 と BEL のみ)
-SEQ="$(~/.dotfiles/script/notify.sh --emit-osc "$TITLE" "$BODY" 2>/dev/null || true)"
+SEQ="$(~/.dotfiles/script/notify/notify.sh --emit-osc "$TITLE" "$BODY" 2>/dev/null || true)"
 
 # ペイロードが空なら何も出力せず正常終了する(hook を失敗させない)。
 [[ -z $SEQ ]] && exit 0

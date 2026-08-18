@@ -71,7 +71,7 @@ elif [ "$(uname -s)" = "Linux" ]; then
 fi
 
 ################ [Zsh Completion Update] ################
-$DOTPATH/script/update_completions.sh
+$DOTPATH/script/setup/update_completions.sh
 
 ################ [yazi] ################
 ya pkg add yazi-rs/plugins:mime-ext
@@ -156,11 +156,11 @@ done
 
 ################ [Claude Code] ################
 log_section "Setting up Claude Code..."
-zsh "$DOTPATH/script/setup_claude_code.sh"
+zsh "$DOTPATH/script/setup/setup_claude_code.sh"
 
 ################ [Codex] ################
 log_section "Setting up Codex..."
-zsh "$DOTPATH/script/setup_codex.sh"
+zsh "$DOTPATH/script/setup/setup_codex.sh"
 
 ################ [Antigravity CLI] ################
 log_section "Setting up Antigravity CLI..."

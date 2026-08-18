@@ -4,7 +4,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/notify-codex-hook.sh permission",
+            "command": "~/.dotfiles/script/hooks/notify-codex-hook.sh permission",
             "type": "command"
           }
         ]
@@ -14,7 +14,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/rtk-hook.sh",
+            "command": "~/.dotfiles/script/hooks/rtk-hook.sh",
             "statusMessage": "Rewriting Bash command with RTK",
             "timeout": 10,
             "type": "command"
@@ -27,7 +27,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/wezterm/capture-claude-wezterm-hook.sh",
+            "command": "~/.dotfiles/script/hooks/capture-claude-wezterm-hook.sh",
             "type": "command"
           }
         ]
@@ -46,7 +46,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/notify-codex-hook.sh stop",
+            "command": "~/.dotfiles/script/hooks/notify-codex-hook.sh stop",
             "type": "command"
           }
         ]
@@ -56,7 +56,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/notify-codex-hook.sh turn_start",
+            "command": "~/.dotfiles/script/hooks/notify-codex-hook.sh turn_start",
             "type": "command"
           }
         ]

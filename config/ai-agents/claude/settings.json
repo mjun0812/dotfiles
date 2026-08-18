@@ -103,7 +103,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/rtk-hook.sh"
+            "command": "~/.dotfiles/script/hooks/rtk-hook.sh"
           }
         ]
       }
@@ -114,7 +114,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/wezterm/capture-claude-wezterm-hook.sh"
+            "command": "~/.dotfiles/script/hooks/capture-claude-wezterm-hook.sh"
           }
         ]
       },
@@ -134,7 +134,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/notify-claude-hook.sh turn_start"
+            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh turn_start"
           }
         ]
       }
@@ -145,7 +145,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/notify-claude-hook.sh notification"
+            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh notification"
           }
         ]
       }
@@ -156,7 +156,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/notify-claude-hook.sh stop"
+            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh stop"
           }
         ]
       }
@@ -167,7 +167,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/notify-claude-hook.sh stop_failure"
+            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh stop_failure"
           }
         ]
       }

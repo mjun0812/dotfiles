@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-DOTPATH=$(cd $(dirname $0)/.. && pwd)
+DOTPATH=$(cd $(dirname $0)/../.. && pwd)
 COMPLETIONS_DIR="$DOTPATH/config/dot_config/zsh_completions"
 mkdir -p "$COMPLETIONS_DIR"
 

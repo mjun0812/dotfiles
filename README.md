@@ -278,18 +278,18 @@ VS Code extensions are managed in `config/vscode/extensions.txt`.
 To synchronize the installed extensions exactly with `config/vscode/extensions.txt`, run:
 
 ```bash
-script/sync_vscode_extensions.sh
+script/tools/sync_vscode_extensions.sh
 ```
 
 You can pass another extension list:
 
 ```bash
-script/sync_vscode_extensions.sh path/to/extensions.txt
+script/tools/sync_vscode_extensions.sh path/to/extensions.txt
 ```
 
 Use `--dry-run` to preview installs and uninstalls without changing VS Code:
 
 ```bash
-script/sync_vscode_extensions.sh --dry-run
-script/sync_vscode_extensions.sh --dry-run path/to/extensions.txt
+script/tools/sync_vscode_extensions.sh --dry-run
+script/tools/sync_vscode_extensions.sh --dry-run path/to/extensions.txt
 ```
