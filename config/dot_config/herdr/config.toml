@@ -295,9 +295,11 @@ delivery = "herdr"
 [experimental]
 # Allow launching herdr from inside a herdr-managed pane.
 # allow_nested = false
+allow_nested = true
 # Experimental local Kitty graphics rendering for attached clients.
 # Requires a Kitty graphics-compatible outer terminal.
 # kitty_graphics = false
+kitty_graphics = true
 # Save recent pane screen history across full server restarts.
 pane_history = false
 # While prefix mode is active, temporarily switch the host input source to
@@ -307,6 +309,7 @@ pane_history = false
 # a Korean IME between Hangul and English (other IME languages are left
 # unchanged). macOS and Windows only; best-effort. Default: false.
 # switch_ascii_input_source_in_prefix = false
+switch_ascii_input_source_in_prefix = true
 # Expose the focused pane's cursor to the outer terminal so macOS input
 # methods keep tracking the candidate window when TUIs paint their own
 # cursor (Claude Code, pi, codex). Trade-off: extra cursor visible for
