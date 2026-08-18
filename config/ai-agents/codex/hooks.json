@@ -1,44 +1,43 @@
 {
   "hooks": {
-    "SessionStart": [
+    "PermissionRequest": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "~/.dotfiles/script/wezterm/capture-claude-wezterm-hook.sh"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.dotfiles/script/notify-codex-hook.sh turn_start"
+            "command": "~/.dotfiles/script/notify-codex-hook.sh permission",
+            "type": "command"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "^Bash$",
         "hooks": [
           {
-            "type": "command",
             "command": "~/.dotfiles/script/rtk-hook.sh",
+            "statusMessage": "Rewriting Bash command with RTK",
             "timeout": 10,
-            "statusMessage": "Rewriting Bash command with RTK"
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "^Bash$"
       }
     ],
-    "PermissionRequest": [
+    "SessionStart": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "~/.dotfiles/script/notify-codex-hook.sh permission"
+            "command": "~/.dotfiles/script/wezterm/capture-claude-wezterm-hook.sh",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash ~/.codex/herdr-agent-state.sh session",
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }
@@ -47,8 +46,18 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "~/.dotfiles/script/notify-codex-hook.sh stop"
+            "command": "~/.dotfiles/script/notify-codex-hook.sh stop",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/script/notify-codex-hook.sh turn_start",
+            "type": "command"
           }
         ]
       }
