@@ -10,7 +10,7 @@ EOF
 }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOTPATH="$(cd "$SCRIPT_DIR/.." && pwd)"
+DOTPATH="$(cd "$SCRIPT_DIR/../.." && pwd)"
 EXTENSIONS_FILE="$DOTPATH/config/vscode/extensions.txt"
 EXTENSIONS_FILE_SET=0
 DRY_RUN=0

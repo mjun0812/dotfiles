@@ -13,15 +13,15 @@ macOS / Linux 向けのdotfiles。`install.sh` がリポジトリ内のファイ
 ./install.sh
 
 # 個別セットアップ (install.shから呼ばれる。対象部分だけ再実行したいとき)
-zsh script/setup_claude_code.sh   # Claude Code設定のsymlink・plugin
-zsh script/setup_codex.sh         # Codex設定 (config.tomlはキー単位マージ、他はsymlink)
-script/update_completions.sh      # zsh補完の更新
+zsh script/setup/setup_claude_code.sh   # Claude Code設定のsymlink・plugin
+zsh script/setup/setup_codex.sh         # Codex設定 (config.tomlはキー単位マージ、他はsymlink)
+script/setup/update_completions.sh      # zsh補完の更新
 
 # フォーマット (pre-commit hookでも実行される)
 prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt
 
 # VSCode拡張をextensions.txtと完全同期 (--dry-runで差分確認)
-script/sync_vscode_extensions.sh --dry-run
+script/tools/sync_vscode_extensions.sh --dry-run
 ```
 
 テストスイートは無い。検証はGitHub Actions (`ci-ubuntu.yml` / `ci-macos.yml`) がクリーンなコンテナで `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。
@@ -30,7 +30,7 @@ script/sync_vscode_extensions.sh --dry-run
 
 ### symlink展開の対応関係
 
-`install.sh` と `script/setup_*.sh` が以下のように展開する。展開先を直接編集しても実体はこのリポジトリ内のファイルである。
+`install.sh` と `script/setup/setup_*.sh` が以下のように展開する。展開先を直接編集しても実体はこのリポジトリ内のファイルである。
 
 | リポジトリ内                                                                                | 展開先                                                                                            |
 | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -48,7 +48,7 @@ script/sync_vscode_extensions.sh --dry-run
 
 - skillは `config/ai-agents/skills/` に一元管理され、Claude Code / Codex / Gemini / Antigravityの4箇所へsymlinkされる。1箇所の編集が全agentに反映される。
 - skillの一覧と依存関係は `doc/skills.md` (英語) と `doc/skills_ja.md` に記載されている。skillを追加・変更したらここも更新する (`doc-sync` skillがこの同期を担う)。
-- Codexの `~/.codex/config.toml` だけはsymlinkではなく、`script/rewrite_config.py` (tomlkit) がテンプレート (`config/ai-agents/codex/config.toml`) 側のキーだけを既存ファイルへマージする方式。Codexが自動生成する `[projects.*]` や `[hooks.state]` などのローカル状態を温存するため。キーの上書きのみでキーの削除はできない点に注意。
+- Codexの `~/.codex/config.toml` だけはsymlinkではなく、`script/setup/rewrite_config.py` (tomlkit) がテンプレート (`config/ai-agents/codex/config.toml`) 側のキーだけを既存ファイルへマージする方式。Codexが自動生成する `[projects.*]` や `[hooks.state]` などのローカル状態を温存するため。キーの上書きのみでキーの削除はできない点に注意。
 - Codexのhookは `config/ai-agents/codex/hooks.json` で管理され、`~/.codex/hooks.json` へsymlinkされる。hook定義を変更すると `[hooks.state]` の `trusted_hash` が無効になり、TUIの `/hooks` で再承認が必要になる。そのため通知の条件や文言はhooks.jsonではなくシェルスクリプト側に置く。
 - `templates/` にはcommit message・PR・Issue・レビューのテンプレートがあり、skillから参照される。
 

@@ -4,7 +4,7 @@ log_section() {
     print -P "%F{blue}%B==> %f%b%F{white}%B$1%f%b"
 }
 
-DOTPATH=$(cd "$(dirname "$0")/.." && pwd)
+DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
 CODEX_CONFIG_TARGET="$HOME/.codex/config.toml"
 CODEX_CONFIG_TEMPLATE="$DOTPATH/config/ai-agents/codex/config.toml"
@@ -27,7 +27,7 @@ mkdir -p "$HOME/.codex/agents"
 
 # Copy or merge config.toml
 if [ -e "$CODEX_CONFIG_TARGET" ] || [ -L "$CODEX_CONFIG_TARGET" ]; then
-    uv run --with tomlkit python3 "$DOTPATH/script/rewrite_config.py" "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
+    uv run --with tomlkit python3 "$DOTPATH/script/setup/rewrite_config.py" "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
 else
     cp "$CODEX_CONFIG_TEMPLATE" "$CODEX_CONFIG_TARGET"
 fi

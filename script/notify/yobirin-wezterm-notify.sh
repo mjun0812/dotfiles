@@ -53,5 +53,5 @@ read -r RESULT_TYPE < <(
 ) || true
 
 if [[ $RESULT_TYPE == clicked || $RESULT_TYPE == action ]]; then
-    "$HOME/.dotfiles/script/wezterm/activate-wezterm-pane.sh" "$PANE_ID" "$SESSION_ID"
+    "$HOME/.dotfiles/script/notify/activate-wezterm-pane.sh" "$PANE_ID" "$SESSION_ID"
 fi

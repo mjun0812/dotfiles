@@ -2,7 +2,7 @@
 
 set -u
 
-DOTPATH=$(cd "$(dirname "$0")/.." && pwd)
+DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 MAC_CONFIG_DIR="$DOTPATH/config/mac"
 
 if [ "$(uname -s)" != "Darwin" ]; then
