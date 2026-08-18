@@ -13,15 +13,6 @@ mkdir -p "$CONFIG_DIR"
 mkdir -p "$HOME/.cargo"
 mkdir -p "$HOME/.local/bin"
 
-if [ "$(uname -s)" = "Darwin" ]; then
-    zsh $DOTPATH/script/install/install_homebrew.sh
-
-    # karabiner-elements
-    cp -aLf "$HOME/.config/karabiner" "$DOTPATH/.backup/karabiner" 2>/dev/null || true
-    rm -rf "$HOME/.config/karabiner"
-    ln -snfv "$DOTPATH/config/mac/karabiner" "$HOME/.config/karabiner"
-fi
-
 # ############## [dotfiles] ##############
 log_section "Setting up dotfiles..."
 for f in "$DOTPATH"/config/dot/*; do
@@ -30,24 +21,25 @@ for f in "$DOTPATH"/config/dot/*; do
     ln -snfv "$f" "$HOME/.$(basename $f)"
 done
 
-################ [config] ################
-log_section "Setting up config..."
+################ [~/.config] ################
+log_section "Setting up .config..."
 for d in "$DOTPATH"/config/dot_config/*; do
     app=$(basename "$d")
+
     if [ "$app" = "herdr" ]; then
         mkdir -p "$CONFIG_DIR/$app"
         rm -rf "$CONFIG_DIR/$app/config.toml"
         ln -snfv "$d/config.toml" "$CONFIG_DIR/$app/config.toml"
         continue
     fi
-    # cli-proxy-api downloads runtime assets (static/) next to its config,
-    # so link only config.yaml and keep the directory itself real.
+
     if [ "$app" = "cli-proxy-api" ]; then
         mkdir -p "$CONFIG_DIR/$app"
         rm -rf "$CONFIG_DIR/$app/config.yaml"
         ln -snfv "$d/config.yaml" "$CONFIG_DIR/$app/config.yaml"
         continue
     fi
+
     cp -aLf "$CONFIG_DIR/$app" "$DOTPATH/.backup/$app" 2>/dev/null || true
     rm -rf "$CONFIG_DIR/$app"
     ln -snfv "$d" "$CONFIG_DIR/$app"
@@ -55,7 +47,7 @@ done
 
 ################ [mise] ################
 log_section "Setting up mise..."
-$DOTPATH/script/install/install_mise.sh
+$DOTPATH/script/setup/install_mise.sh
 source "$HOME/.zshrc"
 mise install
 mise reshim
@@ -65,6 +57,11 @@ if [ "$(uname -s)" = "Darwin" ]; then
     log_section "Applying mise bootstrap..."
     mise bootstrap packages apply --yes
     mise bootstrap launchd apply --yes
+
+    # install Homebrew if not installed (for macOS)
+    if ! command -v brew >/dev/null 2>&1; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
 elif [ "$(uname -s)" = "Linux" ]; then
     log_section "Applying mise bootstrap..."
     mise bootstrap systemd apply --yes
@@ -73,31 +70,12 @@ fi
 ################ [Zsh Completion Update] ################
 $DOTPATH/script/setup/update_completions.sh
 
-################ [yazi] ################
-ya pkg add yazi-rs/plugins:mime-ext
-
 ################ [Node] ################
-log_section "Setting up Node..."
-$DOTPATH/script/install/install_vp.sh || echo "vp install/upgrade failed (ignored)"
-
-################ [Playwright Browsers] ################
-log_section "Setting up Playwright browsers..."
-# Playwright currently has no prebuilt chromium for some newer Ubuntu releases
-# (e.g. 26.04 used by GitHub Actions runners); don't fail the whole install.
-if command -v bunx >/dev/null 2>&1; then
-    bunx playwright install chromium || echo "playwright chromium install skipped (unsupported platform)"
-fi
-
-################ [agent-browser] ################
-log_section "Setting up agent-browser..."
-# Detects the Playwright chromium installed above; downloads Chrome for Testing otherwise.
-if command -v agent-browser >/dev/null 2>&1; then
-    agent-browser install || echo "agent-browser browser install skipped"
-fi
+log_section "Setting up Vite plus..."
+$DOTPATH/script/setup/install_vp.sh || echo "vp install/upgrade failed (ignored)"
 
 ################ [Python] ################
 log_section "Setting up Python..."
-source "$HOME/.zshrc"
 cd $HOME
 uv venv --allow-existing
 uv pip install -U \

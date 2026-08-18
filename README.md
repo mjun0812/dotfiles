@@ -64,9 +64,9 @@ cd ~/.dotfiles
 ./install.sh
 
 # First Install Only: Install VS Code extensions
-./script/install/install_vscode_extensions.sh
+./script/setup/install_vscode_extensions.sh
 # First Install Only: For macOS
-./script/install/install_macOS.sh
+./script/setup/setup_macos_apps.sh
 
 # Optional: Login to GitHub CLI
 gh auth login
@@ -146,7 +146,6 @@ Details of configuration and keyboard shortcuts are documented in [doc/macOS.md]
 | ChatGPT            | OpenAI desktop client             |
 | Claude             | Anthropic desktop client          |
 | Clipy              | Clipboard manager                 |
-| cmux               | Terminal emulator                 |
 | Cursor             | AI-powered IDE                    |
 | DeepL              | Translator                        |
 | Ghostty            | Terminal emulator                 |
@@ -273,7 +272,7 @@ See [doc/nvim.md](doc/nvim.md) for Neovim configuration and keyboard shortcuts.
 
 VS Code extensions are managed in `config/vscode/extensions.txt`.
 
-`script/install/install_vscode_extensions.sh` installs missing extensions only and does not uninstall local extensions.
+`script/setup/install_vscode_extensions.sh` installs missing extensions only and does not uninstall local extensions.
 
 To synchronize the installed extensions exactly with `config/vscode/extensions.txt`, run:
 

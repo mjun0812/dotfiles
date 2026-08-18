@@ -17,7 +17,7 @@ jq = "latest"
 starship = "latest"
 tmux = "latest"
 usage = "latest"
-yazi = "latest"
+yazi = { version = "latest", postinstall = "ya pkg install" }
 yq = "latest"
 zoxide = "latest"
 "aqua:sharkdp/bat" = "latest"
@@ -40,7 +40,11 @@ lazygit = "latest"
 # Dev tooling
 actionlint = "latest"
 aqua = "latest"
-container = { version = "latest", os = ["macos"] }
+container = { version = "latest", os = ["macos"], postinstall = '''
+container system start
+# kata-static から推奨カーネルを取得して既定化する
+container system kernel set --recommended --force
+''' }
 gcloud = "latest"
 herdr = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup_herdr.sh' }
 imagemagick = { version = "latest", os = ["macos"] }
@@ -66,7 +70,9 @@ shfmt = "latest"
 "npm:typescript-language-server" = "latest"
 
 # AI coding agents
-"npm:agent-browser" = "latest"
+# Downloads Chrome for Testing into ~/.agent-browser/browsers/;
+# don't fail the tool install on unsupported platforms.
+"npm:agent-browser" = { version = "latest", postinstall = "agent-browser install || echo 'agent-browser browser install skipped'" }
 "aqua:anthropics/claude-code" = "latest"
 "aqua:openai/codex" = { version = "latest", postinstall = '''
 set -eu

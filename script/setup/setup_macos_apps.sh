@@ -36,11 +36,13 @@ for cask in "${CASKS[@]}"; do
     install_cask "$cask"
 done
 
-# manaflow-ai/cmux tap のみ登録 (cask 本体は未使用)
-brew tap manaflow-ai/cmux >/dev/null 2>&1 || true
-brew trust manaflow-ai/cmux >/dev/null 2>&1 || true
-
 # AltTab の設定を反映
 osascript -e 'quit app "AltTab"' >/dev/null 2>&1 || true
 defaults import com.lwouis.alt-tab-macos "$DOTPATH/config/mac/com.lwouis.alt-tab-macos.plist"
 killall cfprefsd >/dev/null 2>&1 || true
+
+# karabiner-elements の設定を symlink で配置
+mkdir -p "$DOTPATH/.backup"
+cp -aLf "$HOME/.config/karabiner" "$DOTPATH/.backup/karabiner" 2>/dev/null || true
+rm -rf "$HOME/.config/karabiner"
+ln -snfv "$DOTPATH/config/mac/karabiner" "$HOME/.config/karabiner"
