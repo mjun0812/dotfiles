@@ -35,7 +35,7 @@
       {
         "hooks": [
           {
-            "command": "bash '/Users/mjun/.codex/herdr-agent-state.sh' session",
+            "command": "bash ~/.codex/herdr-agent-state.sh session",
             "timeout": 10,
             "type": "command"
           }
