@@ -42,7 +42,12 @@ actionlint = "latest"
 aqua = "latest"
 container = { version = "latest", os = ["macos"] }
 gcloud = "latest"
-herdr = "latest"
+herdr = { version = "latest", postinstall = '''
+set -eu
+
+herdr integration install claude
+herdr integration install codex
+''' }
 imagemagick = { version = "latest", os = ["macos"] }
 "aqua:imagemagick" = { version = "latest", os = ["linux"] }
 kubectl = "latest"

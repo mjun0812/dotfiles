@@ -97,7 +97,6 @@
   },
   "model": "claude-fable-5[1m]",
   "hooks": {
-    "PostToolUse": [],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -116,6 +115,16 @@
           {
             "type": "command",
             "command": "~/.dotfiles/script/wezterm/capture-claude-wezterm-hook.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/mjun/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
           }
         ]
       }
