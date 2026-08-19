@@ -1,22 +1,11 @@
-#
-# Defines environment variables.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#
-# zmodload zsh/zprof
-
 # Ensure that a non-login, non-interactive shell has a defined environment.
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
 
-# If you want to see the profile, uncomment the following line
-# zmodload zsh/zprof && zprof
-
-
 # Vite+ bin (https://viteplus.dev)
 [ -f "$HOME/.vite-plus/env" ] && . "$HOME/.vite-plus/env"
 
-# mise shims: 非interactiveシェル (Claude Code等) でもmise管理ツールを解決できるようにする
 export PATH="$HOME/.local/share/mise/shims:$PATH"
+
+export CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1
