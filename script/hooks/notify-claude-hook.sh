@@ -66,14 +66,6 @@ notification)
         ICON="🔐"
         DEFAULT_BODY="許可を待っています"
         ;;
-    idle_prompt)
-        ICON="📝"
-        DEFAULT_BODY="入力を待っています"
-        ;;
-    agent_needs_input)
-        ICON="🤖"
-        DEFAULT_BODY="subagent が入力を待っています"
-        ;;
     *)
         ICON="🔔"
         DEFAULT_BODY="通知があります"

@@ -141,7 +141,7 @@
     ],
     "Notification": [
       {
-        "matcher": "permission_prompt|idle_prompt|agent_needs_input",
+        "matcher": "permission_prompt",
         "hooks": [
           {
             "type": "command",
