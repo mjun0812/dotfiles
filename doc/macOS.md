@@ -1,5 +1,12 @@
 # macOS
 
+## App Settings
+
+GUI app settings are managed in two ways:
+
+- **iTerm2**: uses the official "Load preferences from a custom folder" feature pointed at `config/mac/iterm2/`. Settings are loaded from and automatically saved back to the repo plist on quit (`NoSyncNeverRemindPrefsChangesLostForFile_selection = 2`), so changes appear directly in `git diff`. Enabled by `script/setup/setup_macos_apps.sh`.
+- **AltTab / BetterDisplay / Homerow / Clipy**: managed as `defaults` plists in `config/mac/`. `./update.sh` (or `script/tools/dump_mac_tools_config.sh`) dumps the local settings into the repo; `script/setup/setup_macos_apps.sh` imports them on a new machine (quits the app, `defaults import`, restarts `cfprefsd`). Clipy snippets live in a Realm DB and are not covered.
+
 ## AeroSpace
 
 See [doc/aerospace.md](aerospace.md) for AeroSpace window manager configuration and keyboard shortcuts.

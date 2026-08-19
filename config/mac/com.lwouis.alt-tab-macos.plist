@@ -6,6 +6,8 @@
 	<true/>
 	<key>MSAppCenter310CrashesUserDefaultsMigratedKey</key>
 	<true/>
+	<key>MSAppCenterAppDidReceiveMemoryWarning</key>
+	<true/>
 	<key>MSAppCenterInstallId</key>
 	<string>C8E5B84B-27F0-4CED-B0B8-158BBC1FA862</string>
 	<key>MSAppCenterNetworkRequestsAllowed</key>
@@ -15,7 +17,7 @@
 	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
 	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGvEBULDBIYHCJQUVJTVFVWV1hZ
 	WltcYWZVJG51bGzSDQ4PEVpOUy5vYmplY3RzViRjbGFzc6EQgAKAFNMTFA4VFhdcdGlt
-	ZXN0YW1wS2V5WWRldmljZUtleYADgAWAE9IZDhobV05TLnRpbWUjQcf0Agi0fAeABNId
+	ZXN0YW1wS2V5WWRldmljZUtleYADgAWAE9IZDhobV05TLnRpbWUjQcgaX4Rk1aaABNId
 	Hh8gWiRjbGFzc25hbWVYJGNsYXNzZXNWTlNEYXRloh8hWE5TT2JqZWN03xAXIyQlJg4n
 	KCkqKywtLi8wMTIzNDU2Nzg5Ojs8PTs8PEFCPDw8PEdISUo8PE1OT1lvc1ZlcnNpb25e
 	dGltZVpvbmVPZmZzZXRYYXBwQnVpbGRfEBVsaXZlVXBkYXRlUGFja2FnZUhhc2haYXBw
@@ -25,8 +27,8 @@
 	VW1vZGVsXxAVd3JhcHBlclJ1bnRpbWVWZXJzaW9uXxAWbGl2ZVVwZGF0ZVJlbGVhc2VM
 	YWJlbFpzY3JlZW5TaXplVm9zTmFtZVdvc0J1aWxkgAuADoAQgACAEoAQgACAAIAGgA2A
 	AIAAgACAAIAJgAeAEYAIgACAAIAPgAqADF8QD2FwcGNlbnRlci5tYWNvc1U0LjMuMFdN
-	YWMxNywzVUFwcGxlVW1hY09TVjI2LjUuMVUyNUY4MFVqYV9KUBECHFkyNTYweDE0NDBW
-	MTEuMy4wXxAYY29tLmx3b3Vpcy5hbHQtdGFiLW1hY29z0h0eXV5aTVNBQ0RldmljZaNf
+	YWMxNywzVUFwcGxlVW1hY09TVjI2LjUuMlUyNUY4NFVqYV9KUBECHFkyNTYweDE0NDBW
+	MTEuNC40XxAYY29tLmx3b3Vpcy5hbHQtdGFiLW1hY29z0h0eXV5aTVNBQ0RldmljZaNf
 	YCFaTVNBQ0RldmljZV5NU0FDV3JhcHBlclNka9IdHmJjXxAVTVNBQ0RldmljZUhpc3Rv
 	cnlJbmZvo2RlIV8QFU1TQUNEZXZpY2VIaXN0b3J5SW5mb18QD01TQUNIaXN0b3J5SW5m
 	b9IdHmdoXk5TTXV0YWJsZUFycmF5o2dpIVdOU0FycmF5AAgAEQAaACQAKQAyADcASQBM
@@ -41,7 +43,7 @@
 	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
 	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGnCwwSGBwiJ1UkbnVsbNINDg8R
 	Wk5TLm9iamVjdHNWJGNsYXNzoRCAAoAG0xMUDhUWF1x0aW1lc3RhbXBLZXlcc2Vzc2lv
-	bklkS2V5gAOAAIAF0hkOGhtXTlMudGltZSNBx/QCCJh9cIAE0h0eHyBaJGNsYXNzbmFt
+	bklkS2V5gAOAAIAF0hkOGhtXTlMudGltZSNByBpfhGO3Y4AE0h0eHyBaJGNsYXNzbmFt
 	ZVgkY2xhc3Nlc1ZOU0RhdGWiHyFYTlNPYmplY3TSHR4jJF8QFk1TQUNTZXNzaW9uSGlz
 	dG9yeUluZm+jJSYhXxAWTVNBQ1Nlc3Npb25IaXN0b3J5SW5mb18QD01TQUNIaXN0b3J5
 	SW5mb9IdHigpXk5TTXV0YWJsZUFycmF5oygqIVdOU0FycmF5AAgAEQAaACQAKQAyADcA
@@ -54,7 +56,7 @@
 	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
 	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGnCwwSGBwiJ1UkbnVsbNINDg8R
 	Wk5TLm9iamVjdHNWJGNsYXNzoRCAAoAG0xMUDhUWF1x0aW1lc3RhbXBLZXlZdXNlcklk
-	S2V5gAOAAIAF0hkOGhtXTlMudGltZSNBx/QCCJiQcYAE0h0eHyBaJGNsYXNzbmFtZVgk
+	S2V5gAOAAIAF0hkOGhtXTlMudGltZSNByBpfhGPEj4AE0h0eHyBaJGNsYXNzbmFtZVgk
 	Y2xhc3Nlc1ZOU0RhdGWiHyFYTlNPYmplY3TSHR4jJF8QFU1TQUNVc2VySWRIaXN0b3J5
 	SW5mb6MlJiFfEBVNU0FDVXNlcklkSGlzdG9yeUluZm9fEA9NU0FDSGlzdG9yeUluZm/S
 	HR4oKV5OU011dGFibGVBcnJheaMoKiFXTlNBcnJheQAIABEAGgAkACkAMgA3AEkATABR
@@ -88,6 +90,8 @@
 	<string>1450 656 400 135 0 0 2560 1415 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>970 777 620 398 0 0 2560 1415 </string>
+	<key>NSWindow Frame SUUpdateAlert2</key>
+	<string>1000 769 559 402 0 0 2560 1410 </string>
 	<key>NSWindow Frame SettingsWindow</key>
 	<string>225 612 933 534 0 0 2560 1410 </string>
 	<key>SUAutomaticallyUpdate</key>
@@ -97,13 +101,15 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2026-06-16T19:23:35Z</date>
+	<date>2026-08-18T16:25:38Z</date>
 	<key>SUSkippedVersion</key>
 	<string>6.64.0</string>
 	<key>SUUpdateGroupIdentifier</key>
 	<integer>2250117841</integer>
 	<key>SUUpdateRelaunchingMarker</key>
 	<false/>
+	<key>appearanceSize</key>
+	<string>1</string>
 	<key>crashPolicy</key>
 	<string>1</string>
 	<key>hideAppBadges</key>
@@ -119,7 +125,7 @@
 	<key>menubarIconShown</key>
 	<string>false</string>
 	<key>preferencesVersion</key>
-	<string>11.3.0</string>
+	<string>11.4.4</string>
 	<key>screensToShow</key>
 	<string>1</string>
 	<key>settingsWindowShownOnFirstLaunch</key>

@@ -72,6 +72,16 @@ cd ~/.dotfiles
 gh auth login
 ```
 
+## Update
+
+To sync local app settings (macOS app defaults and the VS Code extension list) back into this repository, run:
+
+```bash
+./update.sh
+```
+
+It dumps the settings and shows the resulting `git status`; review and commit the diff yourself. iTerm2 is not part of the dump: it reads and writes its settings directly in `config/mac/iterm2/` via its custom preferences folder feature.
+
 ## Tools
 
 | Name   | Description     |

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSStatusItem Preferred Position Item-0</key>
+	<real>703</real>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUHasLaunchedBefore</key>
+	<true/>
+	<key>SULastCheckTime</key>
+	<date>2026-07-27T16:52:33Z</date>
+	<key>SUUpdateGroupIdentifier</key>
+	<integer>743585302</integer>
+	<key>activation-count</key>
+	<integer>42</integer>
+	<key>auto-activate-mission-control</key>
+	<false/>
+	<key>launch-at-login</key>
+	<true/>
+	<key>theme-id</key>
+	<string>dark</string>
+</dict>
+</plist>

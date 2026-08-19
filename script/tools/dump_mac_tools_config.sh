@@ -22,5 +22,8 @@ dump_defaults() {
     fi
 }
 
+# iTerm2 は custom folder (config/mac/iterm2/) へ自動保存されるためここでは扱わない
 dump_defaults "com.lwouis.alt-tab-macos" "$MAC_CONFIG_DIR/com.lwouis.alt-tab-macos.plist"
-dump_defaults "com.googlecode.iterm2" "$MAC_CONFIG_DIR/com.googlecode.iterm2.plist"
+dump_defaults "pro.betterdisplay.BetterDisplay" "$MAC_CONFIG_DIR/pro.betterdisplay.BetterDisplay.plist"
+dump_defaults "com.superultra.Homerow" "$MAC_CONFIG_DIR/com.superultra.Homerow.plist"
+dump_defaults "com.clipy-app.Clipy" "$MAC_CONFIG_DIR/com.clipy-app.Clipy.plist"

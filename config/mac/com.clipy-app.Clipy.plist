@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSStatusItem VisibleCC Item-0</key>
+	<false/>
+	<key>NSWindow Frame SUStatusFrame</key>
+	<string>1080 970 400 135 0 0 2560 1410 </string>
+	<key>NSWindow Frame SUUpdateAlert</key>
+	<string>970 772 620 398 0 0 2560 1410 </string>
+	<key>SUAutomaticallyUpdate</key>
+	<true/>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUHasLaunchedBefore</key>
+	<true/>
+	<key>SULastCheckTime</key>
+	<date>2026-08-18T04:03:39Z</date>
+	<key>SUScheduledCheckInterval</key>
+	<real>86400</real>
+	<key>SUUpdateGroupIdentifier</key>
+	<integer>2501954509</integer>
+	<key>SUUpdateRelaunchingMarker</key>
+	<true/>
+	<key>kCPYBetaPastePlainText</key>
+	<false/>
+	<key>kCPYCollectCrashReport</key>
+	<false/>
+	<key>kCPYHotKeyHistoryKeyCombo</key>
+	<data>
+	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
+	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGkCwwVFlUkbnVsbNQNDg8QERIT
+	FFYkY2xhc3NTa2V5WW1vZGlmaWVyc18QEGRvdWJsZWRNb2RpZmllcnOAA4ACEREACFF2
+	0hcYGRpaJGNsYXNzbmFtZVgkY2xhc3Nlc18QD01hZ25ldC5LZXlDb21ib6IbHF8QD01h
+	Z25ldC5LZXlDb21ib1hOU09iamVjdAgRGiQpMjdJTFFTWF5nbnJ8j5GTlpeZnqmyxMfZ
+	AAAAAAAAAQEAAAAAAAAAHQAAAAAAAAAAAAAAAAAAAOI=
+	</data>
+	<key>kCPYHotKeyMainKeyCombo</key>
+	<data>
+	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
+	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGkCwwVFlUkbnVsbNQNDg8QERIT
+	FFYkY2xhc3NTa2V5WW1vZGlmaWVyc18QEGRvdWJsZWRNb2RpZmllcnOAA4ACEQMACFF2
+	0hcYGRpaJGNsYXNzbmFtZVgkY2xhc3Nlc18QD01hZ25ldC5LZXlDb21ib6IbHF8QD01h
+	Z25ldC5LZXlDb21ib1hOU09iamVjdAgRGiQpMjdJTFFTWF5nbnJ8j5GTlpeZnqmyxMfZ
+	AAAAAAAAAQEAAAAAAAAAHQAAAAAAAAAAAAAAAAAAAOI=
+	</data>
+	<key>kCPYHotKeySnippetKeyCombo</key>
+	<data>
+	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
+	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGkCwwVFlUkbnVsbNQNDg8QERIT
+	FFYkY2xhc3NTa2V5WW1vZGlmaWVyc18QEGRvdWJsZWRNb2RpZmllcnOAA4ACEQMACFFi
+	0hcYGRpaJGNsYXNzbmFtZVgkY2xhc3Nlc18QD01hZ25ldC5LZXlDb21ib6IbHF8QD01h
+	Z25ldC5LZXlDb21ib1hOU09iamVjdAgRGiQpMjdJTFFTWF5nbnJ8j5GTlpeZnqmyxMfZ
+	AAAAAAAAAQEAAAAAAAAAHQAAAAAAAAAAAAAAAAAAAOI=
+	</data>
+	<key>kCPYMigrateNewKeyCombo</key>
+	<true/>
+	<key>kCPYPrefMaxHistorySizeKey</key>
+	<integer>50</integer>
+	<key>kCPYPrefMaxMenuItemTitleLengthKey</key>
+	<integer>30</integer>
+	<key>kCPYPrefNumberOfItemsPlaceInlineKey</key>
+	<integer>20</integer>
+	<key>kCPYPrefNumberOfItemsPlaceInsideFolderKey</key>
+	<integer>20</integer>
+	<key>kCPYPrefShowIconInTheMenuKey</key>
+	<false/>
+	<key>kCPYPrefShowStatusItemKey</key>
+	<integer>0</integer>
+	<key>loginItem</key>
+	<true/>
+	<key>suppressAlertForLoginItem</key>
+	<true/>
+</dict>
+</plist>

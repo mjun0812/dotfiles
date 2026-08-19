@@ -17,6 +17,9 @@ zsh script/setup/setup_claude_code.sh   # Claude Code設定のsymlink・plugin
 zsh script/setup/setup_codex.sh         # Codex設定 (config.tomlはキー単位マージ、他はsymlink)
 script/setup/update_completions.sh      # zsh補完の更新
 
+# ローカルのapp設定 (macOS app defaults・VSCode拡張リスト) をリポジトリへ逆同期
+./update.sh
+
 # フォーマット (pre-commit hookでも実行される)
 prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt
 
