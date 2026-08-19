@@ -9,18 +9,38 @@ SESSION_ID="${2:-}"
 if [[ $SESSION_ID =~ ^[[:alnum:]_-]+$ ]]; then
     open -g "hammerspoon://claude-wezterm-focus?session=${SESSION_ID}&pane=${PANE_ID}" \
         >/dev/null 2>&1 || true
+else
+    WEZTERM_BIN="$(command -v wezterm || true)"
+    if [[ -z $WEZTERM_BIN ]]; then
+        for candidate in /opt/homebrew/bin/wezterm /usr/local/bin/wezterm; do
+            if [[ -x $candidate ]]; then
+                WEZTERM_BIN="$candidate"
+                break
+            fi
+        done
+    fi
+
+    [[ -n $WEZTERM_BIN ]] || exit 0
+    "$WEZTERM_BIN" cli activate-pane --pane-id "$PANE_ID" >/dev/null 2>&1 || true
     exit 0
 fi
 
-WEZTERM_BIN="$(command -v wezterm || true)"
-if [[ -z $WEZTERM_BIN ]]; then
-    for candidate in /opt/homebrew/bin/wezterm /usr/local/bin/wezterm; do
-        if [[ -x $candidate ]]; then
-            WEZTERM_BIN="$candidate"
-            break
-        fi
-    done
-fi
+# herdr内のsessionなら、herdr側のworkspace/tab/paneも切り替える。
+# session ID → paneの対応はherdrのclaude/codex integrationがSessionStartで
+# herdr serverへ登録しているため、通知時にキャプチャせずクリック時に逆引きする
+# (通知表示中のresumeやpane移動に追従し、herdr外のsessionではヒットせずskipされる)。
+command -v jq >/dev/null 2>&1 || exit 0
 
-[[ -n $WEZTERM_BIN ]] || exit 0
-"$WEZTERM_BIN" cli activate-pane --pane-id "$PANE_ID" >/dev/null 2>&1 || true
+HERDR_BIN="$(command -v herdr || true)"
+if [[ -z $HERDR_BIN && -x "$HOME/.local/share/mise/shims/herdr" ]]; then
+    HERDR_BIN="$HOME/.local/share/mise/shims/herdr"
+fi
+[[ -n $HERDR_BIN ]] || exit 0
+
+HERDR_PANE="$("$HERDR_BIN" agent list 2>/dev/null |
+    jq -r --arg sid "$SESSION_ID" \
+        'first(.result.agents[]? | select(.agent_session.value == $sid) | .pane_id) // empty' \
+        2>/dev/null || true)"
+
+[[ $HERDR_PANE =~ ^[[:alnum:]:_-]+$ ]] || exit 0
+"$HERDR_BIN" agent focus "$HERDR_PANE" >/dev/null 2>&1 || true
