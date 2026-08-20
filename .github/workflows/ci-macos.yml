@@ -34,6 +34,10 @@ jobs:
         run: |
           ./install.sh
 
+      - name: Re-run install script (idempotency)
+        run: |
+          ./install.sh
+
       - name: Verify symlinks (dotfiles)
         run: |
           echo "=== Checking dotfile symlinks ==="
@@ -65,6 +69,36 @@ jobs:
               echo "✗ .config/$name is NOT a symlink"
               exit 1
             fi
+          done
+
+      - name: Verify symlinks (AI agents)
+        run: |
+          echo "=== Checking AI agent symlinks ==="
+          check_link() {
+            if [[ -L "$1" ]]; then
+              echo "✓ $1 is a symlink"
+            else
+              echo "✗ $1 is NOT a symlink"
+              exit 1
+            fi
+          }
+          for f in CLAUDE.md settings.json mcp.json statusline.py subagent_statusline.py; do
+            check_link "$HOME/.claude/$f"
+          done
+          check_link "$HOME/.codex/AGENTS.md"
+          check_link "$HOME/.codex/hooks.json"
+          check_link "$HOME/.gemini/GEMINI.md"
+          if [[ -f "$HOME/.codex/config.toml" ]]; then
+            echo "✓ .codex/config.toml exists"
+          else
+            echo "✗ .codex/config.toml is missing"
+            exit 1
+          fi
+          for d in config/ai-agents/skills/*(/); do
+            name=$(basename "$d")
+            for base in "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.codex/skills" "$HOME/.gemini/antigravity-cli/skills"; do
+              check_link "$base/$name"
+            done
           done
 
       - name: Verify mise installation
@@ -124,3 +158,14 @@ jobs:
           source "$HOME/.venv/bin/activate"
           python --version
           echo "✓ Python venv is configured"
+
+      - name: Verify Neovim setup
+        run: |
+          echo "=== Checking Neovim plugins, treesitter parsers, and LSP servers ==="
+          source "$HOME/.zshrc"
+          nvim --headless -c "luafile $HOME/.dotfiles/script/ci/check_nvim.lua" +qa
+
+      - name: Verify interactive zsh startup
+        run: |
+          echo "=== Checking interactive zsh ==="
+          zsh -i -c "echo ✓ interactive zsh starts successfully"

@@ -1,0 +1,33 @@
+name: CI Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint (prek)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      # pre-commit hookはlanguage: systemのため、hookが呼ぶツールもここで入れる
+      - name: Install lint tools via mise
+        uses: jdx/mise-action@v2
+        with:
+          mise_toml: |
+            [tools]
+            prek = "latest"
+            gitleaks = "latest"
+            shfmt = "latest"
+            node = "latest"
+            "npm:oxfmt" = "latest"
+
+      - name: Run prek
+        run: prek run --all-files

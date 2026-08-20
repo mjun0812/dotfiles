@@ -52,6 +52,12 @@ jobs:
         run: |
           su - testuser -c "export GITHUB_TOKEN='${GITHUB_TOKEN}' && cd ~/.dotfiles && zsh ./install.sh"
 
+      - name: Re-run install script (idempotency)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          su - testuser -c "export GITHUB_TOKEN='${GITHUB_TOKEN}' && cd ~/.dotfiles && zsh ./install.sh"
+
       - name: Verify symlinks (dotfiles)
         shell: zsh {0}
         run: |
@@ -89,6 +95,39 @@ jobs:
             fi
           done
 
+      - name: Verify symlinks (AI agents)
+        shell: zsh {0}
+        run: |
+          echo "=== Checking AI agent symlinks ==="
+          cd /home/testuser/.dotfiles
+          home=/home/testuser
+          check_link() {
+            if [[ -L "$1" ]]; then
+              echo "✓ $1 is a symlink"
+            else
+              echo "✗ $1 is NOT a symlink"
+              exit 1
+            fi
+          }
+          for f in CLAUDE.md settings.json mcp.json statusline.py subagent_statusline.py; do
+            check_link "$home/.claude/$f"
+          done
+          check_link "$home/.codex/AGENTS.md"
+          check_link "$home/.codex/hooks.json"
+          check_link "$home/.gemini/GEMINI.md"
+          if [[ -f "$home/.codex/config.toml" ]]; then
+            echo "✓ .codex/config.toml exists"
+          else
+            echo "✗ .codex/config.toml is missing"
+            exit 1
+          fi
+          for d in config/ai-agents/skills/*(/); do
+            name=$(basename "$d")
+            for base in "$home/.agents/skills" "$home/.claude/skills" "$home/.codex/skills" "$home/.gemini/antigravity-cli/skills"; do
+              check_link "$base/$name"
+            done
+          done
+
       - name: Verify mise installation
         run: |
           echo "=== Checking mise ==="
@@ -124,3 +163,13 @@ jobs:
           echo "=== Checking Python venv ==="
           su - testuser -c 'source ~/.zshrc && source ~/.venv/bin/activate && python --version'
           echo "✓ Python venv is configured"
+
+      - name: Verify Neovim setup
+        run: |
+          echo "=== Checking Neovim plugins, treesitter parsers, and LSP servers ==="
+          su - testuser -c 'source ~/.zshrc && nvim --headless -c "luafile ~/.dotfiles/script/ci/check_nvim.lua" +qa'
+
+      - name: Verify interactive zsh startup
+        run: |
+          echo "=== Checking interactive zsh ==="
+          su - testuser -c 'zsh -i -c "echo ✓ interactive zsh starts successfully"'
