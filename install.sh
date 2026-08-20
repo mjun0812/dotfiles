@@ -70,6 +70,13 @@ fi
 ################ [Zsh Completion Update] ################
 $DOTPATH/script/setup/update_completions.sh
 
+################ [Zsh Plugin Warm-up] ################
+log_section "Warming up zsh plugins..."
+# sheldon plugin clone and fzf binary download
+zsh -i -c exit
+# install powerlevel10k gitstatusd
+sh "$HOME/.local/share/sheldon/repos/github.com/romkatv/powerlevel10k/gitstatus/install"
+
 ################ [Neovim] ################
 log_section "Setting up Neovim plugins..."
 nvim --headless "+Lazy! restore" +qa
