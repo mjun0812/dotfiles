@@ -74,8 +74,6 @@ claudex() {
 }
 
 # Codex
-# alias codex='codex-full' は関数定義より後に置くこと。
-# 前に置くと関数本体のパース時にaliasが展開されて無限再帰する。
 codex() {
     command codex --remote unix:// "$@"
 }
@@ -183,7 +181,7 @@ _is_ssh_session() {
     [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]
 }
 
-# Term のタブタイトルを hostname:command にする
+# Term のタブタイトルを hostname@command にする
 _term_tab_title() {
     local title="$1"
     if [[ -n "$TMUX" ]]; then
