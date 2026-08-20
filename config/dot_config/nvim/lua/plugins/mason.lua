@@ -14,7 +14,7 @@ return {
         event = { "BufReadPre", "BufNewFile" },
         config = true,
         opts = {
-            ensure_installed = { "copilot", "lua_ls", "ruff", "ty", "oxfmt", "taplo" },
+            ensure_installed = require("config.mason-servers"),
         },
         keys = {
             { "gh", "<cmd>lua vim.lsp.buf.hover()       <CR>" },

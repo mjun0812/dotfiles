@@ -22,7 +22,7 @@ for f in "$DOTPATH"/config/dot/*; do
 done
 
 ################ [~/.config] ################
-log_section "Setting up .config..."
+log_section "Setting up dot config..."
 for d in "$DOTPATH"/config/dot_config/*; do
     app=$(basename "$d")
 
@@ -69,6 +69,12 @@ fi
 
 ################ [Zsh Completion Update] ################
 $DOTPATH/script/setup/update_completions.sh
+
+################ [Neovim] ################
+log_section "Setting up Neovim plugins..."
+nvim --headless "+Lazy! restore" +qa
+nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa
+nvim --headless -c "lua require('config.mason-preinstall')()" +qa
 
 ################ [Node] ################
 log_section "Setting up Vite plus..."

@@ -26,31 +26,7 @@ return {
         quickfix = true,
       }
 
-      local ensure_installed = {
-        "markdown",
-        "markdown_inline",
-        "rst",
-        "typst",
-        "bash",
-        "python",
-        "lua",
-        "json",
-        "yaml",
-        "toml",
-        "html",
-        "css",
-        "javascript",
-        "typescript",
-        "go",
-        "rust",
-        "c",
-        "cpp",
-        "java",
-        "dockerfile",
-        "sql",
-        "vim",
-        "regex",
-      }
+      local ensure_installed = require("config.treesitter-langs")
 
       local supported_languages = {}
       for _, language in ipairs(ts.get_available()) do
