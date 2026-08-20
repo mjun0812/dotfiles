@@ -46,6 +46,7 @@ container system start
 container system kernel set --recommended --force
 ''' }
 gcloud = "latest"
+gitleaks = "latest"
 herdr = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup_herdr.sh' }
 imagemagick = { version = "latest", os = ["macos"] }
 "aqua:imagemagick" = { version = "latest", os = ["linux"] }
@@ -60,6 +61,8 @@ shfmt = "latest"
 "github:WGUNDERWOOD/tex-fmt" = "latest"
 "github:runpod/runpodctl" = "latest"
 "github:rtk-ai/rtk" = "latest"
+
+# npm packages
 "npm:@mermaid-js/mermaid-cli" = "latest"
 "npm:md-to-pdf" = { version = "latest", install_env = { PUPPETEER_SKIP_DOWNLOAD = "1" } }
 "npm:neovim" = "latest"
@@ -70,8 +73,6 @@ shfmt = "latest"
 "npm:typescript-language-server" = "latest"
 
 # AI coding agents
-# Downloads Chrome for Testing into ~/.agent-browser/browsers/;
-# don't fail the tool install on unsupported platforms.
 "npm:agent-browser" = { version = "latest", postinstall = "agent-browser install || echo 'agent-browser browser install skipped'" }
 "aqua:anthropics/claude-code" = "latest"
 "aqua:openai/codex" = { version = "latest", postinstall = '''
