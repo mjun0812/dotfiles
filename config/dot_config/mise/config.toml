@@ -99,6 +99,7 @@ opencode = "latest"
 "pipx:nvitop" = "latest"
 "pipx:ty" = "latest"
 "pipx:copier" = "latest"
+"pipx:huggingface_hub" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
