@@ -74,11 +74,8 @@ claudex() {
 }
 
 # Codex
-codex() {
-    command codex --remote unix:// "$@"
-}
 codex-full() {
-    codex --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
+    command codex --remote unix:// --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
 }
 # headroomはapp-serverを経由しない。remote接続では-cオーバーライドが
 # daemonへ転送されず、model_provider指定が無視されるため。

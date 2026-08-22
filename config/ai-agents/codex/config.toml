@@ -30,6 +30,7 @@ exclude_slash_tmp = false
 
 [shell_environment_policy]
 inherit = "all"
+experimental_use_profile = true
 
 [notice]
 hide_rate_limit_model_nudge = true
