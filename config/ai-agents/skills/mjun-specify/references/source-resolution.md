@@ -49,6 +49,6 @@ Issue本文の書き換えは、承認後の一括更新 + 変更サマリの1�
 `.mjun/` はグローバルgitignoreによりgit管理外である。したがって:
 
 - worktreeやPR checkoutには `.mjun/specs/` が**存在しない**。worktree内の作業からspec文書を参照・更新するときは、必ずメインrepositoryの絶対パスを使う。SubAgentへはspec内容をプロンプトに合成して渡し、worktree内のパスを読ませない
-- Local spec由来のPRでは、PR本文へcontract (spec.mdの内容) を転記してPRを自己完結させる
-- PRレビュー側は、contractを「PR本文の転記内容 → メインworking treeのspec path」の順で解決する。どちらも無ければContract観点をスキップする
+- specは**内部文書**である。PR本文・PRタイトル・commit messageなど外部向けの出力では、`.mjun/` 配下のパスやspecの存在に言及しない。外部へ見せるspecの参照はGitHub Issue (`Closes #N`) だけを使う
+- PRレビュー側は、contractを「`--spec` 引数で明示されたsource → PR本文の `Closes #N` が指すIssue」の順で解決する。どちらも無ければContract観点をスキップする (Local specを読めるのは `.mjun/` を持つマシンだけ)
 - resumeとtask進捗の永続化は、`.mjun/` が残っている同一working tree上でのみ有効

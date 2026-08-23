@@ -108,13 +108,13 @@ Phase 3の間の制約:
 
 ### Phase 4: commitと配送 (git-commit / github-pr-create に連結)
 
-メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。
+メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。commit message・PR本文などの外部向け出力には、`.mjun/` 配下のパスや内部spec文書を含めない (外部へ見せるspecの参照はGitHub Issue番号だけを使う)。
 
 1. **`git-commit` skillでcommitを作成する**: 対象はPhase 3でworktree内に作られたすべての変更
 2. **`--no-pr` の場合**: ここで配送を終える。Phase 5へ進む
 3. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
    - Phase 1で決めた出力言語を `language` として渡し、`--draft` の指定を転送する
-   - **spec sourceを渡す**: GitHub modeはIssue番号 (PR本文の `Closes #N` に使われる)、Local spec modeはspecのパスとcontract本文 (PR本文のSpecセクションへの転記に使われる)
+   - **GitHub modeではIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。Local spec modeでは渡さない (specは内部文書であり、PR本文で言及しない。Contract reviewには `github-pr-review` の `--spec` を使う)
    - push・PRタイトルと本文の生成・PR作成はすべて連結先skillが行う。手順を再実装しない
 4. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。GitHub modeでは本文に `Closes #<issue-number>` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
 

@@ -8,14 +8,14 @@ allowed-tools: Read, Write, Task, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 
 # Create Pull Request
 
-このSkillは、現在のbranchからpull requestを作成するためのものです。PRのタイトルと説明文は、変更内容に基づいて自動生成されます。PRの説明文は、コードを参照しなくてもPRの内容が理解できるように、概要・背景、Spec・関連Issue、実装方針、変更内容、影響範囲、検証結果を説明します。
+このSkillは、現在のbranchからpull requestを作成するためのものです。PRのタイトルと説明文は、変更内容に基づいて自動生成されます。PRの説明文は、コードを参照しなくてもPRの内容が理解できるように、概要・背景、関連Issue、実装方針、変更内容、影響範囲、検証結果を説明します。
 
 GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
 ## Arguments
 
 - `language`: PRのタイトルと説明文の言語（例: "ja", "en"）。デフォルト: "English"
-- `spec`: spec source（任意。GitHub Issue番号または `.mjun/specs/<slug>` のパス。mjun-implementなどの呼び出し元から渡される）。Issue番号なら関連Issueの最優先候補として扱い、Local specパスならcontractをPR本文へ転記する
+- `spec`: 解決するGitHub Issue番号（任意。mjun-implementなどの呼び出し元から渡される）。関連Issue（`Closes`）の最優先候補として扱う
 - `--draft`: draft PRとして作成（Optional）
 - `--dry-run`: 生成したPRタイトル・本文・base/head branchのみを提示し、pushや `gh pr create` を実行せず終了する
 
@@ -102,7 +102,7 @@ base branchは引数ではなく自動推定で決定する（事前チェック
 - `2. 変更内容の取得` で取得した差分概要、commit一覧、詳細差分を根拠にして本文を生成する
 - 本文には、以下の6項目を必ずこの順序で記載する。小さいPRでも項目を省略せず、内容を簡潔にする
   1. **概要・背景 / Overview and Background**: 最初にこのPRで実現する結果を述べ、続けて変更前の挙動、発生条件、原因、利用者や運用への影響を説明する。同じ内容を概要と背景として繰り返さない
-  2. **Spec・関連Issue / Spec and Related Issues**: 解決するIssueには `Closes #xxx`、参照のみのIssueには `Related to #xxx` を使う。`spec` としてLocal specのパスが渡された場合は `Source: .mjun/specs/<slug>/spec.md (local)` と記載し、spec.mdのcontract部分を `<details><summary>Contract</summary>` ブロックで転記する（Local specはgit管理外でPRのcheckoutからは読めないため、PR単体でcontractを参照できるようにする）。specも関連Issueもない場合は、指定言語で該当なしと明記する
+  2. **関連Issue / Related Issues**: 解決するIssueには `Closes #xxx`、参照のみのIssueには `Related to #xxx` を使う。関連Issueがない場合は、指定言語で該当なしと明記する
   3. **実装方針 / Implementation Approach**: 解決方法を概念的に説明し、その方法を選んだ理由を記載する。非自明な設計判断がある場合は、制約や採用しなかった案の理由も記載する
   4. **変更内容 / Changes**: diffをファイル単位で言い換えるだけではなく、変わる挙動や責務ごとに主な変更をまとめる
   5. **影響範囲 / Impact**: user-facing change、互換性、performance、security、deployment、既知の制約から該当するものを記載し、影響しない範囲も明確にする
@@ -110,6 +110,7 @@ base branchは引数ではなく自動推定で決定する（事前チェック
 - 検証で実行したコマンドと結果は、コピペ可能な形式で記載する
 - CIで自動実行されるlint・format・型チェックは記載しない（そのチェック設定自体を変更したPRを除く）。記載するのはCIが検証しない動作確認の手順と結果
 - テストを実行していない場合は、未実行であることと理由を明記する
+- PRタイトル・本文に `.mjun/` 配下のパスやgit管理外の内部文書 (Local specなど) を言及しない。これらは内部文書であり、外部へ見せる参照にはGitHub Issueだけを使う
 - diff、commit、関連Issueから確認できない事実を推測で補わない。本文の理解に必要な情報が不足する場合はユーザーに確認する
 - PR作成前に、6項目が所定の順序で存在し、templateの説明コメントや未記入のplaceholderが残っていないことを確認する
 

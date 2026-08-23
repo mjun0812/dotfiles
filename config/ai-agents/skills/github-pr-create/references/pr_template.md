@@ -2,9 +2,9 @@
 
 <!-- State the result this PR achieves, followed by the previous behavior, trigger, cause, and user or operational impact. Do not repeat the same information as separate summary and background text. -->
 
-## Spec and Related Issues
+## Related Issues
 
-<!-- Use "Closes #xxx" for Issues resolved by this PR and "Related to #xxx" for referenced Issues. For a PR driven by a local spec, write "Source: .mjun/specs/<slug>/spec.md (local)" and transcribe the contract inside a details block. Write "None" when there is neither a spec nor a related Issue. -->
+<!-- Use "Closes #xxx" for Issues resolved by this PR and "Related to #xxx" for referenced Issues. Write "None" when there are no related Issues. -->
 
 ## Implementation Approach
 

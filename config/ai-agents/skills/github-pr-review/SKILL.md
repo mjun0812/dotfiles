@@ -1,7 +1,7 @@
 ---
 name: github-pr-review
 description: >-
-  GitHubのPull Request(PR)のコードレビューを行うSkill。worktreeを作成してソースコード全体を読みながらFinder SubAgentで指摘候補を発見し、Verifier SubAgentで検証する。Standards SubAgentがmergeをブロックすべき規約違反・コードスメルを別軸でレビューする。PR本文からspec source (Spec・関連IssueセクションのIssueまたはLocal spec) を解決できる場合は、Contract SubAgentがspecとの整合を第3の軸でレビューする。レビューをレポートとインラインコメントで投稿する。self reviewにも対応する。
+  GitHubのPull Request(PR)のコードレビューを行うSkill。worktreeを作成してソースコード全体を読みながらFinder SubAgentで指摘候補を発見し、Verifier SubAgentで検証する。Standards SubAgentがmergeをブロックすべき規約違反・コードスメルを別軸でレビューする。spec source (`--spec` 引数、または関連Issueの `Closes #N`) を解決できる場合は、Contract SubAgentがspecとの整合を第3の軸でレビューする。レビューをレポートとインラインコメントで投稿する。self reviewにも対応する。
   ユーザーが「このPRをレビューして」のように依頼したら使うこと。
 allowed-tools: Task, Read, Write, AskUserQuestion, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(mkdir:*), Bash(mktemp:*), Bash(rm:*), Bash(bash:*)
 ---
@@ -17,6 +17,7 @@ spec sourceを解決できる場合は，Contract SubAgent がspecとの不整�
 ## Arguments
 
 - `PR number`: レビューするPR番号 (optional, defaults to PR for current branch)
+- `--spec <source>`: Contract reviewに使うspec source (GitHub Issue番号または `.mjun/specs/<slug>` のパス)。指定時は関連Issueより優先する
 - `--dry-run`: レビューレポートをチャットに提示するのみで、`post_review.sh` 等の投稿スクリプト・dismiss・resolve操作を一切呼ばない(worktreeの後片付けは通常どおり行う)
 
 ## Task
@@ -47,11 +48,10 @@ CIの失敗はレポートの概要に記載し、Finderの内部証拠として
 
 さらに、Contract review用のspec contractを次の順で解決する。
 
-1. PR本文の `Spec・関連Issue` (または `Spec and Related Issues`) セクションにcontractの転記 (detailsブロック) があればそれを使う
-2. 本文に `Closes #N` があれば `gh issue view N` で本文を取得し、contractセクション群 (Context〜Out of Scope、Decision Log) を使う
-3. 本文にLocal specパス (`.mjun/specs/<slug>`) の記載があれば、**メインworking tree**の同パスから読む (レビュー用worktreeに `.mjun/` は存在しない)
+1. `--spec` が指定されていればそれを使う。Issue番号なら `gh issue view` で本文のcontractセクション群 (Context〜Out of Scope、Decision Log) を、`.mjun/specs/<slug>` のパスなら**メインworking tree**の同パスから `spec.md` を読む (レビュー用worktreeに `.mjun/` は存在しない)
+2. PR本文に `Closes #N` があれば `gh issue view N` で本文を取得し、contractセクション群を使う
 
-いずれでも解決できない場合はContract軸をスキップし、レポートの概要にその旨を1行記載する。解決したcontractは `<spec-contract>` として保持する。
+どちらでも解決できない場合はContract軸をスキップし、レポートの概要にその旨を1行記載する。解決したcontractは `<spec-contract>` として保持する。specは内部文書のため、レビューレポートやinline commentへ `.mjun/` 配下のパスを書かない (specの記述は「spec」とだけ呼んで引用する)。
 
 他のレビュワーのレビューやthreadは参照しない。初回レビューではどちらのID一覧も空になる。
 
