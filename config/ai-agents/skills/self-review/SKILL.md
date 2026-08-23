@@ -1,6 +1,6 @@
 ---
 name: self-review
-description: 自分のlocal変更を敵対的にコードレビューするSkill。commit未指定時はstaged、unstaged、untrackedを、指定時はそのcommitとfirst parentの差分を一時worktreeへ固定し、独立した2つのFinderと共通のStandards・Verifier agentで検証する。GitHub、PR、CI、review threadを使用せず、結果をチャットまたはterminalへ返す。ユーザーが「自分の変更を厳しくレビューして」「このcommitをself reviewして」のように依頼したら使うこと。
+description: 自分のlocal変更を敵対的にコードレビューするSkill。commit未指定時はstaged、unstaged、untrackedを、指定時はそのcommitとfirst parentの差分を一時worktreeへ固定し、独立した2つのFinderと共通のStandards・Verifier agentで検証する。`--spec` でspec (GitHub Issueまたは`.mjun/specs/`のLocal spec) を渡すと、specとの整合を検証するContract軸を追加する。GitHub、PR、CI、review threadを使用せず、結果をチャットまたはterminalへ返す。ユーザーが「自分の変更を厳しくレビューして」「このcommitをself reviewして」のように依頼したら使うこと。
 ---
 
 # Self Review
@@ -12,6 +12,7 @@ FinderとStandardsが出した候補を1件ずつVerifierで検証し，`confirm
 ## Arguments
 
 - `commit`: reviewするcommit-ish．省略時は現在の未commit変更を対象にする
+- `--spec <source>`: spec source (GitHub Issue番号または`.mjun/specs/<slug>`のパス)．指定時はContract軸 (specとの整合) のレビューを追加する．省略時は従来どおりFinderとStandardsの2軸で行う
 
 ## 対象
 
@@ -52,9 +53,10 @@ Phase 2以降では元のrepositoryを読まず，対象ファイルとコマン
 
 ### Phase 2: 敵対的review agentの実行
 
-#### Phase 2.1: FinderとStandards
+#### Phase 2.1: FinderとStandardsとContract
 
 `code-reviewer-finder`を2つ，`code-reviewer-standards`を1つ並列に起動する．
+`--spec`指定時は，spec contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope) をsourceから読み込み，`code-reviewer-contract`も並列に起動する．Local specはメインrepositoryのパスから読み，GitHub Issueは`gh issue view`で取得する (snapshot内に`.mjun/`は存在しない)．specを解決できない場合はContract軸をスキップし，その旨をPhase 4の出力に含める．
 各SubAgentのpromptは次のtemplateをplaceholderへ値を埋めて生成する．
 
 ```text
@@ -84,6 +86,7 @@ Phase 2以降では元のrepositoryを読まず，対象ファイルとコマン
 - Finder 1: `Finder` / 期待される振る舞い，契約，不変条件，呼び出し経路，状態・データの流れ
 - Finder 2: `Finder` / 境界値，失敗，並行実行，互換性，信頼できない入力，回復不能な状態
 - Standards: `Standards` / 文書化された必須規約，機械的に未検出の違反，変更後への先送りが安全でないコードスメル
+- Contract (`--spec`指定時のみ): `Contract` / spec contractとの整合 (逸脱，未充足，boundary違反，scope creep)．`<additional-evidence>`にspec contract全文を含める
 
 dirty modeでは`<target-kind>`を`Local uncommitted changes`，`<change-description>`をユーザー指定の目的または「現在の未commit変更」，`<change-history>`を`なし`とする．commit modeでは順に`Local commit`，commit message，commit SHA・first parent SHA・commit messageとする．その他のplaceholderはPhase 1のmetadataと対象差分から埋め，`<additional-evidence>`は`なし`とする．
 
@@ -126,6 +129,12 @@ VerifierにはPhase 2.2のprompt templateを使用し，`<candidate-type>`を`St
 
 verdictが`confirmed`の候補だけを確定規約指摘とし，`refuted`と`uncertain`は破棄する．
 
+#### Phase 2.4: Contract候補の検証
+
+Contractを起動した場合のみ実行する．Contractの出力から形式 (`問題` / `根拠` / `完了条件`) を満たす候補だけを採用し，確定指摘・確定規約指摘と同じ行または同じ根本原因の候補を破棄した上で，残りを1件ずつ`code-reviewer-verifier`で検証する．
+VerifierにはPhase 2.2のprompt templateを使用し，`<candidate-type>`を`Contract`，`<candidate>`を候補全文とし，`<additional-evidence>`にspec contract全文を含める．
+verdictが`confirmed`の候補だけを確定契約指摘とし，`refuted`と`uncertain`は破棄する．
+
 ### Phase 3: snapshotの有効性確認
 
 出力前に`verify`を実行する．dirty modeでは元のworking treeがsnapshot作成時から変化していないことを，両modeではreview用worktreeがagentに変更されていないことを確認する．
@@ -140,18 +149,20 @@ zsh "<skill-dir>/scripts/self_review_snapshot.sh" verify --metadata "$metadata_p
 
 結果はユーザーの言語に合わせ，チャットまたはterminalへ出力する．ファイルへの保存やGitHubへの投稿は行わない．
 
-- 確定指摘または確定規約指摘が1件以上: `CHANGES_REQUIRED`
-- どちらも0件: `PASS`
+- 確定指摘，確定規約指摘，確定契約指摘のいずれかが1件以上: `CHANGES_REQUIRED`
+- すべて0件: `PASS`
 
 冒頭にVerdict，baseline SHAの先頭7文字，snapshot IDの先頭7文字，指摘件数を記載する．
 確定指摘には`path:line`，カテゴリ，要約，問題，発生経路，完了条件を含める．
 確定規約指摘には`path:line`，カテゴリ，要約，問題，根拠，完了条件を含める．
+確定契約指摘には`path:line`，カテゴリ，要約，問題，根拠 (specの該当記述の引用)，完了条件を含める．
+Contract軸をスキップした場合 (`--spec`未指定，またはspec解決失敗) は，件数の代わりにその旨を記載する．
 Verifierの検証過程，破棄した候補，内部証拠は出力しない．
 
 ```text
 Verdict: CHANGES_REQUIRED
 Snapshot: <baseline-short-sha> / <snapshot-short-id>
-Findings: <finder-count>, Standards: <standards-count>
+Findings: <finder-count>, Standards: <standards-count>, Contract: <contract-count | skipped>
 
 1. `path:line` [カテゴリ] 要約
    - 問題: ...

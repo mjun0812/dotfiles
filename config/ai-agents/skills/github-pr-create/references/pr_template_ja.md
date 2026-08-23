@@ -2,9 +2,9 @@
 
 <!-- このPRで実現する結果を最初に述べ、続けて変更前の挙動、発生条件、原因、利用者や運用への影響を記載してください。同じ内容を概要と背景に分けて繰り返さないでください。 -->
 
-## 関連Issue
+## Spec・関連Issue
 
-<!-- 解決するIssueは「Closes #xxx」、参照するIssueは「Related to #xxx」と記載してください。関連Issueがない場合は「なし」と記載してください。 -->
+<!-- 解決するIssueは「Closes #xxx」、参照するIssueは「Related to #xxx」と記載してください。Local spec由来のPRでは「Source: .mjun/specs/<slug>/spec.md (local)」と記載し、contract部分をdetailsブロックで転記してください。specも関連Issueもない場合は「なし」と記載してください。 -->
 
 ## 実装方針
 
