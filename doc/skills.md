@@ -19,15 +19,16 @@ Each skill is a directory containing `SKILL.md`. The agent loads the front-matte
 
 The self-authored dev-flow skill suite under the `mjun-` prefix. The entry point is `mjun-specify`; after contract approval it breaks the spec into tasks when needed, and `mjun-implement` carries it through to a PR.
 
-| Skill                                                                  | Purpose                                                                                                                                                                                                                                                                             |
-| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`mjun-specify`](../config/ai-agents/skills/mjun-specify/SKILL.md)     | Polish an idea, GitHub issue, or local markdown into an implementable spec (contract): investigate facts, resolve agent-owned decisions autonomously, confirm human-owned ones one at a time, then auto-run task breakdown for multi-task specs (`--local` saves to `.mjun/specs/`) |
-| [`mjun-grill`](../config/ai-agents/skills/mjun-grill/SKILL.md)         | Resolve plan / design / spec decisions interactively one question at a time (whole-design mode and single-decision mode)                                                                                                                                                            |
-| [`mjun-research`](../config/ai-agents/skills/mjun-research/SKILL.md)   | Investigate external facts from primary sources (official docs, library source, specs) with a citation per claim                                                                                                                                                                    |
-| [`mjun-prototype`](../config/ai-agents/skills/mjun-prototype/SKILL.md) | Answer a UI / state / logic design question that talking cannot settle with one throwaway prototype per question                                                                                                                                                                    |
-| [`mjun-to-tasks`](../config/ai-agents/skills/mjun-to-tasks/SKILL.md)   | Break a spec into independently verifiable vertical-slice tasks persisted to tasks.md / an issue checklist (normally chained automatically by mjun-specify)                                                                                                                         |
-| [`mjun-implement`](../config/ai-agents/skills/mjun-implement/SKILL.md) | Gate the spec on content, then implement task by task in a worktree via implementer/reviewer subagents, commit, and optionally open a PR; task progress persists for resume                                                                                                         |
-| [`mjun-steering`](../config/ai-agents/skills/mjun-steering/SKILL.md)   | Maintain `.mjun/steering/` as implementation-grounded project memory: bootstrap from the codebase, sync with drift detection                                                                                                                                                        |
+| Skill                                                                            | Purpose                                                                                                                                                                                                                                                                             |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`mjun-specify`](../config/ai-agents/skills/mjun-specify/SKILL.md)               | Polish an idea, GitHub issue, or local markdown into an implementable spec (contract): investigate facts, resolve agent-owned decisions autonomously, confirm human-owned ones one at a time, then auto-run task breakdown for multi-task specs (`--local` saves to `.mjun/specs/`) |
+| [`mjun-grill`](../config/ai-agents/skills/mjun-grill/SKILL.md)                   | Resolve plan / design / spec decisions interactively one question at a time (whole-design mode and single-decision mode)                                                                                                                                                            |
+| [`mjun-research`](../config/ai-agents/skills/mjun-research/SKILL.md)             | Investigate external facts from primary sources (official docs, library source, specs) with a citation per claim                                                                                                                                                                    |
+| [`mjun-prototype`](../config/ai-agents/skills/mjun-prototype/SKILL.md)           | Answer a UI / state / logic design question that talking cannot settle with one throwaway prototype per question                                                                                                                                                                    |
+| [`mjun-to-tasks`](../config/ai-agents/skills/mjun-to-tasks/SKILL.md)             | Break a spec into independently verifiable vertical-slice tasks persisted to tasks.md / an issue checklist (normally chained automatically by mjun-specify)                                                                                                                         |
+| [`mjun-implement`](../config/ai-agents/skills/mjun-implement/SKILL.md)           | Gate the spec on content, then implement task by task in a worktree via implementer/reviewer subagents, commit, and optionally open a PR; task progress persists for resume                                                                                                         |
+| [`mjun-steering`](../config/ai-agents/skills/mjun-steering/SKILL.md)             | Maintain `.mjun/steering/` as implementation-grounded project memory: bootstrap from the codebase, sync with drift detection                                                                                                                                                        |
+| [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md) | Alias for mjun-specify's GitHub issue creation. Explicit `/github-issue-create` invocation only; the agent never triggers it on its own                                                                                                                                             |
 
 ### Git
 
@@ -106,6 +107,7 @@ graph LR
     mjun-specify --> mjun-research
     mjun-specify --> mjun-prototype
     mjun-specify --> mjun-to-tasks
+    github-issue-create -. alias .-> mjun-specify
 
     mjun-implement --> git-commit
     mjun-implement --> github-pr-create
@@ -117,13 +119,14 @@ graph LR
 
 ### Caller → callee table
 
-| Caller           | Callee                                                           | When                                                           |
-| ---------------- | ---------------------------------------------------------------- | -------------------------------------------------------------- |
-| `git-squash`     | `git-fix-conflict`                                               | Only if a conflict surfaces during squash                      |
-| `mjun-specify`   | `mjun-grill`, `mjun-research`, `mjun-prototype`                  | When a human-owned / evidence-blocked decision needs resolving |
-| `mjun-specify`   | `mjun-to-tasks`                                                  | Auto-chained after contract approval for multi-task specs      |
-| `mjun-implement` | `git-commit`, `github-pr-create`                                 | Phase 4 commits the worktree changes; PR only with `--pr`      |
-| `github-pr-fix`  | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | Each callee runs only if the corresponding problem is detected |
+| Caller                | Callee                                                           | When                                                           |
+| --------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------- |
+| `git-squash`          | `git-fix-conflict`                                               | Only if a conflict surfaces during squash                      |
+| `github-issue-create` | `mjun-specify`                                                   | Forwards the request with `--github` on explicit invocation    |
+| `mjun-specify`        | `mjun-grill`, `mjun-research`, `mjun-prototype`                  | When a human-owned / evidence-blocked decision needs resolving |
+| `mjun-specify`        | `mjun-to-tasks`                                                  | Auto-chained after contract approval for multi-task specs      |
+| `mjun-implement`      | `git-commit`, `github-pr-create`                                 | Phase 4 commits the worktree changes; PR only with `--pr`      |
+| `github-pr-fix`       | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | Each callee runs only if the corresponding problem is detected |
 
 ### Standalone skills
 
