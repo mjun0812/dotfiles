@@ -55,11 +55,20 @@ diff() {
 }
 
 # Claude Code
-alias claude="claude --mcp-config=${HOME}/.claude/mcp.json --allow-dangerously-skip-permissions"
-alias cc-commit='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit en"'
-alias cc-commit-ja='command claude --model=haiku --dangerously-skip-permissions -p "/git-commit ja"'
+alias claude="claude \
+    --mcp-config=${HOME}/.claude/mcp.json \
+    --allow-dangerously-skip-permissions"
+alias cc-commit='command claude \
+    --model=haiku \
+    --dangerously-skip-permissions \
+    -p "/git-commit en"'
+alias cc-commit-ja='command claude \
+    --model=haiku \
+    --dangerously-skip-permissions \
+    -p "/git-commit ja"'
 claude-headroom() {
-    ANTHROPIC_BASE_URL=http://127.0.0.1:8787 command claude --mcp-config="${HOME}/.claude/mcp.json" --allow-dangerously-skip-permissions "$@"
+    ANTHROPIC_BASE_URL=http://127.0.0.1:8787 command claude \
+        --mcp-config="${HOME}/.claude/mcp.json" --allow-dangerously-skip-permissions "$@"
 }
 claudex() {
     env \
@@ -70,13 +79,17 @@ claudex() {
         ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-5.6-sol" \
         ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-5.6-luna" \
         ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-5.6-luna" \
-        claude --mcp-config=${HOME}/.claude/mcp.json --allow-dangerously-skip-permissions --model "gpt-5.6-luna(xhigh)" "$@"
+        claude --mcp-config=${HOME}/.claude/mcp.json \
+            --allow-dangerously-skip-permissions --model "gpt-5.6-luna" "$@"
 }
 
 # Codex
-codex-full() {
-    command codex --remote unix:// --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
-}
+alias codex='command codex -C "$PWD" --remote unix://'
+alias codex-full='command codex \
+    -C "$PWD" \
+    --remote unix:// \
+    --yolo \
+    --dangerously-bypass-hook-trust'
 # headroomはapp-serverを経由しない。remote接続では-cオーバーライドが
 # daemonへ転送されず、model_provider指定が無視されるため。
 codex-headroom() {
@@ -87,25 +100,39 @@ codex-headroom() {
         "$@"
 }
 codex-headroom-full() {
-    codex-headroom --sandbox danger-full-access --ask-for-approval never --dangerously-bypass-hook-trust "$@"
+    codex-headroom --yolo --dangerously-bypass-hook-trust "$@"
 }
-alias codex='codex-full'
-alias codex-commit='command codex exec --dangerously-bypass-approvals-and-sandbox --dangerously-bypass-hook-trust -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って英語でコミットしてください。"'
-alias codex-commit-ja='command codex exec --dangerously-bypass-approvals-and-sandbox --dangerously-bypass-hook-trust -m gpt-5.4-mini -c model_reasoning_effort=low "git-commit skillを使って日本語でコミットしてください。"'
+CODEX_COMMIT_MODEL="gpt-5.6-luna"
+alias codex-commit='command codex exec \
+    --dangerously-bypass-approvals-and-sandbox \
+    --dangerously-bypass-hook-trust \
+    -m "${CODEX_COMMIT_MODEL}" \
+    -c model_reasoning_effort=low \
+    "git-commit skillを使って英語でコミットしてください。"'
+alias codex-commit-ja='command codex exec \
+    --dangerously-bypass-approvals-and-sandbox \
+    --dangerously-bypass-hook-trust \
+    -m "${CODEX_COMMIT_MODEL}" \
+    -c model_reasoning_effort=low \
+    "git-commit skillを使って日本語でコミットしてください。"'
 
 # Copilot-cli
-alias copilot-commit='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はEnglishです。"'
-alias copilot-commit-ja='copilot -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はJapaneseです。"'
+alias copilot-commit='copilot \
+    -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はEnglishです。"'
+alias copilot-commit-ja='copilot \
+    -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はJapaneseです。"'
 
 # Antigravity-cli (agy)
-alias agy-commit='command agy --dangerously-skip-permissions --model="Gemini 3.5 Flash (Low)" -p "cd $(pwd) && git-commit skillを使って英語でコミットしてください。"'
-alias agy-commit-ja='command agy --dangerously-skip-permissions --model="Gemini 3.5 Flash (Low)" -p "cd $(pwd) && git-commit skillを使って日本語でコミットしてください。"'
+alias agy-commit='command agy \
+    --dangerously-skip-permissions \
+    --model="Gemini 3.5 Flash (Low)" \
+    -p "cd $(pwd) && git-commit skillを使って英語でコミットしてください。"'
+alias agy-commit-ja='command agy \
+    --dangerously-skip-permissions \
+    --model="Gemini 3.5 Flash (Low)" \
+    -p "cd $(pwd) && git-commit skillを使って日本語でコミットしてください。"'
 alias gemini-commit='agy-commit'
 alias gemini-commit-ja='agy-commit-ja'
-
-# ai commands alias
-alias aicommit='cc-commit'
-alias aicommit-ja='cc-commit-ja'
 
 # [ctrl + f] cd zoxide alias
 function fzf-zoxide-cd() {
