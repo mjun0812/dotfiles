@@ -39,7 +39,7 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Bash(find:*), Bash(rg:*), Bash(gre
 | OpenAPI/Swagger    | `openapi.{yaml,yml,json}`, `swagger.{yaml,yml,json}`                 |
 | 設定ファイル例     | `.env.example`, `*.example.{yaml,toml,json,ini}`, `config.example.*` |
 
-`node_modules/`, `.git/`, `dist/`, `build/`, `vendor/`, `.venv/` は常に除外する。
+`node_modules/`, `.git/`, `dist/`, `build/`, `vendor/`, `.venv/`, `.mjun/` は常に除外する。`.mjun/` 配下のspec・steering・実験計画はコードに先行する意図文書または専用skillが管理する文書であり、doc-syncが実装へ合わせて書き換えてはならない。
 
 ## 作業手順
 
@@ -50,7 +50,7 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Bash(find:*), Bash(rg:*), Bash(gre
 
 探索のポイント:
 
-- **除外パス**を必ず守る（`node_modules/`, `.git/`, `dist/`, `build/`, `vendor/`, `.venv/`）
+- **除外パス**を必ず守る（`node_modules/`, `.git/`, `dist/`, `build/`, `vendor/`, `.venv/`, `.mjun/`）
 - docstring/コメントは全件スキャンせず、**最近変更があったコードファイルを起点**にする方が効率的（git log で直近のコード変更を眺めるなど）
 - リポジトリが大きい場合は、ドキュメントが集中するパス（`README.md`, `docs/`, `CLAUDE.md` など）を先に処理する
 
