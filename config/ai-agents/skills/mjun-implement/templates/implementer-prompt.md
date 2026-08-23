@@ -8,8 +8,8 @@
 
 - worktreeの絶対パス (ファイル操作とコマンド実行はすべてこの配下で行う)
 - base branch名と作業branch名
-- source (issueまたは設計doc) のタイトル、本文、コメントの要約
-- 担当タスクの説明と受け入れ基準、親が決めた実装方針
+- spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria。specにある場合)
+- 担当タスクの説明・受け入れ基準・Boundary、親が決めた実装方針
 - 親が洗い出した検証コマンドのうちタスクに関係するもの
 - 過去タスクのImplementation Notes (あれば)
 
@@ -52,6 +52,7 @@
 
 - commit、push、PR作成を行わない
 - 担当タスク外へスコープを広げない
+- specのBoundaries (Does Not Own) やOut of Scopeが定める領域に変更を加えない。実装上必要になった場合は黙って触れず `BLOCKED` で報告する
 - sourceやリポジトリ規約との矛盾を黙って回避しない (`BLOCKED` で報告する)
 
 ## Status Report

@@ -7,8 +7,8 @@
 ## 受け取るもの
 
 - worktreeの絶対パス
-- source (issueまたは設計doc) のタイトル、本文、コメントの要約
-- 担当タスクの説明と受け入れ基準
+- spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria。specにある場合)
+- 担当タスクの説明・受け入れ基準・Boundary
 - implementerのStatus Report (参照用。記載内容を事実として信用しない)
 - 親 (メイン会話) が洗い出した検証コマンド
 
@@ -40,6 +40,7 @@ worktree内の未commitの変更 (`git diff` とuntracked file) を読む。こ�
 8. スコープ: 変更が担当タスクに閉じている。頼まれていない追加の変更もスコープ外として扱う
 9. テスト品質: テストは実装を壊したら失敗する。意味の無いassertでない
 10. エラー処理: 正常系だけでなくエラー経路が扱われ、握り潰されていない
+11. Boundary: 変更が担当タスクのBoundaryとspecのOwns内に収まっている。specのDoes Not Own・Out of Scopeに触れる変更はREJECTEDとする (specにBoundariesが無い場合は項目8のスコープ検査だけを適用する)
 
 ## 合理化の却下
 
