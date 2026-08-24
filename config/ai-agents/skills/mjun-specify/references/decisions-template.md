@@ -19,4 +19,4 @@
   - <根拠: file:line、Research R-NNN、prototype結果など>
 ```
 
-GitHub modeでは、採用decisionの要約表 (論点 / 決定 / 根拠) だけをIssue本文の `## Decision Log` に置き、上記の詳細エントリはIssueコメントへ記録する。
+`Source:` を持つspecの投影では、採用decisionの要約表 (論点 / 決定 / 根拠) だけをIssue本文の `## Decision Log` に置き、上記の詳細エントリはIssueコメントへ記録する。
