@@ -51,6 +51,8 @@ CIの失敗はレポートの概要に記載し、Finderの内部証拠として
 1. `--spec` が指定されていればそれを使う。Issue番号なら `gh issue view` で本文のcontractセクション群 (Context〜Out of Scope、Decision Log) を、`.mjun/specs/<slug>` のパスなら**メインworking tree**の同パスから `spec.md` を読む (レビュー用worktreeに `.mjun/` は存在しない)
 2. PR本文に `Closes #N` があれば `gh issue view N` で本文を取得し、contractセクション群を使う
 
+Issueが投影形式 (Context〜Out of Scopeのcontractセクション群) でない普通のIssueの場合は、本文全体をcontract相当として扱う。明文に無い期待を検査しない原則は変わらないため、記述の薄いIssueではContract指摘は自然に少なくなる。
+
 どちらでも解決できない場合はContract軸をスキップし、レポートの概要にその旨を1行記載する。解決したcontractは `<spec-contract>` として保持する。なお、Issue本文のcontractは承認時点の投影であり、最新の正本はLocal specにある。`.mjun/` を持つマシンでレビューするときは `--spec` でLocal specを渡すことを推奨する。
 
 **Local spec由来のContract指摘は投稿しない**: `--spec` でLocal spec (`.mjun/specs/` のパス) を解決した場合、Contract軸の確定指摘はレポート本文とinline commentから除外し、Phase 4のチャット報告にのみ含める (specは内部文書のため、その引用をGitHubへ投稿しない)。`Closes #N` 経由で解決した場合のContract指摘は、投影済みIssueの引用であり通常どおり投稿する。specは内部文書のため、レビューレポートやinline commentへ `.mjun/` 配下のパスを書かない (specの記述は「spec」とだけ呼んで引用する)。
