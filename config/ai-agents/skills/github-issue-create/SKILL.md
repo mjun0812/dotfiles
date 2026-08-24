@@ -1,17 +1,81 @@
 ---
 name: github-issue-create
 description: >-
-  mjun-specifyのGitHub Issue作成alias。ユーザーが `/github-issue-create` を明示的に起動したときだけ使い、
-  受け取った内容に `--issue` を付けてmjun-specifyへそのまま渡す。
-  agentがこのskillを自発的に起動してはならない (Issue作成の依頼には直接mjun-specifyを使うこと)。
-disable-model-invocation: true
-allowed-tools: Skill(mjun-specify)
+  Todo・メモ・軽いバグ報告を、GitHub Issueとして1件さっと起票するSkill。
+  ユーザーが「issue作って」「これIssueにしといて」「バグ報告を起票して」「Todoを起票して」のように依頼したら使うこと。
+  実装を見据えた仕様詰め・spec化には使わない (それはmjun-specifyの領分)。
+allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Read
 ---
 
-# github-issue-create
+# Create GitHub Issue
 
-`mjun-specify` のGitHub Issue作成aliasです。従来の「issue作って」の入口を、明示起動のコマンドとして残しています。
+GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
-受け取った引数と依頼内容に `--issue` を付けて、そのまま `mjun-specify` をSkill toolで呼び出してください。spec作成・Issue作成 (投影先)・調査・decision解決・承認・投影のすべては `mjun-specify` が行います。このskill自身は他に何もしません。
+ユーザーから自由入力で受け取ったIssue概要を元に、種別とラベルを自動判定してGitHub Issueを作成する。specやローカル文書は作らない。起票したIssueを後で実装するときは、そのIssue番号を開発フローの入口へ渡せばよい。
 
-Skill toolが使えない環境では、`mjun-specify` のSKILL.mdを直接読み込み、その手順に従って実行してください。
+## Arguments
+
+- `language`: Issueのタイトルと本文の言語（例: "ja", "en"）。デフォルト: "en"
+- `--dry-run`: Issueを作成せず、生成したタイトル・本文・ラベルの提示のみ行う
+
+## Issue Templates
+
+テンプレートは以下の優先順位で選択する：
+
+1. **リポジトリ内テンプレート**: `.github/ISSUE_TEMPLATE/` が存在する場合はそれを使用
+2. **同梱テンプレート（フォールバック）**: リポジトリにテンプレートがない場合は、隣接skillと共有のテンプレートを使用
+   - 英語（`language` が "en" または未指定）: [`../mjun-specify/references/ISSUE_TEMPLATE/`](../mjun-specify/references/ISSUE_TEMPLATE/)
+   - 日本語（`language` が "ja"）: [`../mjun-specify/references/ISSUE_TEMPLATE_JA/`](../mjun-specify/references/ISSUE_TEMPLATE_JA/)
+
+各ディレクトリには以下のテンプレートが含まれる：
+
+- `feature_request.md` - 機能追加（デフォルトラベル: `enhancement`）
+- `bug_report.md` - バグ報告（デフォルトラベル: `bug`）
+- `task.md` - タスク（デフォルトラベルなし）
+- `test.md` - テスト追加（デフォルトラベル: `test`）
+- `research.md` - 調査（デフォルトラベルなし）
+
+## Task
+
+1. **前提情報の取得**: 以下を取得する。
+   - リポジトリ情報: `gh repo view --json name,owner --jq '.owner.login + "/" + .name'`
+   - 利用可能なラベル一覧: `gh label list --limit 100 --json name,description --jq '.[] | "\(.name)\t\(.description // "")"'`
+   - リポジトリ内Issueテンプレートの有無: `ls .github/ISSUE_TEMPLATE/ 2>/dev/null || echo "none"`
+   - `gh auth status` が失敗した場合は作業を停止し、認証を案内する
+
+2. **下書き素材の確保**: ユーザーの依頼にIssueの内容（何をしたいか・何が起きているか）が含まれていれば、そのテキスト全体を「下書き素材」として使い、追加の入力は求めない。依頼に内容がまったく含まれていない場合のみ、AskUserQuestion ではなく **自由テキスト入力** で概要を受け取る:
+
+   > 作成したいIssueの内容を自由に記述してください。背景、目的、再現手順、完了条件など分かる範囲で構いません。1行でも構いません。
+
+3. **種別の自動判定**: 下書き素材が何を求めているかでテンプレートを選択する。
+   - 既存の動作が期待と異なるという報告 → `bug_report`
+   - テストの追加・拡充の依頼 → `test`
+   - 新しい機能や改善の提案 → `feature_request`
+   - コードを変えずに問いへ答える調査・検討の依頼 → `research`
+   - それ以外の作業（リファクタ、ドキュメント整備など）→ `task`
+
+   判定が曖昧な場合は `task` を選ぶ。判定結果はステップ9の報告時にユーザーに開示する。
+
+4. **テンプレートの読み込み**: ステップ1で確認したテンプレート所在に従い、ステップ3で選んだテンプレート種別のファイルを Read で読み込む。フロントマターから `labels` をデフォルトラベルとして抽出し、本文部分は構造の参考にする。
+
+5. **タイトルと本文の生成**: 下書き素材を元に、テンプレートに沿った形でタイトルと本文を生成する:
+   - **タイトル**: 下書き素材の要点を1行で要約。先頭に種別を示す接頭辞は付けない（ラベルで判別可能なため）
+   - **本文**: 選択したテンプレートのセクション見出しに沿って、下書き素材の情報を、各見出しが求める内容と意味が対応するセクションへ振り分ける
+   - 下書き素材から情報が不足しているセクションは、コメントプレースホルダーを残すのではなく **セクション自体を省略** する
+   - 最終的なIssue本文からはフロントマターを除去する
+
+6. **ラベルの自動判定**: ステップ4で抽出したテンプレートのデフォルトラベルを起点に、ステップ1で取得した既存ラベル一覧とそのdescriptionを参照し、下書き素材の内容に合うラベルを付与する。既存ラベル一覧に存在しないラベルは付与しない。最終的なラベルリストは重複排除する。
+
+7. **作成前の確認**: 生成したタイトル・本文・種別・ラベルをユーザーに提示し、作成の承認を得る。承認されるまでIssueを作成しない。修正の指摘があれば反映し、再提示して承認を得る。
+   - **情報不足**: 下書き素材が乏しく、タイトルすら意味のある形で生成できない場合は、不足している点をユーザーに質問し、回答を反映してからステップ3以降をやり直す
+   - **dry-run**: `--dry-run` が指定されている場合は、生成したタイトル・本文・種別・ラベルを提示して終了する（Issueを作成しない。承認も求めない）
+
+8. **Issueの作成**:
+
+   ```
+   gh issue create --title "<title>" --body "<body>" [--label <name> ...]
+   ```
+
+9. **結果の報告**:
+   - 作成されたIssueのURLを表示
+   - 概要（タイトル、選択されたテンプレート種別、付与されたラベル）を表示
