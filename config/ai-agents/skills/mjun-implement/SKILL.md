@@ -1,7 +1,8 @@
 ---
 name: mjun-implement
 description: >-
-  spec (GitHub Issue、`.mjun/specs/` のLocal spec、または単発の設計doc) を起点に「内容検査 → worktree作成 → task単位の実装 → commit → 必要ならPR作成」を一気通貫で実行するSkill。
+  spec (`.mjun/specs/` のLocal spec、GitHub Issue番号、または単発の設計doc) を起点に「内容検査 → worktree作成 → task単位の実装 → Acceptance Criteria照合 → commit → 必要ならPR作成」を一気通貫で実行するSkill。
+  正本は常にLocal specで、Issue番号は取り込み済みspecへの逆引き (未取り込みなら自動取込み) として扱う。
   実装はSubAgentに委譲し、commitとPR作成はgit-commit・github-pr-create skillに連結する。
   ユーザーが「#Nを実装して」「このspecを実装して」「実装してPRまで」のように依頼したら使うこと。
   specの作成・磨き上げには使わない。
@@ -25,8 +26,8 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 
 ### source種別
 
-1. Issue番号またはGitHub URL → **GitHub mode**。`gh issue view <number> --json number,title,state,body,labels,assignees,comments,url` で取得する。`state: CLOSED` なら中止して報告する
-2. `.mjun/specs/<slug>` のディレクトリ → **Local spec mode**。配下の `spec.md` (必須)・`decisions.md`・`design.md`・`tasks.md` をReadする
+1. `.mjun/specs/<slug>` のディレクトリ → **spec mode**。配下の `spec.md` (必須)・`decisions.md`・`design.md`・`tasks.md` をReadする
+2. Issue番号またはGitHub URL → `.mjun/specs/*/spec.md` の `Source: #<number>` を検索してLocal specを逆引きし、spec modeとして扱う。見つからなければ**自動取込み**を行う: `gh issue view <number> --json number,title,state,body,labels,comments,url` で取得し (`state: CLOSED` なら中止して報告)、本文とコメントを機械的に `.mjun/specs/<slug>/spec.md` へ構造化して `Source: #<number>` を記録する (磨き・grill・調査はしない)。取り込んだspecで続行してよいかはPhase 1の内容検査が判定する
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
 **Local specの参照・更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のためworktreeやPR checkoutには存在しない。SubAgentへはspecの内容をプロンプトに合成して渡し、worktree内の `.mjun/` パスを読ませない。
@@ -42,17 +43,17 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 2. 出力言語をsourceの言語から決める (主に日本語なら日本語、それ以外または曖昧なら英語)。コメント・commit・PR作成に使う
 3. **内容検査** (全source共通。承認状態の目印は存在しないため、内容だけで判定する):
    1. **情報の充足**: Goal・受け入れ基準・実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、`mjun-specify` でspecを詰めることを案内する。方針を推測で補って実装に進まない
-   2. **要確認の残留**: decision log (Local: `decisions.md`、GitHub: 本文のDecision Log・要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する
+   2. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する
 4. **taskキューを構築する**:
-   - Local specに `tasks.md` がある場合、またはIssue本文に `## Tasks` checklist (`- [ ]`) がある場合は、それをキューとして採用する。`Status: done` / チェック済みのtaskは**完了扱いでスキップする** (中断後のresume)
-   - どちらも無い場合は、独立に検証可能な振る舞いが複数含まれるときだけ、1タスク1振る舞いのvertical sliceへ分解する。それ以外はspec全体を1タスクとして扱う
+   - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)
+   - 無い場合は、独立に検証可能な振る舞いが複数含まれるときだけ、1タスク1振る舞いのvertical sliceへ分解する。それ以外はspec全体を1タスクとして扱う
    - 各タスクの受け入れ基準とBoundary (specにBoundariesがある場合) を確認し、依存順 (Blocked by) に並べる
 5. `--pr` / `--no-pr` が未指定なら、ここでAskUserQuestionにより配送方法を確認する (使えない環境では選択肢をテキストで提示する)
 6. 実装方針とタスク一覧を**簡潔に**提示する。`--dry-run` はここで終了する。それ以外は確認を取らずPhase 2へ進む
 
 ### Phase 2: worktreeの作成
 
-1. **branch名を決定する**: 形式は `<type>/<issue-number>-<slug>` (Local spec / doc modeでは `<type>/<slug>`)。`<type>` はConventional Commitsの種別 (`fix`, `feat`, `docs`, `chore`, `refactor` 等。判別不能なら `feat`)、`<slug>` はタイトルからkebab-case (英数字とハイフン、40文字以内)。既存branchと衝突する場合は末尾に `-2`, `-3` を付ける
+1. **branch名を決定する**: 形式は `<type>/<slug>` (specが `Source: #N` を持つ場合は `<type>/<N>-<slug>`)。`<type>` はConventional Commitsの種別 (`fix`, `feat`, `docs`, `chore`, `refactor` 等。判別不能なら `feat`)、`<slug>` はタイトルからkebab-case (英数字とハイフン、40文字以内)。既存branchと衝突する場合は末尾に `-2`, `-3` を付ける
 2. **worktreeのパス**: `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける
 3. `git worktree add -b <branch-name> <worktree-path> <base-branch>` (`<base-branch>` は最新のdefault branch)。同じpathのworktreeに未commit変更がある場合は中止する。作成失敗時は中止してエラーを伝える
 4. branch名・worktreeパス・base branch名を記録する (クリーンアップで使う)
@@ -79,7 +80,7 @@ Phase 3の間の制約:
 
 タスクキューの順に、**1タスク = 1イテレーション**で直列に処理する (`Blocked by` は順序の決定にだけ使い、並列実行しない)。複数タスクを1つのSubAgentにまとめて渡さない。
 
-1. **task statusの更新**: 着手時にLocal specでは `tasks.md` の該当taskを `Status: in-progress` へ更新する (メインrepo側のパスで)
+1. **task statusの更新**: 着手時に `tasks.md` の該当taskを `Status: in-progress` へ更新する (tasks.mdがある場合。メインrepo側のパスで)
 2. **implementerの起動**: テンプレートに以下を合成して起動する
    - worktreeの絶対パス、base branch名と作業branch名
    - specのタイトル・本文の要約と、**contract (Requirements / Boundaries / Acceptance Criteria)**
@@ -92,19 +93,21 @@ Phase 3の間の制約:
    - `BLOCKED` → 中止し、`BLOCKER` と `BLOCKER_REMEDIATION` を報告する
 4. **reviewerの起動**: テンプレートに、タスク文脈・contract・検証コマンド・implementerのStatus Report (参照用) を合成して起動する
 5. **VERDICTの処理**: `## Review Verdict` の `- VERDICT:` フィールドだけをパースする
-   - `APPROVED` → タスク完了。進捗を永続化する: Local specは `tasks.md` の `Status: done`、GitHub modeはIssue本文checklistのチェック (`gh issue edit --body-file` で本文編集。通知は発生しない)。その後、次のタスクへ進む
+   - `APPROVED` → タスク完了。`tasks.md` の該当taskを `Status: done` へ更新して進捗を永続化する (Issueへは書き込まない)。その後、次のタスクへ進む
    - `REJECTED` → `REMEDIATION` と `FINDINGS` を添えてimplementerを再起動する。同一タスクの差し戻しは**最大2周**とし、2周後もREJECTEDなら中止して未解決の指摘を報告する
-6. **知見の伝播**: タスク横断で有用な発見は、Implementation Notesとして1行で永続化し (Local: `tasks.md` 末尾の `## Implementation Notes`、GitHub: 本文の同セクション)、以降のimplementerのプロンプトに含める
+6. **知見の伝播**: タスク横断で有用な発見は、`tasks.md` 末尾の `## Implementation Notes` へ1行で永続化し、以降のimplementerのプロンプトに含める
 
 中断後に再実行された場合は、Phase 1のキュー構築が完了taskをスキップするため、未完了タスクから再開される。
 
-#### Phase 3.2: 最終検証
+#### Phase 3.2: 最終検証とAcceptance Criteria照合
 
-全タスク完了後、SubAgentに検証コマンド全体の実行を依頼し、コマンド・exit code・失敗内容を報告させる。
+全タスク完了後、次の2つを行う。
 
-- すべて成功 → Phase 4へ進む
-- 失敗 → 失敗内容を添えてimplementerに差し戻す (最大2周)。収束しなければ中止して報告する
-- 検証コマンドが見つからないリポジトリではスキップし、その事実をPhase 5に含める
+1. **検証コマンドの実行**: SubAgentに検証コマンド全体の実行を依頼し、コマンド・exit code・失敗内容を報告させる。検証コマンドが見つからないリポジトリではスキップし、その事実をPhase 5に含める
+2. **Acceptance Criteriaの照合**: specのAcceptance Criteriaを1件ずつ、実装と検証結果に照合する。各criterionについて、それを満たす変更・テスト・実行結果を特定して充足を判定する (SubAgentに依頼してよい)。specにAcceptance Criteriaが無いdoc modeでは省略する
+
+- 検証コマンドがすべて成功し、全ACが充足 → Phase 4へ進む
+- 検証コマンドの失敗、またはACの未充足 → 内容を添えてimplementerに差し戻す (合わせて最大2周)。収束しなければ中止し、未充足のcriterionを明示して報告する
 
 ### Phase 4: commitと配送 (git-commit / github-pr-create に連結)
 
@@ -114,9 +117,9 @@ Phase 3の間の制約:
 2. **`--no-pr` の場合**: ここで配送を終える。Phase 5へ進む
 3. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
    - Phase 1で決めた出力言語を `language` として渡し、`--draft` の指定を転送する
-   - **GitHub modeではIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。Local spec modeでは渡さない (specは内部文書であり、PR本文で言及しない。Contract reviewには `github-pr-review` の `--spec` を使う)
+   - **specが `Source: #N` を持つ場合はそのIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。純Local specでは渡さない (specは内部文書であり、PR本文で言及しない。Contract reviewには `github-pr-review` の `--spec` を使う)
    - push・PRタイトルと本文の生成・PR作成はすべて連結先skillが行う。手順を再実装しない
-4. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。GitHub modeでは本文に `Closes #<issue-number>` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
+4. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
 
 ### Phase 5: 結果の表示
 
@@ -125,6 +128,7 @@ Phase 3の間の制約:
 - **PR**: 作成したPRのURL (`--no-pr` の場合は「PRなし。branch `<name>` に成果があります」)
 - **変更概要**: ファイル数、追加/削除行数 (`git diff --stat <base>..HEAD`)
 - **タスク進捗**: 完了タスク数と、スキップした完了済みタスク数 (resume時)
+- **AC coverage**: Acceptance Criteriaの充足状況 (充足数 / 総数と、各criterionの判定)
 
 ### Phase 6: worktreeクリーンアップ
 
