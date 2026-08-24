@@ -1,31 +1,33 @@
 ---
 name: mjun-to-tasks
 description: >-
-  spec (GitHub Issueまたは `.mjun/specs/` のLocal spec) を、単独で検証可能なvertical sliceのtaskへ分解するSkill。
+  spec (`.mjun/specs/` のLocal spec、またはGitHub Issue) を、単独で検証可能なvertical sliceのtaskへ分解し、
+  `.mjun/specs/<slug>/tasks.md` へ永続化するSkill。
   通常はmjun-specifyが承認後に自動で連結する。ユーザーが「taskに分解して」「分解をやり直して」と依頼したときや、
   specの変更後に再分解したいときに単体で使うこと。実装そのもの、およびspec本文の作成・修正には使わない。
-allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(cat:*), Bash(ls:*), Bash(mktemp:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(cat:*), Bash(ls:*), Bash(mkdir:*)
 ---
 
 # mjun-to-tasks
 
-specをtaskへ分解し、Local specでは `tasks.md`、GitHub modeではIssue本文のchecklistとして永続化するSkillです。分解はAgent-ownedの作業として承認なしで行います (child Issueの作成だけは承認を取る)。
+specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化するSkillです。分解はAgent-ownedの作業として承認なしで行います。正本は常にLocal specであり、taskと進捗はGitHub Issueへ投影しません ([mjun-specifyのsource-resolution](../mjun-specify/references/source-resolution.md) の規則に従う)。
 
 GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
 ## Arguments
 
-- `source` (必須): 分解対象。GitHub Issue番号 (`#123` / `123`) または `.mjun/specs/<slug>` のLocal specディレクトリ
-- `--child-issues` (任意): GitHub modeで、checklistの代わりにtaskごとのchild Issueを作成する。作成前に必ずユーザーの承認を取る
-- `--dry-run` (任意): 分解結果の提示までで停止し、tasks.md・Issue・child Issueへの書き込みを一切行わない
+- `source` (必須): 分解対象。`.mjun/specs/<slug>` のLocal specディレクトリ、またはGitHub Issue番号 (`#123` / `123`)
+- `--dry-run` (任意): 分解結果の提示までで停止し、tasks.mdへの書き込みを行わない
 
 呼び出し元 (mjun-specifyなど) から調査済みの文脈 (requirements、boundary、変更対象の見当) を渡された場合はそれを使い、specの読み直しを最小にする。
 
-### mode判定
+### source解決
 
-1. sourceがIssue番号またはGitHub URL → GitHub mode
-2. sourceが `.mjun/specs/<slug>` のパス → Local mode
+1. `.mjun/specs/<slug>` のパス → そのspecを対象にする
+2. Issue番号 → `.mjun/specs/*/spec.md` の `Source: #<number>` を検索してLocal specを逆引きする。無ければ**自動取込み** (Issue本文とコメントを機械的に `.mjun/specs/<slug>/spec.md` へ構造化し、`Source:` を記録する) を行ってから対象にする
 3. 判定できない場合は中止してユーザーに確認する
+
+対象specのRequirements・Acceptance Criteriaを読み取れない場合は中止し、`mjun-specify` での磨き上げを案内する。
 
 ## 分解規則
 
@@ -55,12 +57,9 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 
 ## 手順
 
-1. sourceを読む (GitHub: `gh issue view` で本文、Local: `spec.md` と、あれば `design.md`)。Requirements・Boundaries・Acceptance Criteriaが読み取れない場合は中止し、specを先に整えるよう案内する
+1. source解決に従って対象specを確定し、`spec.md` と、あれば `design.md` を読む
 2. 分解規則に従ってtask一覧を作る
 3. 依存グラフ (Blocked by) を確認し、実装順に並べる
 4. 分解結果 (task一覧・依存関係・単一taskの場合はその旨) を提示する。`--dry-run` はここで終了する
-5. 永続化する
-   - **Local mode**: `.mjun/specs/<slug>/tasks.md` へTask形式で書き込む。末尾に空の `## Implementation Notes` セクションを置く。既存のtasks.mdがある場合は、doneのtaskを保持したまま未着手部分を置き換える
-   - **GitHub mode (デフォルト)**: Issue本文の `## Tasks` セクションへ `- [ ] T-001: <タイトル>` 形式のchecklistとして書き込み、各taskの詳細 (Boundary / Blocked by / Acceptance Criteria) を同セクションに続ける。本文の書き換えは一時ファイル経由 (`gh issue edit <number> --body-file <tmpfile>`) で行う
-   - **GitHub mode (`--child-issues`)**: 作成するchild Issueの一覧 (タイトル・本文案) を提示してユーザーの承認を得てから、taskごとにIssueを作成し、親Issueの `## Tasks` へ `- [ ] #<child番号>` を列挙する。task statusはchild Issueのopen/closedで管理される
+5. `.mjun/specs/<slug>/tasks.md` へTask形式で書き込む。末尾に空の `## Implementation Notes` セクションを置く。既存のtasks.mdがある場合は、doneのtaskを保持したまま未着手部分を置き換える
 6. 結果を報告する: task数、依存関係、書き込み先。呼び出し元がいる場合はtask一覧を返す

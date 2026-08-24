@@ -14,7 +14,7 @@ allowed-tools: Read, Write, Glob, Grep, WebSearch, WebFetch, Bash(gh:*), Bash(gi
 ## Arguments
 
 - `question` (必須): 調査する質問。1回の起動で1つの質問だけを扱う
-- `destination` (任意): 結果の保存先。`.mjun/specs/<slug>` のLocal specディレクトリ、またはGitHub Issue番号。未指定で、会話の文脈からも特定できない場合は保存先をユーザーに確認する
+- `destination` (任意): 結果の保存先となる `.mjun/specs/<slug>` のLocal specディレクトリ。未指定で、会話の文脈からも特定できない場合は保存先をユーザーに確認する
 
 ## 調査の原則
 
@@ -54,7 +54,7 @@ allowed-tools: Read, Write, Glob, Grep, WebSearch, WebFetch, Bash(gh:*), Bash(gi
 ```
 
 5. 保存する
-   - Local spec: `.mjun/specs/<slug>/research/<topic>.md` (`<topic>` は内容を表す英語kebab-case。`research/` が無ければ作成する)
-   - GitHub Issue: 上記の内容を要約してIssueコメントとして投稿する (`gh issue comment`)
-   - どちらでもない単発調査: 保存先をユーザーに確認してから保存する
+   - 既定: `.mjun/specs/<slug>/research/<topic>.md` (`<topic>` は内容を表す英語kebab-case。`research/` が無ければ作成する)
+   - 対象specが `Source: #N` を持つ場合は、要約 + 出典を `gh issue comment` でIssueへ投影してもよい (任意。specは内部文書のため、コメントに `.mjun/` のパスは書かない)
+   - specに紐づかない単発調査: 保存先をユーザーに確認してから保存する
 6. 呼び出し元へFindings・Unresolved・Implicationを返す
