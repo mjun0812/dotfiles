@@ -23,9 +23,9 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 テンプレートは以下の優先順位で選択する：
 
 1. **リポジトリ内テンプレート**: `.github/ISSUE_TEMPLATE/` が存在する場合はそれを使用
-2. **同梱テンプレート（フォールバック）**: リポジトリにテンプレートがない場合は、隣接skillと共有のテンプレートを使用
-   - 英語（`language` が "en" または未指定）: [`../mjun-specify/references/ISSUE_TEMPLATE/`](../mjun-specify/references/ISSUE_TEMPLATE/)
-   - 日本語（`language` が "ja"）: [`../mjun-specify/references/ISSUE_TEMPLATE_JA/`](../mjun-specify/references/ISSUE_TEMPLATE_JA/)
+2. **Skill 同梱テンプレート（フォールバック）**: リポジトリにテンプレートがない場合は本skillの `references/` 配下を使用
+   - 英語（`language` が "en" または未指定）: [`references/ISSUE_TEMPLATE/`](references/ISSUE_TEMPLATE/)
+   - 日本語（`language` が "ja"）: [`references/ISSUE_TEMPLATE_JA/`](references/ISSUE_TEMPLATE_JA/)
 
 各ディレクトリには以下のテンプレートが含まれる：
 
