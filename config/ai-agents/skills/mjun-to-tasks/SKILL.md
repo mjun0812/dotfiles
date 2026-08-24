@@ -61,5 +61,9 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 2. 分解規則に従ってtask一覧を作る
 3. 依存グラフ (Blocked by) を確認し、実装順に並べる
 4. 分解結果 (task一覧・依存関係・単一taskの場合はその旨) を提示する。`--dry-run` はここで終了する
-5. `.mjun/specs/<slug>/tasks.md` へTask形式で書き込む。末尾に空の `## Implementation Notes` セクションを置く。既存のtasks.mdがある場合は、doneのtaskを保持したまま未着手部分を置き換える
+5. `.mjun/specs/<slug>/tasks.md` へTask形式で書き込む。新規作成時は末尾に空の `## Implementation Notes` セクションを置く。既存のtasks.mdがある場合は次を守って更新する:
+   - doneのtaskはそのまま保持する
+   - in-progressのtaskは `ready` へ戻した上で置き換え対象に含める
+   - 既存の `## Implementation Notes` は必ず保持する
+   - spec変更により既存done taskのAcceptance Criteriaが変わった場合は、そのtaskを再検証対象として結果報告に含める
 6. 結果を報告する: task数、依存関係、書き込み先。呼び出し元がいる場合はtask一覧を返す

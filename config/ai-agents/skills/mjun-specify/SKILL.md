@@ -27,7 +27,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 - `--issue` (任意): 新規spec作成時に、投影先のGitHub Issueもあわせて作成する。既定は純Local (Issueを作らない)
 - `--grill` (任意): Human-firstモード。非自明なdecisionを1問ずつ人間と決める
 - `--skip-trial` (任意): trial implementation (Phase 5) を省略する
-- `--dry-run` (任意): contract全文の提示 (Phase 6) で停止し、ファイル・Issueへの書き込みとtask分解を一切行わない
+- `--dry-run` (任意): contract全文の提示 (Phase 6) で停止する。ファイル・Issueへの書き込みとtask分解を一切行わず、spec内容はファイルへ書かずに会話内で組み立てる
 
 ## 2つのモード
 
@@ -41,14 +41,17 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 sourceから対象を判別する。
 
 1. Issue番号またはGitHub URL → **取り込み**。`gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。activeなspec (`status: active`) に `Source: #<number>` を持つ既存specがあれば取り込み済みとして、それを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)
-2. `.mjun/specs/<slug>` またはMarkdownパス → 既存のLocal文書を対象にする (配下の全mdをRead)
-3. sourceなし → **新規作成**。ただし作成の前に、activeなspecの一覧 (H1タイトルと `Source:` 行。source-resolution.mdの一覧手順で導出する) と依頼を突き合わせ、既存specの拡張・重複と判断できる場合は新規を作らず、そのspecをsourceとして磨き直す (重複specを作らない)。新規と判断したら、`--issue` の有無で投影先Issueを作るかが決まる。追加の質問はしない
+2. `.mjun/specs/<slug>` のパス → 既存specを対象にする (配下の全mdをRead)
+3. `.mjun/specs/` 外のMarkdownパス → **取り込み**。内容を `.mjun/specs/<slug>/spec.md` へ構造化し、以降それを正本として磨く (元ファイルは変更しない)
+4. sourceなし → **新規作成**。ただし作成の前に、activeなspecの一覧 (H1タイトルと `Source:` 行。source-resolution.mdの一覧手順で導出する) と依頼を突き合わせ、既存specの拡張・重複と判断できる場合は新規を作らず、そのspecをsourceとして磨き直す (重複specを作らない)。新規と判断したら、`--issue` の有無で投影先Issueを作るかが決まる。追加の質問はしない
 
 出力言語はsourceまたは依頼の言語に合わせて決める。純Local操作では `gh` を一切呼ばない。
 
 ### Phase 1: sourceの確保
 
-- **取り込み** (Issue番号、未取り込みの場合): Issue本文とコメントを `.mjun/specs/<slug>/spec.md` へ構造化する (slugはIssueタイトルの英語kebab-case)。frontmatterに `status: active` を、H1直下に `Source: #<number>` を記録する。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
+`--dry-run` 指定時は、このPhase以降のファイル作成・Issue作成・逐次更新をすべて行わず、同じ内容を会話内で組み立ててPhase 6の提示で終了する。
+
+- **取り込み** (Issue番号または `.mjun/specs/` 外のMarkdown、未取り込みの場合): Issueは本文とコメントを、Markdownはファイル内容を `.mjun/specs/<slug>/spec.md` へ構造化する (slugはタイトルの英語kebab-case)。frontmatterに `status: active` を記録し、Issue由来はH1直下に `Source: #<number>` を書く (Markdown由来は書かず純Local扱いとし、元ファイルは変更しない)。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
 - **新規作成**: 会話の依頼内容を下書き素材とする。内容がまったく無い場合のみ自由テキストで概要を受け取る。spec化が過剰な依頼 (単発のtypo修正など) では、specを作らず直接実装する選択肢を提示し、選ばれたら終了する
   - `.mjun/specs/<slug>/spec.md` を [references/spec-template.md](references/spec-template.md) の骨子で作成する (frontmatterは `status: active`)
   - `--issue` 指定時はさらに、リポジトリ内 `.github/ISSUE_TEMPLATE/` (無ければ [references/ISSUE_TEMPLATE](references/ISSUE_TEMPLATE)、日本語は [references/ISSUE_TEMPLATE_JA](references/ISSUE_TEMPLATE_JA)) から種別を自動判定してタイトル・本文・ラベル (既存ラベルのみ) を生成し、**ユーザーの承認を得てから** `gh issue create` で投影先Issueを作成して `Source:` を記録する
@@ -65,7 +68,7 @@ gapから意思決定の論点を洗い出し、[references/decision-authority.m
 
 ### Phase 4: decisionの解決
 
-frontierの論点を1つずつ解決し、確定するたびに**Localのspecとdecision logへ逐次**反映する。
+frontierの論点を1つずつ解決し、確定するたびに**Localのspecとdecision logへ逐次**反映する (`--dry-run` 時は会話内で保持する)。
 
 - **Agent-owned**: decision-authority.mdの自己問答 (論点 → 調査 → 推奨案 → 反論 → 採択 + 確信度) で解決する。確信度lowは `Status: tentative` (要確認) として記録する
 - **Human-owned**: `mjun-grill` の単一decisionモードへ、論点・選択肢・調査結果を渡して解決する

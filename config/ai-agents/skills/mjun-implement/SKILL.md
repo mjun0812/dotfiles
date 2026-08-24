@@ -27,7 +27,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 ### source種別
 
 1. `.mjun/specs/<slug>` のディレクトリ → **spec mode**。配下の `spec.md` (必須)・`decisions.md`・`design.md`・`tasks.md` をReadする
-2. Issue番号またはGitHub URL → activeなspec (`status: active`) から `Source: #<number>` を逆引きし、spec modeとして扱う (複数ヒットした場合は一覧を提示して選んでもらう)。見つからなければ**中止し、`mjun-specify #<number>` での取り込み・磨き上げを案内する**。入口は常にmjun-specifyであり、Issueが直行で実装できる品質かの判断をこのskillで肩代わりしない
+2. Issue番号またはGitHub URL → activeなspec (`status: active`) から `Source: #<number>` を逆引きし、spec modeとして扱う (複数ヒットした場合は一覧を提示して選んでもらう)。activeで見つからなければ、doneのspecからも `Source: #<number>` を検索する。doneにあれば「実装済みのspec (`<path>`) がある。再開する場合は `status` を `active` へ戻すか、`mjun-specify #<number>` で取り込み直す」と案内して中止する。どちらにも無ければ**中止し、`mjun-specify #<number>` での取り込み・磨き上げを案内する**。入口は常にmjun-specifyであり、Issueが直行で実装できる品質かの判断をこのskillで肩代わりしない
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
 **Local specの参照・更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のためworktreeやPR checkoutには存在しない。SubAgentへはspecの内容をプロンプトに合成して渡し、worktree内の `.mjun/` パスを読ませない。
@@ -43,7 +43,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 2. 出力言語をsourceの言語から決める (主に日本語なら日本語、それ以外または曖昧なら英語)。コメント・commit・PR作成に使う
 3. **内容検査** (全source共通。承認状態の目印は存在しないため、内容だけで判定する):
    1. **情報の充足**: Goal・受け入れ基準・実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、`mjun-specify` でspecを詰めることを案内する。方針を推測で補って実装に進まない
-   2. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する
+   2. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` を `accepted` へ更新してから進む (確認済みの決定として記録し、再実行時に同じtentativeで止まらない)
    3. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込み・投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する
 4. **taskキューを構築する**:
    - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)

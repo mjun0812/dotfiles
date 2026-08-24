@@ -15,7 +15,7 @@ model: inherit
 
 呼び出し元から以下を受け取ります．
 
-- spec contract: Requirements / Boundaries (Owns, Does Not Own, Dependencies) / Acceptance Criteria / Out of Scope (specに存在するセクションのみ)
+- spec contract: Goal / Requirements / Boundaries (Owns, Does Not Own, Dependencies, Public Contracts Affected) / Acceptance Criteria / Out of Scope (specに存在するセクションのみ)
 - 対象種別と変更目的・説明
 - 変更ファイル一覧，diff，変更履歴
 - snapshotの絶対パス

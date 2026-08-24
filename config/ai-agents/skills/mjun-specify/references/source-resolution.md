@@ -63,7 +63,8 @@ Source: #123
 
 - `Source:` 行が無いspecは純Local (投影しない)
 - これはIssueへの**参照**であり、lifecycle状態ではない。snapshotや同期状態のファイルは作らない
-- Issue番号からspecを逆引きするときは、**activeなspec** (`status: active`) の中から `Source: #<N>` を検索する。複数ヒットした場合は一覧を提示してユーザーに選んでもらう
+- Issue番号からspecを逆引きするときは、**activeなspec** (`status: active`) の中から `Source: #<N>` を検索する。複数ヒットした場合は一覧を提示してユーザーに選んでもらい、選ばれなかった方の整理 (doneへの変更または統合) を促す
+- activeでmissした場合はdoneのspecからも検索し、あれば実装済みの可能性と再開方法 (statusをactiveへ戻す、または取り込み直し) を案内する (未取り込みと誤認して取り込み直しへ誤誘導しない)
 
 ## 取り込み (Issue → spec)
 
