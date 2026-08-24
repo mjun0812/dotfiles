@@ -74,7 +74,7 @@ SubAgentのmodel選択は、環境のグローバル指示 (CLAUDE.md, AGENTS.md
 Phase 3の間の制約:
 
 - ループ内で `git reset --hard` 等の破壊的リセットを行わない
-- commit・push・PR作成はPhase 4まで行わない
+- push・PR作成はPhase 4まで行わない。commitはtask承認ごとにメイン会話が行う (Phase 3.1)。SubAgentにはcommitさせない
 - SubAgentの完了主張を検証の代わりにしない。判定は構造化フィールドと、reviewer・最終検証の実行結果だけで行う
 
 #### Phase 3.1: タスクごとのイテレーション
@@ -94,7 +94,7 @@ Phase 3の間の制約:
    - `BLOCKED` → 中止し、`BLOCKER` と `BLOCKER_REMEDIATION` を報告する
 4. **reviewerの起動**: テンプレートに、タスク文脈・contract・検証コマンド・implementerのStatus Report (参照用) を合成して起動する
 5. **VERDICTの処理**: `## Review Verdict` の `- VERDICT:` フィールドだけをパースする
-   - `APPROVED` → タスク完了。`tasks.md` の該当taskを `Status: done` へ更新して進捗を永続化する (Issueへは書き込まない)。その後、次のタスクへ進む
+   - `APPROVED` → タスク完了。**先にworktree内でそのtaskの変更をcommitする** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)。commit成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。その後、次のタスクへ進む
    - `REJECTED` → `REMEDIATION` と `FINDINGS` を添えてimplementerを再起動する。同一タスクの差し戻しは**最大2周**とし、2周後もREJECTEDなら中止して未解決の指摘を報告する
 6. **知見の伝播**: タスク横断で有用な発見は、`tasks.md` 末尾の `## Implementation Notes` へ1行で永続化し、以降のimplementerのプロンプトに含める
 
@@ -114,7 +114,7 @@ Phase 3の間の制約:
 
 メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。commit message・PR本文などの外部向け出力には、`.mjun/` 配下のパスや内部spec文書を含めない (外部へ見せるspecの参照はGitHub Issue番号だけを使う)。
 
-1. **`git-commit` skillでcommitを作成する**: 対象はPhase 3でworktree内に作られたすべての変更
+1. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正など)。残変更が無ければスキップする
 2. **`--no-pr` の場合**: ここで配送を終える。Phase 5へ進む
 3. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
    - Phase 1で決めた出力言語を `language` として渡し、`--draft` の指定を転送する
