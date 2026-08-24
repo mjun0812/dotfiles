@@ -27,8 +27,27 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 
 - `<slug>` は内容を表す英語kebab-case。既存slugと衝突する場合は末尾に `-2`, `-3` を付ける
 - 最初からすべては作らない。`spec.md` だけから開始できる
-- frontmatterやstatusフィールドは持たない。承認状態は保存せず、内容 (要確認の残留) で判定する
+- frontmatterにはライフサイクル状態 `status: active | done` だけを持つ (下記)。承認状態 (draft / ready等) は保存せず、実装可否は内容 (要確認の残留) で判定する
 - decision確定ごとの更新は常にLocalファイルへ逐次行う。task進捗とresumeは `tasks.md` の `Status` だけの1系統とする
+
+## ライフサイクル状態 (`status`)
+
+specは増えていくため、堆積管理のためのライフサイクル状態をfrontmatterで持つ。
+
+- `mjun-specify` が作成・取り込み時に `status: active` を書き、`mjun-implement` が配送の完了時に `status: done` へ更新する
+- **照合・逆引き・一覧の対象は `status: active` のspecだけ**とする。doneのspecも明示的にパスを渡せば読める
+- 放棄したspecは手動でdoneにするか削除する
+- これは堆積管理であり承認ゲートではない。実装可否の判定は常に内容検査で行う
+
+### 一覧の手順
+
+activeなspecの一覧は、索引ファイルを作らず毎回導出する。
+
+```bash
+grep -l "^status: active" .mjun/specs/*/spec.md   # activeなspecの列挙
+grep -m1 "^# " <spec.md>                          # H1タイトル
+grep -m1 "^Source: " <spec.md>                    # 投影先 (あれば)
+```
 
 ## `Source:` 行
 
@@ -44,7 +63,7 @@ Source: #123
 
 - `Source:` 行が無いspecは純Local (投影しない)
 - これはIssueへの**参照**であり、lifecycle状態ではない。snapshotや同期状態のファイルは作らない
-- Issue番号からspecを逆引きするときは、`.mjun/specs/*/spec.md` の `Source: #<N>` を検索する
+- Issue番号からspecを逆引きするときは、**activeなspec** (`status: active`) の中から `Source: #<N>` を検索する。複数ヒットした場合は一覧を提示してユーザーに選んでもらう
 
 ## 取り込み (Issue → spec)
 

@@ -1,10 +1,14 @@
 # spec.md Template
 
-人間が承認するcontract。frontmatterは付けない。
+人間が承認するcontract。frontmatterにはライフサイクル状態 (`status: active | done`) だけを持ち、承認状態の値 (draft / ready等) は作らない。
 
 `Source:` 行は投影先のGitHub Issueがある場合だけ書く (純Localのspecでは省略する)。調査しても埋まらないセクションは省略する (空セクションやプレースホルダーを残さない)。小規模な修正ではBoundariesを丸ごと省略してよい。RequirementsとAcceptance Criteriaは省略しない。
 
 ```markdown
+---
+status: active
+---
+
 # <Title>
 
 Source: #<N>

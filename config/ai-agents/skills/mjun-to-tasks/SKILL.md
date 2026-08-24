@@ -24,7 +24,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 ### source解決
 
 1. `.mjun/specs/<slug>` のパス → そのspecを対象にする
-2. Issue番号 → `.mjun/specs/*/spec.md` の `Source: #<number>` を検索してLocal specを逆引きする。無ければ**自動取込み** (Issue本文とコメントを機械的に `.mjun/specs/<slug>/spec.md` へ構造化し、`Source:` を記録する) を行ってから対象にする
+2. Issue番号 → activeなspec (`status: active`) から `Source: #<number>` を逆引きする (複数ヒットした場合は一覧を提示して選んでもらう)。無ければ**自動取込み** (Issue本文とコメントを機械的に `.mjun/specs/<slug>/spec.md` へ構造化し、`status: active` と `Source:` を記録する) を行ってから対象にする
 3. 判定できない場合は中止してユーザーに確認する
 
 対象specのRequirements・Acceptance Criteriaを読み取れない場合は中止し、`mjun-specify` での磨き上げを案内する。

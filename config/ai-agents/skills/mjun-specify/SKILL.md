@@ -40,17 +40,17 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 
 sourceから対象を判別する。
 
-1. Issue番号またはGitHub URL → **取り込み**。`gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。`.mjun/specs/*/spec.md` に `Source: #<number>` を持つ既存specがあれば取り込み済みとして、それを対象にする
+1. Issue番号またはGitHub URL → **取り込み**。`gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。activeなspec (`status: active`) に `Source: #<number>` を持つ既存specがあれば取り込み済みとして、それを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)
 2. `.mjun/specs/<slug>` またはMarkdownパス → 既存のLocal文書を対象にする (配下の全mdをRead)
-3. sourceなし → **新規作成**。`--issue` の有無で投影先Issueを作るかが決まる。追加の質問はしない
+3. sourceなし → **新規作成**。ただし作成の前に、activeなspecの一覧 (H1タイトルと `Source:` 行。source-resolution.mdの一覧手順で導出する) と依頼を突き合わせ、既存specの拡張・重複と判断できる場合は新規を作らず、そのspecをsourceとして磨き直す (重複specを作らない)。新規と判断したら、`--issue` の有無で投影先Issueを作るかが決まる。追加の質問はしない
 
 出力言語はsourceまたは依頼の言語に合わせて決める。純Local操作では `gh` を一切呼ばない。
 
 ### Phase 1: sourceの確保
 
-- **取り込み** (Issue番号、未取り込みの場合): Issue本文とコメントを `.mjun/specs/<slug>/spec.md` へ構造化する (slugはIssueタイトルの英語kebab-case)。H1直下に `Source: #<number>` を記録する。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
+- **取り込み** (Issue番号、未取り込みの場合): Issue本文とコメントを `.mjun/specs/<slug>/spec.md` へ構造化する (slugはIssueタイトルの英語kebab-case)。frontmatterに `status: active` を、H1直下に `Source: #<number>` を記録する。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
 - **新規作成**: 会話の依頼内容を下書き素材とする。内容がまったく無い場合のみ自由テキストで概要を受け取る。spec化が過剰な依頼 (単発のtypo修正など) では、specを作らず直接実装する選択肢を提示し、選ばれたら終了する
-  - `.mjun/specs/<slug>/spec.md` を [references/spec-template.md](references/spec-template.md) の骨子で作成する
+  - `.mjun/specs/<slug>/spec.md` を [references/spec-template.md](references/spec-template.md) の骨子で作成する (frontmatterは `status: active`)
   - `--issue` 指定時はさらに、リポジトリ内 `.github/ISSUE_TEMPLATE/` (無ければ [references/ISSUE_TEMPLATE](references/ISSUE_TEMPLATE)、日本語は [references/ISSUE_TEMPLATE_JA](references/ISSUE_TEMPLATE_JA)) から種別を自動判定してタイトル・本文・ラベル (既存ラベルのみ) を生成し、**ユーザーの承認を得てから** `gh issue create` で投影先Issueを作成して `Source:` を記録する
 
 ### Phase 2: 調査とgap分析

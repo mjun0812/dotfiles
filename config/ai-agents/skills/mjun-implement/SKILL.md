@@ -27,7 +27,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 ### source種別
 
 1. `.mjun/specs/<slug>` のディレクトリ → **spec mode**。配下の `spec.md` (必須)・`decisions.md`・`design.md`・`tasks.md` をReadする
-2. Issue番号またはGitHub URL → `.mjun/specs/*/spec.md` の `Source: #<number>` を検索してLocal specを逆引きし、spec modeとして扱う。見つからなければ**自動取込み**を行う: `gh issue view <number> --json number,title,state,body,labels,comments,url` で取得し (`state: CLOSED` なら中止して報告)、本文とコメントを機械的に `.mjun/specs/<slug>/spec.md` へ構造化して `Source: #<number>` を記録する (磨き・grill・調査はしない)。取り込んだspecで続行してよいかはPhase 1の内容検査が判定する
+2. Issue番号またはGitHub URL → activeなspec (`status: active`) から `Source: #<number>` を逆引きし、spec modeとして扱う (複数ヒットした場合は一覧を提示して選んでもらう)。見つからなければ**自動取込み**を行う: `gh issue view <number> --json number,title,state,body,labels,comments,url` で取得し (`state: CLOSED` なら中止して報告)、本文とコメントを機械的に `.mjun/specs/<slug>/spec.md` へ構造化して `status: active` と `Source: #<number>` を記録する (磨き・grill・調査はしない)。取り込んだspecで続行してよいかはPhase 1の内容検査が判定する
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
 **Local specの参照・更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のためworktreeやPR checkoutには存在しない。SubAgentへはspecの内容をプロンプトに合成して渡し、worktree内の `.mjun/` パスを読ませない。
@@ -44,6 +44,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 3. **内容検査** (全source共通。承認状態の目印は存在しないため、内容だけで判定する):
    1. **情報の充足**: Goal・受け入れ基準・実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、`mjun-specify` でspecを詰めることを案内する。方針を推測で補って実装に進まない
    2. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する
+   3. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込み・投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する
 4. **taskキューを構築する**:
    - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)
    - 無い場合は、独立に検証可能な振る舞いが複数含まれるときだけ、1タスク1振る舞いのvertical sliceへ分解する。それ以外はspec全体を1タスクとして扱う
@@ -120,6 +121,7 @@ Phase 3の間の制約:
    - **specが `Source: #N` を持つ場合はそのIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。純Local specでは渡さない (specは内部文書であり、PR本文で言及しない。Contract reviewには `github-pr-review` の `--spec` を使う)
    - push・PRタイトルと本文の生成・PR作成はすべて連結先skillが行う。手順を再実装しない
 4. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
+5. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合・逆引き・一覧の対象から外れる
 
 ### Phase 5: 結果の表示
 
