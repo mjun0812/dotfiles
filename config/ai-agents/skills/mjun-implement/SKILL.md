@@ -2,7 +2,7 @@
 name: mjun-implement
 description: >-
   spec (`.mjun/specs/` のLocal spec、GitHub Issue番号、または単発の設計doc) を起点に「内容検査 → worktree作成 → task単位の実装 → Acceptance Criteria照合 → commit → 必要ならPR作成」を一気通貫で実行するSkill。
-  正本は常にLocal specで、Issue番号は取り込み済みspecへの逆引き (未取り込みなら自動取込み) として扱う。
+  正本は常にLocal specで、Issue番号は取り込み済みspec (mjun-specify経由) への逆引きとして扱う。未取り込みならmjun-specifyを案内する。
   実装はSubAgentに委譲し、commitとPR作成はgit-commit・github-pr-create skillに連結する。
   ユーザーが「#Nを実装して」「このspecを実装して」「実装してPRまで」のように依頼したら使うこと。
   specの作成・磨き上げには使わない。
@@ -27,7 +27,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 ### source種別
 
 1. `.mjun/specs/<slug>` のディレクトリ → **spec mode**。配下の `spec.md` (必須)・`decisions.md`・`design.md`・`tasks.md` をReadする
-2. Issue番号またはGitHub URL → activeなspec (`status: active`) から `Source: #<number>` を逆引きし、spec modeとして扱う (複数ヒットした場合は一覧を提示して選んでもらう)。見つからなければ**自動取込み**を行う: `gh issue view <number> --json number,title,state,body,labels,comments,url` で取得し (`state: CLOSED` なら中止して報告)、本文とコメントを機械的に `.mjun/specs/<slug>/spec.md` へ構造化して `status: active` と `Source: #<number>` を記録する (磨き・grill・調査はしない)。取り込んだspecで続行してよいかはPhase 1の内容検査が判定する
+2. Issue番号またはGitHub URL → activeなspec (`status: active`) から `Source: #<number>` を逆引きし、spec modeとして扱う (複数ヒットした場合は一覧を提示して選んでもらう)。見つからなければ**中止し、`mjun-specify #<number>` での取り込み・磨き上げを案内する**。入口は常にmjun-specifyであり、Issueが直行で実装できる品質かの判断をこのskillで肩代わりしない
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
 **Local specの参照・更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のためworktreeやPR checkoutには存在しない。SubAgentへはspecの内容をプロンプトに合成して渡し、worktree内の `.mjun/` パスを読ませない。

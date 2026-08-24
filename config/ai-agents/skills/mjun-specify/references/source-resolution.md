@@ -67,8 +67,8 @@ Source: #123
 
 ## 取り込み (Issue → spec)
 
-- Issue本文とコメントを読み、spec.mdのcontract構成へ構造化する (slugはIssueタイトルから)
-- `mjun-to-tasks` / `mjun-implement` に未取り込みのIssue番号が渡された場合は、**自動取込み**として機械的なspec化 (本文とコメントの構造化のみ。磨き・grill・調査はしない) を行ってから、内容検査で続行可否を判定する
+- Issue本文とコメントを読み、spec.mdのcontract構成へ構造化する (slugはIssueタイトルから)。**取り込みを行うのは `mjun-specify` だけ**である
+- **入口は常に `mjun-specify`**: `mjun-to-tasks` / `mjun-implement` に未取り込みのIssue番号が渡された場合は中止し、`mjun-specify #N` を案内する。Issueが直行で実装できる品質かの判断を取り込み側で肩代わりしない (trivialな依頼はspecifyの「spec化が過剰なら直接実装を提示」で振り分けられる)
 
 ## 投影 (spec → Issue)
 
