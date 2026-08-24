@@ -1,18 +1,17 @@
 # Source Resolution
 
-specを扱うskill (mjun-specify / mjun-to-tasks / mjun-implement) が、GitHub modeとLocal modeを同じ規則で解決するための定義。modeはどこにも保存せず、毎回この規則で解決する。
+specを扱うskill (mjun-specify / mjun-to-tasks / mjun-implement) が共有する、正本と投影の規則。状態ファイルは持たず、毎回この規則で解決する。
 
-## mode選択規則
+## 原則: 正本は常にLocal、GitHubは投影
 
-上から順に評価し、最初に該当したものを採用する。
+specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitHub Issueは入口 (取り込み) と出口 (投影) のアダプタであり、作業中にIssueを正本として読み書きしない。
 
-1. `--local` がある → Local mode
-2. `--github` がある → GitHub mode
-3. sourceがIssue番号 (`#123` / `123`) またはGitHub URL → GitHub mode
-4. sourceがMarkdownパスまたは `.mjun/specs/<slug>` のディレクトリパス → Local mode
-5. sourceもflagもない → GitHubかLocalかを1回だけユーザーに聞く
-
-矛盾する入力 (例: `#123 --local`) は中止してユーザーに確認する。後続skillへはIssue番号またはローカルパスを明示的に渡す。
+```text
+取り込み: Issue → .mjun/specs/<slug>/ へspec化
+作業:     specify / to-tasks / implement はLocalの4文書だけを読み書きする
+投影:     承認後、Localのcontractを Issue本文へ反映 (Sourceを持つspecのみ)
+配送:     worktreeで実装 → PR (SourceがあればCloses #N)
+```
 
 ## Local specの配置
 
@@ -29,20 +28,43 @@ specを扱うskill (mjun-specify / mjun-to-tasks / mjun-implement) が、GitHub 
 - `<slug>` は内容を表す英語kebab-case。既存slugと衝突する場合は末尾に `-2`, `-3` を付ける
 - 最初からすべては作らない。`spec.md` だけから開始できる
 - frontmatterやstatusフィールドは持たない。承認状態は保存せず、内容 (要確認の残留) で判定する
+- decision確定ごとの更新は常にLocalファイルへ逐次行う。task進捗とresumeは `tasks.md` の `Status` だけの1系統とする
 
-## GitHub Issueとの対応
+## `Source:` 行
 
-現在有効な情報だけをIssue本文に置き、決定の経緯はコメントへ分離する。
+GitHub Issueから取り込んだspec (または `--issue` で投影先を作ったspec) は、`spec.md` のH1直下に投影先への参照を1行持つ。
 
-| Local        | GitHub Issue                                                                       |
-| ------------ | ---------------------------------------------------------------------------------- |
-| spec.md      | 本文のcontractセクション群 (Context〜Out of Scope)                                 |
-| decisions.md | 本文の `## Decision Log` = 採用decisionの要約表。却下案・検討経緯はIssueコメントへ |
-| design.md    | 本文の `## Design Notes` (現在有効な設計)                                          |
-| tasks.md     | 本文の `## Tasks` checklist + `## Implementation Notes`                            |
-| research/    | Issueコメント (要約 + 出典)                                                        |
+```markdown
+# <Title>
 
-Issue本文の書き換えは、承認後の一括更新 + 変更サマリの1コメントで行う (body編集はwatcherに通知されないため、コメントで通知を補う)。task checklistとImplementation Notesの更新は本文編集で行ってよい。
+Source: #123
+
+## Context
+```
+
+- `Source:` 行が無いspecは純Local (投影しない)
+- これはIssueへの**参照**であり、lifecycle状態ではない。snapshotや同期状態のファイルは作らない
+- Issue番号からspecを逆引きするときは、`.mjun/specs/*/spec.md` の `Source: #<N>` を検索する
+
+## 取り込み (Issue → spec)
+
+- Issue本文とコメントを読み、spec.mdのcontract構成へ構造化する (slugはIssueタイトルから)
+- `mjun-to-tasks` / `mjun-implement` に未取り込みのIssue番号が渡された場合は、**自動取込み**として機械的なspec化 (本文とコメントの構造化のみ。磨き・grill・調査はしない) を行ってから、内容検査で続行可否を判定する
+
+## 投影 (spec → Issue)
+
+`Source:` を持つspecは、contract承認後にIssue本文へ投影する。
+
+- 投影範囲: contract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes`
+- **Tasksとtask進捗は投影しない**。進捗は内部 (tasks.md) だけで管理し、外部からはPRで見える。implementはIssueへ一切書き込まない
+- 書き換えは一時ファイル経由の一括更新 (`gh issue edit --body-file`) + 変更サマリの1コメント (body編集はwatcherに通知されないため)
+- 却下案・検討経緯はIssueコメントへ記録する
+- 純Local specは投影しない
+
+## 同期規則
+
+- 投影の直前に `gh issue view` で最新のIssueを取得する。取り込み後に付いた新しいコメントがあれば内容を提示し、specへ取り込むかを確認する
+- 外部でIssue本文が編集されていても、投影は承認済みのLocal contractで上書きする (正本はLocal)。上書き内容は承認フローで提示済みのため、そこで差分に気付ける
 
 ## git管理と参照規則
 
@@ -50,5 +72,5 @@ Issue本文の書き換えは、承認後の一括更新 + 変更サマリの1�
 
 - worktreeやPR checkoutには `.mjun/specs/` が**存在しない**。worktree内の作業からspec文書を参照・更新するときは、必ずメインrepositoryの絶対パスを使う。SubAgentへはspec内容をプロンプトに合成して渡し、worktree内のパスを読ませない
 - specは**内部文書**である。PR本文・PRタイトル・commit messageなど外部向けの出力では、`.mjun/` 配下のパスやspecの存在に言及しない。外部へ見せるspecの参照はGitHub Issue (`Closes #N`) だけを使う
-- PRレビュー側は、contractを「`--spec` 引数で明示されたsource → PR本文の `Closes #N` が指すIssue」の順で解決する。どちらも無ければContract観点をスキップする (Local specを読めるのは `.mjun/` を持つマシンだけ)
+- PRレビュー側は、contractを「`--spec` 引数で明示されたsource → PR本文の `Closes #N` が指すIssue」の順で解決する。どちらも無ければContract観点をスキップする (Issue本文は承認時点の投影であり、最新の正本はLocal specにある)
 - resumeとtask進捗の永続化は、`.mjun/` が残っている同一working tree上でのみ有効

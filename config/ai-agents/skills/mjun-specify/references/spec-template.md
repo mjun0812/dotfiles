@@ -2,10 +2,12 @@
 
 人間が承認するcontract。frontmatterは付けない。
 
-調査しても埋まらないセクションは省略する (空セクションやプレースホルダーを残さない)。小規模な修正ではBoundariesを丸ごと省略してよい。RequirementsとAcceptance Criteriaは省略しない。
+`Source:` 行は投影先のGitHub Issueがある場合だけ書く (純Localのspecでは省略する)。調査しても埋まらないセクションは省略する (空セクションやプレースホルダーを残さない)。小規模な修正ではBoundariesを丸ごと省略してよい。RequirementsとAcceptance Criteriaは省略しない。
 
 ```markdown
 # <Title>
+
+Source: #<N>
 
 ## Context
 
