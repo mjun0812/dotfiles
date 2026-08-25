@@ -95,7 +95,7 @@
       "/private/tmp"
     ]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "claude-fable-5",
   "hooks": {
     "PreToolUse": [
       {
