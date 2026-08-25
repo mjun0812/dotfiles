@@ -19,7 +19,7 @@ jobs:
 
       # pre-commit hookはlanguage: systemのため、hookが呼ぶツールもここで入れる
       - name: Install lint tools via mise
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v4
         with:
           mise_toml: |
             [tools]
