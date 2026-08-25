@@ -55,7 +55,7 @@ Issueが投影形式 (Context〜Out of Scopeのcontractセクション群) で�
 
 どちらでも解決できない場合はContract軸をスキップし、レポートの概要にその旨を1行記載する。解決したcontractは `<spec-contract>` として保持する。なお、Issue本文のcontractは承認時点の投影であり、最新の正本はLocal specにある。`.mjun/` を持つマシンでレビューするときは `--spec` でLocal specを渡すことを推奨する。
 
-**Local spec由来のContract指摘は投稿しない**: `--spec` でLocal spec (`.mjun/specs/` のパス) を解決した場合、Contract軸の確定指摘はレポート本文とinline commentから除外し、Phase 4のチャット報告にのみ含める (specは内部文書のため、その引用をGitHubへ投稿しない)。`Closes #N` 経由で解決した場合のContract指摘は、投影済みIssueの引用であり通常どおり投稿する。specは内部文書のため、レビューレポートやinline commentへ `.mjun/` 配下のパスを書かない (specの記述は「spec」とだけ呼んで引用する)。
+**Local spec由来のContract指摘は投稿しない**: `--spec` でLocal spec (`.mjun/specs/` のパス) を解決した場合、Contract軸の確定指摘はverdictへ通常どおり計上するが、レポート本文へは個別項目として記載せず (Phase 2.5 step 5の概要1行のみ)、inline commentも生成せず、全文はPhase 4のチャット報告にのみ含める (specは内部文書のため、その引用をGitHubへ投稿しない)。`Closes #N` 経由で解決した場合のContract指摘は、投影済みIssueの引用であり通常どおり投稿する。specは内部文書のため、レビューレポートやinline commentへ `.mjun/` 配下のパスを書かない (specの記述は「spec」とだけ呼んで引用する)。
 
 他のレビュワーのレビューやthreadは参照しない。初回レビューではどちらのID一覧も空になる。
 
@@ -208,6 +208,7 @@ Phase 2.2の確定指摘一覧、Phase 2.3の確定規約指摘一覧、Phase 2.
 3. Verdictを決める。
    - 校正済み指摘、校正済み規約指摘、校正済み契約指摘のいずれかが1件以上の場合は`REQUEST_CHANGES`
    - すべて0件の場合は`APPROVE`
+   - Local spec由来のContract指摘もverdictへ計上する。レポート・inline comment・チャット報告での扱いはstep 5とPhase 3.2、Phase 4の分岐に従う
    - self reviewを含め、レポート内では`COMMENT`を使用しない。GitHub APIへ渡すeventはPhase 3.1で決める
 4. 出力言語に対応するテンプレートを読み込む。
    - 日本語の場合は`references/report-ja.md`
@@ -217,6 +218,7 @@ Phase 2.2の確定指摘一覧、Phase 2.3の確定規約指摘一覧、Phase 2.
    - `<short-sha>`: `<latest-commit-sha>`の先頭7文字
    - CIが失敗している場合は概要に1行記載する
    - 校正済み指摘、校正済み規約指摘、校正済み契約指摘の順に同じ`指摘事項`または`Findings`セクションへ記載し、全体を1から連番にする
+   - ただしLocal spec由来のContract指摘は個別項目として記載せず、概要に「Contract軸でN件の指摘があるが、内部specに基づくため詳細はチャット報告にのみ含める」と1行記載する。連番はセクションへ記載する指摘だけで振る
 
 確定指摘一覧、`証拠`、`検証結果`は、校正後も内部確認用として保持する。
 レポート本文とinline commentの指摘部分は、校正済み指摘一覧・校正済み規約指摘一覧・校正済み契約指摘一覧だけから生成する。
@@ -234,6 +236,7 @@ Phase 2.2の確定指摘一覧、Phase 2.3の確定規約指摘一覧、Phase 2.
 #### Phase 3.2: inline commentの作成と投稿
 
 Phase 2.5の校正済み各一覧について、`(path, line, side)`がPRのdiffに含まれるか検証し、diff内の指摘からinline comments JSONを生成する。
+Local spec由来のContract指摘からはinline commentを生成しない。
 レポート本文を解析してinline commentsを作らず、レポートと同じ校正済み一覧から生成する。
 Finder由来の指摘の番号と、`カテゴリ` / `要約` / `問題` / `発生経路` / `完了条件` はレポート本文に一致させる。
 Standards由来とContract由来の指摘の番号と、`カテゴリ` / `要約` / `問題` / `根拠` / `完了条件` もレポート本文に一致させる。
@@ -321,5 +324,6 @@ bash "<skill-dir>/scripts/resolve_review_threads.sh" \
 開始時の`<latest-commit-sha>`に対するレビューとして、以下をまとめてユーザーに提示して終了する。
 
 - Verdict、Finder由来・Standards由来・Contract由来の指摘件数 (Contract軸をスキップした場合はその旨)、レポート本文
+- Local spec由来のため未投稿としたContract指摘の全文 (該当がある場合)
 - レビューURL(`post_review.sh` の標準出力)。`--dry-run`、head commit更新、投稿失敗のいずれかで未投稿の場合は、その理由を明記する
 - dismissした既存レビューとresolveした以前のthreadの件数(Phase 3.3を実行した場合のみ)
