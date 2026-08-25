@@ -5,8 +5,9 @@ description: >-
   正本は常に `.mjun/specs/` のLocal specで、GitHub Issueは取り込みと投影のアダプタとして扱う。
   factsを調査してAgentの権限内のdecisionを自分で決め、人間の判断が必要なdecisionだけを1問ずつ確認し、
   承認後にIssueへ投影して必要ならtask分解まで行う。
-  ユーザーが「issue作って」「バグ報告を起票して」「specを作って」「#Nを実装できるレベルに詰めて」「issueを磨いて」
+  ユーザーが「specを作って」「仕様を詰めて」「#Nを実装できるレベルに詰めて」「issueを磨いて」
   「この設計docをspecにして」のように依頼したら使うこと。
+  単発の軽いissue起票には使わない (それはgithub-issue-createの領分)。
   実装からPR作成まで進める依頼や、既にspecが承認済みの実装依頼には使わない。
 allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grill), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-to-tasks)
 ---
