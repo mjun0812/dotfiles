@@ -95,9 +95,10 @@ Finderはmergeを止める問題の指摘候補を、Standardsはmergeをブロ�
 - baseline識別子: <base-sha>
 - snapshot識別子: <head-sha>
 - 追加証拠: <ci-evidence>
+- spec contract: <spec-contract>
 ```
 
-`<role>` には `Finder`、`Standards`、`Contract` のいずれかを指定する。Contractには `<additional-evidence>` に `<spec-contract>` 全文を含める。
+`<role>` には `Finder`、`Standards`、`Contract` のいずれかを指定する。`<spec-contract>` にはContract起動時のみ解決済みspec contract全文を指定し、FinderとStandardsでは `なし` とする。
 `<change-summary>` にはchangedFiles / additions / deletionsを、`<ci-evidence>` には失敗したCI結果のサマリとcheckの名前・URL・関連ログを指定する。
 該当するCI結果がなければ `なし` とする。
 
@@ -140,10 +141,11 @@ Finderが発見した指摘から候補を確定する。
 - 追加証拠:
   - CI: <ci-evidence>
   - 同じ根本原因の既存thread: <related-thread>
+  - spec contract: <spec-contract>
 ```
 
 Finder候補では `<candidate-type>` を `Finder`、`<candidate>` を候補1件の全文、`<related-thread>` を同じ根本原因の既存threadと会話にする。
-該当するthreadがなければ `なし` とする。
+該当するthreadがなければ `なし` とする。FinderとStandardsの検証では `<spec-contract>` を `なし` とする。
 その他のplaceholderにはPhase 2.1と同じ値を指定する。
 
 最終verdictが`confirmed`の候補のみ通過させる。`refuted` / `uncertain`は破棄する。
@@ -184,7 +186,7 @@ Contract SubAgentを起動した場合のみ実行する。確定指摘・確定
 
 - agent定義の出力形式(`問題` / `根拠` / `完了条件`)を満たす指摘だけを採用する
 - 確定指摘・確定規約指摘と同じ行または同じ根本原因の指摘は破棄する
-- 採用した指摘は1件ごとに `code-reviewer-verifier` で検証する。Phase 2.2のprompt templateを使用し、`<candidate-type>` を `Contract`、`<candidate>` を指摘1件の全文、`<related-thread>` を `なし` とし、追加証拠に `<spec-contract>` 全文を含める
+- 採用した指摘は1件ごとに `code-reviewer-verifier` で検証する。Phase 2.2のprompt templateを使用し、`<candidate-type>` を `Contract`、`<candidate>` を指摘1件の全文、`<related-thread>` を `なし`、`<spec-contract>` を解決済みspec contract全文とする
 - verdictが`confirmed`の指摘は、`path` / `line` / `side`、`カテゴリ`、`要約`、`問題`、`根拠`(specの該当記述の引用)、`完了条件`、`検証結果`の内部レコードへ正規化し、確定契約指摘一覧とする。`refuted` / `uncertain`は破棄する
 
 #### Phase 2.5: 指摘の校正とレビューレポートの作成

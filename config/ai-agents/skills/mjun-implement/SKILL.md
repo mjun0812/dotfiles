@@ -53,10 +53,11 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 
 ### Phase 2: worktreeの作成
 
-1. **branch名を決定する**: 形式は `<type>/<slug>` (specが `Source: #N` を持つ場合は `<type>/<N>-<slug>`)。`<type>` はConventional Commitsの種別 (`fix`, `feat`, `docs`, `chore`, `refactor` 等。判別不能なら `feat`)、`<slug>` はタイトルからkebab-case (英数字とハイフン、40文字以内)。既存branchと衝突する場合は末尾に `-2`, `-3` を付ける
-2. **worktreeのパス**: `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける
-3. `git worktree add -b <branch-name> <worktree-path> <base-branch>` (`<base-branch>` は最新のdefault branch)。同じpathのworktreeに未commit変更がある場合は中止する。作成失敗時は中止してエラーを伝える
-4. branch名・worktreeパス・base branch名を記録する (クリーンアップで使う)
+1. **branch名を決定する**: 形式は `<type>/<slug>` (specが `Source: #N` を持つ場合は `<type>/<N>-<slug>`)。`<type>` はConventional Commitsの種別 (`fix`, `feat`, `docs`, `chore`, `refactor` 等。判別不能なら `feat`)、`<slug>` はタイトルからkebab-case (英数字とハイフン、40文字以内)
+2. **resumeの判定**: 同名のbranchが既に存在し、かつtaskキューに `Status: done` のtaskがある場合は、前回実行の続き (resume) として扱う。done taskのcommitはその既存branchに乗っているため、**新しいbranchを作らずその branchを使う**。resumeに該当せず既存branchと衝突する場合は、branch名の末尾に `-2`, `-3` を付けて回避する
+3. **worktreeのパス**: `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける
+4. **worktree作成**: resumeの場合は `git worktree add <worktree-path> <branch-name>` で既存branchをcheckoutする。新規の場合は `git worktree add -b <branch-name> <worktree-path> <base-branch>` (`<base-branch>` は最新のdefault branch)。同じpathのworktreeに未commit変更がある場合は中止する。作成失敗時は中止してエラーを伝える
+5. branch名・worktreeパス・base branch名を記録する (クリーンアップで使う)
 
 ### Phase 3: 実装
 
@@ -107,7 +108,7 @@ Phase 3の間の制約:
 2. **Acceptance Criteriaの照合**: specのAcceptance Criteriaを1件ずつ、実装と検証結果に照合する。各criterionについて、それを満たす変更・テスト・実行結果を特定して充足を判定する (SubAgentに依頼してよい)。specにAcceptance Criteriaが無いdoc modeでは省略する
 
 - 検証コマンドがすべて成功し、全ACが充足 → Phase 4へ進む
-- 検証コマンドの失敗、またはACの未充足 → 内容を添えてimplementerに差し戻す (合わせて最大2周)。収束しなければ中止し、未充足のcriterionを明示して報告する
+- 検証コマンドの失敗、またはACの未充足 → 内容を添えてimplementerに差し戻す (合わせて最大2周)。**差し戻しで生じた修正は、Phase 3.1と同じreviewerの検査に合格してからPhase 4へ進む** (最終検証後の変更だけがboundary検査等を迂回する経路を作らない)。収束しなければ中止し、未充足のcriterionを明示して報告する
 
 ### Phase 4: commitと配送 (git-commit / github-pr-create に連結)
 

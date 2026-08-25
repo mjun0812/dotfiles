@@ -88,7 +88,7 @@ Phase 2以降では元のrepositoryを読まず，対象ファイルとコマン
 - Standards: `Standards` / 文書化された必須規約，機械的に未検出の違反，変更後への先送りが安全でないコードスメル
 - Contract (`--spec`指定時のみ): `Contract` / spec contractとの整合 (逸脱，未充足，boundary違反，scope creep)．`<additional-evidence>`にspec contract全文を含める
 
-dirty modeでは`<target-kind>`を`Local uncommitted changes`，`<change-description>`をユーザー指定の目的または「現在の未commit変更」，`<change-history>`を`なし`とする．commit modeでは順に`Local commit`，commit message，commit SHA・first parent SHA・commit messageとする．その他のplaceholderはPhase 1のmetadataと対象差分から埋め，`<additional-evidence>`は`なし`とする．
+dirty modeでは`<target-kind>`を`Local uncommitted changes`，`<change-description>`をユーザー指定の目的または「現在の未commit変更」，`<change-history>`を`なし`とする．commit modeでは順に`Local commit`，commit message，commit SHA・first parent SHA・commit messageとする．その他のplaceholderはPhase 1のmetadataと対象差分から埋め，`<additional-evidence>`は`なし`とする (例外: Contract roleの起動時はspec contract全文とする)．
 
 FinderとStandardsにはsnapshotの検索と読み取りだけを許可し，コード，テスト，ビルド，lint，型チェック，package script，再現コードを実行させない．
 

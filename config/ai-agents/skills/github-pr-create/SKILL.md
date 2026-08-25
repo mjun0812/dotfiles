@@ -15,7 +15,7 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 ## Arguments
 
 - `language`: PRのタイトルと説明文の言語（例: "ja", "en"）。デフォルト: "English"
-- `spec`: 解決するGitHub Issue番号（任意。mjun-implementなどの呼び出し元から渡される）。関連Issue（`Closes`）の最優先候補として扱う
+- `spec`: 解決するGitHub Issue番号 (任意。mjun-implementなどの呼び出し元から渡される)。関連Issue (`Closes`) の最優先候補として扱う
 - `--dry-run`: 生成したPRタイトル・本文・base/head branchのみを提示し、pushや `gh pr create` を実行せず終了する
 
 base branchは引数ではなく自動推定で決定する（事前チェック2を参照）。ユーザーが会話で明示した場合（「developに向けてPRを作って」等）はそれを最優先する。
@@ -83,7 +83,7 @@ base branchは引数ではなく自動推定で決定する（事前チェック
 
 ### 関連Issue
 
-- `spec` としてIssue番号が渡された場合は、それを解決するIssue（`Closes`）の最優先候補にする
+- `spec` としてIssue番号が渡された場合は、それを解決するIssue (`Closes`) の最優先候補にする
 - branch名からIssue番号を抽出する（例: `feature/123-add-something` → `#123`）
 - commitメッセージから `fix #456`, `closes #789`, `refs #101` 等のキーワードを検出する
 - `gh issue list --state open --json number,title` のタイトルを変更内容と突き合わせ、関連するIssueを探す

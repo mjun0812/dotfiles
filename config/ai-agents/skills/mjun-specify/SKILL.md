@@ -90,6 +90,7 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 - specのcontract全文と、変更点サマリ (追加・変更したセクションと理由)、要確認 (tentative) の一覧を提示する
 - `--dry-run` はここで終了する
 - AskUserQuestionで「反映する / 修正して再提示 / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
+- 「キャンセル」の場合は以降のPhaseへ進まず、作成・更新済みのLocal specを削除するか残すかを確認する。残す場合はdecisions.mdへ「contract未承認 (キャンセル)」を `Status: tentative` として記録する (未承認のspecがmjun-implementの内容検査を素通りしないようにする)
 
 ### Phase 7: 投影
 
