@@ -56,7 +56,7 @@ claudex() {
         ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-5.6-sol" \
         ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-5.6-luna" \
         ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-5.6-luna" \
-        claude --mcp-config=${HOME}/.claude/mcp.json \
+        command claude --mcp-config=${HOME}/.claude/mcp.json \
             --allow-dangerously-skip-permissions --model "gpt-5.6-luna" "$@"
 }
 

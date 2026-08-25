@@ -100,7 +100,6 @@ It dumps the settings and shows the resulting `git status`; review and commit th
 | aqua        | Declarative CLI version manager        |
 | aws-cli     | AWS command-line interface             |
 | bat         | Modern `cat` with syntax highlighting  |
-| chezmoi     | Dotfiles manager                       |
 | delta       | Git diff pager                         |
 | eza         | Modern `ls`                            |
 | fd          | Modern `find`                          |
@@ -134,7 +133,6 @@ It dumps the settings and shows the resulting `git status`; review and commit th
 | --------------- | ------------------------------------- |
 | Claude Code     | AI agent for daily use                |
 | Codex           | AI agent for daily use                |
-| Gemini-cli      | AI agent for generate commit messages |
 | Antigravity-cli | AI agent for generate commit messages |
 | Copilot-cli     | AI agent for code                     |
 | OpenCode        | AI agent for code                     |
@@ -272,6 +270,28 @@ mise registry | grep <tool-name>
 # Search for a tool in aqua registry
 aqua g
 mise use aqua:google-antigravity/antigravity-cli@latest
+```
+
+### mise bootstrap services
+
+- macOS: `headroom-proxy`, `cli-proxy-api`, and `codex-remote-control` as LaunchAgents
+- Linux: `codex-remote-control` as a systemd user service
+
+```bash
+# macOS
+mise bootstrap macos launchd-agents status
+mise bootstrap macos launchd-agents apply --yes
+
+# Linux
+mise bootstrap linux systemd-units status
+mise bootstrap linux systemd-units apply --yes
+
+# Restart
+# macOS
+mise bootstrap macos launchd-agents apply --yes
+
+# Linux
+mise bootstrap linux systemd-units apply --yes
 ```
 
 ## Neovim

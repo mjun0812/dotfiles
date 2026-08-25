@@ -53,6 +53,9 @@
 "brew-cask:inkscape" = "latest"
 "brew-cask:wezterm@nightly" = "latest"
 
+[bootstrap.brew.taps]
+"mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
+
 [bootstrap.macos.launchd.agents.headroom-proxy]
 program = "~/.local/share/mise/shims/headroom"
 args = [
@@ -86,17 +89,6 @@ args = ["app-server", "daemon", "start"]
 run_at_load = true
 kickstart = true
 
-[bootstrap.brew.taps]
-"mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
-
 [tasks.no-sleep-mac]
 description = "No Sleep Mode for macOS"
 run = "caffeinate -dims"
-
-[tasks.headroom-restart]
-description = "Restart the Headroom proxy launchd agent"
-run = "launchctl kickstart -k gui/$(id -u)/dev.mise.headroom-proxy"
-
-[tasks.cli-proxy-api-restart]
-description = "Restart the CLIProxyAPI launchd agent"
-run = "launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api"
