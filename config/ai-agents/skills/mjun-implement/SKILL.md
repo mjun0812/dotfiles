@@ -21,7 +21,6 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 
 - `source` (必須): 実装対象。GitHub Issue番号 (`#123` / `123`)、`.mjun/specs/<slug>` のLocal specディレクトリ、または単発Markdownのパス
 - `--pr` / `--no-pr` (任意): 実装をPRとして届けるか、local commitまでで終えるか。**どちらも未指定の場合は、worktree作成前に確認する** (長時間の自律実装の最後で確認待ちにしない)
-- `--draft` (任意): `--pr` 時にdraft PRとして作成
 - `--dry-run` (任意): Phase 1の検査・taskキュー・実装方針の提示で停止し、worktree作成以降 (Phase 2〜) は一切実行しない
 
 ### source種別
@@ -117,7 +116,7 @@ Phase 3の間の制約:
 1. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正など)。残変更が無ければスキップする
 2. **`--no-pr` の場合**: ここで配送を終える。Phase 5へ進む
 3. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
-   - Phase 1で決めた出力言語を `language` として渡し、`--draft` の指定を転送する
+   - Phase 1で決めた出力言語を `language` として渡す
    - **specが `Source: #N` を持つ場合はそのIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。純Local specでは渡さない (specは内部文書であり、PR本文で言及しない。Contract reviewには `github-pr-review` の `--spec` を使う)
    - push・PRタイトルと本文の生成・PR作成はすべて連結先skillが行う。手順を再実装しない
 4. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
