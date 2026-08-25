@@ -205,6 +205,13 @@ config.keys = {
 		action = wezterm.action.SendString("\n"),
 	},
 	{
+		-- ctrl+` はレガシーエンコーディングでは NUL に潰れるため、
+		-- CSI-u で送って Herdr 経由でも nvim に届くようにする
+		key = "`",
+		mods = "CTRL",
+		action = wezterm.action.SendString("\x1b[96;5u"),
+	},
+	{
 		key = "d",
 		mods = "CMD",
 		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
