@@ -16,7 +16,6 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 
 - `language`: PRのタイトルと説明文の言語（例: "ja", "en"）。デフォルト: "English"
 - `spec`: 解決するGitHub Issue番号（任意。mjun-implementなどの呼び出し元から渡される）。関連Issue（`Closes`）の最優先候補として扱う
-- `--draft`: draft PRとして作成（Optional）
 - `--dry-run`: 生成したPRタイトル・本文・base/head branchのみを提示し、pushや `gh pr create` を実行せず終了する
 
 base branchは引数ではなく自動推定で決定する（事前チェック2を参照）。ユーザーが会話で明示した場合（「developに向けてPRを作って」等）はそれを最優先する。
@@ -131,7 +130,6 @@ base branchは引数ではなく自動推定で決定する（事前チェック
      --title "<PR Title>" \
      --body-file /tmp/YYYYMMDD-HHMMSS-pr-body.md \
      --assignee @me \
-     [--draft] \
      [--label <name> ...]
    ```
 
