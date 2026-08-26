@@ -70,7 +70,6 @@ args = [
   "--disable-kompress",
   "--lossless",
   "--code-aware",
-  "--intercept-tool-results",
 ]
 run_at_load = true
 keep_alive = true
