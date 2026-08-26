@@ -30,7 +30,7 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 - frontmatterにはライフサイクル状態 `status: active | done` とcontract承認状態 `approval: pending | approved` を持つ。`mjun-implement` は `approval: approved` のspecだけを実装する
 - decision確定ごとの更新は常にLocalファイルへ逐次行う。task進捗は `tasks.md` の `Status`、resume先は同ファイルの `Implementation Branch` で管理する
 - `mjun-to-tasks` は単一taskでも `tasks.md` を作る。分解を省略した単一taskでは、`mjun-implement` がworktree作成後に同じ形式で作る
-- `Implementation Branch` があればtaskのstatusにかかわらずそのbranchからresumeする。done taskのAcceptance Criteriaが変わった場合は `ready` に戻し、再実装・再検証の対象にする
+- `Implementation Branch` があり、そのlocal branchが存在すればtaskのstatusにかかわらずそのbranchからresumeする。branchが存在しない場合は記録を破棄して新規branchで続行する。done taskのAcceptance Criteriaが変わった場合は `ready` に戻し、再実装・再検証の対象にする
 
 ## ライフサイクル状態 (`status`)
 
