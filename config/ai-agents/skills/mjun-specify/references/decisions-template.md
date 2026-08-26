@@ -16,7 +16,7 @@
   - <却下した代替案>
 - Rationale: <採用理由と、代替案の却下理由>
 - Evidence:
-  - <根拠: file:line、Research R-NNN、prototype結果など>
+  - <根拠: file:line、research/<topic>.md、prototype結果など>
 ```
 
 `Source:` を持つspecの投影では、採用decisionの要約表 (論点 / 決定 / 根拠) だけをIssue本文の `## Decision Log` に置き、上記の詳細エントリはIssueコメントへ記録する。

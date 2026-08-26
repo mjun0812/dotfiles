@@ -70,7 +70,7 @@ gapから意思決定の論点を洗い出し、[references/decision-authority.m
 
 ### Phase 4: decisionの解決
 
-frontierの論点を1つずつ解決し、確定するたびに**Localのspecとdecision logへ逐次**反映する (`--dry-run` 時は会話内で保持する)。
+frontierの論点を1つずつ解決し、確定するたびに**Localのspecとdecision logへ逐次**反映する (`--dry-run` 時は会話内で保持する)。decision logのentry形式は [references/decisions-template.md](references/decisions-template.md) に従う。
 
 - **Agent-owned**: decision-authority.mdの自己問答 (論点 → 調査 → 推奨案 → 反論 → 採択 + 確信度) で解決する。確信度lowは `Status: tentative` (要確認) として記録する
 - **Human-owned**: `mjun-grill` の単一decisionモードへ、論点・選択肢・調査結果を渡して解決する
@@ -83,7 +83,7 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 
 1. worktreeを作成する: branch名は `specify/<slug>-trial`、パスは `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける
 2. 修正方針の最小実装を行い、テストを実行して結果を確認する
-3. 検証結果 (実行したテスト・結果・落とし穴・方針の修正点) を要約してdesign.mdの材料にする。diff全文は載せず、鍵になる数行のスニペットのみ許可する
+3. 検証結果 (実行したテスト・結果・落とし穴・方針の修正点) を要約してdesign.mdの材料にする。design.mdは [references/design-template.md](references/design-template.md) の構成で書く。diff全文は載せず、鍵になる数行のスニペットのみ許可する
 4. 方針の問題が見つかった場合はPhase 4へ戻り、decisionを更新する
 5. **worktreeとbranchは、成功・中断を問わず必ず削除する**: `git worktree remove --force <path>` → `git branch -D <branch>`。削除に失敗した場合はユーザーに警告する
 
