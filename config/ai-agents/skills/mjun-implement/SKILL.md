@@ -57,7 +57,10 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 1. **branch名候補を決定する**: 形式は `<type>/<slug>` (specが `Source: #N` を持つ場合は `<type>/<N>-<slug>`)。`<type>` はConventional Commitsの種別 (`fix`, `feat`, `docs`, `chore`, `refactor` 等。判別不能なら `feat`)、`<slug>` はタイトルからkebab-case (英数字とハイフン、40文字以内)
 2. **resumeの判定**: taskキューに `Status: done` のtaskがある場合は、`tasks.md` 先頭の `Implementation Branch: <branch-name>` を前回実行のbranchとして使う。記録が無い、または記録されたlocal branchが存在しない場合は、done taskをskipせず中止して不整合を報告する。done taskが無い場合は新規実行とし、branch名候補が既存branchと衝突すれば末尾に `-2`, `-3` を付けて回避する
 3. **worktreeのパス**: `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける
-4. **worktree作成**: resumeの場合は `git worktree add <worktree-path> <branch-name>` で既存branchをcheckoutする。新規の場合は `git worktree add -b <branch-name> <worktree-path> <base-branch>` (`<base-branch>` は最新のdefault branch)。同じpathのworktreeに未commit変更がある場合は中止する。作成失敗時は中止してエラーを伝える
+4. **worktree作成**:
+   - resumeの場合は、Phase 1で取得した `git worktree list --porcelain` から `<branch-name>` をcheckout済みのworktreeを探す。見つかればそのパスを採用し、worktree作成をスキップする (PR作成失敗時に保持したworktreeの再利用)。未commit変更が残っている場合は中止して報告する。見つからなければ `git worktree add <worktree-path> <branch-name>` で既存branchをcheckoutする
+   - 新規の場合は `git worktree add -b <branch-name> <worktree-path> <base-branch>` (`<base-branch>` は最新のdefault branch)
+   - 作成失敗時は中止してエラーを伝える
 5. 新規実行で `tasks.md` がある場合は、worktree作成成功後に同ファイルの先頭へ `Implementation Branch: <branch-name>` を書く。既存の値があれば置き換える
 6. branch名・worktreeパス・base branch名を記録する (クリーンアップで使う)
 
