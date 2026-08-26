@@ -91,7 +91,7 @@ Phase 3の間の制約:
 1. **task statusの更新**: 着手時に `tasks.md` の該当taskを `Status: in-progress` へ更新する (spec modeのみ。メインrepo側のパスで)
 2. **implementerの起動**: テンプレートに以下を合成して起動する
    - worktreeの絶対パス、base branch名と作業branch名
-   - specのタイトル・本文の要約と、**contract (Requirements / Boundaries / Acceptance Criteria)**
+   - specのタイトル・本文の要約と、**contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)**
    - 担当タスクの説明・受け入れ基準・Boundary、Phase 1で決めた実装方針
    - タスクに関係する検証コマンド
    - これまでのImplementation Notes (あれば)
@@ -101,21 +101,22 @@ Phase 3の間の制約:
    - `BLOCKED` → 中止し、`BLOCKER` と `BLOCKER_REMEDIATION` を報告する
 4. **reviewerの起動**: テンプレートに、タスク文脈・contract・検証コマンド・implementerのStatus Report (参照用) を合成して起動する
 5. **VERDICTの処理**: `## Review Verdict` の `- VERDICT:` フィールドだけをパースする
-   - `APPROVED` → タスク完了。**先にworktree内でそのtaskの変更をcommitする** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)。commit成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。その後、次のタスクへ進む
+   - `APPROVED` → タスク完了。**先にworktree内でそのtaskの変更をcommitする** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)。commit対象の差分が無い場合は、前回実行でcommit済みとみなして `Status: done` への更新だけを行う。commit成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。その後、次のタスクへ進む
    - `REJECTED` → `REMEDIATION` と `FINDINGS` を添えてimplementerを再起動する。同一タスクの差し戻しは**最大2周**とし、2周後もREJECTEDなら中止して未解決の指摘を報告する
 6. **知見の伝播**: タスク横断で有用な発見は、`tasks.md` 末尾の `## Implementation Notes` へ1行で永続化し、以降のimplementerのプロンプトに含める
 
 中断後に再実行された場合は、Phase 1のキュー構築が完了taskをスキップするため、未完了タスクから再開される。
 
-#### Phase 3.2: 最終検証とAcceptance Criteria照合
+#### Phase 3.2: 最終検証とcontract照合
 
-全タスク完了後、次の2つを行う。
+全タスク完了後、次の3つを行う。
 
 1. **検証コマンドの実行**: SubAgentに検証コマンド全体の実行を依頼し、コマンド・exit code・失敗内容を報告させる。検証コマンドが見つからないリポジトリではスキップし、その事実をPhase 5に含める
 2. **Acceptance Criteriaの照合**: specのAcceptance CriteriaとtaskキューのAcceptance Criteriaを1件ずつ、実装と検証結果に照合する。各criterionについて、それを満たす変更・テスト・実行結果を特定して充足を判定する (SubAgentに依頼してよい)。specにAcceptance Criteriaが無いdoc modeでも、taskキューのAcceptance Criteriaは照合する
+3. **contract境界の照合**: branch全体の変更 (`git diff <base>..HEAD`) がspecのBoundaries (Owns / Does Not Own) とOut of Scopeに収まっているかを照合する (SubAgentに依頼してよい)。スキップしたdone taskの変更もここで照合の対象になる。specにBoundariesもOut of Scopeも無い場合はスキップする
 
-- 検証コマンドがすべて成功し、全ACが充足 → Phase 4へ進む
-- 検証コマンドの失敗、またはACの未充足 → 内容を添えてimplementerに差し戻す (合わせて最大2周)。**差し戻しで生じた修正は、Phase 3.1と同じreviewerの検査に合格してからPhase 4へ進む** (最終検証後の変更だけがboundary検査等を迂回する経路を作らない)。収束しなければ中止し、未充足のcriterionを明示して報告する
+- 検証コマンドがすべて成功し、全ACが充足し、boundary違反が無い → Phase 4へ進む
+- 検証コマンドの失敗、ACの未充足、またはboundary違反 → 内容を添えてimplementerに差し戻す (合わせて最大2周)。**差し戻しで生じた修正は、Phase 3.1と同じreviewerの検査に合格してからPhase 4へ進む** (最終検証後の変更だけがboundary検査等を迂回する経路を作らない)。収束しなければ中止し、未充足のcriterionを明示して報告する
 
 ### Phase 4: commitと配送 (git-commit / github-pr-create に連結)
 

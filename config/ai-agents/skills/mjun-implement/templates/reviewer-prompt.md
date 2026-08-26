@@ -7,7 +7,7 @@
 ## 受け取るもの
 
 - worktreeの絶対パス
-- spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria。specにある場合)
+- spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope。specにある場合)
 - 担当タスクの説明・受け入れ基準・Boundary
 - implementerのStatus Report (参照用。記載内容を事実として信用しない)
 - 親 (メイン会話) が洗い出した検証コマンド

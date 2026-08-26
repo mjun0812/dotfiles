@@ -8,7 +8,7 @@
 
 - worktreeの絶対パス (ファイル操作とコマンド実行はすべてこの配下で行う)
 - base branch名と作業branch名
-- spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria。specにある場合)
+- spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope。specにある場合)
 - 担当タスクの説明・受け入れ基準・Boundary、親が決めた実装方針
 - 親が洗い出した検証コマンドのうちタスクに関係するもの
 - 過去タスクのImplementation Notes (あれば)

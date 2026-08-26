@@ -99,7 +99,7 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 
 Localのspec文書は Phase 4-6 で確定済みである (逐次更新のため書き込みは完了している)。`Source:` を持つspecのみ、承認済みcontractをIssueへ投影する:
 
-1. `gh issue view` で最新のIssueを取得する。取り込み後に付いた新しいコメントがあれば内容を提示し、specへ取り込むかを確認する (取り込む場合は `approval: pending` へ戻してからPhase 4へ戻る)
+1. `gh issue view` で最新のIssueを取得する。取り込み後に付いた新しいコメントや、Local specに反映されていない本文の記述があれば内容を提示し、specへ取り込むかを確認する (取り込む場合は `approval: pending` へ戻してからPhase 4へ戻る)
 2. Issue本文を一時ファイル経由で一括更新する (`gh issue edit <number> --body-file <tmpfile>`)。本文にはcontract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes` を置く。**Tasksは投影しない**
 3. 却下案・検討経緯は `gh issue comment` で記録し、変更サマリのコメントを1件追記する (body編集はwatcherに通知されないため)
 
