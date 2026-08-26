@@ -144,5 +144,5 @@ Phase 3の間の制約:
 - **`--pr` で成功した場合**: `git worktree remove --force <worktree-path>` → `git branch -D <branch-name>` (remote branchはPRのheadとして残る)
 - **`--no-pr` で成功した場合**: worktreeだけを削除し、**local branchは削除しない**。merge / pushの判断はユーザーに委ねる
 - **PR作成に失敗した場合**: worktreeとlocal branchを残して報告する (手動修復の余地を残す)
-- **Phase 2〜5の途中でエラーまたはユーザーの中止により中断した場合**: worktreeを削除し、commitが存在するならbranchを残してその旨を報告する。commitが無ければbranchも削除する
+- **Phase 2〜5の途中でエラーまたはユーザーの中止により中断した場合**: この実行で新規作成したworktreeを削除し、commitが存在するならbranchを残してその旨を報告する。commitが無ければbranchも削除する。resumeで採用した既存worktreeとbranchは、未commit変更の有無にかかわらず削除しない
 - クリーンアップに失敗した場合はユーザーに警告する
