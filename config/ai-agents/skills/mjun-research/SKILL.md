@@ -4,7 +4,7 @@ description: >-
   意思決定に必要な外部事実を一次資料 (公式ドキュメント・ソースコード・仕様書) から調査し、claimごとに出典を付けて記録するSkill。
   ユーザーが「一次資料で調べて」「公式ドキュメントを確認して」と依頼したときや、spec作成中に外部仕様の知識不足でdecisionが決められないときに使うこと。
   会話済み内容のまとめ (md-note) や、対象リポジトリのコードを読むだけで足りる調査には使わない。
-allowed-tools: Read, Write, Glob, Grep, WebSearch, WebFetch, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(ls:*), Bash(cat:*)
+allowed-tools: Read, Write, Glob, Grep, WebSearch, WebFetch, Bash(git:*), Bash(mkdir:*), Bash(ls:*), Bash(cat:*)
 ---
 
 # mjun-research
@@ -55,6 +55,5 @@ allowed-tools: Read, Write, Glob, Grep, WebSearch, WebFetch, Bash(gh:*), Bash(gi
 
 5. 保存する
    - 既定: `.mjun/specs/<slug>/research/<topic>.md` (`<topic>` は内容を表す英語kebab-case。`research/` が無ければ作成する)
-   - 対象specが `Source: #N` を持つ場合は、要約 + 出典を `gh issue comment` でIssueへ投影してもよい (任意。specは内部文書のため、コメントに `.mjun/` のパスは書かない)
    - specに紐づかない単発調査: 保存先をユーザーに確認してから保存する
-6. 呼び出し元へFindings・Unresolved・Implicationを返す
+6. 呼び出し元へFindings・Unresolved・Implicationを返す。調査結果をGitHub Issueへ投稿しない。外部への投影が必要な場合は、contract承認後の呼び出し元が担う

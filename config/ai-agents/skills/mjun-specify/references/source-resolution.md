@@ -27,8 +27,8 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 
 - `<slug>` は内容を表す英語kebab-case。既存slugと衝突する場合は末尾に `-2`, `-3` を付ける
 - 最初からすべては作らない。`spec.md` だけから開始できる
-- frontmatterにはライフサイクル状態 `status: active | done` だけを持つ (下記)。承認状態 (draft / ready等) は保存せず、実装可否は内容 (要確認の残留) で判定する
-- decision確定ごとの更新は常にLocalファイルへ逐次行う。task進捗とresumeは `tasks.md` の `Status` だけの1系統とする
+- frontmatterにはライフサイクル状態 `status: active | done` とcontract承認状態 `approval: pending | approved` を持つ。`mjun-implement` は `approval: approved` のspecだけを実装する
+- decision確定ごとの更新は常にLocalファイルへ逐次行う。task進捗は `tasks.md` の `Status`、resume先は同ファイルの `Implementation Branch` で管理する
 
 ## ライフサイクル状態 (`status`)
 
@@ -37,7 +37,13 @@ specは増えていくため、堆積管理のためのライフサイクル状�
 - `mjun-specify` が作成・取り込み時に `status: active` を書き、`mjun-implement` が配送の完了時に `status: done` へ更新する
 - **照合・逆引き・一覧の対象は `status: active` のspecだけ**とする。doneのspecも明示的にパスを渡せば読める
 - 放棄したspecは手動でdoneにするか削除する
-- これは堆積管理であり承認ゲートではない。実装可否の判定は常に内容検査で行う
+- `status` は堆積管理であり承認ゲートではない。contract承認は別の `approval` で管理する
+
+## Contract承認状態 (`approval`)
+
+- `mjun-specify` はcontractの作成・更新を始める前に `approval: pending` を書き、Phase 6で人間が「反映する」を選んだ後にだけ `approval: approved` へ更新する
+- session中断、tool障害、明示的なキャンセルのいずれでも、承認が完了していないspecは `pending` のまま残る
+- `mjun-implement` はspec modeで `approval: approved` 以外を受け付けない。doc modeには適用しない
 
 ### 一覧の手順
 

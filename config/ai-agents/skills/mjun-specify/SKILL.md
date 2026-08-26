@@ -51,10 +51,11 @@ sourceから対象を判別する。
 ### Phase 1: sourceの確保
 
 `--dry-run` 指定時は、このPhase以降のファイル作成・Issue作成・逐次更新をすべて行わず、同じ内容を会話内で組み立ててPhase 6の提示で終了する。
+それ以外では、Phase 2以降でcontractを作成・更新する前に `spec.md` のfrontmatterを `approval: pending` にする。既存specを磨き直す場合も、最初の変更より先に `approved` から `pending` へ戻す。承認前にsessionが中断しても、未承認contractを `mjun-implement` が実装しないためのgateである。
 
-- **取り込み** (Issue番号または `.mjun/specs/` 外のMarkdown、未取り込みの場合): Issueは本文とコメントを、Markdownはファイル内容を `.mjun/specs/<slug>/spec.md` へ構造化する (slugはタイトルの英語kebab-case)。frontmatterに `status: active` を記録し、Issue由来はH1直下に `Source: #<number>` を書く (Markdown由来は書かず純Local扱いとし、元ファイルは変更しない)。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
+- **取り込み** (Issue番号または `.mjun/specs/` 外のMarkdown、未取り込みの場合): Issueは本文とコメントを、Markdownはファイル内容を `.mjun/specs/<slug>/spec.md` へ構造化する (slugはタイトルの英語kebab-case)。frontmatterに `status: active` と `approval: pending` を記録し、Issue由来はH1直下に `Source: #<number>` を書く (Markdown由来は書かず純Local扱いとし、元ファイルは変更しない)。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
 - **新規作成**: 会話の依頼内容を下書き素材とする。内容がまったく無い場合のみ自由テキストで概要を受け取る。spec化が過剰な依頼 (単発のtypo修正など) では、specを作らず直接実装する選択肢を提示し、選ばれたら終了する
-  - `.mjun/specs/<slug>/spec.md` を [references/spec-template.md](references/spec-template.md) の骨子で作成する (frontmatterは `status: active`)
+  - `.mjun/specs/<slug>/spec.md` を [references/spec-template.md](references/spec-template.md) の骨子で作成する (frontmatterは `status: active` と `approval: pending`)
   - `--issue` 指定時はさらに、リポジトリ内 `.github/ISSUE_TEMPLATE/` (無ければ [references/ISSUE_TEMPLATE](references/ISSUE_TEMPLATE)、日本語は [references/ISSUE_TEMPLATE_JA](references/ISSUE_TEMPLATE_JA)) から種別を自動判定してタイトル・本文・ラベル (既存ラベルのみ) を生成し、**ユーザーの承認を得てから** `gh issue create` で投影先Issueを作成して `Source:` を記録する
 
 ### Phase 2: 調査とgap分析
@@ -91,13 +92,14 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 - specのcontract全文と、変更点サマリ (追加・変更したセクションと理由)、要確認 (tentative) の一覧を提示する
 - `--dry-run` はここで終了する
 - AskUserQuestionで「反映する / 修正して再提示 / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
-- 「キャンセル」の場合は以降のPhaseへ進まず、作成・更新済みのLocal specを削除するか残すかを確認する。残す場合はdecisions.mdへ「contract未承認 (キャンセル)」を `Status: tentative` として記録する (未承認のspecがmjun-implementの内容検査を素通りしないようにする)
+- 「反映する」の場合は `spec.md` のfrontmatterを `approval: approved` へ更新してからPhase 7へ進む
+- 「キャンセル」の場合は以降のPhaseへ進まず、作成・更新済みのLocal specを削除するか `approval: pending` のまま残すかを確認する
 
 ### Phase 7: 投影
 
 Localのspec文書は Phase 4-6 で確定済みである (逐次更新のため書き込みは完了している)。`Source:` を持つspecのみ、承認済みcontractをIssueへ投影する:
 
-1. `gh issue view` で最新のIssueを取得する。取り込み後に付いた新しいコメントがあれば内容を提示し、specへ取り込むかを確認する (取り込む場合はPhase 4へ戻る)
+1. `gh issue view` で最新のIssueを取得する。取り込み後に付いた新しいコメントがあれば内容を提示し、specへ取り込むかを確認する (取り込む場合は `approval: pending` へ戻してからPhase 4へ戻る)
 2. Issue本文を一時ファイル経由で一括更新する (`gh issue edit <number> --body-file <tmpfile>`)。本文にはcontract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes` を置く。**Tasksは投影しない**
 3. 却下案・検討経緯は `gh issue comment` で記録し、変更サマリのコメントを1件追記する (body編集はwatcherに通知されないため)
 

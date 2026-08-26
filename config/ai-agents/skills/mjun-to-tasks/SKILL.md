@@ -34,7 +34,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 - **vertical slice**: 各taskは、DB・API・UIのようなlayer別ではなく、単独で検証・デモできるend-to-end behaviorにする。horizontal layerのtaskを作らない
 - **大きさ**: 1 taskは1つのfresh contextで実装しきれる大きさにする。収まらないtaskは分割する
 - **属性**: 各taskにBoundary (specのOwns内のどの責務か)、Blocked by (先に完了が必要なtask)、Acceptance Criteria (機械的に判定できるcheckbox) を付ける
-- **wide refactorの例外**: 1つの機械的変更のblast radiusがコードベース全体へ及ぶ場合だけvertical sliceの例外とし、expand (新形を旧形の隣へ追加) → migrate (呼び出し側を段階移行) → contract (旧形を削除) の順のtaskへ分解する
+- **wide refactorの例外**: 1つの機械的変更のblast radiusがコードベース全体へ及ぶ場合だけvertical slice以外の分割を許可する。ただし旧形と新形を併存させる互換レイヤーや段階移行は作らない。各taskを独立に検証できる単位へ分けられない場合は、変更全体を1taskとして扱う。既存データを保護する必要があるDB変更だけは、repositoryの規約に従って安全なmigrationへ分解してよい
 - **依存検査**: Blocked byのグラフにcycleが無いことを確認する。cycleがあればtaskの切り方を見直す
 - **単一task**: 分解しても1 taskにしかならない場合は、task artifactを作らず「spec全体を1 taskとして実装可能」と報告して終了する
 
@@ -54,6 +54,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 
 - `Status` は `ready | in-progress | done`。分解時はすべて `ready` とする
 - 実装時のresumeと進捗管理に使われるため、この形式を崩さない
+- `mjun-implement` は初回worktreeの作成後、選択したbranchを `Implementation Branch: <branch-name>` としてファイル先頭へ記録する。`mjun-to-tasks` は新規作成時にはこの行を書かない
 
 ## 手順
 
@@ -64,6 +65,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 5. `.mjun/specs/<slug>/tasks.md` へTask形式で書き込む。新規作成時は末尾に空の `## Implementation Notes` セクションを置く。既存のtasks.mdがある場合は次を守って更新する:
    - doneのtaskはそのまま保持する
    - in-progressのtaskは `ready` へ戻した上で置き換え対象に含める
+   - 既存の `Implementation Branch:` は必ず保持する
    - 既存の `## Implementation Notes` は必ず保持する
    - spec変更により既存done taskのAcceptance Criteriaが変わった場合は、そのtaskを再検証対象として結果報告に含める
 6. 結果を報告する: task数、依存関係、書き込み先。呼び出し元がいる場合はtask一覧を返す

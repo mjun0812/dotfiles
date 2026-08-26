@@ -40,10 +40,11 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
    - source本文 (source種別に従う)
    - 現在のbranch: `git branch --show-current`、既存worktree: `git worktree list --porcelain`
 2. 出力言語をsourceの言語から決める (主に日本語なら日本語、それ以外または曖昧なら英語)。コメント・commit・PR作成に使う
-3. **内容検査** (全source共通。承認状態の目印は存在しないため、内容だけで判定する):
-   1. **情報の充足**: Goal・受け入れ基準・実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、`mjun-specify` でspecを詰めることを案内する。方針を推測で補って実装に進まない
-   2. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` を `accepted` へ更新してから進む (確認済みの決定として記録し、再実行時に同じtentativeで止まらない)
-   3. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込み・投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する
+3. **内容検査**:
+   1. **contract承認** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、`mjun-specify <source>` でcontractを承認するよう案内する。実装依頼そのものをcontract承認の代わりにしない
+   2. **情報の充足**: Goal・受け入れ基準・実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、`mjun-specify` でspecを詰めることを案内する。方針を推測で補って実装に進まない
+   3. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` を `accepted` へ更新してから進む (確認済みの決定として記録し、再実行時に同じtentativeで止まらない)
+   4. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込み・投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する
 4. **taskキューを構築する**:
    - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)
    - 無い場合は、独立に検証可能な振る舞いが複数含まれるときだけ、1タスク1振る舞いのvertical sliceへ分解する。それ以外はspec全体を1タスクとして扱う
@@ -53,11 +54,12 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 
 ### Phase 2: worktreeの作成
 
-1. **branch名を決定する**: 形式は `<type>/<slug>` (specが `Source: #N` を持つ場合は `<type>/<N>-<slug>`)。`<type>` はConventional Commitsの種別 (`fix`, `feat`, `docs`, `chore`, `refactor` 等。判別不能なら `feat`)、`<slug>` はタイトルからkebab-case (英数字とハイフン、40文字以内)
-2. **resumeの判定**: 同名のbranchが既に存在し、かつtaskキューに `Status: done` のtaskがある場合は、前回実行の続き (resume) として扱う。done taskのcommitはその既存branchに乗っているため、**新しいbranchを作らずその branchを使う**。resumeに該当せず既存branchと衝突する場合は、branch名の末尾に `-2`, `-3` を付けて回避する
+1. **branch名候補を決定する**: 形式は `<type>/<slug>` (specが `Source: #N` を持つ場合は `<type>/<N>-<slug>`)。`<type>` はConventional Commitsの種別 (`fix`, `feat`, `docs`, `chore`, `refactor` 等。判別不能なら `feat`)、`<slug>` はタイトルからkebab-case (英数字とハイフン、40文字以内)
+2. **resumeの判定**: taskキューに `Status: done` のtaskがある場合は、`tasks.md` 先頭の `Implementation Branch: <branch-name>` を前回実行のbranchとして使う。記録が無い、または記録されたlocal branchが存在しない場合は、done taskをskipせず中止して不整合を報告する。done taskが無い場合は新規実行とし、branch名候補が既存branchと衝突すれば末尾に `-2`, `-3` を付けて回避する
 3. **worktreeのパス**: `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける
 4. **worktree作成**: resumeの場合は `git worktree add <worktree-path> <branch-name>` で既存branchをcheckoutする。新規の場合は `git worktree add -b <branch-name> <worktree-path> <base-branch>` (`<base-branch>` は最新のdefault branch)。同じpathのworktreeに未commit変更がある場合は中止する。作成失敗時は中止してエラーを伝える
-5. branch名・worktreeパス・base branch名を記録する (クリーンアップで使う)
+5. 新規実行で `tasks.md` がある場合は、worktree作成成功後に同ファイルの先頭へ `Implementation Branch: <branch-name>` を書く。既存の値があれば置き換える
+6. branch名・worktreeパス・base branch名を記録する (クリーンアップで使う)
 
 ### Phase 3: 実装
 
