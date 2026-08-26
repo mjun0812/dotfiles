@@ -1,6 +1,6 @@
 # Source Resolution
 
-specを扱うskill (mjun-specify / mjun-to-tasks / mjun-implement) が共有する、正本と投影の規則。状態ファイルは持たず、毎回この規則で解決する。
+specを扱うskill (mjun-specify / mjun-to-tasks / mjun-implement) が共有する、正本と投影の規則。専用のindexや同期状態ファイルは持たず、specと実装状態は毎回この規則で解決する。
 
 ## 原則: 正本は常にLocal、GitHubは投影
 
@@ -20,7 +20,7 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 ├── spec.md          # 必須。人間が承認するcontract
 ├── decisions.md     # 非自明な意思決定が発生した場合だけ
 ├── design.md        # contractだけでは実装方針が伝わらない場合だけ
-├── tasks.md         # 複数taskに分ける場合だけ
+├── tasks.md         # taskと実装状態。実装開始後は単一taskでも持つ
 ├── prototype/       # artifact自体を一次資料として残す場合だけ
 └── research/        # 外部調査が発生した場合だけ
 ```
@@ -29,6 +29,8 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 - 最初からすべては作らない。`spec.md` だけから開始できる
 - frontmatterにはライフサイクル状態 `status: active | done` とcontract承認状態 `approval: pending | approved` を持つ。`mjun-implement` は `approval: approved` のspecだけを実装する
 - decision確定ごとの更新は常にLocalファイルへ逐次行う。task進捗は `tasks.md` の `Status`、resume先は同ファイルの `Implementation Branch` で管理する
+- `mjun-to-tasks` は単一taskでも `tasks.md` を作る。分解を省略した単一taskでは、`mjun-implement` がworktree作成後に同じ形式で作る
+- `Implementation Branch` があればtaskのstatusにかかわらずそのbranchからresumeする。done taskのAcceptance Criteriaが変わった場合は `ready` に戻し、再実装・再検証の対象にする
 
 ## ライフサイクル状態 (`status`)
 

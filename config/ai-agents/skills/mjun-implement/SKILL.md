@@ -47,7 +47,9 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
    4. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込み・投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する
 4. **taskキューを構築する**:
    - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)
-   - 無い場合は、独立に検証可能な振る舞いが複数含まれるときだけ、1タスク1振る舞いのvertical sliceへ分解する。それ以外はspec全体を1タスクとして扱う
+   - 全taskが `done` の場合も終了せず、記録済みbranchからresumeしてPhase 3.2の最終検証とPhase 4の配送を再実行する
+   - spec modeで `tasks.md` が無い場合は、独立に検証可能な振る舞いが複数あれば1タスク1振る舞いのvertical sliceへ分解し、それ以外はspec全体を `T-001` とする。ここでは会話内に保持し、`--dry-run` でなければPhase 2のworktree作成後に `tasks.md` へ書く
+   - doc modeでは同じ基準で会話内のキューを作り、Local specの `tasks.md` は作らない
    - 各タスクの受け入れ基準とBoundary (specにBoundariesがある場合) を確認し、依存順 (Blocked by) に並べる
 5. `--pr` / `--no-pr` が未指定なら、ここでAskUserQuestionにより配送方法を確認する (使えない環境では選択肢をテキストで提示する)
 6. 実装方針とタスク一覧を**簡潔に**提示する。`--dry-run` はここで終了する。それ以外は確認を取らずPhase 2へ進む
@@ -55,13 +57,13 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 ### Phase 2: worktreeの作成
 
 1. **branch名候補を決定する**: 形式は `<type>/<slug>` (specが `Source: #N` を持つ場合は `<type>/<N>-<slug>`)。`<type>` はConventional Commitsの種別 (`fix`, `feat`, `docs`, `chore`, `refactor` 等。判別不能なら `feat`)、`<slug>` はタイトルからkebab-case (英数字とハイフン、40文字以内)
-2. **resumeの判定**: taskキューに `Status: done` のtaskがある場合は、`tasks.md` 先頭の `Implementation Branch: <branch-name>` を前回実行のbranchとして使う。記録が無い、または記録されたlocal branchが存在しない場合は、done taskをskipせず中止して不整合を報告する。done taskが無い場合は新規実行とし、branch名候補が既存branchと衝突すれば末尾に `-2`, `-3` を付けて回避する
+2. **resumeの判定**: spec modeの `tasks.md` に `Implementation Branch: <branch-name>` があれば、taskのstatusにかかわらず前回実行のbranchとして使う。記録されたlocal branchが存在しない場合はtaskをskipせず中止して不整合を報告する。記録が無い場合は新規実行とし、branch名候補が既存branchと衝突すれば末尾に `-2`, `-3` を付けて回避する。doc modeは常に新規実行とする
 3. **worktreeのパス**: `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける
 4. **worktree作成**:
    - resumeの場合は、Phase 1で取得した `git worktree list --porcelain` から `<branch-name>` をcheckout済みのworktreeを探す。見つかればそのパスを採用し、worktree作成をスキップする (PR作成失敗時に保持したworktreeの再利用)。未commit変更が残っている場合は中止して報告する。見つからなければ `git worktree add <worktree-path> <branch-name>` で既存branchをcheckoutする
    - 新規の場合は `git worktree add -b <branch-name> <worktree-path> <base-branch>` (`<base-branch>` は最新のdefault branch)
    - 作成失敗時は中止してエラーを伝える
-5. 新規実行で `tasks.md` がある場合は、worktree作成成功後に同ファイルの先頭へ `Implementation Branch: <branch-name>` を書く。既存の値があれば置き換える
+5. 新規実行のspec modeでは、worktree作成成功後にPhase 1のtaskキューを `tasks.md` へ書き、先頭へ `Implementation Branch: <branch-name>`、末尾へ `## Implementation Notes` を置く。既存の `tasks.md` がある場合はtask内容を変えず、先頭の `Implementation Branch:` を設定する
 6. branch名・worktreeパス・base branch名を記録する (クリーンアップで使う)
 
 ### Phase 3: 実装
@@ -86,7 +88,7 @@ Phase 3の間の制約:
 
 タスクキューの順に、**1タスク = 1イテレーション**で直列に処理する (`Blocked by` は順序の決定にだけ使い、並列実行しない)。複数タスクを1つのSubAgentにまとめて渡さない。
 
-1. **task statusの更新**: 着手時に `tasks.md` の該当taskを `Status: in-progress` へ更新する (tasks.mdがある場合。メインrepo側のパスで)
+1. **task statusの更新**: 着手時に `tasks.md` の該当taskを `Status: in-progress` へ更新する (spec modeのみ。メインrepo側のパスで)
 2. **implementerの起動**: テンプレートに以下を合成して起動する
    - worktreeの絶対パス、base branch名と作業branch名
    - specのタイトル・本文の要約と、**contract (Requirements / Boundaries / Acceptance Criteria)**
@@ -110,7 +112,7 @@ Phase 3の間の制約:
 全タスク完了後、次の2つを行う。
 
 1. **検証コマンドの実行**: SubAgentに検証コマンド全体の実行を依頼し、コマンド・exit code・失敗内容を報告させる。検証コマンドが見つからないリポジトリではスキップし、その事実をPhase 5に含める
-2. **Acceptance Criteriaの照合**: specのAcceptance Criteriaを1件ずつ、実装と検証結果に照合する。各criterionについて、それを満たす変更・テスト・実行結果を特定して充足を判定する (SubAgentに依頼してよい)。specにAcceptance Criteriaが無いdoc modeでは省略する
+2. **Acceptance Criteriaの照合**: specのAcceptance CriteriaとtaskキューのAcceptance Criteriaを1件ずつ、実装と検証結果に照合する。各criterionについて、それを満たす変更・テスト・実行結果を特定して充足を判定する (SubAgentに依頼してよい)。specにAcceptance Criteriaが無いdoc modeでも、taskキューのAcceptance Criteriaは照合する
 
 - 検証コマンドがすべて成功し、全ACが充足 → Phase 4へ進む
 - 検証コマンドの失敗、またはACの未充足 → 内容を添えてimplementerに差し戻す (合わせて最大2周)。**差し戻しで生じた修正は、Phase 3.1と同じreviewerの検査に合格してからPhase 4へ進む** (最終検証後の変更だけがboundary検査等を迂回する経路を作らない)。収束しなければ中止し、未充足のcriterionを明示して報告する
