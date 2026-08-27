@@ -19,15 +19,15 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 
 `mjun-` prefixの自作開発フローskill群。specの正本は常に `.mjun/specs/` のLocal specで、GitHub Issueは取り込みと投影のアダプタとして扱う。入口は `mjun-specify` で、contract承認後に必要ならtask分解し、`mjun-implement` で実装からPRまで進める。
 
-| Skill                                                                  | 用途                                                                                                                                                                                                                                                                                                |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`mjun-specify`](../config/ai-agents/skills/mjun-specify/SKILL.md)     | アイデア・GitHub Issue・ローカルMarkdownを実装可能なspec (contract) へ仕上げる。factsを調査してAgent権限内のdecisionを自分で決め、Human-ownedだけを1問ずつ確認し、承認後に複数task規模ならtask分解を自動で行い、task一覧込みでIssueへ投影する (純Local specには投影時に投影先Issueの作成を提案する) |
-| [`mjun-grill`](../config/ai-agents/skills/mjun-grill/SKILL.md)         | 計画・設計・specの意思決定を1問ずつの対話で解決する (全分岐を解消する設計全体モードと、1件だけ解決する単一decisionモード)                                                                                                                                                                           |
-| [`mjun-research`](../config/ai-agents/skills/mjun-research/SKILL.md)   | 一次資料 (公式ドキュメント・ソースコード・仕様書) から外部事実を調査し、claimごとに出典を付けてLocal specへ記録し、GitHubへ投稿せず呼び出し元へ返す                                                                                                                                                 |
-| [`mjun-prototype`](../config/ai-agents/skills/mjun-prototype/SKILL.md) | 会話では判断できないUI・状態・ロジックの設計質問を、使い捨ての試作品で検証する (1 prototype = 1 question)                                                                                                                                                                                           |
-| [`mjun-to-tasks`](../config/ai-agents/skills/mjun-to-tasks/SKILL.md)   | specを単独検証可能なvertical sliceのtaskへ分解し、単一taskを含めてtasks.mdへ永続化する。done taskのAcceptance Criteriaが変わった場合はreadyへ戻す                                                                                                                                                   |
-| [`mjun-implement`](../config/ai-agents/skills/mjun-implement/SKILL.md) | specのcontract承認状態と内容を検査し (Issue番号はspecify済みspecへの逆引きで解決)、tasks.mdに記録したbranchからresumeしてtaskごとに実装する。specとtask双方のAcceptance Criteria照合を経てcommitと必要ならPRまで進める                                                                              |
-| [`mjun-steering`](../config/ai-agents/skills/mjun-steering/SKILL.md)   | `.mjun/steering/` を実装にgroundされたproject memoryとして生成 (Bootstrap)・drift検出付きで追記更新 (Sync) する                                                                                                                                                                                     |
+| Skill                                                                  | 用途                                                                                                                                                                                                                                                                                                                |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`mjun-specify`](../config/ai-agents/skills/mjun-specify/SKILL.md)     | アイデア・GitHub Issue・ローカルMarkdownを実装可能なspec (contract) へ仕上げる。factsを調査してAgent権限内のdecisionを自分で決め、Human-ownedと判断に迷うdecisionを1問ずつ確認し、承認後に複数task規模ならtask分解を自動で行い、task一覧込みでIssueへ投影する (純Local specには投影時に投影先Issueの作成を提案する) |
+| [`mjun-grill`](../config/ai-agents/skills/mjun-grill/SKILL.md)         | 計画・設計・specの意思決定を1問ずつの対話で解決する (全分岐を解消する設計全体モードと、1件だけ解決する単一decisionモード)                                                                                                                                                                                           |
+| [`mjun-research`](../config/ai-agents/skills/mjun-research/SKILL.md)   | 一次資料 (公式ドキュメント・ソースコード・仕様書) から外部事実を調査し、claimごとに出典を付けてLocal specへ記録し、GitHubへ投稿せず呼び出し元へ返す                                                                                                                                                                 |
+| [`mjun-prototype`](../config/ai-agents/skills/mjun-prototype/SKILL.md) | 会話では判断できないUI・状態・ロジックの設計質問を、使い捨ての試作品で検証する (1 prototype = 1 question)                                                                                                                                                                                                           |
+| [`mjun-to-tasks`](../config/ai-agents/skills/mjun-to-tasks/SKILL.md)   | specを単独検証可能なvertical sliceのtaskへ分解し、単一taskを含めてtasks.mdへ永続化する。done taskのAcceptance Criteriaが変わった場合はreadyへ戻す                                                                                                                                                                   |
+| [`mjun-implement`](../config/ai-agents/skills/mjun-implement/SKILL.md) | specのcontract承認状態と内容を検査し (Issue番号はspecify済みspecへの逆引きで解決)、tasks.mdに記録したbranchからresumeしてtaskごとに実装する。specとtask双方のAcceptance Criteriaとcontract境界の照合を経てcommitと必要ならPRまで進める                                                                              |
+| [`mjun-steering`](../config/ai-agents/skills/mjun-steering/SKILL.md)   | `.mjun/steering/` を実装にgroundされたproject memoryとして生成 (Bootstrap)・drift検出付きで追記更新 (Sync) する                                                                                                                                                                                                     |
 
 ### Git
 
@@ -117,13 +117,13 @@ graph LR
 
 ### Caller → callee 表
 
-| Caller           | Callee                                                           | タイミング                                                 |
-| ---------------- | ---------------------------------------------------------------- | ---------------------------------------------------------- |
-| `git-squash`     | `git-fix-conflict`                                               | squash中にコンフリクトが発生した場合のみ                   |
-| `mjun-specify`   | `mjun-grill`, `mjun-research`, `mjun-prototype`                  | Human-owned / Evidence-blockedなdecisionの解決が必要な場合 |
-| `mjun-specify`   | `mjun-to-tasks`                                                  | contract承認後、複数task規模と判定した場合に自動連結       |
-| `mjun-implement` | `git-commit`, `github-pr-create`                                 | Phase 4でworktreeの変更をcommitし、`--pr` 時にPRを作成     |
-| `github-pr-fix`  | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | 対応する問題が検出された場合のみ各calleeを実行             |
+| Caller           | Callee                                                           | タイミング                                                                     |
+| ---------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `git-squash`     | `git-fix-conflict`                                               | squash中にコンフリクトが発生した場合のみ                                       |
+| `mjun-specify`   | `mjun-grill`, `mjun-research`, `mjun-prototype`                  | Human-owned / Evidence-blockedなdecisionの解決が必要な場合                     |
+| `mjun-specify`   | `mjun-to-tasks`                                                  | contract承認後、複数task規模の場合と既存tasks.mdの再分解が必要な場合に自動連結 |
+| `mjun-implement` | `git-commit`, `github-pr-create`                                 | Phase 4でworktreeの変更をcommitし、`--pr` 時にPRを作成                         |
+| `github-pr-fix`  | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | 対応する問題が検出された場合のみ各calleeを実行                                 |
 
 ### Standalone skills
 
