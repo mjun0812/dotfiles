@@ -1,26 +1,20 @@
 ---
 name: github-issue-create
 description: >-
-  ユーザーから情報を収集してGitHub Issueを作成するSkill。
-  `--local` 指定時はGitHubに起票せず、ローカルの `.mjun/issues/` へmarkdownの設計docとして保存する。
-  ユーザーが「issue作って」「バグ報告を起票して」「ローカルにissueを書いて」のように依頼したら使うこと。
-  複数候補の一括起票はgithub-issue-discover、issue解決からPR作成まではgithub-issue-resolve、
-  作成済みissueの磨き上げはgithub-issue-polishを使う。
-allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Read, Write
+  Todo・メモ・軽いバグ報告を、GitHub Issueとして1件さっと起票するSkill。
+  ユーザーが「issue作って」「これIssueにしといて」「バグ報告を起票して」「Todoを起票して」のように依頼したら使うこと。
+  実装を見据えた仕様詰め・spec化には使わない (それはmjun-specifyの領分)。
+allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Read
 ---
 
 # Create GitHub Issue
 
-GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
-
-ユーザーから自由入力で受け取ったIssue概要を元に、種別とラベルを自動判定してGitHub Issueを作成する。
-`--local` 指定時はGitHubに起票せず、同じ内容をローカルの `.mjun/issues/` 配下にmarkdownとして保存する。
+ユーザーから自由入力で受け取ったIssue概要を元に、種別とラベルを自動判定してGitHub Issueを作成する。specやローカル文書は作らない。起票したIssueを後で実装するときは、そのIssue番号を開発フローの入口へ渡せばよい。
 
 ## Arguments
 
 - `language`: Issueのタイトルと本文の言語（例: "ja", "en"）。デフォルト: "en"
 - `--dry-run`: Issueを作成せず、生成したタイトル・本文・ラベルの提示のみ行う
-- `--local`: GitHubに起票せず、リポジトリルートの `.mjun/issues/YYYY-MM-DD-<english-slug>.md` に保存する
 
 ## Issue Templates
 
@@ -28,8 +22,8 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 
 1. **リポジトリ内テンプレート**: `.github/ISSUE_TEMPLATE/` が存在する場合はそれを使用
 2. **Skill 同梱テンプレート（フォールバック）**: リポジトリにテンプレートがない場合は本skillの `references/` 配下を使用
-   - 英語（`language` が "en" または未指定）: `references/ISSUE_TEMPLATE/`
-   - 日本語（`language` が "ja"）: `references/ISSUE_TEMPLATE_JA/`
+   - 英語（`language` が "en" または未指定）: [`references/ISSUE_TEMPLATE/`](references/ISSUE_TEMPLATE/)
+   - 日本語（`language` が "ja"）: [`references/ISSUE_TEMPLATE_JA/`](references/ISSUE_TEMPLATE_JA/)
 
 各ディレクトリには以下のテンプレートが含まれる：
 
@@ -39,27 +33,6 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 - `test.md` - テスト追加（デフォルトラベル: `test`）
 - `research.md` - 調査（デフォルトラベルなし）
 
-## Local File (`--local`)
-
-`--local` 指定時に保存するmarkdownファイルの仕様。
-
-- **保存先**: リポジトリルートの `.mjun/issues/YYYY-MM-DD-<english-slug>.md`（ディレクトリが無ければ `mkdir -p` で作成。リポジトリ外で実行された場合はカレントディレクトリ基準）
-- **ファイル名**: `<english-slug>` はタイトルの内容を表す英語のkebab-case（例: `2026-08-04-add-retry-to-api-client.md`）。同名ファイルが既に存在する場合は上書きせず、slug末尾に `-2`, `-3` ... を付けて回避する
-- **形式**: YAML frontmatter（スクリプト処理・GitHub転記用のメタデータ）の後に、タイトルのH1見出しとGitHub起票時と同一の本文を続ける。タイトルはfrontmatterとH1の両方に書く
-
-  ```markdown
-  ---
-  title: <タイトル>
-  type: <テンプレート種別>
-  labels: [<ラベル>, ...]
-  status: open
-  ---
-
-  # <タイトル>
-
-  <本文>
-  ```
-
 ## Task
 
 1. **前提情報の取得**: 以下を取得する。
@@ -67,7 +40,6 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
    - 利用可能なラベル一覧: `gh label list --limit 100 --json name,description --jq '.[] | "\(.name)\t\(.description // "")"'`
    - リポジトリ内Issueテンプレートの有無: `ls .github/ISSUE_TEMPLATE/ 2>/dev/null || echo "none"`
    - `gh auth status` が失敗した場合は作業を停止し、認証を案内する
-   - **`--local` 指定時**: `gh` による取得 (リポジトリ情報・ラベル一覧・認証確認) はすべて省略し、テンプレート所在の確認のみ行う。GitHubに到達できない環境でも動作する
 
 2. **下書き素材の確保**: ユーザーの依頼にIssueの内容（何をしたいか・何が起きているか）が含まれていれば、そのテキスト全体を「下書き素材」として使い、追加の入力は求めない。依頼に内容がまったく含まれていない場合のみ、AskUserQuestion ではなく **自由テキスト入力** で概要を受け取る:
 
@@ -91,11 +63,10 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
    - 最終的なIssue本文からはフロントマターを除去する
 
 6. **ラベルの自動判定**: ステップ4で抽出したテンプレートのデフォルトラベルを起点に、ステップ1で取得した既存ラベル一覧とそのdescriptionを参照し、下書き素材の内容に合うラベルを付与する。既存ラベル一覧に存在しないラベルは付与しない。最終的なラベルリストは重複排除する。
-   - **`--local` 指定時**: 既存ラベル一覧が無いため、テンプレートのデフォルトラベルをそのまま使う (GitHubへの転記時に利用できるようfrontmatterへ記録する)
 
 7. **作成前の確認**: 生成したタイトル・本文・種別・ラベルをユーザーに提示し、作成の承認を得る。承認されるまでIssueを作成しない。修正の指摘があれば反映し、再提示して承認を得る。
    - **情報不足**: 下書き素材が乏しく、タイトルすら意味のある形で生成できない場合は、不足している点をユーザーに質問し、回答を反映してからステップ3以降をやり直す
-   - **dry-run**: `--dry-run` が指定されている場合は、生成したタイトル・本文・種別・ラベルを提示して終了する（Issueもファイルも作成しない。承認も求めない）
+   - **dry-run**: `--dry-run` が指定されている場合は、生成したタイトル・本文・種別・ラベルを提示して終了する（Issueを作成しない。承認も求めない）
 
 8. **Issueの作成**:
 
@@ -103,8 +74,6 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
    gh issue create --title "<title>" --body "<body>" [--label <name> ...]
    ```
 
-   - **`--local` 指定時**: 上記の代わりに、「Local File」節の仕様に従って `.mjun/issues/` へ保存する
-
 9. **結果の報告**:
-   - 作成されたIssueのURL（`--local` 時は保存したファイルパス）を表示
+   - 作成されたIssueのURLを表示
    - 概要（タイトル、選択されたテンプレート種別、付与されたラベル）を表示

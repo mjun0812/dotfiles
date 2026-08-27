@@ -49,14 +49,12 @@
   - haiku: 決定的・機械的な定型作業(フォーマット変換、grep要約、テンプレ生成)
   - sonnet: 標準的な実装・調査。(関数/テスト作成、典型バグ修正、レビュー)。迷ったらこのモデルを使う。
   - opus: 設計判断や曖昧な要件(アーキ設計、複数ファイル横断リファクタ、難しいデバッグ)
-  - codex: Codex CLIへの移譲。modelではなくsubagent_typeで指定する。
-    - codex-worker: ユーザーが明示的にCodexへの作業委譲を依頼したときのみ使用する
-    - codex:codex-rescue: 行き詰まったとき、セカンドオピニオンや別実装案が欲しいときに自発的に使用してよい
 
 ## Tool
 
 - skillや指示に登場する `request_user_input` は `AskUserQuestion` に読み替えること。
 - ブラウザ操作には優先的に `agent-browser` skillを使うこと。通信解析・performance trace・heap snapshotなど、chrome-devtools MCPにしかない機能が必要なときだけ `chrome-devtools` MCPを使う。
+- pane/tab操作の依頼でツールが明示されていない場合、`HERDR_ENV=1` のセッションでは `herdr` skillを優先する。それ以外の環境ではtmuxとweztermのどちらを指すかをユーザーに確認する。ツール名が明示されたときはそれに従う。
 - `Web Search`:
   - 可能な限り、最新の公式ドキュメントや一次情報源を優先して参照すること。
   - 会話している言語に関わらず、英語・日本語の両方で検索を行ってください。
@@ -65,13 +63,15 @@
 
 - リポジトリに `.mjun/steering/` が存在する場合、配下の `*.md` をすべてプロジェクトメモリとして読み込むこと。
 - coreファイルは `product.md` (目的・価値)、`tech.md` (技術スタック・規約)、`structure.md` (構成パターン)。ドメイン別のcustomファイルもcoreと同格に扱うこと。
-- steeringの作成・更新は `steering` skillで行うこと。手動で書き換えない。
+- steeringの作成・更新は `mjun-steering` skillで行うこと。手動で書き換えない。
 
 ## Versioning
 
 - バージョン番号を扱う際は Semantic Versioning 2.0.0 に従うこと。
 
 ## Git
+
+GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
 - コミットメッセージは常に Conventional Commits 形式に従うこと。
 - 2行目は必ず空行とし、コミットの説明は3行目から記述すること。

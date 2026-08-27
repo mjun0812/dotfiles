@@ -1,7 +1,7 @@
 ---
 name: github-pr-review
 description: >-
-  GitHubのPull Request(PR)のコードレビューを行うSkill。worktreeを作成してソースコード全体を読みながらFinder SubAgentで指摘候補を発見し、Verifier SubAgentで検証する。Standards SubAgentがmergeをブロックすべき規約違反・コードスメルを別軸でレビューする。レビューをレポートとインラインコメントで投稿する。self reviewにも対応する。
+  GitHubのPull Request(PR)のコードレビューを行うSkill。worktreeを作成してソースコード全体を読みながらFinder SubAgentで指摘候補を発見し、Verifier SubAgentで検証する。Standards SubAgentがmergeをブロックすべき規約違反・コードスメルを別軸でレビューする。spec source (`--spec` 引数、または関連Issueの `Closes #N`) を解決できる場合は、Contract SubAgentがspecとの整合を第3の軸でレビューする。レビューをレポートとインラインコメントで投稿する。self reviewにも対応する。
   ユーザーが「このPRをレビューして」のように依頼したら使うこと。
 allowed-tools: Task, Read, Write, AskUserQuestion, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(mkdir:*), Bash(mktemp:*), Bash(rm:*), Bash(bash:*)
 ---
@@ -12,15 +12,15 @@ PRのhead commitを worktree にチェックアウトし，Finder SubAgentが指
 Finder SubAgentが出した指摘候補は，1件ずつ Verifier SubAgent が反証を試み，
 検証を通過したものだけを要修正事項としてレビューレポートとinline commentに投稿する．
 並行して Standards SubAgent がmergeをブロックすべき規約違反・コードスメルの指摘候補を探し，1件ずつ Verifier の検証を経たものだけを同じレビューに含める．
+spec sourceを解決できる場合は，Contract SubAgent がspecとの不整合の指摘候補を第3の軸として探し，同じくVerifierの検証を経たものだけをレビューに含める．
 
 ## Arguments
 
 - `PR number`: レビューするPR番号 (optional, defaults to PR for current branch)
+- `--spec <source>`: Contract reviewに使うspec source (GitHub Issue番号または `.mjun/specs/<slug>` のパス)。指定時は関連Issueより優先する
 - `--dry-run`: レビューレポートをチャットに提示するのみで、`post_review.sh` 等の投稿スクリプト・dismiss・resolve操作を一切呼ばない(worktreeの後片付けは通常どおり行う)
 
 ## Task
-
-GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
 ### Phase 1: 準備
 
@@ -44,6 +44,17 @@ GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのG
 CIの失敗はレポートの概要に記載し、Finderの内部証拠として使用する。
 自分の既存threadと会話はVerifierの反証材料として使用し、投稿前のthread IDを `<existing-thread-ids>`、レビューIDを `<existing-review-ids>` として保持する。
 
+さらに、Contract review用のspec contractを次の順で解決する。
+
+1. `--spec` が指定されていればそれを使う。Issue番号なら `gh issue view` で本文のcontractセクション群 (Context〜Out of Scope、Decision Log) を、`.mjun/specs/<slug>` のパスなら**メインworking tree**の同パスから `spec.md` を読む (レビュー用worktreeに `.mjun/` は存在しない)
+2. PR本文に `Closes #N` があれば `gh issue view N` で本文を取得し、contractセクション群を使う
+
+Issueが投影形式 (Context〜Out of Scopeのcontractセクション群) でない普通のIssueの場合は、本文全体をcontract相当として扱う。明文に無い期待を検査しない原則は変わらないため、記述の薄いIssueではContract指摘は自然に少なくなる。
+
+どちらでも解決できない場合はContract軸をスキップし、レポートの概要にその旨を1行記載する。解決したcontractは `<spec-contract>` として保持する。なお、Issue本文のcontractは承認時点の投影であり、最新の正本はLocal specにある。`.mjun/` を持つマシンでレビューするときは `--spec` でLocal specを渡すことを推奨する。
+
+**Local spec由来のContract指摘は投稿しない**: `--spec` でLocal spec (`.mjun/specs/` のパス) を解決した場合、Contract軸の確定指摘はverdictへ通常どおり計上するが、レポート本文へは個別項目として記載せず (Phase 2.5 step 5の概要1行のみ)、inline commentも生成せず、全文はPhase 4のチャット報告にのみ含める (specは内部文書のため、その引用をGitHubへ投稿しない)。`Closes #N` 経由で解決した場合のContract指摘は、投影済みIssueの引用であり通常どおり投稿する。specは内部文書のため、レビューレポートやinline commentへ `.mjun/` 配下のパスを書かない (specの記述は「spec」とだけ呼んで引用する)。
+
 他のレビュワーのレビューやthreadは参照しない。初回レビューではどちらのID一覧も空になる。
 
 #### Phase 1.3: worktreeとレビュー環境の準備
@@ -57,12 +68,12 @@ CIの失敗はレポートの概要に記載し、Finderの内部証拠として
 
 ### Phase 2: レビュー
 
-Finder SubAgentが変更全体から候補を収集し、Verifier SubAgentがfalse positiveを落とす。並行してStandards SubAgentが規約・品質の指摘候補を収集し、確定指摘と確定規約指摘からレビューレポートを作成する。
+Finder SubAgentが変更全体から候補を収集し、Verifier SubAgentがfalse positiveを落とす。並行してStandards SubAgentが規約・品質の指摘候補を、spec解決時はContract SubAgentがspecとの不整合の指摘候補を収集し、確定指摘・確定規約指摘・確定契約指摘からレビューレポートを作成する。
 
-#### Phase 2.1: FinderとStandards SubAgentの実行
+#### Phase 2.1: FinderとStandardsとContract SubAgentの実行
 
-`code-reviewer-finder` と `code-reviewer-standards` を1つずつ並列に起動する。
-Finderはmergeを止める問題の指摘候補を、Standardsはmergeをブロックすべき規約違反・コードスメルの指摘候補を収集する。
+`code-reviewer-finder` と `code-reviewer-standards` を1つずつ並列に起動する。`<spec-contract>` を解決できた場合は `code-reviewer-contract` も並列に起動する。
+Finderはmergeを止める問題の指摘候補を、Standardsはmergeをブロックすべき規約違反・コードスメルの指摘候補を、Contractはspec contractとの不整合 (逸脱・未充足・boundary違反・scope creep) の指摘候補を収集する。
 レビュー方法と出力形式はそれぞれのagent定義に従う。
 次のprompt templateを使用する。
 
@@ -82,9 +93,10 @@ Finderはmergeを止める問題の指摘候補を、Standardsはmergeをブロ�
 - baseline識別子: <base-sha>
 - snapshot識別子: <head-sha>
 - 追加証拠: <ci-evidence>
+- spec contract: <spec-contract>
 ```
 
-`<role>` には `Finder` または `Standards` を指定する。
+`<role>` には `Finder`、`Standards`、`Contract` のいずれかを指定する。`<spec-contract>` にはContract起動時のみ解決済みspec contract全文を指定し、FinderとStandardsでは `なし` とする。
 `<change-summary>` にはchangedFiles / additions / deletionsを、`<ci-evidence>` には失敗したCI結果のサマリとcheckの名前・URL・関連ログを指定する。
 該当するCI結果がなければ `なし` とする。
 
@@ -127,10 +139,11 @@ Finderが発見した指摘から候補を確定する。
 - 追加証拠:
   - CI: <ci-evidence>
   - 同じ根本原因の既存thread: <related-thread>
+  - spec contract: <spec-contract>
 ```
 
 Finder候補では `<candidate-type>` を `Finder`、`<candidate>` を候補1件の全文、`<related-thread>` を同じ根本原因の既存threadと会話にする。
-該当するthreadがなければ `なし` とする。
+該当するthreadがなければ `なし` とする。FinderとStandardsの検証では `<spec-contract>` を `なし` とする。
 その他のplaceholderにはPhase 2.1と同じ値を指定する。
 
 最終verdictが`confirmed`の候補のみ通過させる。`refuted` / `uncertain`は破棄する。
@@ -145,7 +158,7 @@ Finder候補では `<candidate-type>` を `Finder`、`<candidate>` を候補1件
 - `証拠` (問題へ実際に到達する実行パス)
 - `検証結果` (verifierの根拠と実行結果)
 
-`証拠`は、Phase 2.4で`発生経路`へ校正するための入力として保持する。
+`証拠`は、Phase 2.5で`発生経路`へ校正するための入力として保持する。
 `検証結果`は内部確認用として保持し、レビュー本文とinline commentには含めない。
 verifierの「完了条件の評価」を反映し、実装方法を指定せず、問題が解消されたと判断できる状態を`完了条件`に残す。
 候補の重複統合はverifier前の1回だけとする。
@@ -163,26 +176,37 @@ Standardsが出力した指摘について以下を行う。確定指摘との�
 - verdictが`confirmed`の指摘は、`path` / `line` / `side`、`カテゴリ`、`要約`、`問題`、`根拠`、`完了条件`、`検証結果`(verifierの根拠と実行結果)の内部レコードへ正規化し、確定規約指摘一覧とする
 - verdictが`refuted` / `uncertain`の指摘は破棄する
 
-Phase 2.4では、確定指摘一覧と確定規約指摘一覧だけを指摘内容の入力として扱う。
+Phase 2.5では、確定指摘一覧・確定規約指摘一覧・確定契約指摘一覧だけを指摘内容の入力として扱う。
 
-#### Phase 2.4: 指摘の校正とレビューレポートの作成
+#### Phase 2.4: Contract指摘の選別と検証
 
-Phase 2.2の確定指摘一覧とPhase 2.3の確定規約指摘一覧から、次の順でレビューレポートを作成する。
+Contract SubAgentを起動した場合のみ実行する。確定指摘・確定規約指摘との重複破棄があるため、Phase 2.3の完了後に実行する。
+
+- agent定義の出力形式(`問題` / `根拠` / `完了条件`)を満たす指摘だけを採用する
+- 確定指摘・確定規約指摘と同じ行または同じ根本原因の指摘は破棄する
+- 採用した指摘は1件ごとに `code-reviewer-verifier` で検証する。Phase 2.2のprompt templateを使用し、`<candidate-type>` を `Contract`、`<candidate>` を指摘1件の全文、`<related-thread>` を `なし`、`<spec-contract>` を解決済みspec contract全文とする
+- verdictが`confirmed`の指摘は、`path` / `line` / `side`、`カテゴリ`、`要約`、`問題`、`根拠`(specの該当記述の引用)、`完了条件`、`検証結果`の内部レコードへ正規化し、確定契約指摘一覧とする。`refuted` / `uncertain`は破棄する
+
+#### Phase 2.5: 指摘の校正とレビューレポートの作成
+
+Phase 2.2の確定指摘一覧、Phase 2.3の確定規約指摘一覧、Phase 2.4の確定契約指摘一覧から、次の順でレビューレポートを作成する。
 
 1. PRのタイトルと本文から出力言語を決める。
    - 主に日本語の場合は日本語
    - それ以外または判定が曖昧な場合は英語
-2. 両一覧を、件数、順序、採否、技術的な意味、対象範囲、`path`、`line`、`side`を変えずに校正する。
+2. 各一覧を、件数、順序、採否、技術的な意味、対象範囲、`path`、`line`、`side`を変えずに校正する。
    - 人間が一読で問題を理解できる平易で自然な表現にし、必要な技術概念だけを一般的な言葉で説明する
    - `カテゴリ`は出力言語に合わせ、問題の主な実害を表す1〜3語にする。処理状態、広すぎる観点、原因や仕組み、重要度、確度は使わない
    - `要約`は問題の中心を表す短い文にし、`完了条件`は実装方法ではなく、解消を判断できる状態を簡潔に示す
    - 推測、修正案、実装方法を追加せず、検証過程は出力しない
    - 確定指摘一覧では、`問題`を発生条件、原因、具体的な実害の順に整え、必要な前提とコード上の名称を残して、検証過程、証拠の列挙、重複を除く。`証拠`は起点を`path:line`、終点を実害が現れる場所とする最大3ホップの`発生経路`へ変換し、各`file:line`に短い説明を添える
    - 確定規約指摘一覧では、`問題`をdiffで観察できる事実、merge後への先送りが安全でない理由の順に整え、事実にない不利益を補わない。`根拠`は規約違反なら規約文書の`file:line`と該当記述を、コードスメルなら該当コードの`file:line`を残し、スメル名・原則名・設計用語を観察できる事実に置き換える
-   - 校正済み指摘一覧は`path` / `line` / `side`、`カテゴリ`、`要約`、`問題`、`発生経路`、`完了条件`だけを、校正済み規約指摘一覧は`発生経路`の代わりに`根拠`を含める
+   - 確定契約指摘一覧では、`問題`を実装の現状、contractの約束との食い違いの順に整え、`根拠`にspecの該当記述の引用と実装の`file:line`を残す
+   - 校正済み指摘一覧は`path` / `line` / `side`、`カテゴリ`、`要約`、`問題`、`発生経路`、`完了条件`だけを、校正済み規約指摘一覧と校正済み契約指摘一覧は`発生経路`の代わりに`根拠`を含める
 3. Verdictを決める。
-   - 校正済み指摘または校正済み規約指摘が1件以上の場合は`REQUEST_CHANGES`
-   - どちらも0件の場合は`APPROVE`
+   - 校正済み指摘、校正済み規約指摘、校正済み契約指摘のいずれかが1件以上の場合は`REQUEST_CHANGES`
+   - すべて0件の場合は`APPROVE`
+   - Local spec由来のContract指摘もverdictへ計上する。レポート・inline comment・チャット報告での扱いはstep 5とPhase 3.2、Phase 4の分岐に従う
    - self reviewを含め、レポート内では`COMMENT`を使用しない。GitHub APIへ渡すeventはPhase 3.1で決める
 4. 出力言語に対応するテンプレートを読み込む。
    - 日本語の場合は`references/report-ja.md`
@@ -191,10 +215,11 @@ Phase 2.2の確定指摘一覧とPhase 2.3の確定規約指摘一覧から、�
    - `<reviewer-name>`: 実行中のレビュワー名。Claude Codeでは`Claude`
    - `<short-sha>`: `<latest-commit-sha>`の先頭7文字
    - CIが失敗している場合は概要に1行記載する
-   - 校正済み指摘、校正済み規約指摘の順に同じ`指摘事項`または`Findings`セクションへ記載し、全体を1から連番にする
+   - 校正済み指摘、校正済み規約指摘、校正済み契約指摘の順に同じ`指摘事項`または`Findings`セクションへ記載し、全体を1から連番にする
+   - ただしLocal spec由来のContract指摘は個別項目として記載せず、概要に「Contract軸でN件の指摘があるが、内部specに基づくため詳細はチャット報告にのみ含める」と1行記載する。連番はセクションへ記載する指摘だけで振る
 
 確定指摘一覧、`証拠`、`検証結果`は、校正後も内部確認用として保持する。
-レポート本文とinline commentの指摘部分は、校正済み指摘一覧と校正済み規約指摘一覧だけから生成する。
+レポート本文とinline commentの指摘部分は、校正済み指摘一覧・校正済み規約指摘一覧・校正済み契約指摘一覧だけから生成する。
 
 ### Phase 3: レビューの投稿と置き換え
 
@@ -208,11 +233,12 @@ Phase 2.2の確定指摘一覧とPhase 2.3の確定規約指摘一覧から、�
 
 #### Phase 3.2: inline commentの作成と投稿
 
-Phase 2.4の校正済み指摘一覧と校正済み規約指摘一覧について、`(path, line, side)`がPRのdiffに含まれるか検証し、diff内の指摘からinline comments JSONを生成する。
+Phase 2.5の校正済み各一覧について、`(path, line, side)`がPRのdiffに含まれるか検証し、diff内の指摘からinline comments JSONを生成する。
+Local spec由来のContract指摘からはinline commentを生成しない。
 レポート本文を解析してinline commentsを作らず、レポートと同じ校正済み一覧から生成する。
 Finder由来の指摘の番号と、`カテゴリ` / `要約` / `問題` / `発生経路` / `完了条件` はレポート本文に一致させる。
-Standards由来の指摘の番号と、`カテゴリ` / `要約` / `問題` / `根拠` / `完了条件` もレポート本文に一致させる。
-項目名は、Phase 2.4で決めた出力言語に合わせる。
+Standards由来とContract由来の指摘の番号と、`カテゴリ` / `要約` / `問題` / `根拠` / `完了条件` もレポート本文に一致させる。
+項目名は、Phase 2.5で決めた出力言語に合わせる。
 
 inline comments JSONは以下の形式とし、由来にかかわらず`🔴 N:`で始める。
 
@@ -295,6 +321,7 @@ bash "<skill-dir>/scripts/resolve_review_threads.sh" \
 
 開始時の`<latest-commit-sha>`に対するレビューとして、以下をまとめてユーザーに提示して終了する。
 
-- Verdict、Finder由来とStandards由来の指摘件数、レポート本文
+- Verdict、Finder由来・Standards由来・Contract由来の指摘件数 (Contract軸をスキップした場合はその旨)、レポート本文
+- Local spec由来のため未投稿としたContract指摘の全文 (該当がある場合)
 - レビューURL(`post_review.sh` の標準出力)。`--dry-run`、head commit更新、投稿失敗のいずれかで未投稿の場合は、その理由を明記する
 - dismissした既存レビューとresolveした以前のthreadの件数(Phase 3.3を実行した場合のみ)

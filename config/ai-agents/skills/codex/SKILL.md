@@ -5,7 +5,7 @@ description: >-
   デフォルトはread-onlyの相談モードで、ユーザーが作業の実行を明示的に依頼したときだけ編集権限付きで実行する。
   ユーザーが「Codexに聞いて」「Codexに相談して」「Codexにやらせて」「Codexに任せて」と明示的に依頼したときのみ使用する。
   エージェント自身の判断で自発的に使わないこと。自分自身がCodexの場合は使わない。
-allowed-tools: Bash(codex:*)
+allowed-tools: Bash(codex:*), BashOutput
 disable-model-invocation: true
 ---
 
@@ -62,9 +62,11 @@ GPT-5.6 Family以外のモデルを指定しないこと。
    - 相談モード: `read-only`
    - 委譲モード: `workspace-write` (`--dry-run` 指定時は `read-only`)
 
+   数分で終わらない見込みの作業は `run_in_background` で起動し、`BashOutput` で完了までポーリングする。
+
 3. 結果を提示する:
    - 相談モード: 回答の要点をユーザーに提示し、自分の見解との一致点・相違点を一言添える
-   - 委譲モード: 実行結果と変更箇所を提示する。`--dry-run` 指定時は変更方針の提案のみを提示する
+   - 委譲モード: `git status` と `git diff --stat` で実際の変更を確認し、実行結果の要約、変更ファイル一覧、成功条件の達成状況を提示する。`--dry-run` 指定時は変更方針の提案のみを提示する
 
 ## 注意
 

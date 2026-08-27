@@ -225,10 +225,6 @@ copilot-commit-ja # AIが生成した日本語のコミットメッセージで�
 agy-commit # AIが生成したコミットメッセージでコミットする
 agy-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
 
-# Alias
-aicommit # = cc-commit
-aicommit-ja # = cc-commit-ja
-
 # zoxide + fzf
 # zoxideの履歴をfzfで選択してcdする
 # Ctrl+f でも同様の操作が可能

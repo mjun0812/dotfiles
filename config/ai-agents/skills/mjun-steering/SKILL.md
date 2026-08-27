@@ -1,5 +1,5 @@
 ---
-name: steering
+name: mjun-steering
 description: >-
   `.mjun/steering/` をプロジェクトの永続メモリ (project memory) として作成・維持するSkill。
   core 3ファイル (product.md, tech.md, structure.md) が欠けていればコードベースを分析して生成し (Bootstrap)、
@@ -9,7 +9,7 @@ description: >-
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls:*), Bash(find:*), Bash(rg:*), Bash(git:*), Bash(cat:*), Bash(head:*), Bash(tail:*), Bash(wc:*), Bash(tree:*), Bash(mkdir:*)
 ---
 
-# steering
+# mjun-steering
 
 ## 目的
 

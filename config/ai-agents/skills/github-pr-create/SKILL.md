@@ -8,14 +8,12 @@ allowed-tools: Read, Write, Task, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:
 
 # Create Pull Request
 
-このSkillは、現在のbranchからpull requestを作成するためのものです。PRのタイトルと説明文は、変更内容に基づいて自動生成されます。PRの説明文は、コードを参照しなくてもPRの内容が理解できるように、概要・背景、関連Issue、実装方針、変更内容、影響範囲、検証結果を説明します。
-
-GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+現在のbranchからpull requestを作成するSkill。PRのタイトルと説明文は、変更内容に基づいて自動生成する。PRの説明文は、コードを参照しなくてもPRの内容が理解できるように、概要・背景、関連Issue、実装方針、変更内容、影響範囲、検証結果を説明する。
 
 ## Arguments
 
 - `language`: PRのタイトルと説明文の言語（例: "ja", "en"）。デフォルト: "English"
-- `--draft`: draft PRとして作成（Optional）
+- `spec`: 解決するGitHub Issue番号 (任意。mjun-implementなどの呼び出し元から渡される)。関連Issue (`Closes`) の最優先候補として扱う
 - `--dry-run`: 生成したPRタイトル・本文・base/head branchのみを提示し、pushや `gh pr create` を実行せず終了する
 
 base branchは引数ではなく自動推定で決定する（事前チェック2を参照）。ユーザーが会話で明示した場合（「developに向けてPRを作って」等）はそれを最優先する。
@@ -83,6 +81,7 @@ base branchは引数ではなく自動推定で決定する（事前チェック
 
 ### 関連Issue
 
+- `spec` としてIssue番号が渡された場合は、それを解決するIssue (`Closes`) の最優先候補にする
 - branch名からIssue番号を抽出する（例: `feature/123-add-something` → `#123`）
 - commitメッセージから `fix #456`, `closes #789`, `refs #101` 等のキーワードを検出する
 - `gh issue list --state open --json number,title` のタイトルを変更内容と突き合わせ、関連するIssueを探す
@@ -108,6 +107,7 @@ base branchは引数ではなく自動推定で決定する（事前チェック
 - 検証で実行したコマンドと結果は、コピペ可能な形式で記載する
 - CIで自動実行されるlint・format・型チェックは記載しない（そのチェック設定自体を変更したPRを除く）。記載するのはCIが検証しない動作確認の手順と結果
 - テストを実行していない場合は、未実行であることと理由を明記する
+- PRタイトル・本文に `.mjun/` 配下のパスやgit管理外の内部文書 (Local specなど) を言及しない。これらは内部文書であり、外部へ見せる参照にはGitHub Issueだけを使う
 - diff、commit、関連Issueから確認できない事実を推測で補わない。本文の理解に必要な情報が不足する場合はユーザーに確認する
 - PR作成前に、6項目が所定の順序で存在し、templateの説明コメントや未記入のplaceholderが残っていないことを確認する
 
@@ -128,7 +128,6 @@ base branchは引数ではなく自動推定で決定する（事前チェック
      --title "<PR Title>" \
      --body-file /tmp/YYYYMMDD-HHMMSS-pr-body.md \
      --assignee @me \
-     [--draft] \
      [--label <name> ...]
    ```
 

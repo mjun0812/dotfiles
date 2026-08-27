@@ -60,7 +60,7 @@ description: >-
 
 ### 4. 計画書を保存する
 
-同梱の [`assets/template_experiment_plan.md`](assets/template_experiment_plan.md) をコピーし、`.mjun/experiments/` に計画書を作成する。
+同梱の [`templates/template_experiment_plan.md`](templates/template_experiment_plan.md) をコピーし、`.mjun/experiments/` に計画書を作成する。
 
 - `.mjun/experiments/` がなければ作成する。
 - ファイル名は `YYYYMMDD_<slug>.md` とし、作成日を日付部分に使う。
