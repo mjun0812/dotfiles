@@ -15,7 +15,6 @@ allowed-tools: Skill, Bash(git:*), Bash(gh:*), Bash(cat:*), Bash(ls:*), Bash(bat
 - `github-resolve-pr-comment`: レビューコメントへの対応
 
 修正・commit・pushは必ず専用worktree内で行う。Skillを起動した元の作業ツリーでは、PR情報の取得とworktree作成以外のファイル編集・commit・pushを行わない。
-GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
 ## Arguments
 

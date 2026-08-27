@@ -70,6 +70,8 @@
 
 ## Git / GitHub
 
+GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+
 - コミットメッセージは常に Conventional Commits 形式に従うこと。
 - 2行目は必ず空行とし、コミットの説明は3行目から記述すること。
 - Gitタグを使用する際は "v1.0.0" や "v2.1.3" といったSemantic Versioningの形式を使用すること。

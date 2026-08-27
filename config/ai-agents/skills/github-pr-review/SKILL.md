@@ -22,8 +22,6 @@ spec sourceを解決できる場合は，Contract SubAgent がspecとの不整�
 
 ## Task
 
-GitHub操作は必ず`gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
-
 ### Phase 1: 準備
 
 #### Phase 1.1: 対象PRの特定
