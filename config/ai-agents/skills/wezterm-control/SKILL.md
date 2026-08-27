@@ -6,6 +6,7 @@ description: >-
   ユーザーが「weztermのpaneを分割して」「weztermの別paneでコマンドを実行して」のように、weztermと明示して依頼したときだけ使うこと。
   ユーザーはtmuxも併用しているため、「paneを分割して」のようにweztermと明示されていないpane/tab操作の依頼では使わない (どちらを指すかユーザーに確認する)。
   tmuxの操作、およびwezterm自体の設定 (wezterm.luaやkeybinding) の変更にも使わない。
+allowed-tools: Bash(wezterm:*), Bash(sleep:*)
 ---
 
 # wezterm-control
@@ -25,11 +26,12 @@ tmuxの知識で代用せず、必ず [cli_reference.md サブコマンド一覧
 4. 他のpaneへ送るコマンドは非破壊なものに限ること。削除・強制終了・push・デプロイなどの破壊的コマンドを送る前はユーザーに確認する。
 5. `kill-pane` の対象は、このセッションで自分が作成したpaneに限ること。それ以外のpaneを閉じる場合は事前にユーザーへ確認する。
 6. コマンド送信後は即座に結果を判断せず、待ってから `get-text` で出力を検証すること。
+7. `split-pane` や `spawn` はフォーカスを新しいpaneへ移す。ユーザーがフォーカス移動を求めていない限り、操作の完了後に `activate-pane` で作業開始時にフォーカスのあったpaneへ戻すこと。
 
 ## Steps
 
-0. `wezterm cli list --format json` を実行し、失敗する場合 (`wezterm` コマンドが無い、weztermが起動していない、mux serverに接続できない) は操作を続けず、その旨をユーザーに報告して終了する。
-1. 手順0で取得した構成から対象のIDを決める。ユーザーの指示 (「右のpane」「2番目のtab」など) とtitle・cwd・位置情報を突き合わせる。曖昧なら候補を提示して確認する。
+0. `wezterm cli list --format json` を実行し、失敗する場合 (`wezterm` コマンドが無い、weztermが起動していない、mux serverに接続できない) は操作を続けず、その旨をユーザーに報告して終了する。あわせて `$WEZTERM_PANE` の有無を確認する。未設定なら自分はwezterm管理外で動いており、自分のpaneを基準とした相対指定は解決できないため、対象はlistの結果とユーザーへの確認だけで特定する。
+1. 手順0で取得した構成から対象のIDを決める。「隣のpane」「右のpane」のような自分のpaneからの相対指定は `get-pane-direction <方向>` で解決する。それ以外はユーザーの指示 (「2番目のtab」など) とtitle、cwd、位置情報を突き合わせる。曖昧なら候補を提示して確認する。
 2. 対象IDを明示して操作を実行する。`split-pane` と `spawn` は新しいpane-idをstdoutへ出力するので、後続の操作のために保持する。
 3. 操作結果を検証する。レイアウト変更は `list` で、コマンド実行は `get-text` で確認する。
 4. 実行した操作と、作成・操作したpane-id/tab-idをユーザーに報告する。
@@ -52,6 +54,8 @@ wezterm cli send-text --pane-id <ID> --no-paste $'ls -la\n'
 ```bash
 wezterm cli get-text --pane-id <ID> --start-line -1000
 ```
+
+TUIアプリやcoding agentが動くpaneはalternate screenを使うことが多く、そこから消えた行はscrollbackに残らないため、`--start-line` を増やしても回収できない。必要な出力が取れない場合は、対象paneのプログラムに結果をファイルへ書かせて、そのファイルを直接読む。
 
 ### 長時間コマンドの完了を検知する
 

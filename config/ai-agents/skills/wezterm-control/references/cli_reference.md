@@ -1,7 +1,7 @@
 # wezterm cli リファレンス
 
-`wezterm 20260607-082427-8afe0ad3` の `--help` 出力から作成した実機確認済みリファレンス。
-ここに無いサブコマンドやオプションを推測で使わないこと。不明な場合は `wezterm cli <subcommand> --help` で確認する。
+`wezterm 20260715-174104-3658b656` の `--help` 出力から作成した実機確認済みリファレンス。
+ここに無いサブコマンドやオプションを推測で使わないこと。不明な場合や、実機のバージョンが上記と異なる場合は `wezterm cli <subcommand> --help` で確認する。
 
 共通事項:
 
@@ -43,5 +43,5 @@
 | ------------------ | ---------------------------- | -------------------------------------------------------------------------------------- |
 | `send-text`        | paneへテキストをペースト送信 | `--pane-id`, `--no-paste` (bracketed pasteを使わず直接送信)。TEXT省略時はstdinから読む |
 | `set-tab-title`    | tabのタイトルを変更          | 引数: TITLE, `--tab-id`                                                                |
-| `set-window-title` | windowのタイトルを変更       | 引数: TITLE                                                                            |
+| `set-window-title` | windowのタイトルを変更       | 引数: TITLE, `--window-id`                                                             |
 | `rename-workspace` | workspaceをリネーム          | 引数: OLD NEW                                                                          |
