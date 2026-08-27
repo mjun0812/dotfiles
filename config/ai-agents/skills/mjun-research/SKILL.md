@@ -9,7 +9,7 @@ allowed-tools: Read, Write, Glob, Grep, WebSearch, WebFetch, Bash(git:*), Bash(m
 
 # mjun-research
 
-外部事実の知識不足をユーザーへの質問で埋めず、一次資料への調査で解決するSkillです。調査結果はdecisionの証拠として呼び出し元へ返します。decisionそのものは確定しません。
+外部事実の知識不足をユーザーへの質問で埋めず、一次資料への調査で解決するSkill。調査結果はdecisionの証拠として呼び出し元へ返す。decisionそのものは確定しない。
 
 ## Arguments
 

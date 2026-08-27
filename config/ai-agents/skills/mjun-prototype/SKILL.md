@@ -9,7 +9,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion
 
 # mjun-prototype
 
-1つの設計質問に答えるための使い捨てコードを作るSkillです。1 prototype = 1 question。質問に答えたら役目は終わりで、prototype本体をspecやコードのSource of Truthにしません。
+1つの設計質問に答えるための使い捨てコードを作るSkill。1 prototype = 1 question。質問に答えたら役目は終わりで、prototype本体をspecやコードのSource of Truthにしない。
 
 ## Arguments
 

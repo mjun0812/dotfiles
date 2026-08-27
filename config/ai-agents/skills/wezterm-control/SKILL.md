@@ -12,12 +12,12 @@ description: >-
 
 ## Objective
 
-このSkillは、weztermのpane・tab・windowを `wezterm cli` サブコマンドで操作するためのものです。
-tmuxの知識で代用せず、必ず [cli_reference.md サブコマンド一覧](references/cli_reference.md#サブコマンド一覧) にある実機確認済みのコマンドだけを使ってください。
+weztermのpane・tab・windowを `wezterm cli` サブコマンドで操作するSkill。
+tmuxの知識で代用せず、必ず [cli_reference.md サブコマンド一覧](references/cli_reference.md#サブコマンド一覧) にある実機確認済みのコマンドだけを使うこと。
 
 ## Rules
 
-ユーザーが明示的に上書きしない限り、必ず次を守ってください。
+ユーザーが明示的に上書きしない限り、必ず次を守ること。
 
 1. 操作の前に必ず `wezterm cli list --format json` で現在のwindow/tab/pane構成とIDを取得すること。
 2. すべての操作で `--pane-id` や `--tab-id` を明示すること。ID省略時は環境変数 `WEZTERM_PANE` (=自分が動いているpane) が対象になり、意図しないpaneを操作する事故につながる。
