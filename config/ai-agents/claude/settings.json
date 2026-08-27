@@ -187,7 +187,6 @@
     "typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "clangd-lsp@claude-plugins-official": true,
-    "codex@openai-codex": true,
     "skill-creator@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
@@ -196,12 +195,6 @@
     "claude-code-setup@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
-    "openai-codex": {
-      "source": {
-        "source": "github",
-        "repo": "openai/codex-plugin-cc"
-      }
-    },
     "anthropic-agent-skills": {
       "source": {
         "source": "github",
