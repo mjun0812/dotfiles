@@ -59,7 +59,7 @@ grep -m1 "^Source: " <spec.md>                    # 投影先 (あれば)
 
 ## `Source:` 行
 
-GitHub Issueから取り込んだspec (または `--issue` で投影先を作ったspec) は、`spec.md` のH1直下に投影先への参照を1行持つ。
+GitHub Issueから取り込んだspec (または投影時に投影先Issueを作ったspec) は、`spec.md` のH1直下に投影先への参照を1行持つ。
 
 ```markdown
 # <Title>
@@ -83,8 +83,8 @@ Source: #123
 
 `Source:` を持つspecは、contract承認後にIssue本文へ投影する。
 
-- 投影範囲: contract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes`
-- **Tasksとtask進捗は投影しない**。進捗は内部 (tasks.md) だけで管理し、外部からはPRで見える。implementはIssueへ一切書き込まない
+- 投影範囲: contract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes` + `tasks.md` があれば `## Tasks` (taskタイトルのチェックボックス一覧)
+- **task進捗は投影しない**。進捗は内部 (tasks.md) だけで管理し、外部からはPRで見える。implementはIssueへ一切書き込まない (Issueの `## Tasks` は承認時点のスナップショット)
 - 書き換えは一時ファイル経由の一括更新 (`gh issue edit --body-file`) + 変更サマリの1コメント (body編集はwatcherに通知されないため)
 - 却下案・検討経緯はIssueコメントへ記録する
 - 純Local specは投影しない

@@ -11,11 +11,9 @@ allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bas
 
 # mjun-implement
 
-specを起点に、内容検査 → 実装 → commit → (必要なら) PR作成までを進めるSkillです。
+specを起点に、内容検査 → 実装 → commit → (必要なら) PR作成までを進めるSkill。
 メイン会話が担うのは、検査、worktree作成、SubAgentへの引き継ぎ、進捗の永続化、結果検証、クリーンアップであり、**実装 (Phase 3) はSubAgentに委譲し、commitとPR作成 (Phase 4) は `git-commit` skillと `github-pr-create` skillに連結する**。
-SubAgent機能が使えない環境では、SubAgentの作業をメイン会話内で同じ手順で順に実施する。Skill toolが使えない環境では、連結先skillのSKILL.mdを直接読み込み、その手順に従って実行する。
-
-GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+SubAgent機能が使えない環境では、SubAgentの作業をメイン会話内で同じ手順で順に実施する。
 
 ## Arguments
 
@@ -25,9 +23,21 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 
 ### source種別
 
-1. `.mjun/specs/<slug>` のディレクトリ、またはその配下のファイルパス → **spec mode**。配下の `spec.md` (必須)、`decisions.md`、`design.md`、`tasks.md` をReadする
-2. Issue番号またはGitHub URL → activeなspec (`status: active`) から `Source: #<number>` を逆引きし、spec modeとして扱う (複数ヒットした場合は一覧を提示して選んでもらう)。activeで見つからなければ、doneのspecからも `Source: #<number>` を検索する。doneにあれば「実装済みのspec (`<path>`) がある。再開する場合は `status` を `active` へ戻すか、`mjun-specify #<number>` で取り込み直す」と案内して中止する。どちらにも無ければ**中止し、`mjun-specify #<number>` での取り込みと磨き上げを案内する**。入口は常にmjun-specifyであり、Issueが直行で実装できる品質かの判断をこのskillで肩代わりしない
+sourceの形からmodeを決める。
+
+1. `.mjun/specs/<slug>` のディレクトリ、またはその配下のファイルパス → **spec mode**
+2. Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経て **spec mode**
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
+
+spec modeでは、specディレクトリ配下の `spec.md` (必須)、`decisions.md`、`design.md`、`tasks.md` をReadする。
+
+### Issue番号の逆引き
+
+入口は常にmjun-specifyであり、Issueが直行で実装できる品質かの判断をこのskillで肩代わりしない。
+
+1. activeなspec (`status: active`) から `Source: #<number>` を持つspecを検索する。見つかればそれを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)
+2. activeに無ければ、doneのspecからも `Source: #<number>` を検索する。見つかれば「実装済みのspec (`<path>`) がある。再開する場合は `status` を `active` へ戻すか、`mjun-specify #<number>` で取り込み直す」と案内して中止する
+3. どちらにも無ければ中止し、`mjun-specify #<number>` での取り込みと磨き上げを案内する
 
 **Local specの参照と更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のためworktreeやPR checkoutには存在しない。SubAgentへはspecの内容をプロンプトに合成して渡し、worktree内の `.mjun/` パスを読ませない。
 

@@ -13,38 +13,38 @@ allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(
 
 # mjun-specify
 
-アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できるcontractへ磨き上げるSkillです。
-人間はcontract (何を作るか) を承認し、その内側の設計はAgentが決めます。
+アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できるcontractへ磨き上げるSkill。
+自明な部分はAgentが自身で判断し、非自明な部分は人間との対話によって判断し、Agentと人間が協力して仕様を決定する。
 
-正本は常に `.mjun/specs/<slug>/` のLocal specです。
-GitHub Issueが関わる場合も、Issueは入口 (取り込み) と出口 (投影) であり、作業はすべてLocalファイル上で行います。
-規則は [references/source-resolution.md](references/source-resolution.md) に従います。
+正本は常に `.mjun/specs/<slug>/` のLocal specとする。
+GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影)であり、作業はすべてLocalファイル上で行う。
+規則は [references/source-resolution.md](references/source-resolution.md) に従う。
 
-意思決定の判断材料に `mjun-grill` / `mjun-research` / `mjun-prototype` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
+意思決定の判断材料に `mjun-grill` / `mjun-research` / `mjun-prototype` を、
+承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
 
 ## Arguments
 
-- `source` (任意): GitHub Issue番号 (`#123` / `123`)、GitHub URL、`.mjun/specs/<slug>`、またはMarkdownパス。未指定の場合は会話内容を下書き素材として新規specを作る
-- `--issue` (任意): 新規spec作成時に、投影先のGitHub Issueもあわせて作成する。既定は純Local (Issueを作らない)
-- `--grill` (任意): Human-firstモード。非自明なdecisionを1問ずつ人間と決める
+- `source` (任意): GitHub Issue番号 (`#123` / `123`)、GitHub URL、`.mjun/specs/<slug>`、またはMarkdownパス。
+  未指定の場合は会話内容を下書き素材として新規specを作る
+- `--grill` (任意): Human-firstモード。すべてのdecisionを1問ずつ人間と決める
 - `--skip-trial` (任意): trial implementation (Phase 5) を省略する
 
 ## 2つのモード
 
-- **Agent-first (default)**: Agentが可能な限り調査して決め、非自明なdecisionだけを人間と1問ずつ確認する
-- **Human-first (`--grill`)**: factsはAgentが調査するが、非自明なdecisionはすべて人間と1問ずつ決める。決定はその場でspecへ反映する。
+- **Agent-first (default)**: 調査して決定できるdecision (Agent-owned) はAgentが自動で決め、人間の判断が必要なもの (Human-owned) と判断に迷うものだけを1問ずつ人間と決める
+- **Human-first (`--grill`)**: factsの調査はAgentが行い、意思決定はAgent-ownedを含むすべてを1問ずつ人間との対話で決める。決定はその場でspecへ反映する。
 
 ## Task
 
 ### Phase 0: source解決と前提取得
 
-sourceから対象を判別する。
-出力言語はsourceまたは依頼の言語に合わせて決める。
+sourceから対象を判別する。出力言語はsourceまたは依頼の言語に合わせて決める。
 
 1. Issue番号またはGitHub URL → **取り込み**。`gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。activeなspec (`status: active`) に `Source: #<number>` を持つ既存specがあれば取り込み済みとして、それを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)。activeに無ければ `status: done` のspecからも `Source: #<number>` を検索し、見つかれば実装済みの可能性を警告して、`active` へ戻して磨き直すか中止するかを確認する (同じIssueを正本とするspecを複数作らない)
 2. `.mjun/specs/<slug>` のパス → 既存specを対象にする (配下の全mdをRead)
 3. `.mjun/specs/` 外のMarkdownパス → **取り込み**。内容を `.mjun/specs/<slug>/spec.md` へ構造化し、以降それを正本として磨く (元ファイルは変更しない)
-4. sourceなし → **新規作成**。ただし作成の前に、activeなspecの一覧 (H1タイトルと `Source:` 行。source-resolution.mdの一覧手順で導出する) と依頼を突き合わせ、既存specの拡張や重複と判断できる場合は新規を作らず、そのspecをsourceとして磨き直す (重複specを作らない)。新規と判断したら、`--issue` の有無で投影先Issueを作るかが決まる。追加の質問はしない
+4. sourceなし → **新規作成**。ただし作成の前に、activeなspecの一覧 (H1タイトルと `Source:` 行。source-resolution.mdの一覧手順で導出する) と依頼を突き合わせ、既存specの拡張や重複と判断できる場合は新規を作らず、そのspecをsourceとして磨き直す (重複specを作らない)。追加の質問はしない
 
 ### Phase 1: sourceの確保
 
@@ -53,7 +53,6 @@ Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontm
 - **取り込み** (Issue番号または `.mjun/specs/` 外のMarkdown、未取り込みの場合): Issueは本文とコメントを、Markdownはファイル内容を `.mjun/specs/<slug>/spec.md` へ構造化する (slugはタイトルの英語kebab-case)。frontmatterに `status: active` と `approval: pending` を記録し、Issue由来はH1直下に `Source: #<number>` を書く (Markdown由来は書かず純Local扱いとし、元ファイルは変更しない)。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
 - **新規作成**: 会話の依頼内容を下書き素材とする。内容がまったく無い場合のみ自由テキストで概要を受け取る。spec化が過剰な依頼 (単発のtypo修正など) では、specを作らず直接実装する選択肢を提示し、選ばれたら終了する
   - `.mjun/specs/<slug>/spec.md` を [references/spec-template.md](references/spec-template.md) の骨子で作成する (frontmatterは `status: active` と `approval: pending`)
-  - `--issue` 指定時はさらに、リポジトリ内 `.github/ISSUE_TEMPLATE/` (無ければ [references/ISSUE_TEMPLATE](references/ISSUE_TEMPLATE)、日本語は [references/ISSUE_TEMPLATE_JA](references/ISSUE_TEMPLATE_JA)) から種別を自動判定してタイトル、本文、ラベル (既存ラベルのみ) を生成し、**ユーザーの承認を得てから** `gh issue create` で投影先Issueを作成して `Source:` を記録する
 
 ### Phase 2: 調査とgap分析
 
@@ -72,7 +71,7 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 - **Agent-owned**: decision-authority.mdの自己問答 (論点 → 調査 → 推奨案 → 反論 → 採択 + 確信度) で解決する。確信度lowは `Status: tentative` (要確認) として記録する
 - **Human-owned**: `mjun-grill` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
 - **Evidence-blocked**: 不足の種類に応じて `mjun-research` (外部事実) / `mjun-prototype` (UI、状態、ロジックの実物) / trial implementation (Phase 5へ) で証拠を集め、再分類して解決する
-- `--grill` 指定時は、Agent-ownedのうち非自明なもの (複数案が現実的に残るもの) もHuman-ownedと同様に1問ずつ確認する
+- `--grill` 指定時は、Agent-ownedのdecisionもHuman-ownedと同様に1問ずつ確認する
 
 ### Phase 5: trial implementation
 
@@ -91,22 +90,22 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 - 「反映する」の場合は `spec.md` のfrontmatterを `approval: approved` へ更新してからPhase 7へ進む
 - 「キャンセル」の場合は以降のPhaseへ進まず、作成または更新済みのLocal specを削除するか `approval: pending` のまま残すかを確認する
 
-### Phase 7: 投影
-
-Localのspec文書は Phase 4-6 で確定済みである (逐次更新のため書き込みは完了している)。`Source:` を持つspecのみ、承認済みcontractをIssueへ投影する:
-
-1. `gh issue view` で最新のIssueを取得する。取り込み後に付いた新しいコメントや、Local specに反映されていない本文の記述があれば内容を提示し、specへ取り込むかを確認する (取り込む場合は `approval: pending` へ戻してからPhase 4へ戻る)
-2. Issue本文を一時ファイル経由で一括更新する (`gh issue edit <number> --body-file <tmpfile>`)。本文にはcontract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes` を置く。**Tasksは投影しない**
-3. 却下案と検討経緯は `gh issue comment` で記録し、変更サマリのコメントを1件追記する (body編集はwatcherに通知されないため)
-
-純Local specでは何もしない。
-
-### Phase 8: task分解
+### Phase 7: task分解
 
 specの規模を判定する。
 
 - 独立に検証可能な振る舞いが複数あり、1つのfresh contextに収まらない規模なら、`mjun-to-tasks` を連結して分解する。調査済みの文脈 (requirements、boundary、変更対象の見当) をプロンプトで渡す。task分解はAgent-ownedのため承認は取らない
 - 単一task規模でも、既存の `tasks.md` があれば `mjun-to-tasks` を連結して最新contractへ再分解する (contractから消えたtaskがキューに残らない)。`tasks.md` が無ければ何もしない
+
+### Phase 8: Issueへの記帳
+
+`Source:` の無いspecでは、投影先Issueを作成するかをAskUserQuestionで確認する (使えない環境では選択肢をテキストで提示する)。作成しない場合は純LocalのままこのPhaseを終了する。作成する場合は、リポジトリ内 `.github/ISSUE_TEMPLATE/` (無ければ [references/ISSUE_TEMPLATE](references/ISSUE_TEMPLATE)、日本語は [references/ISSUE_TEMPLATE_JA](references/ISSUE_TEMPLATE_JA)) から種別を自動判定してタイトルとラベル (既存ラベルのみ) を生成し、`gh issue create` で投影先Issueを作成して `Source:` を記録する (本文は次の投影手順で書き込む)。
+
+承認済みcontractをIssueへ投影する:
+
+1. `gh issue view` で最新のIssueを取得する。取り込み後に付いた新しいコメントや、Local specに反映されていない本文の記述があれば内容を提示し、specへ取り込むかを確認する (取り込む場合は `approval: pending` へ戻してからPhase 4へ戻る)
+2. Issue本文を一時ファイル経由で一括更新する (`gh issue edit <number> --body-file <tmpfile>`)。本文にはcontract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes` + `tasks.md` があれば `## Tasks` (taskタイトルを `- [ ]` のチェックボックスで列挙) を置く。task進捗はLocalの `tasks.md` だけで管理し、Issueのチェックボックスへは同期しない
+3. 却下案と検討経緯は `gh issue comment` で記録し、変更サマリのコメントを1件追記する (body編集はwatcherに通知されないため)
 
 ### Phase 9: 結果報告
 

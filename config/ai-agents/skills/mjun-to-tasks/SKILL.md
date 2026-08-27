@@ -10,9 +10,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(
 
 # mjun-to-tasks
 
-specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化するSkillです。分解はAgent-ownedの作業として承認なしで行います。正本は常にLocal specであり、taskと進捗はGitHub Issueへ投影しません ([mjun-specifyのsource-resolution](../mjun-specify/references/source-resolution.md) の規則に従う)。
-
-GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化するSkill。分解はAgent-ownedの作業として承認なしで行う。正本は常にLocal specとする ([mjun-specifyのsource-resolution](../mjun-specify/references/source-resolution.md) の規則に従う)。
 
 ## Arguments
 
