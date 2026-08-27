@@ -1,57 +1,54 @@
 ---
 name: mjun-specify
 description: >-
-  アイデア、GitHub Issue、ローカルMarkdownを、実装可能なspec (contract) へ仕上げるSkill。
-  正本は常に `.mjun/specs/` のLocal specで、GitHub Issueは取り込みと投影のアダプタとして扱う。
-  factsを調査してAgentの権限内のdecisionを自分で決め、人間の判断が必要なdecisionだけを1問ずつ確認し、
-  承認後にIssueへ投影して必要ならtask分解まで行う。
-  ユーザーが「specを作って」「仕様を詰めて」「#Nを実装できるレベルに詰めて」「issueを磨いて」
-  「この設計docをspecにして」のように依頼したら使うこと。
-  単発の軽いissue起票には使わない (それはgithub-issue-createの領分)。
+  アイデア、GitHub Issue、Markdownを実装可能な仕様へ仕上げるSkill。
+  仕様決定に伴う意思決定をAgentと人間が協力して行う。
+  事実や外部情報の調査によって自動で決定できる部分をAgentが行う、
+  人間の判断が必要な部分を1問ずつ確認して、仕様を決定する。
+  仕様承認後にIssueへ記帳して、必要ならtask分解まで行う。
+  ユーザーが「specを作って」「仕様を詰めて」「issueを磨いて」のように依頼したら使うこと。
   実装からPR作成まで進める依頼や、既にspecが承認済みの実装依頼には使わない。
 allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grill), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-to-tasks)
 ---
 
 # mjun-specify
 
-アイデア、GitHub Issue、ローカルMarkdownを、実装者が追加調査なしで着手できるcontractへ磨き上げるSkillです。人間はcontract (何を作るか) を承認し、その内側の設計はAgentが決めます。
+アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できるcontractへ磨き上げるSkillです。
+人間はcontract (何を作るか) を承認し、その内側の設計はAgentが決めます。
 
-正本は常に `.mjun/specs/<slug>/` のLocal specです。GitHub Issueが関わる場合も、Issueは入口 (取り込み) と出口 (投影) であり、作業はすべてLocalファイル上で行います。規則は [references/source-resolution.md](references/source-resolution.md) に従います。
+正本は常に `.mjun/specs/<slug>/` のLocal specです。
+GitHub Issueが関わる場合も、Issueは入口 (取り込み) と出口 (投影) であり、作業はすべてLocalファイル上で行います。
+規則は [references/source-resolution.md](references/source-resolution.md) に従います。
 
-GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
-
-連結先: 意思決定の解消に `mjun-grill` / `mjun-research` / `mjun-prototype` を、承認後のtask分解に `mjun-to-tasks` を、Skill toolで呼び出す。Skill toolが使えない環境では、連結先skillのSKILL.mdを直接読み込み、その手順に従って実行する。
+意思決定の判断材料に `mjun-grill` / `mjun-research` / `mjun-prototype` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
 
 ## Arguments
 
-- `source` (任意): 対象。GitHub Issue番号 (`#123` / `123`)、GitHub URL、`.mjun/specs/<slug>`、またはMarkdownパス。未指定の場合は会話内容を下書き素材として新規specを作る
+- `source` (任意): GitHub Issue番号 (`#123` / `123`)、GitHub URL、`.mjun/specs/<slug>`、またはMarkdownパス。未指定の場合は会話内容を下書き素材として新規specを作る
 - `--issue` (任意): 新規spec作成時に、投影先のGitHub Issueもあわせて作成する。既定は純Local (Issueを作らない)
 - `--grill` (任意): Human-firstモード。非自明なdecisionを1問ずつ人間と決める
 - `--skip-trial` (任意): trial implementation (Phase 5) を省略する
-- `--dry-run` (任意): contract全文の提示 (Phase 6) で停止する。ファイルやIssueへの書き込みもtask分解も一切行わず、spec内容はファイルへ書かずに会話内で組み立てる
 
 ## 2つのモード
 
-- **Agent-first (デフォルト)**: Agentが可能な限り調査して決め、Human-owned decisionだけを1問ずつ確認する
-- **Human-first (`--grill`)**: factsはAgentが調査するが、非自明なdecisionはすべて人間と1問ずつ決める。決定はその場でspecへ反映する (grill-with-docs相当)
+- **Agent-first (default)**: Agentが可能な限り調査して決め、非自明なdecisionだけを人間と1問ずつ確認する
+- **Human-first (`--grill`)**: factsはAgentが調査するが、非自明なdecisionはすべて人間と1問ずつ決める。決定はその場でspecへ反映する。
 
 ## Task
 
 ### Phase 0: source解決と前提取得
 
 sourceから対象を判別する。
+出力言語はsourceまたは依頼の言語に合わせて決める。
 
 1. Issue番号またはGitHub URL → **取り込み**。`gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。activeなspec (`status: active`) に `Source: #<number>` を持つ既存specがあれば取り込み済みとして、それを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)。activeに無ければ `status: done` のspecからも `Source: #<number>` を検索し、見つかれば実装済みの可能性を警告して、`active` へ戻して磨き直すか中止するかを確認する (同じIssueを正本とするspecを複数作らない)
 2. `.mjun/specs/<slug>` のパス → 既存specを対象にする (配下の全mdをRead)
 3. `.mjun/specs/` 外のMarkdownパス → **取り込み**。内容を `.mjun/specs/<slug>/spec.md` へ構造化し、以降それを正本として磨く (元ファイルは変更しない)
 4. sourceなし → **新規作成**。ただし作成の前に、activeなspecの一覧 (H1タイトルと `Source:` 行。source-resolution.mdの一覧手順で導出する) と依頼を突き合わせ、既存specの拡張や重複と判断できる場合は新規を作らず、そのspecをsourceとして磨き直す (重複specを作らない)。新規と判断したら、`--issue` の有無で投影先Issueを作るかが決まる。追加の質問はしない
 
-出力言語はsourceまたは依頼の言語に合わせて決める。純Local操作では `gh` を一切呼ばない。
-
 ### Phase 1: sourceの確保
 
-`--dry-run` 指定時は、このPhase以降のファイル作成、Issue作成、逐次更新をすべて行わず、同じ内容を会話内で組み立ててPhase 6の提示で終了する。
-それ以外では、Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontmatterを `approval: pending` にする。既存specを磨き直す場合も、最初の変更より先に `approved` から `pending` へ戻す。承認前にsessionが中断しても、未承認contractを `mjun-implement` が実装しないためのgateである。
+Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontmatterを `approval: pending` にする。既存specを磨き直す場合も、最初の変更より先に `approved` から `pending` へ戻す。承認前にsessionが中断しても、未承認contractを `mjun-implement` が実装しないためのgateである。
 
 - **取り込み** (Issue番号または `.mjun/specs/` 外のMarkdown、未取り込みの場合): Issueは本文とコメントを、Markdownはファイル内容を `.mjun/specs/<slug>/spec.md` へ構造化する (slugはタイトルの英語kebab-case)。frontmatterに `status: active` と `approval: pending` を記録し、Issue由来はH1直下に `Source: #<number>` を書く (Markdown由来は書かず純Local扱いとし、元ファイルは変更しない)。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
 - **新規作成**: 会話の依頼内容を下書き素材とする。内容がまったく無い場合のみ自由テキストで概要を受け取る。spec化が過剰な依頼 (単発のtypo修正など) では、specを作らず直接実装する選択肢を提示し、選ばれたら終了する
@@ -70,7 +67,7 @@ gapから意思決定の論点を洗い出し、[references/decision-authority.m
 
 ### Phase 4: decisionの解決
 
-frontierの論点を1つずつ解決し、確定するたびに**Localのspecとdecision logへ逐次**反映する (`--dry-run` 時は会話内で保持する)。decision logのentry形式は [references/decisions-template.md](references/decisions-template.md) に従う。
+frontierの論点を1つずつ解決し、確定するたびに**Localのspecとdecision logへ逐次**反映する。decision logのentry形式は [references/decisions-template.md](references/decisions-template.md) に従う。
 
 - **Agent-owned**: decision-authority.mdの自己問答 (論点 → 調査 → 推奨案 → 反論 → 採択 + 確信度) で解決する。確信度lowは `Status: tentative` (要確認) として記録する
 - **Human-owned**: `mjun-grill` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
@@ -90,7 +87,6 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 ### Phase 6: contractの提示と承認
 
 - specのcontract全文と、変更点サマリ (追加または変更したセクションと理由)、要確認 (tentative) の一覧を提示する
-- `--dry-run` はここで終了する
 - AskUserQuestionで「反映する / 修正して再提示 / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
 - 「反映する」の場合は `spec.md` のfrontmatterを `approval: approved` へ更新してからPhase 7へ進む
 - 「キャンセル」の場合は以降のPhaseへ進まず、作成または更新済みのLocal specを削除するか `approval: pending` のまま残すかを確認する
