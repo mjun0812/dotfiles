@@ -41,7 +41,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 
 sourceから対象を判別する。
 
-1. Issue番号またはGitHub URL → **取り込み**。`gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。activeなspec (`status: active`) に `Source: #<number>` を持つ既存specがあれば取り込み済みとして、それを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)。activeに無く、`status: done` のspecが同じ `Source: #<number>` を持つ場合は、実装済みの可能性を警告し、そのspecを `active` へ戻して磨き直すか中止するかをユーザーに確認する (同じIssueを正本とするspecを複数作らない)
+1. Issue番号またはGitHub URL → **取り込み**。`gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。activeなspec (`status: active`) に `Source: #<number>` を持つ既存specがあれば取り込み済みとして、それを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)。activeに無ければ `status: done` のspecからも `Source: #<number>` を検索し、見つかれば実装済みの可能性を警告して、`active` へ戻して磨き直すか中止するかを確認する (同じIssueを正本とするspecを複数作らない)
 2. `.mjun/specs/<slug>` のパス → 既存specを対象にする (配下の全mdをRead)
 3. `.mjun/specs/` 外のMarkdownパス → **取り込み**。内容を `.mjun/specs/<slug>/spec.md` へ構造化し、以降それを正本として磨く (元ファイルは変更しない)
 4. sourceなし → **新規作成**。ただし作成の前に、activeなspecの一覧 (H1タイトルと `Source:` 行。source-resolution.mdの一覧手順で導出する) と依頼を突き合わせ、既存specの拡張・重複と判断できる場合は新規を作らず、そのspecをsourceとして磨き直す (重複specを作らない)。新規と判断したら、`--issue` の有無で投影先Issueを作るかが決まる。追加の質問はしない

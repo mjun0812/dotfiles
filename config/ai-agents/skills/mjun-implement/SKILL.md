@@ -57,7 +57,7 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 ### Phase 2: worktreeの作成
 
 1. **branch名候補を決定する**: 形式は `<type>/<slug>` (specが `Source: #N` を持つ場合は `<type>/<N>-<slug>`)。`<type>` はConventional Commitsの種別 (`fix`, `feat`, `docs`, `chore`, `refactor` 等。判別不能なら `feat`)、`<slug>` はタイトルからkebab-case (英数字とハイフン、40文字以内)
-2. **resumeの判定**: spec modeの `tasks.md` に `Implementation Branch: <branch-name>` があり、そのlocal branchが存在すれば、taskのstatusにかかわらず前回実行のbranchとして使う。記録されたlocal branchが存在しない場合は、記録を破棄して新規実行として続行する (branchだけが削除された状態からの自己修復。`Status: done` のtaskは完了扱いのまま)。記録が無い場合は新規実行とし、branch名候補が既存branchと衝突すれば末尾に `-2`, `-3` を付けて回避する。doc modeは常に新規実行とする
+2. **resumeの判定**: spec modeの `tasks.md` に `Implementation Branch: <branch-name>` があり、そのlocal branchが存在すれば、taskのstatusにかかわらず前回実行のbranchとして使う。記録されたlocal branchが存在しない場合は、記録を破棄して新規実行として続行する (branch削除後の自己修復)。記録が無い場合は新規実行とし、branch名候補が既存branchと衝突すれば末尾に `-2`, `-3` を付けて回避する。doc modeは常に新規実行とする
 3. **worktreeのパス**: `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける
 4. **worktree作成**:
    - resumeの場合は、Phase 1で取得した `git worktree list --porcelain` から `<branch-name>` をcheckout済みのworktreeを探す。見つかればそのパスを採用し、worktree作成をスキップする (PR作成失敗時に保持したworktreeの再利用)。未commit変更が残っている場合は中止して報告する。見つからなければ `git worktree add <worktree-path> <branch-name>` で既存branchをcheckoutする
@@ -101,7 +101,7 @@ Phase 3の間の制約:
    - `BLOCKED` → 中止し、`BLOCKER` と `BLOCKER_REMEDIATION` を報告する
 4. **reviewerの起動**: テンプレートに、タスク文脈・contract・検証コマンド・implementerのStatus Report (参照用) を合成して起動する
 5. **VERDICTの処理**: `## Review Verdict` の `- VERDICT:` フィールドだけをパースする
-   - `APPROVED` → タスク完了。**先にworktree内でそのtaskの変更をcommitする** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)。commit対象の差分が無い場合は、前回実行でcommit済みとみなして `Status: done` への更新だけを行う。commit成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。その後、次のタスクへ進む
+   - `APPROVED` → タスク完了。**先にworktree内でそのtaskの変更をcommitし** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)、成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。commit対象の差分が無い場合は、前回実行でcommit済みとみなしてstatus更新だけを行う。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。その後、次のタスクへ進む
    - `REJECTED` → `REMEDIATION` と `FINDINGS` を添えてimplementerを再起動する。同一タスクの差し戻しは**最大2周**とし、2周後もREJECTEDなら中止して未解決の指摘を報告する
 6. **知見の伝播**: タスク横断で有用な発見は、`tasks.md` 末尾の `## Implementation Notes` へ1行で永続化し、以降のimplementerのプロンプトに含める
 
@@ -113,7 +113,7 @@ Phase 3の間の制約:
 
 1. **検証コマンドの実行**: SubAgentに検証コマンド全体の実行を依頼し、コマンド・exit code・失敗内容を報告させる。検証コマンドが見つからないリポジトリではスキップし、その事実をPhase 5に含める
 2. **Acceptance Criteriaの照合**: specのAcceptance CriteriaとtaskキューのAcceptance Criteriaを1件ずつ、実装と検証結果に照合する。各criterionについて、それを満たす変更・テスト・実行結果を特定して充足を判定する (SubAgentに依頼してよい)。specにAcceptance Criteriaが無いdoc modeでも、taskキューのAcceptance Criteriaは照合する
-3. **contract境界の照合**: branch全体の変更 (`git diff <base>..HEAD`) がspecのBoundaries (Owns / Does Not Own) とOut of Scopeに収まっているかを照合する (SubAgentに依頼してよい)。スキップしたdone taskの変更もここで照合の対象になる。specにBoundariesもOut of Scopeも無い場合はスキップする
+3. **contract境界の照合**: branch全体の変更 (`git diff <base>..HEAD`) がspecのBoundaries (Owns / Does Not Own) とOut of Scopeに収まっているかを照合する (SubAgentに依頼してよい)。specにBoundariesもOut of Scopeも無い場合はスキップする
 
 - 検証コマンドがすべて成功し、全ACが充足し、boundary違反が無い → Phase 4へ進む
 - 検証コマンドの失敗、ACの未充足、またはboundary違反 → 内容を添えてimplementerに差し戻す (合わせて最大2周)。**差し戻しで生じた修正は、Phase 3.1と同じreviewerの検査に合格してからPhase 4へ進む** (最終検証後の変更だけがboundary検査等を迂回する経路を作らない)。収束しなければ中止し、未充足のcriterionを明示して報告する
@@ -145,5 +145,5 @@ Phase 3の間の制約:
 - **`--pr` で成功した場合**: `git worktree remove --force <worktree-path>` → `git branch -D <branch-name>` (remote branchはPRのheadとして残る)
 - **`--no-pr` で成功した場合**: worktreeだけを削除し、**local branchは削除しない**。merge / pushの判断はユーザーに委ねる
 - **PR作成に失敗した場合**: worktreeとlocal branchを残して報告する (手動修復の余地を残す)
-- **Phase 2〜5の途中でエラーまたはユーザーの中止により中断した場合**: この実行で新規作成したworktreeを削除し、commitが存在するならbranchを残してその旨を報告する。commitが無ければbranchも削除する。resumeで採用した既存worktreeとbranchは、未commit変更の有無にかかわらず削除しない
+- **Phase 2〜5の途中でエラーまたはユーザーの中止により中断した場合**: この実行で新規作成したworktreeを削除し、commitが存在するならbranchを残してその旨を報告する。commitが無ければbranchも削除する。resumeで採用した既存worktreeとbranchは削除しない
 - クリーンアップに失敗した場合はユーザーに警告する
