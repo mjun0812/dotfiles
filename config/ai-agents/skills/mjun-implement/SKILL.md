@@ -3,16 +3,16 @@ name: mjun-implement
 description: >-
   spec (`.mjun/specs/` のLocal spec、GitHub Issue番号、または単発の設計doc) を起点に「内容検査 → worktree作成 → task単位の実装 → Acceptance Criteria照合 → commit → 必要ならPR作成」を一気通貫で実行するSkill。
   正本は常にLocal specで、Issue番号は取り込み済みspec (mjun-specify経由) への逆引きとして扱う。未取り込みならmjun-specifyを案内する。
-  実装はSubAgentに委譲し、commitとPR作成はgit-commit・github-pr-create skillに連結する。
+  実装はSubAgentに委譲し、commitとPR作成はgit-commitとgithub-pr-create skillに連結する。
   ユーザーが「#Nを実装して」「このspecを実装して」「実装してPRまで」のように依頼したら使うこと。
-  specの作成・磨き上げには使わない。
+  specの作成や磨き上げには使わない。
 allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create)
 ---
 
 # mjun-implement
 
 specを起点に、内容検査 → 実装 → commit → (必要なら) PR作成までを進めるSkillです。
-メイン会話が担うのは検査・worktree作成・SubAgentへの引き継ぎ・進捗の永続化・結果検証・クリーンアップであり、**実装 (Phase 3) はSubAgentに委譲し、commitとPR作成 (Phase 4) は `git-commit` skillと `github-pr-create` skillに連結する**。
+メイン会話が担うのは、検査、worktree作成、SubAgentへの引き継ぎ、進捗の永続化、結果検証、クリーンアップであり、**実装 (Phase 3) はSubAgentに委譲し、commitとPR作成 (Phase 4) は `git-commit` skillと `github-pr-create` skillに連結する**。
 SubAgent機能が使えない環境では、SubAgentの作業をメイン会話内で同じ手順で順に実施する。Skill toolが使えない環境では、連結先skillのSKILL.mdを直接読み込み、その手順に従って実行する。
 
 GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
@@ -21,15 +21,15 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 
 - `source` (必須): 実装対象。GitHub Issue番号 (`#123` / `123`)、`.mjun/specs/<slug>` のLocal specディレクトリ、または単発Markdownのパス
 - `--pr` / `--no-pr` (任意): 実装をPRとして届けるか、local commitまでで終えるか。**どちらも未指定の場合は、worktree作成前に確認する** (長時間の自律実装の最後で確認待ちにしない)
-- `--dry-run` (任意): Phase 1の検査・taskキュー・実装方針の提示で停止し、worktree作成以降 (Phase 2〜) は一切実行しない
+- `--dry-run` (任意): Phase 1の検査、taskキュー、実装方針の提示で停止し、worktree作成以降 (Phase 2〜) は一切実行しない
 
 ### source種別
 
-1. `.mjun/specs/<slug>` のディレクトリ、またはその配下のファイルパス → **spec mode**。配下の `spec.md` (必須)・`decisions.md`・`design.md`・`tasks.md` をReadする
-2. Issue番号またはGitHub URL → activeなspec (`status: active`) から `Source: #<number>` を逆引きし、spec modeとして扱う (複数ヒットした場合は一覧を提示して選んでもらう)。activeで見つからなければ、doneのspecからも `Source: #<number>` を検索する。doneにあれば「実装済みのspec (`<path>`) がある。再開する場合は `status` を `active` へ戻すか、`mjun-specify #<number>` で取り込み直す」と案内して中止する。どちらにも無ければ**中止し、`mjun-specify #<number>` での取り込み・磨き上げを案内する**。入口は常にmjun-specifyであり、Issueが直行で実装できる品質かの判断をこのskillで肩代わりしない
+1. `.mjun/specs/<slug>` のディレクトリ、またはその配下のファイルパス → **spec mode**。配下の `spec.md` (必須)、`decisions.md`、`design.md`、`tasks.md` をReadする
+2. Issue番号またはGitHub URL → activeなspec (`status: active`) から `Source: #<number>` を逆引きし、spec modeとして扱う (複数ヒットした場合は一覧を提示して選んでもらう)。activeで見つからなければ、doneのspecからも `Source: #<number>` を検索する。doneにあれば「実装済みのspec (`<path>`) がある。再開する場合は `status` を `active` へ戻すか、`mjun-specify #<number>` で取り込み直す」と案内して中止する。どちらにも無ければ**中止し、`mjun-specify #<number>` での取り込みと磨き上げを案内する**。入口は常にmjun-specifyであり、Issueが直行で実装できる品質かの判断をこのskillで肩代わりしない
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
-**Local specの参照・更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のためworktreeやPR checkoutには存在しない。SubAgentへはspecの内容をプロンプトに合成して渡し、worktree内の `.mjun/` パスを読ませない。
+**Local specの参照と更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のためworktreeやPR checkoutには存在しない。SubAgentへはspecの内容をプロンプトに合成して渡し、worktree内の `.mjun/` パスを読ませない。
 
 ## Task
 
@@ -39,20 +39,20 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
    - リポジトリ情報: `gh repo view --json defaultBranchRef,nameWithOwner` (Local spec / doc modeでghが失敗する場合は `git symbolic-ref --short refs/remotes/origin/HEAD`、それも失敗したら現在のbranch)
    - source本文 (source種別に従う)
    - 現在のbranch: `git branch --show-current`、既存worktree: `git worktree list --porcelain`
-2. 出力言語をsourceの言語から決める (主に日本語なら日本語、それ以外または曖昧なら英語)。コメント・commit・PR作成に使う
+2. 出力言語をsourceの言語から決める (主に日本語なら日本語、それ以外または曖昧なら英語)。コメント、commit、PR作成に使う
 3. **内容検査**:
    1. **contract承認** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、`mjun-specify <source>` でcontractを承認するよう案内する。実装依頼そのものをcontract承認の代わりにしない
-   2. **情報の充足**: Goal・受け入れ基準・実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、`mjun-specify` でspecを詰めることを案内する。方針を推測で補って実装に進まない
+   2. **情報の充足**: Goal、受け入れ基準、実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、`mjun-specify` でspecを詰めることを案内する。方針を推測で補って実装に進まない
    3. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` を `accepted` へ更新してから進む (確認済みの決定として記録し、再実行時に同じtentativeで止まらない)
-   4. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込み・投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する。反映する場合は `approval: pending` へ戻してから反映し、更新後のcontractを提示して承認を得て `approved` へ更新してから進む。承認されなければ中止し、`mjun-specify <source>` での磨き直しを案内する
+   4. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込みと投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する。反映する場合は `approval: pending` へ戻してから反映し、更新後のcontractを提示して承認を得て `approved` へ更新してから進む。承認されなければ中止し、`mjun-specify <source>` での磨き直しを案内する
 4. **taskキューを構築する**:
    - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)
    - 全taskが `done` の場合も終了せず、記録済みbranchからresumeしてPhase 3.2の最終検証とPhase 4の配送を再実行する
-   - spec modeで `tasks.md` が無い場合は、独立に検証可能な振る舞いが複数あれば1タスク1振る舞いのvertical sliceへ分解し、それ以外はspec全体を `T-001` とする。ここでは会話内に保持し、`--dry-run` でなければPhase 2のworktree作成後に `tasks.md` へ書く
+   - spec modeで `tasks.md` が無い場合は、独立に検証可能な振る舞いが複数あれば1 task 1振る舞いのvertical sliceへ分解し、それ以外はspec全体を `T-001` とする。ここでは会話内に保持し、`--dry-run` でなければPhase 2のworktree作成後に `tasks.md` へ書く
    - doc modeでは同じ基準で会話内のキューを作り、Local specの `tasks.md` は作らない
-   - 各タスクの受け入れ基準とBoundary (specにBoundariesがある場合) を確認し、依存順 (Blocked by) に並べる
+   - 各taskの受け入れ基準とBoundary (specにBoundariesがある場合) を確認し、依存順 (Blocked by) に並べる
 5. `--pr` / `--no-pr` が未指定なら、ここでAskUserQuestionにより配送方法を確認する (使えない環境では選択肢をテキストで提示する)
-6. 実装方針とタスク一覧を**簡潔に**提示する。`--dry-run` はここで終了する。それ以外は確認を取らずPhase 2へ進む
+6. 実装方針とtask一覧を**簡潔に**提示する。`--dry-run` はここで終了する。それ以外は確認を取らずPhase 2へ進む
 
 ### Phase 2: worktreeの作成
 
@@ -64,55 +64,55 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
    - 新規の場合は `git worktree add -b <branch-name> <worktree-path> <base-branch>` (`<base-branch>` は最新のdefault branch)
    - 作成失敗時は中止してエラーを伝える
 5. 新規実行のspec modeでは、worktree作成成功後にPhase 1のtaskキューを `tasks.md` へ書き、先頭へ `Implementation Branch: <branch-name>`、末尾へ `## Implementation Notes` を置く。既存の `tasks.md` がある場合はtask内容を変えず、先頭の `Implementation Branch:` を設定する
-6. branch名・worktreeパス・base branch名を記録する (クリーンアップで使う)
+6. branch名、worktreeパス、base branch名を記録する (クリーンアップで使う)
 
 ### Phase 3: 実装
 
-実装はSubAgentで行う。SubAgent同士は直接やり取りできないため、受け渡しはすべてメイン会話が構造化ブロックをパースして仲介する。プロンプトはskill内のテンプレートにタスク文脈を合成して作る。
+実装はSubAgentで行う。SubAgent同士は直接やり取りできないため、受け渡しはすべてメイン会話が構造化ブロックをパースして仲介する。プロンプトはskill内のテンプレートにtask文脈を合成して作る。
 SubAgentは毎回新規に起動し、差し戻し時も前回のSubAgentを継続しない。失敗した試行の履歴はプロンプトに含めず、`REMEDIATION` など修正に必要な情報だけを渡す。
 
-- **implementer** ([templates/implementer-prompt.md](templates/implementer-prompt.md)): 1タスクの実装と検証を担い、`## Status Report` を返す
-- **reviewer** ([templates/reviewer-prompt.md](templates/reviewer-prompt.md)): 実装を敵対的に検証し (受け入れ基準・TDDのRED証跡・boundary violationを含む)、`## Review Verdict` を返す
+- **implementer** ([templates/implementer-prompt.md](templates/implementer-prompt.md)): 1 taskの実装と検証を担い、`## Status Report` を返す
+- **reviewer** ([templates/reviewer-prompt.md](templates/reviewer-prompt.md)): 実装を敵対的に検証し (受け入れ基準、TDDのRED証跡、boundary violationを含む)、`## Review Verdict` を返す
 
-SubAgentのmodel選択は、環境のグローバル指示 (CLAUDE.md, AGENTS.md等) のモデル指針を最優先する。指針が無ければメイン会話と同等のモデルをデフォルトとし、定型的・機械的な作業に限りimplementerに軽量モデルを指定してよい。reviewerにはimplementerと同等以上のモデルを使う。
+SubAgentのmodel選択は、環境のグローバル指示 (CLAUDE.md, AGENTS.md等) のモデル指針を最優先する。指針が無ければメイン会話と同等のモデルをデフォルトとし、定型的で機械的な作業に限りimplementerに軽量モデルを指定してよい。reviewerにはimplementerと同等以上のモデルを使う。
 
 実装を始める前に、リポジトリから正規の検証コマンドを洗い出し、`TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` として保持する。探索順はmanifest類 → タスクランナー → CI設定 → README。リポジトリの自動化が既に使っているコマンドを優先する。
 
 Phase 3の間の制約:
 
 - ループ内で `git reset --hard` 等の破壊的リセットを行わない
-- push・PR作成はPhase 4まで行わない。commitはtask承認ごとにメイン会話が行う (Phase 3.1)。SubAgentにはcommitさせない
-- SubAgentの完了主張を検証の代わりにしない。判定は構造化フィールドと、reviewer・最終検証の実行結果だけで行う
+- pushとPR作成はPhase 4まで行わない。commitはtask承認ごとにメイン会話が行う (Phase 3.1)。SubAgentにはcommitさせない
+- SubAgentの完了主張を検証の代わりにしない。判定は構造化フィールドと、reviewerと最終検証の実行結果だけで行う
 
-#### Phase 3.1: タスクごとのイテレーション
+#### Phase 3.1: taskごとのイテレーション
 
-タスクキューの順に、**1タスク = 1イテレーション**で直列に処理する (`Blocked by` は順序の決定にだけ使い、並列実行しない)。複数タスクを1つのSubAgentにまとめて渡さない。
+taskキューの順に、**1 task = 1イテレーション**で直列に処理する (`Blocked by` は順序の決定にだけ使い、並列実行しない)。複数taskを1つのSubAgentにまとめて渡さない。
 
 1. **task statusの更新**: 着手時に `tasks.md` の該当taskを `Status: in-progress` へ更新する (spec modeのみ。メインrepo側のパスで)
 2. **implementerの起動**: テンプレートに以下を合成して起動する
    - worktreeの絶対パス、base branch名と作業branch名
-   - specのタイトル・本文の要約と、**contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)**
-   - 担当タスクの説明・受け入れ基準・Boundary、Phase 1で決めた実装方針
-   - タスクに関係する検証コマンド
+   - specのタイトルと本文の要約と、**contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)**
+   - 担当taskの説明、受け入れ基準、Boundary、Phase 1で決めた実装方針
+   - taskに関係する検証コマンド
    - これまでのImplementation Notes (あれば)
-3. **STATUSの処理**: `## Status Report` の `- STATUS:` フィールドだけをパースする。構造化値が無い・曖昧な場合は1回だけ再要求する
+3. **STATUSの処理**: `## Status Report` の `- STATUS:` フィールドだけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
    - `READY_FOR_REVIEW` → 4へ進む
    - `NEEDS_CONTEXT` → `MISSING` の不足情報を用意して1回だけ再起動する。解決しなければ中止し、Phase 1と同じ形式でユーザーに質問する
    - `BLOCKED` → 中止し、`BLOCKER` と `BLOCKER_REMEDIATION` を報告する
-4. **reviewerの起動**: テンプレートに、タスク文脈・contract・検証コマンド・implementerのStatus Report (参照用) を合成して起動する
+4. **reviewerの起動**: テンプレートに、task文脈、contract、検証コマンド、implementerのStatus Report (参照用) を合成して起動する
 5. **VERDICTの処理**: `## Review Verdict` の `- VERDICT:` フィールドだけをパースする
-   - `APPROVED` → タスク完了。**先にworktree内でそのtaskの変更をcommitし** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)、成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。commit対象の差分が無い場合は、前回実行でcommit済みとみなしてstatus更新だけを行う。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。その後、次のタスクへ進む
-   - `REJECTED` → `REMEDIATION` と `FINDINGS` を添えてimplementerを再起動する。同一タスクの差し戻しは**最大2周**とし、2周後もREJECTEDなら中止して未解決の指摘を報告する
-6. **知見の伝播**: タスク横断で有用な発見は、`tasks.md` 末尾の `## Implementation Notes` へ1行で永続化し、以降のimplementerのプロンプトに含める
+   - `APPROVED` → task完了。**先にworktree内でそのtaskの変更をcommitし** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)、成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。commit対象の差分が無い場合は、前回実行でcommit済みとみなしてstatus更新だけを行う。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。その後、次のtaskへ進む
+   - `REJECTED` → `REMEDIATION` と `FINDINGS` を添えてimplementerを再起動する。同一taskの差し戻しは**最大2周**とし、2周後もREJECTEDなら中止して未解決の指摘を報告する
+6. **知見の伝播**: task横断で有用な発見は、`tasks.md` 末尾の `## Implementation Notes` へ1行で永続化し、以降のimplementerのプロンプトに含める
 
-中断後に再実行された場合は、Phase 1のキュー構築が完了taskをスキップするため、未完了タスクから再開される。
+中断後に再実行された場合は、Phase 1のキュー構築が完了taskをスキップするため、未完了taskから再開される。
 
 #### Phase 3.2: 最終検証とcontract照合
 
-全タスク完了後、次の3つを行う。
+全task完了後、次の3つを行う。
 
-1. **検証コマンドの実行**: SubAgentに検証コマンド全体の実行を依頼し、コマンド・exit code・失敗内容を報告させる。検証コマンドが見つからないリポジトリではスキップし、その事実をPhase 5に含める
-2. **Acceptance Criteriaの照合**: specのAcceptance CriteriaとtaskキューのAcceptance Criteriaを1件ずつ、実装と検証結果に照合する。各criterionについて、それを満たす変更・テスト・実行結果を特定して充足を判定する (SubAgentに依頼してよい)。specにAcceptance Criteriaが無いdoc modeでも、taskキューのAcceptance Criteriaは照合する
+1. **検証コマンドの実行**: SubAgentに検証コマンド全体の実行を依頼し、コマンド、exit code、失敗内容を報告させる。検証コマンドが見つからないリポジトリではスキップし、その事実をPhase 5に含める
+2. **Acceptance Criteriaの照合**: specのAcceptance CriteriaとtaskキューのAcceptance Criteriaを1件ずつ、実装と検証結果に照合する。各criterionについて、それを満たす変更、テスト、実行結果を特定して充足を判定する (SubAgentに依頼してよい)。specにAcceptance Criteriaが無いdoc modeでも、taskキューのAcceptance Criteriaは照合する
 3. **contract境界の照合**: branch全体の変更 (`git diff <base>..HEAD`) がspecのBoundaries (Owns / Does Not Own) とOut of Scopeに収まっているかを照合する (SubAgentに依頼してよい)。specにBoundariesもOut of Scopeも無い場合はスキップする
 
 - 検証コマンドがすべて成功し、全ACが充足し、boundary違反が無い → Phase 4へ進む
@@ -120,16 +120,16 @@ Phase 3の間の制約:
 
 ### Phase 4: commitと配送 (git-commit / github-pr-create に連結)
 
-メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。commit message・PR本文などの外部向け出力には、`.mjun/` 配下のパスや内部spec文書を含めない (外部へ見せるspecの参照はGitHub Issue番号だけを使う)。
+メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。commit messageやPR本文などの外部向け出力には、`.mjun/` 配下のパスや内部spec文書を含めない (外部へ見せるspecの参照はGitHub Issue番号だけを使う)。
 
 1. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正など)。残変更が無ければスキップする
 2. **`--no-pr` の場合**: ここで配送を終える。Phase 5へ進む
 3. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
    - Phase 1で決めた出力言語を `language` として渡す
    - **specが `Source: #N` を持つ場合はそのIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。純Local specでは渡さない (specは内部文書であり、PR本文で言及しない。Contract reviewには `github-pr-review` の `--spec` を使う)
-   - push・PRタイトルと本文の生成・PR作成はすべて連結先skillが行う。手順を再実装しない
+   - push、PRタイトルと本文の生成、PR作成はすべて連結先skillが行う。手順を再実装しない
 4. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
-5. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合・逆引き・一覧の対象から外れる
+5. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
 
 ### Phase 5: 結果の表示
 
@@ -137,7 +137,7 @@ Phase 3の間の制約:
 - **Branch**: 作成したbranch名
 - **PR**: 作成したPRのURL (`--no-pr` の場合は「PRなし。branch `<name>` に成果があります」)
 - **変更概要**: ファイル数、追加/削除行数 (`git diff --stat <base>..HEAD`)
-- **タスク進捗**: 完了タスク数と、スキップした完了済みタスク数 (resume時)
+- **task進捗**: 完了task数と、スキップした完了済みtask数 (resume時)
 - **AC coverage**: Acceptance Criteriaの充足状況 (充足数 / 総数と、各criterionの判定)
 
 ### Phase 6: worktreeクリーンアップ
