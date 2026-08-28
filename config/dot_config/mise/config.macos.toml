@@ -89,5 +89,9 @@ run_at_load = true
 kickstart = true
 
 [tasks.no-sleep-mac]
-description = "No Sleep Mode for macOS"
-run = "caffeinate -dims"
+description = "No Sleep Mode for macOS (runs in background)"
+run = "nohup caffeinate -dims >/dev/null 2>&1 &"
+
+[tasks.no-sleep-mac-stop]
+description = "Stop No Sleep Mode for macOS"
+run = "pkill -f 'caffeinate -dims'"
