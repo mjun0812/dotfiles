@@ -92,6 +92,7 @@ opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = "latest"
 "npm:@github/copilot" = "latest"
 "npm:@xai-official/grok" = "latest"
+apm = "latest"
 
 # Python CLI tools
 "pipx:ruff" = "latest"
