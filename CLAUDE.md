@@ -15,6 +15,7 @@ macOS / Linux 向けのdotfiles。`install.sh` がリポジトリ内のファイ
 # 個別セットアップ (install.shから呼ばれる。対象部分だけ再実行したいとき)
 zsh script/setup/setup_claude_code.sh   # Claude Code設定のsymlink・plugin
 zsh script/setup/setup_codex.sh         # Codex設定 (config.tomlはキー単位マージ、他はsymlink)
+bash script/setup/setup_herdr.sh        # herdr integration・skill生成・plugin link (miseのpostinstallからも呼ばれる)
 script/setup/update_completions.sh      # zsh補完の更新
 
 # ローカルのapp設定 (macOS app defaults・VSCode拡張リスト) をリポジトリへ逆同期
