@@ -26,6 +26,9 @@ return {
         quickfix = true,
       }
 
+      -- NVIM_TS_AUTO_INSTALL=0 でparserの自動installを無効化 (オフライン環境向け)
+      local auto_install_enabled = vim.env.NVIM_TS_AUTO_INSTALL ~= "0"
+
       local ensure_installed = require("config.treesitter-langs")
 
       local supported_languages = {}
@@ -86,9 +89,11 @@ return {
       end
 
       -- ensure_installed のパーサーを自動インストール
-      for _, lang in ipairs(ensure_installed) do
-        if supported_languages[lang] and not has_parser(0, lang) then
-          pcall(ts.install, { lang }, { summary = false })
+      if auto_install_enabled then
+        for _, lang in ipairs(ensure_installed) do
+          if supported_languages[lang] and not has_parser(0, lang) then
+            pcall(ts.install, { lang }, { summary = false })
+          end
         end
       end
 
@@ -109,7 +114,7 @@ return {
           end
           if has_parser(args.buf, lang) then
             attach(args.buf, lang)
-          else
+          elseif auto_install_enabled then
             auto_install(args.buf, lang)
           end
         end,
