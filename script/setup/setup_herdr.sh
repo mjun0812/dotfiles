@@ -20,9 +20,11 @@ DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 herdr integration install claude
 herdr integration install codex
 
-# pane title に pane ID を表示する plugin を link する (link は冪等)。
+# dotfiles 管理の herdr plugin をすべて link する (link は冪等)。
 # 実体は config/dot_config/herdr/plugins/ にあり、編集はそのまま反映される。
-herdr plugin link "$DOTPATH/config/dot_config/herdr/plugins/pane-id-title"
+for plugin in "$DOTPATH"/config/dot_config/herdr/plugins/*/; do
+    herdr plugin link "${plugin%/}"
+done
 
 # skill はバイナリ同梱版 (インストール済みバージョンと一致) を dotfiles 側に
 # 生成する。herdr の更新で内容が変わると git diff に現れるので commit する。
