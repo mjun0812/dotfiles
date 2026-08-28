@@ -1,3 +1,6 @@
+local notebook_profile = vim.env.NVIM_NOTEBOOK or "none"
+local notebook_images = vim.env.NVIM_NOTEBOOK_IMAGES ~= "0"
+
 return {
     "folke/snacks.nvim",
     lazy = false,
@@ -7,6 +10,10 @@ return {
             animate = {
                 enabled = false,
             },
+        },
+        image = {
+            enabled = notebook_images
+                and (notebook_profile == "ipynb" or notebook_profile == "all"),
         },
         terminal = { enabled = true },
         win = { enabled = true },

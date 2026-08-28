@@ -22,6 +22,9 @@ The configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) as the pl
 | [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Syntax highlighting                  |
 | [copilot.vim](https://github.com/github/copilot.vim)                  | GitHub Copilot                       |
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)          | Status line                          |
+| [ipynb.nvim](https://github.com/ajbucci/ipynb.nvim)                   | Direct `.ipynb` notebook editor      |
+| [molten-nvim](https://github.com/benlubas/molten-nvim)                | Jupyter kernel runner                |
+| [jupytext.nvim](https://github.com/goerz/jupytext.nvim)               | Notebook/plaintext conversion        |
 
 ## Keyboard Shortcuts
 
@@ -120,6 +123,18 @@ Auto-format on save is enabled when the language server supports formatting.
 | `<leader>av` | Visual                        | Send visual selection (`{selection}`) |
 | `<leader>ap` | Normal/Visual                 | Select prompt                         |
 | `<leader>ac` | Normal                        | Toggle Claude CLI                     |
+
+## Jupyter Notebooks
+
+Euporie, ipynb.nvim, and Jupytext + Molten are documented in
+[notebooks.md](notebooks.md). Use the dedicated launch commands so the two
+Neovim `.ipynb` handlers are never enabled together:
+
+```bash
+euporie-nb notebook.ipynb
+nvim-ipynb notebook.ipynb
+nvim-molten notebook.ipynb
+```
 
 ## Commands
 

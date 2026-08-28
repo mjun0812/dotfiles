@@ -77,19 +77,9 @@ zsh -i -c exit
 # install powerlevel10k gitstatusd
 sh "$HOME/.local/share/sheldon/repos/github.com/romkatv/powerlevel10k/gitstatus/install"
 
-################ [Neovim] ################
-log_section "Setting up Neovim plugins..."
-nvim --headless "+Lazy! restore" +qa
-nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa
-nvim --headless -c "lua require('config.mason-preinstall')()" +qa
-
-################ [Node] ################
-log_section "Setting up Vite plus..."
-$DOTPATH/script/setup/install_vp.sh || echo "vp install/upgrade failed (ignored)"
-
 ################ [Python] ################
 log_section "Setting up Python..."
-cd $HOME
+cd "$HOME"
 uv venv --allow-existing
 uv pip install -U \
     pip \
@@ -98,9 +88,25 @@ uv pip install -U \
     pymupdf \
     pynvim \
     PyYAML \
-    'python-lsp-server[all]'
+    'python-lsp-server[all]' \
+    jupyter-client \
+    jupytext \
+    nbformat \
+    ipykernel \
+    pillow
 
-cd $DOTPATH
+cd "$DOTPATH"
+
+################ [Neovim] ################
+log_section "Setting up Neovim plugins..."
+NVIM_NOTEBOOK=all NVIM_NOTEBOOK_IMAGES=0 nvim --headless "+Lazy! restore" +qa
+NVIM_NOTEBOOK=molten NVIM_NOTEBOOK_IMAGES=0 nvim --headless "+UpdateRemotePlugins" +qa
+nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa
+nvim --headless -c "lua require('config.mason-preinstall')()" +qa
+
+################ [Node] ################
+log_section "Setting up Vite plus..."
+$DOTPATH/script/setup/install_vp.sh || echo "vp install/upgrade failed (ignored)"
 
 ################ [VSCode] ################
 log_section "Setting up VSCode..."

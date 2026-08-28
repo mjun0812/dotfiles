@@ -31,6 +31,8 @@ require("lazy").setup({
         { import = "plugins.image" },
         { import = "plugins.lualine" },
         { import = "plugins.mason" },
+        { import = "plugins.notebook-ipynb" },
+        { import = "plugins.notebook-molten" },
         { import = "plugins.sidekick" },
         { import = "plugins.snacks" },
         { import = "plugins.telescope" },
