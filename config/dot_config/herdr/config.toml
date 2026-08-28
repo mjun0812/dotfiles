@@ -245,6 +245,11 @@ show_agent_labels_on_pane_borders = true
 # row_gap = 0
 # rows = [["state_icon", "workspace"], ["branch", "git_status"]]
 
+# $number は workspace-number plugin (config/dot_config/herdr/plugins/) が報告する
+# prefix+shift+1..9 のジャンプ番号。
+[ui.sidebar.spaces]
+rows = [["state_icon", { token = "$number", dim = true }, "workspace"], ["branch", "git_status"]]
+
 # Accent color for highlights, borders, and navigation UI.
 # Accepts: hex (#89b4fa), named colors (cyan, blue, magenta), or rgb(r,g,b)
 # accent = "cyan"

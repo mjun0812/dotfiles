@@ -1,0 +1,25 @@
+id = "workspace-number"
+name = "Workspace number"
+version = "0.1.0"
+min_herdr_version = "0.8.2"
+description = "Expose each workspace's jump number as the $number sidebar token"
+platforms = ["macos", "linux"]
+
+[[startup]]
+command = ["./sync.sh"]
+
+[[events]]
+on = "workspace.created"
+command = ["./sync.sh"]
+
+[[events]]
+on = "workspace.closed"
+command = ["./sync.sh"]
+
+[[events]]
+on = "workspace.moved"
+command = ["./sync.sh"]
+
+[[events]]
+on = "workspace.reordered"
+command = ["./sync.sh"]
