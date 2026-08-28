@@ -4,7 +4,8 @@ set -euo pipefail
 # setup_herdr.sh
 #
 # herdr の agent-state hook スクリプトを Claude Code / Codex に設置し、
-# バイナリ同梱の agent skill を dotfiles に取り込む。
+# バイナリ同梱の agent skill を dotfiles に取り込み、
+# dotfiles 管理の herdr plugin を link する。
 # mise の postinstall (config/dot_config/mise/config.toml) から herdr の
 # install / upgrade 時に呼ばれる。手動で再実行してもよい。
 #
@@ -18,6 +19,10 @@ DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 
 herdr integration install claude
 herdr integration install codex
+
+# pane title に pane ID を表示する plugin を link する (link は冪等)。
+# 実体は config/dot_config/herdr/plugins/ にあり、編集はそのまま反映される。
+herdr plugin link "$DOTPATH/config/dot_config/herdr/plugins/pane-id-title"
 
 # skill はバイナリ同梱版 (インストール済みバージョンと一致) を dotfiles 側に
 # 生成する。herdr の更新で内容が変わると git diff に現れるので commit する。

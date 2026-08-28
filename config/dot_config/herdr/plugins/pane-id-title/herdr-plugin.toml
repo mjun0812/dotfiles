@@ -1,0 +1,25 @@
+id = "pane-id-title"
+name = "Pane ID title"
+version = "0.1.0"
+min_herdr_version = "0.8.2"
+description = "Show each pane's public ID (and agent kind) in its pane title"
+platforms = ["macos", "linux"]
+
+[[startup]]
+command = ["./sync.sh"]
+
+[[events]]
+on = "pane.created"
+command = ["./sync.sh"]
+
+[[events]]
+on = "pane.moved"
+command = ["./sync.sh"]
+
+[[events]]
+on = "pane.agent_detected"
+command = ["./sync.sh"]
+
+[[events]]
+on = "pane.agent_status_changed"
+command = ["./sync.sh"]
