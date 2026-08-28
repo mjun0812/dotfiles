@@ -159,6 +159,12 @@ zsh "$DOTPATH/script/setup/setup_claude_code.sh"
 log_section "Setting up Codex..."
 zsh "$DOTPATH/script/setup/setup_codex.sh"
 
+################ [herdr] ################
+# mise の postinstall でも実行されるが、herdr がインストール済みの環境では走らないため
+# ここでも実行する。Claude Code / Codex の設定 symlink を前提にするので、その後に置く。
+log_section "Setting up herdr..."
+bash "$DOTPATH/script/setup/setup_herdr.sh"
+
 ################ [Antigravity CLI] ################
 log_section "Setting up Antigravity CLI..."
 # Purge dangling symlinks (left after their sources were removed); they make the backup cp -L fail
