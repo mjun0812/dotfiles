@@ -12,7 +12,6 @@ uv = "latest"
 
 # Shell & CLI utilities
 dust = "latest"
-"cargo:eza" = "latest"
 jq = "latest"
 starship = "latest"
 tmux = "latest"
