@@ -32,7 +32,6 @@ require("lazy").setup({
         { import = "plugins.mason" },
         { import = "plugins.notebook-ipynb" },
         { import = "plugins.notebook-molten" },
-        { import = "plugins.sidekick" },
         { import = "plugins.snacks" },
         { import = "plugins.snacks-explorer" },
         { import = "plugins.telescope" },

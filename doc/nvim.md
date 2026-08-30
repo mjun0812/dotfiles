@@ -16,7 +16,6 @@ The configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) as the pl
 | [trouble.nvim](https://github.com/folke/trouble.nvim)                 | Diagnostics and quickfix list                       |
 | [which-key.nvim](https://github.com/folke/which-key.nvim)             | Keybinding help                                     |
 | [mini.pairs](https://github.com/echasnovski/mini.pairs)               | Auto pairs                                          |
-| [sidekick.nvim](https://github.com/folke/sidekick.nvim)               | AI CLI integration                                  |
 | [mason.nvim](https://github.com/williamboman/mason.nvim)              | LSP server management                               |
 | [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Syntax highlighting                                 |
 | [copilot.vim](https://github.com/github/copilot.vim)                  | GitHub Copilot                                      |
@@ -125,21 +124,6 @@ Auto-format on save is enabled when the language server supports formatting.
 | Key         | Mode   | Description               |
 | ----------- | ------ | ------------------------- |
 | `<leader>?` | Normal | Show buffer local keymaps |
-
-### AI Integration (Sidekick)
-
-| Key          | Mode                          | Description                           |
-| ------------ | ----------------------------- | ------------------------------------- |
-| `<Tab>`      | Normal                        | Jump to / apply next edit suggestion  |
-| `<C-.>`      | Normal/Terminal/Insert/Visual | Toggle Sidekick                       |
-| `<leader>aa` | Normal                        | Toggle Sidekick CLI                   |
-| `<leader>as` | Normal                        | Select CLI tool                       |
-| `<leader>ad` | Normal                        | Detach CLI session                    |
-| `<leader>at` | Normal/Visual                 | Send current code (`{this}`)          |
-| `<leader>af` | Normal                        | Send current file (`{file}`)          |
-| `<leader>av` | Visual                        | Send visual selection (`{selection}`) |
-| `<leader>ap` | Normal/Visual                 | Select prompt                         |
-| `<leader>ac` | Normal                        | Toggle Claude CLI                     |
 
 ## Jupyter Notebooks
 
