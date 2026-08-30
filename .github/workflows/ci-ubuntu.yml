@@ -9,7 +9,7 @@ on:
 
 jobs:
   test-ubuntu:
-    name: Test on Ubuntu (Container)
+    name: Test on Ubuntu
     runs-on: ubuntu-latest
     timeout-minutes: 45
     container:

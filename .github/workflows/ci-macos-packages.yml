@@ -9,7 +9,7 @@ on:
 
 jobs:
   test-macos-packages:
-    name: Test macOS packages (${{ matrix.manager }})
+    name: Test macOS packages
     runs-on: macos-latest
     timeout-minutes: 45
     strategy:
