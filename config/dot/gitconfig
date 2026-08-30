@@ -86,6 +86,8 @@
   dark = true
   side-by-side = true
   line-numbers = true
+  hunk-header-style = line-number omit-code-fragment
+  syntax-theme = tokyonight_night
 
 [include]
   path = ~/.gitconfig.local
