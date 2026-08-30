@@ -89,13 +89,13 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 
 ### Misc
 
-| Skill                                                                          | 用途                                                                                                                                          |
-| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`agent-browser`](../config/ai-agents/skills/agent-browser/SKILL.md)           | `agent-browser` CLIによるブラウザ自動化 (upstreamのstubをvendor。使い方は `agent-browser skills get core` で実行時に読み込む)                 |
-| [`herdr`](../config/ai-agents/skills/herdr/SKILL.md)                           | herdr管理下のpaneからherdrのpane/tab/workspaceを操作する (バイナリ同梱版を `herdr --skill` でvendor。herdr更新時に `setup_herdr.sh` が再生成) |
-| [`resume-other-agent`](../config/ai-agents/skills/resume-other-agent/SKILL.md) | 別のcoding agent（Codex / Claude Code）をsession IDで指定し、直前のcontextを復元してresumeする                                                |
-| [`skill-review`](../config/ai-agents/skills/skill-review/SKILL.md)             | Agent skillの仕様適合性を検証し、周辺skillとの発動競合を含む観点ごとの判定をレポートする。評価のみで編集はしない                              |
-| [`wezterm-control`](../config/ai-agents/skills/wezterm-control/SKILL.md)       | weztermのpane/tab/windowを `wezterm cli` で操作する。分割・フォーカス・リサイズ・内容の読み取り・コマンド送信と結果検証                       |
+| Skill                                                                          | 用途                                                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`agent-browser`](../config/ai-agents/skills/agent-browser/SKILL.md)           | `agent-browser` CLIによるブラウザ自動化 (upstreamのstubをvendor。使い方は `agent-browser skills get core` で実行時に読み込む)                                                                                         |
+| [`herdr`](../config/ai-agents/skills/herdr/SKILL.md)                           | herdr管理下のpaneからherdrのpane/tab/workspaceを操作する (バイナリ同梱版を `herdr --skill` でvendor。herdr更新時に `setup_herdr.sh` が再生成)                                                                         |
+| [`resume-other-agent`](../config/ai-agents/skills/resume-other-agent/SKILL.md) | 別のcoding agent（Codex / Claude Code）をsession IDで指定し、直前のcontextを復元してresumeする                                                                                                                        |
+| [`skill-review`](../config/ai-agents/skills/skill-review/SKILL.md)             | Agent skillの仕様適合性を検証し、周辺skillとの発動競合や旧基準の痕跡を含む観点ごとの判定をレポートする。レビュー後の修正から新しい基準の候補を拾い、採用されたら自身の基準とCHANGELOGへ追記する。評価対象は編集しない |
+| [`wezterm-control`](../config/ai-agents/skills/wezterm-control/SKILL.md)       | weztermのpane/tab/windowを `wezterm cli` で操作する。分割・フォーカス・リサイズ・内容の読み取り・コマンド送信と結果検証                                                                                               |
 
 ## Dependencies
 
