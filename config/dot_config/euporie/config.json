@@ -8,12 +8,41 @@
   "language_servers": {
     "pylsp": {}
   },
+  "show_hidden_files": true,
+  "always_show_tab_bar": true,
+  "show_file_icons": true,
+  "show_shadows": false,
   "notebook": {
+    "show_side_bar": true,
+    "side_bar_panel_index": null,
+    "expand": true,
     "external_editor": "nvim",
     "show_cell_borders": true,
     "line_numbers": true,
-    "relative_line_numbers": true,
-    "autoformat": false,
+    "relative_line_numbers": false,
+    "autoformat": true,
     "run_after_external_edit": false
+  },
+  "formatters": [
+    {
+      "command": ["ruff", "format", "-"],
+      "languages": ["python"]
+    }
+  ],
+  "key_bindings": {
+    "euporie.notebook.app:NotebookApp": {
+      "toggle-side-bar-pane": "c-e"
+    },
+    "euporie.notebook.tabs.notebook:Notebook": {
+      "run-selected-cells": "c-enter",
+      "run-and-select-next": ["s-enter", "c-j"],
+      "undelete-cells": ["u", "z"]
+    },
+    "euporie.core.app.app:BaseApp": {
+      "show-command-palette": "c-p",
+      "find": "c-f",
+      "find-next": ["f3", "c-g"],
+      "find-previous": "s-f3"
+    }
   }
 }
