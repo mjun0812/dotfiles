@@ -22,7 +22,7 @@ script/setup/update_completions.sh      # zsh補完の更新
 ./update.sh
 
 # フォーマット (pre-commit hookでも実行される)
-prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt
+prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt + stylua (lua)
 
 # VSCode拡張をextensions.txtと完全同期 (--dry-runで差分確認)
 script/tools/sync_vscode_extensions.sh --dry-run

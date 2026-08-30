@@ -26,6 +26,7 @@ jobs:
             prek = "latest"
             gitleaks = "latest"
             shfmt = "latest"
+            stylua = "latest"
             node = "latest"
             "npm:oxfmt" = "latest"
 

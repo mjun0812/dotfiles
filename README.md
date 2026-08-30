@@ -118,6 +118,7 @@ It dumps the settings and shows the resulting `git status`; review and commit th
 | shellcheck  | Shell script linter                    |
 | shfmt       | Shell script formatter                 |
 | starship    | Cross-shell prompt                     |
+| stylua      | Lua formatter                          |
 | tex-fmt     | LaTeX formatter                        |
 | tmux        | Terminal multiplexer                   |
 | tree-sitter | Parser generator tool                  |
