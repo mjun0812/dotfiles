@@ -13,7 +13,7 @@ targets:
 dependencies:
   apm:
     - git: mjun0812/skills
-      ref: v0.4.0
+      ref: main
       skills:
         - claude
         - codex

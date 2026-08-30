@@ -82,6 +82,22 @@ To sync local app settings (macOS app defaults and the VS Code extension list) b
 
 It dumps the settings and shows the resulting `git status`; review and commit the diff yourself. iTerm2 is not part of the dump: it reads and writes its settings directly in `config/mac/iterm2/` via its custom preferences folder feature.
 
+### Agent Skills / Agents (apm)
+
+The shared agent skills and the code-reviewer agents are not managed in this repository. They are subscribed from [mjun0812/skills](https://github.com/mjun0812/skills) via [apm](https://github.com/microsoft/apm); the subscription is declared in `config/ai-agents/apm.yml` (symlinked to `~/.apm/apm.yml` by `install.sh`) and tracks the `main` branch.
+
+```bash
+# Follow updates after mjun0812/skills changes
+apm update -g
+
+# Fresh machine: install.sh creates the symlink, then
+apm install -g
+```
+
+`apm update -g` re-resolves `main`, deploys the changed skills/agents, and removes deleted ones automatically (lockfile-based cleanup). Since the subscription tracks a branch, `config/ai-agents/apm.yml` does not change on updates — there is usually nothing to commit here.
+
+Private skills (`mjun-*`, `herdr`, `self-review`, `agent-browser`) still live in `config/ai-agents/skills/` and are symlinked by `install.sh`.
+
 ## Tools
 
 | Name   | Description     |
