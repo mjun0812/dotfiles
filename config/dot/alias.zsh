@@ -110,3 +110,9 @@ alias agy-commit-ja='command agy \
     -p "cd $(pwd) && git-commit skillを使って日本語でコミットしてください。"'
 alias gemini-commit='agy-commit'
 alias gemini-commit-ja='agy-commit-ja'
+
+# euporie
+# herdr内ではSGR-pixel mouseが壊れるので問い合わせを抑止したwrapper経由で起動する (herdrdev/herdr#3295)
+if [[ "$HERDR_ENV" == 1 ]]; then
+    alias euporie='"$HOME/.local/share/mise/installs/pipx-euporie/latest/euporie/bin/python" ~/.dotfiles/config/dot_config/euporie/euporie_nopixel.py'
+fi
