@@ -90,13 +90,13 @@ alias codex-commit='command codex exec \
     --dangerously-bypass-hook-trust \
     -m "${CODEX_COMMIT_MODEL}" \
     -c model_reasoning_effort=low \
-    "git-commit skillを使って英語でコミットしてください。"'
+    "git-commit skillを使って英語でコミットしてください。" 2>/dev/null'
 alias codex-commit-ja='command codex exec \
     --dangerously-bypass-approvals-and-sandbox \
     --dangerously-bypass-hook-trust \
     -m "${CODEX_COMMIT_MODEL}" \
     -c model_reasoning_effort=low \
-    "git-commit skillを使って日本語でコミットしてください。"'
+    "git-commit skillを使って日本語でコミットしてください。" 2>/dev/null'
 
 # Copilot-cli
 alias copilot-commit='copilot \
