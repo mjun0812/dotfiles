@@ -11,6 +11,8 @@ The configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) as the pl
 | [tokyonight.nvim](https://github.com/folke/tokyonight.nvim)                                   | Color scheme                                        |
 | [snacks.nvim](https://github.com/folke/snacks.nvim)                                           | Terminal, indent guides, window zoom, file explorer |
 | [blink.cmp](https://github.com/saghen/blink.cmp)                                              | Completion engine                                   |
+| [nvim-autopairs](https://github.com/windwp/nvim-autopairs)                                    | Auto pairs (incl. `"""` and ` ``` `)                |
+| [rainbow-delimiters.nvim](https://github.com/HiPhish/rainbow-delimiters.nvim)                 | Rainbow delimiters                                  |
 | [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)                            | Fuzzy finder                                        |
 | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)                                   | Git signs in gutter                                 |
 | [trouble.nvim](https://github.com/folke/trouble.nvim)                                         | Diagnostics and quickfix list                       |

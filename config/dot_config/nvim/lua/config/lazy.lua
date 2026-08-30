@@ -24,6 +24,7 @@ vim.g.maplocalleader = "\\"
 -- Setup lazy.nvim
 require("lazy").setup({
     spec = {
+        { import = "plugins.autopairs" },
         { import = "plugins.blink-cmp" },
         { import = "plugins.conform" },
         { import = "plugins.gitsigns" },
@@ -32,6 +33,7 @@ require("lazy").setup({
         { import = "plugins.mason" },
         { import = "plugins.notebook-ipynb" },
         { import = "plugins.notebook-molten" },
+        { import = "plugins.rainbow-delimiters" },
         { import = "plugins.snacks" },
         { import = "plugins.snacks-explorer" },
         { import = "plugins.telescope" },
