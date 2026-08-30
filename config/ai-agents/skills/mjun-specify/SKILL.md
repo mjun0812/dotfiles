@@ -8,7 +8,7 @@ description: >-
   仕様承認後にIssueへ記帳して、必要ならtask分解まで行う。
   ユーザーが「specを作って」「仕様を詰めて」「issueを磨いて」のように依頼したら使うこと。
   実装からPR作成まで進める依頼や、既にspecが承認済みの実装依頼には使わない。
-allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grill), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grill), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-to-tasks)
 ---
 
 # mjun-specify
@@ -22,6 +22,7 @@ GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影
 
 意思決定の判断材料に `mjun-grill` / `mjun-research` / `mjun-prototype` を、
 承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
+承認を求める前に、specを書いたメイン会話とは別のfresh contextのreviewer SubAgentがcontractを検査する (Phase 5.5)。
 
 ## Arguments
 
@@ -83,9 +84,31 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 4. 方針の問題が見つかった場合はPhase 4へ戻り、decisionを更新する
 5. **worktreeとbranchは、成功でも中断でも必ず削除する**: `git worktree remove --force <path>` → `git branch -D <branch>`。削除に失敗した場合はユーザーに警告する
 
+### Phase 5.5: contract review
+
+承認を求める前に、fresh contextのreviewer SubAgentにcontractを検査させる。メイン会話はPhase 2〜5で自分が下した判断に引きずられるため、検査は必ず別のcontextで行う。`--grill` 指定時も省略しない。
+
+promptは [templates/contract-reviewer-prompt.md](templates/contract-reviewer-prompt.md) に次を合成して作る。
+
+- repository rootの絶対パス (Evidenceの `file:line` を実際に読ませるため)
+- `spec.md` の全文。あれば `decisions.md` と `design.md` の全文
+- sourceの原文: Issueなら本文とコメント、Markdown取り込みなら元ファイルの内容、新規作成ならPhase 1の下書き素材
+- `.mjun/steering/*.md` のパス一覧 (あれば。reviewerが自分で読む)
+- Human-ownedとして人間が決めたdecisionの一覧 (D番号とタイトル)
+
+reviewerには読み取りだけを許可し、spec・decisions・design・コードを変更させない。
+
+`## Spec Review` の `- VERDICT:` フィールドだけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する。
+
+- `PASS` → Phase 6へ進む
+- `NEEDS_FIXES` → 各指摘を読み、contractの明文に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は `decisions.md` にentryを追記する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)
+- `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grill` の単一decisionモードで再解決してからPhase 6へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
+
+SubAgentが使えない環境では、同じテンプレートのチェックリストをメイン会話で順に実施し、その旨をPhase 9の報告に含める。
+
 ### Phase 6: contractの提示と承認
 
-- specのcontract全文と、変更点サマリ (追加または変更したセクションと理由)、要確認 (tentative) の一覧を提示する
+- specのcontract全文と、変更点サマリ (追加または変更したセクションと理由。Phase 5.5のreviewer指摘を反映した箇所はその旨を添える)、要確認 (tentative) の一覧を提示する
 - AskUserQuestionで「反映する / 修正して再提示 / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
 - 「反映する」の場合は `spec.md` のfrontmatterを `approval: approved` へ更新してからPhase 7へ進む
 - 「キャンセル」の場合は以降のPhaseへ進まず、作成または更新済みのLocal specを削除するか `approval: pending` のまま残すかを確認する
@@ -113,6 +136,7 @@ specの規模を判定する。
 
 - **Spec**: Local specのパス (`Source:` があればIssue番号とURLも)
 - **変更点サマリ**: 追加または変更したセクション
+- **Review**: Phase 5.5のVERDICTと、反映した指摘の件数 (Phase 4へ戻したdecisionがあればそのD番号。SubAgentが使えずメイン会話で実施した場合はその旨)
 - **要確認事項**: tentativeとして残したdecisionの一覧 (実装前に解消が必要)
-- **Tasks**: 分解した場合はtask数と一覧、単一taskならその旨
+- **Tasks**: 分解した場合はtask一覧 (各taskのBoundary、AC数、Done whenと、数の目安を超える分割候補の印)、単一taskならその旨。粒度が粗い、または細かいと感じた場合は `mjun-to-tasks` で再分解できる旨を添える (ここは承認ではなく、人間が粒度を目視する場所)
 - **次の一手**: `mjun-implement <source>` で実装を開始できる旨 (要確認が残る場合はその解消が先であることを添える)
