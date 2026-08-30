@@ -8,14 +8,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-macos-packages:
+  test-macos-brew-packages:
     name: Test macOS packages
     runs-on: macos-latest
     timeout-minutes: 45
-    strategy:
-      fail-fast: false
-      matrix:
-        manager: [brew, brew-cask]
     env:
       NONINTERACTIVE: "1"
       CI: "true"
@@ -33,14 +29,47 @@ jobs:
           cache: false
 
       - name: Apply mise bootstrap packages
-        run: mise bootstrap packages apply --manager "${{ matrix.manager }}" --yes
+        run: mise bootstrap packages apply --manager brew --yes
 
       - name: Re-apply mise bootstrap packages (idempotency)
-        run: mise bootstrap packages apply --manager "${{ matrix.manager }}" --yes
+        run: mise bootstrap packages apply --manager brew --yes
 
       - name: Verify mise bootstrap packages
         run: |
-          mise bootstrap packages status --json | jq -e --arg manager "${{ matrix.manager }}" '
+          mise bootstrap packages status --json | jq -e --arg manager brew '
+            .[$manager].available and
+            ([.[$manager].packages[].state | startswith("installed")] | all)
+          '
+
+  test-macos-brew-cask-packages:
+    name: Test macOS packages
+    runs-on: macos-latest
+    timeout-minutes: 45
+    env:
+      NONINTERACTIVE: "1"
+      CI: "true"
+      GITHUB_TOKEN: ${{ github.token }}
+      MISE_CONFIG_DIR: ${{ github.workspace }}/config/dot_config/mise
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install mise
+        uses: jdx/mise-action@v4
+        with:
+          install: false
+          cache: false
+
+      - name: Apply mise bootstrap packages
+        run: mise bootstrap packages apply --manager brew-cask --yes
+
+      - name: Re-apply mise bootstrap packages (idempotency)
+        run: mise bootstrap packages apply --manager brew-cask --yes
+
+      - name: Verify mise bootstrap packages
+        run: |
+          mise bootstrap packages status --json | jq -e --arg manager brew-cask '
             .[$manager].available and
             ([.[$manager].packages[].state | startswith("installed")] | all)
           '
