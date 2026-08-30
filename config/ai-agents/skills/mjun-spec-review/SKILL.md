@@ -30,7 +30,7 @@ specを、それを書いた会話とは別のfresh contextで敵対的に検査
    - **PR番号**: `gh pr view N --json body` で本文を取得し、`Closes #N` / `Fixes #N` / `Resolves #N` からIssue番号を取り出してIssue番号として解決する (複数あれば一覧を提示して選んでもらう)。無ければ中止し、PRから検査対象のspecを特定できないことを報告する。PRのコード差分は読まない
    - **doc mode** (`.mjun/specs/` 外のMarkdown): ファイル内の要求・制約・スコープの記述をcontract、実装方針の記述を実装設計として扱う。どちらかが無ければその軸を省略し、SUMMARYに含める
    - **conversation mode** (source未指定): 会話中の設計・計画を、要求・制約・スコープ (contract) と設計本文に分けて書き起こし、reviewerへの入力にする (SubAgentは会話を読めない)。素材が無ければ中止する
-   - 共通: `.mjun/steering/*.md` があればパス一覧を集める (reviewerとverifierが自分で読む)
+   - 共通: `.mjun/steering/*.md`、`.mjun/CONTEXT.md`、`.mjun/adr/*.md` があればパス一覧を集める (reviewerとverifierが自分で読む)
 3. `gh` が失敗した場合は中止し、エラーを報告する。パスは常にrepository rootからの絶対パスで渡す
 
 ### Phase 2: reviewerによる候補の発見
@@ -56,7 +56,7 @@ verdictが `confirmed` の候補だけを確定指摘とし、`refuted` と `unc
 - SOURCE: <mode と対象 (パス、Issue番号、PR番号)。conversation modeでは「会話中の設計」>
 - VERDICT: PASS | NEEDS_FIXES
 - FINDINGS:
-  1. [contract:<観点1〜7>] <セクション名> — 引用: "<該当箇所>" — 問題: <何が問題か> — 根拠: <contract / sourceの引用、file:line、steeringの引用> — 満たすべき状態: <修正方針ではなく、満たすべき状態>
+  1. [contract:<観点1〜7>] <セクション名> — 引用: "<該当箇所>" — 問題: <何が問題か> — 根拠: <contract / sourceの引用、file:line、steering / ADR / CONTEXT.mdの引用> — 満たすべき状態: <修正方針ではなく、満たすべき状態>
   2. [design:<観点1〜7>][<contract | boundary | structure>] <セクション名> — 引用: "<該当箇所>" — 問題: <何が問題か> — 根拠: <同上> — 満たすべき状態: <同上>
 - HUMAN_DECISION_CONFLICTS: <D-NNN と矛盾の内容。無ければ none>
 - SUMMARY: <1文の要約>

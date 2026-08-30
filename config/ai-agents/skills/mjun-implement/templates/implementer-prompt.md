@@ -10,6 +10,7 @@
 - base branch名と作業branch名
 - spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope。specにある場合)
 - 実装設計 (`design.md`: Modules / Interfaces & Seams / Data Flow / Test Seams / Change Outline。Local specの場合)
+- 関係するADR (決定記録。あれば。決定に反する実装をしない)
 - verifierの `TASK_BRIEF`、`CHECK_FILES` (変更禁止)、`CHECK_COMMANDS`
 - 担当タスクの説明・Boundary・Done when (完了時に観察できること)・Seam、親が決めた実装方針
 - 親が洗い出した検証コマンドのうちタスクに関係するもの

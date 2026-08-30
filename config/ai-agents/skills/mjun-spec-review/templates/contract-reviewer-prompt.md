@@ -11,7 +11,7 @@
 - あれば実装設計 (design.mdの全文、Issue本文の `## Design Notes`、または設計本文)
 - あれば決定の経緯 (`decisions.md` の全文、またはIssue本文の `## Decision Log`)
 - あればsourceの原文 (Issue本文とコメント、取り込み元のMarkdown、または依頼の下書き素材)
-- steeringファイルのパス一覧 (あれば)
+- steering・`CONTEXT.md` (用語集)・ADR (決定記録) のパス一覧 (あれば)
 - 人間が決めたdecision (Human-owned) の一覧 (あれば)
 
 ## 原則
@@ -30,7 +30,7 @@
 3. **sourceとの乖離** (sourceの原文がある場合): sourceに無い要求の混入 (scope creep) と、sourceの要求の取りこぼし。Issueコメントで合意された事項が反映されているか
 4. **decisionsとの整合** (決定の経緯がある場合): 本文がacceptedな決定と食い違っていないか、supersededの決定内容が本文に残っていないか、tentativeの決定が本文で確定として書かれていないか
 5. **Evidenceの実在** (決定の経緯がある場合): Evidence (`file:line`、`research/` のパス) が実在し、主張を支えているか
-6. **steeringとの衝突** (steeringがある場合): steeringの規約と矛盾する決定が、衝突として明示されずに入っていないか
+6. **steering・ADR・用語集との衝突** (ある場合): steeringの規約や既存ADRと矛盾する決定が、衝突として明示されずに入っていないか。`CONTEXT.md` の定義と異なる意味で用語を使っていないか
 7. **実装設計との整合** (実装設計がある場合): Modules / Interfaces & SeamsがcontractのBoundariesと一致しているか
 
 ## Candidates
@@ -46,7 +46,7 @@
 - 深刻度: contract
 - 対象: <contractのセクション名> — 引用: "<該当箇所>"
 - 問題: <何が問題か>
-- 根拠: <contract / sourceの引用、file:line、steeringの引用>
+- 根拠: <contract / sourceの引用、file:line、steering / ADR / CONTEXT.mdの引用>
 - 満たすべき状態: <修正方針ではなく、満たすべき状態>
 - Human-owned decisionとの矛盾: <D-NNN、または none>
 ```

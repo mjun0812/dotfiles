@@ -28,7 +28,7 @@ sourceの形からmodeを決める。
 2. Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経て **spec mode**
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
-spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (いずれも必須)、あれば `decisions.md` と `tasks.md` をReadする。
+spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (いずれも必須)、あれば `decisions.md` と `tasks.md` をReadする。`.mjun/adr/*.md` (あれば) も読み、taskに関係するADRをSubAgentへ渡す (worktreeには `.mjun/` が無い)。
 
 ### Issue番号の逆引き
 
@@ -113,7 +113,7 @@ Phase 3の間の制約:
 taskキューの順に、taskごとに次を行ってからPhase 3.1へ進む。
 
 1. **task statusの更新**: `tasks.md` の該当taskを `Status: in-progress` へ更新する (spec modeのみ。メインrepo側のパスで)
-2. **verifierの起動**: テンプレートに、worktreeの絶対パス、contract、`design.md` の全文 (spec modeのみ)、担当task (説明、Acceptance Criteria、Boundary、Done when、Seam)、検証コマンド、Implementation Notesを合成して起動する
+2. **verifierの起動**: テンプレートに、worktreeの絶対パス、contract、`design.md` の全文 (spec modeのみ)、関係するADR (あれば)、担当task (説明、Acceptance Criteria、Boundary、Done when、Seam)、検証コマンド、Implementation Notesを合成して起動する
 3. **STATUSの処理**: `## Check Report` の `- STATUS:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
    - `CHECKS_READY` → `CHECK_COMMANDS` をworktreeで実行し (親が直接、またはSubAgentに実行を依頼して出力を受け取る)、**すべて失敗する**ことを確認する。通ってしまう検査があれば、その検査名を添えてverifierに1回だけ作り直させる。確認後、`CHECK_FILES` のハッシュを記録し、検査一覧 (Acceptance Criterion → コマンド) をユーザーに提示してPhase 3.1へ進む (承認は取らない。人間が「この検査が通れば完了」を見る場所)
    - `CANNOT_VERIFY` → 中止する。`MISSING` (どんな検証手段があれば検査にできるか) を報告し、Acceptance Criteriaを検査に落とせる形へ書き直す必要があることを伝える (`mjun-specify <source>` で磨き直す)
@@ -127,7 +127,7 @@ taskキューの順に、taskごとに次を行ってからPhase 3.1へ進む。
 1. **implementerの起動**: テンプレートに以下を合成して起動する
    - worktreeの絶対パス、base branch名と作業branch名
    - specのタイトルと本文の要約と、**contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)**
-   - `design.md` の全文 (spec modeのみ。実装設計)
+   - `design.md` の全文 (spec modeのみ。実装設計) と、関係するADR (あれば)
    - verifierの `TASK_BRIEF`、`CHECK_FILES` (変更禁止)、`CHECK_COMMANDS`
    - 担当taskの説明、Boundary、Done when、Seam、Phase 1で決めた実装方針
    - taskに関係する検証コマンド
@@ -137,7 +137,7 @@ taskキューの順に、taskごとに次を行ってからPhase 3.1へ進む。
    - `CHECK_DISPUTE` → 親が `DISPUTE` の主張を担当taskのAcceptance Criteriaと照らして裁定する。検査が誤っていればverifierに `DISPUTE` を渡して1回だけ作り直させ (RED確認とハッシュ更新を行う)、implementerを再起動する。検査が正しければ裁定理由を添えてimplementerを再起動する。裁定は同一taskで1回まで
    - `NEEDS_CONTEXT` → `MISSING` の不足情報を用意して1回だけ再起動する。解決しなければ中止し、Phase 1と同じ形式でユーザーに質問する
    - `BLOCKED` → Phase 3.1'のdebuggerへ進む
-3. **reviewerの起動**: テンプレートに、task文脈、contract、`design.md` の全文 (spec modeのみ)、`CHECK_COMMANDS`、`CHECK_FILES` と記録したハッシュ、検証コマンド、implementerのStatus Report (参照用)、周回 (`ROUND`) を合成して起動する。2周目以降は前回の `FINDINGS` と `REMEDIATION` も渡す (reviewerは前回指摘の解消を先に判定し、新規のREJECT根拠を検査の失敗・回帰・検査ファイルの改変・実在性・Boundary違反に限る)
+3. **reviewerの起動**: テンプレートに、task文脈、contract、`design.md` の全文 (spec modeのみ)、関係するADR (あれば)、`CHECK_COMMANDS`、`CHECK_FILES` と記録したハッシュ、検証コマンド、implementerのStatus Report (参照用)、周回 (`ROUND`) を合成して起動する。2周目以降は前回の `FINDINGS` と `REMEDIATION` も渡す (reviewerは前回指摘の解消を先に判定し、新規のREJECT根拠を検査の失敗・回帰・検査ファイルの改変・実在性・Boundary違反に限る)
 4. **VERDICTの処理**: `## Review Verdict` の `- VERDICT:` フィールドだけをパースする
    - `APPROVED` → task完了。**先にworktree内でそのtaskの変更 (検査ファイルを含む) をcommitし** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)、成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。commit対象の差分が無い場合は、前回実行でcommit済みとみなしてstatus更新だけを行う。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。`NOTES` はPhase 3.3のために保持する。Run Logに周回数、差し戻しの証拠種別、結果を記録し、次のtaskへ進む
    - `REJECTED` → implementerを再起動する。渡すのは `REMEDIATION`、`FINDINGS`、reviewerが実行して失敗したコマンドの生の出力 (`MECHANICAL_RESULTS` と `FINDINGS` の証拠 (a))、前回のimplementerが取った方針の要約1行 (`EVIDENCE` と `FILES_CHANGED` から親が作る。「駄目だった方針」として渡す)。worktreeには前回の試行の未commit変更が残っているので、implementerに `git diff` で確認させてから直させる。同一taskの差し戻しは**最大2周**とし、2周後もREJECTEDならPhase 3.1'のdebuggerへ進む
@@ -197,6 +197,7 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
    - push、PRタイトルと本文の生成、PR作成はすべて連結先skillが行う。手順を再実装しない
 4. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
 5. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
+6. **ADRを投影する** (spec modeのみ): `decisions.md` の `Status: accepted` のdecisionのうち、覆しにくい・文脈なしでは不可解・本物のtrade-offがあった、の3条件をすべて満たすものを `.mjun/adr/NNNN-<slug>.md` へ書く (形式と番号付けは [source-resolutionの用語集と決定記録](../mjun-specify/references/source-resolution.md#用語集と決定記録) に従い、`由来: <slug> / D-NNN` を添える)。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする。3条件を満たすdecisionが無ければ何も書かない
 
 ### Phase 5: 結果の表示
 
@@ -210,6 +211,7 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 - **Validation**: Phase 3.2の判定 (GO / MANUAL_VERIFY_REQUIRED)。実行時検証が未実施ならその旨
 - **Refactor**: Phase 3.3の結果 (DONE / SKIPPED / REJECTED) と、見送ったNOTES
 - **Run Log**: 周回数と差し戻しの要約 (`tasks.md` の `## Run Log` から)
+- **ADR**: 投影したADRのファイル名 (無ければ「なし」)
 
 ### Phase 6: worktreeクリーンアップ
 

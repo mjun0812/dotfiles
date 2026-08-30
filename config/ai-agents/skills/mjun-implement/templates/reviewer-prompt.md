@@ -9,6 +9,7 @@
 - worktreeの絶対パス
 - spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope。specにある場合)
 - 実装設計 (`design.md`。Local specの場合)
+- 関係するADR (決定記録。あれば。決定に反する変更はBoundary違反と同様に扱う)
 - 担当タスクの説明・Boundary・Done when (完了時に観察できること)・Seam
 - verifierの `TASK_BRIEF`、`CHECK_COMMANDS`、`CHECK_FILES` と親が記録したハッシュ
 - implementerのStatus Report (参照用。記載内容を事実として信用しない)

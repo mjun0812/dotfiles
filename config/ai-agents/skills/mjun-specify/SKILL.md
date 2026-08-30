@@ -57,6 +57,7 @@ Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontm
 ### Phase 2: 調査とgap分析
 
 - `.mjun/steering/` (あれば) と関連コードを読み、原因、変更箇所、既存パターンを特定する
+- `.mjun/CONTEXT.md` と `.mjun/adr/*.md` (あれば) を読む。specの用語がCONTEXT.mdの定義と衝突していればspec側を定義に揃え (定義を変えたい場合はHuman-owned decisionにする)、既存ADRと矛盾する要求はHuman-owned decisionとして扱う ([references/source-resolution.md 用語集と決定記録](references/source-resolution.md#用語集と決定記録))
 - 現在のspecを [references/spec-template.md](references/spec-template.md) のcontract構成と突き合わせ、欠落セクション、曖昧な記述、実装者が追加調査を要する箇所を列挙する。取り込んだIssueコメントの合意事項は反映対象として扱う
 - スコープ外の問題を見つけた場合は本文に混ぜず、Out of Scopeへの記載と別spec化の提案に回す
 
@@ -72,6 +73,7 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 - **Human-owned**: `mjun-grill` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
 - **Evidence-blocked**: 不足の種類に応じて `mjun-research` (外部事実) / `mjun-prototype` (UI、状態、ロジックの実物) / trial implementation (Phase 5へ) で証拠を集め、再分類して解決する
 - `--grill` 指定時は、Agent-ownedのdecisionもHuman-ownedと同様に1問ずつ確認する
+- decisionの解決で用語が確定したら、その場で `.mjun/CONTEXT.md` へ追記する (無ければ作る)
 
 ### Phase 4.5: design.mdの作成
 
