@@ -1,11 +1,9 @@
 ---
 name: mjun-implement
 description: >-
-  spec (`.mjun/specs/` のLocal spec、GitHub Issue番号、または単発の設計doc) を起点に「内容検査 → worktree作成 → task単位の実装 → Acceptance Criteria照合 → commit → 必要ならPR作成」を一気通貫で実行するSkill。
-  正本は常にLocal specで、Issue番号は取り込み済みspec (mjun-specify経由) への逆引きとして扱う。未取り込みならmjun-specifyを案内する。
-  実装はSubAgentに委譲し、commitとPR作成はgit-commitとgithub-pr-create skillに連結する。
+  承認済みのspec (`.mjun/specs/` のLocal spec、GitHub Issue番号、または単発の設計doc) を起点に、task単位の実装からAcceptance Criteriaの照合、commit、必要ならPR作成までを一気通貫で行うSkill。
   ユーザーが「#Nを実装して」「このspecを実装して」「実装してPRまで」のように依頼したら使うこと。
-  specの作成や磨き上げには使わない。
+  specの作成・磨き上げ・承認や、未取り込みIssueの取り込みには使わない。
 allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create)
 ---
 
@@ -13,7 +11,6 @@ allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bas
 
 specを起点に、内容検査 → 実装 → commit → (必要なら) PR作成までを進めるSkill。
 メイン会話が担うのは、検査、worktree作成、SubAgentへの引き継ぎ、進捗の永続化、結果検証、クリーンアップであり、**実装 (Phase 3) はSubAgentに委譲し、commitとPR作成 (Phase 4) は `git-commit` skillと `github-pr-create` skillに連結する**。
-SubAgent機能が使えない環境では、SubAgentの作業をメイン会話内で同じ手順で順に実施する。
 
 ## Arguments
 
@@ -32,11 +29,11 @@ spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (い
 
 ### Issue番号の逆引き
 
-入口は常にmjun-specifyであり、Issueが直行で実装できる品質かの判断をこのskillで肩代わりしない。
+Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが直行で実装できる品質かの判断をこのskillで肩代わりしない。
 
 1. activeなspec (`status: active`) から `Source: #<number>` を持つspecを検索する。見つかればそれを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)
-2. activeに無ければ、doneのspecからも `Source: #<number>` を検索する。見つかれば「実装済みのspec (`<path>`) がある。再開する場合は `status` を `active` へ戻すか、`mjun-specify #<number>` で取り込み直す」と案内して中止する
-3. どちらにも無ければ中止し、`mjun-specify #<number>` での取り込みと磨き上げを案内する
+2. activeに無ければ、doneのspecからも `Source: #<number>` を検索する。見つかれば「実装済みのspec (`<path>`) がある。再開する場合は `status` を `active` へ戻すか、Issueを取り込み直す」と案内して中止する
+3. どちらにも無ければ中止し、Issueを先にLocal specへ取り込んで磨き上げる必要があることを案内する
 
 **Local specの参照と更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のためworktreeやPR checkoutには存在しない。SubAgentへはspecの内容をプロンプトに合成して渡し、worktree内の `.mjun/` パスを読ませない。
 
@@ -50,10 +47,10 @@ spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (い
    - 現在のbranch: `git branch --show-current`、既存worktree: `git worktree list --porcelain`
 2. 出力言語をsourceの言語から決める (主に日本語なら日本語、それ以外または曖昧なら英語)。コメント、commit、PR作成に使う
 3. **内容検査**:
-   1. **contract承認とdesign.md** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、`mjun-specify <source>` でcontractを承認するよう案内する。実装依頼そのものをcontract承認の代わりにしない。`design.md` が無い場合も中止し、`mjun-specify <source>` で設計を作成するよう案内する
-   2. **情報の充足**: Goal、受け入れ基準、実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、`mjun-specify` でspecを詰めることを案内する。方針を推測で補って実装に進まない
+   1. **contract承認とdesign.md** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、contractの承認が先に必要であることを案内する。実装依頼そのものをcontract承認の代わりにしない。`design.md` が無い場合も中止し、実装設計の作成が先に必要であることを案内する
+   2. **情報の充足**: Goal、受け入れ基準、実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、specを詰め直す必要があることを案内する。方針を推測で補って実装に進まない
    3. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` を `accepted` へ更新してから進む (確認済みの決定として記録し、再実行時に同じtentativeで止まらない)
-   4. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込みと投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する。反映する場合は `approval: pending` へ戻してから反映し、更新後のcontractを提示して承認を得て `approved` へ更新してから進む。承認されなければ中止し、`mjun-specify <source>` での磨き直しを案内する
+   4. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込みと投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する。反映する場合は `approval: pending` へ戻してから反映し、更新後のcontractを提示して承認を得て `approved` へ更新してから進む。承認されなければ中止し、specの磨き直しが必要であることを案内する
 4. **taskキューを構築する**:
    - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)
    - 全taskが `done` の場合も終了せず、記録済みbranchからresumeしてPhase 3.2の最終検証とPhase 4の配送を再実行する
@@ -116,8 +113,8 @@ taskキューの順に、taskごとに次を行ってからPhase 3.1へ進む。
 2. **verifierの起動**: テンプレートに、worktreeの絶対パス、contract、`design.md` の全文 (spec modeのみ)、関係するADR (あれば)、担当task (説明、Acceptance Criteria、Boundary、Done when、Seam)、検証コマンド、Implementation Notesを合成して起動する
 3. **STATUSの処理**: `## Check Report` の `- STATUS:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
    - `CHECKS_READY` → `CHECK_COMMANDS` をworktreeで実行し (親が直接、またはSubAgentに実行を依頼して出力を受け取る)、**すべて失敗する**ことを確認する。通ってしまう検査があれば、その検査名を添えてverifierに1回だけ作り直させる。確認後、`CHECK_FILES` のハッシュを記録し、検査一覧 (Acceptance Criterion → コマンド) をユーザーに提示してPhase 3.1へ進む (承認は取らない。人間が「この検査が通れば完了」を見る場所)
-   - `CANNOT_VERIFY` → 中止する。`MISSING` (どんな検証手段があれば検査にできるか) を報告し、Acceptance Criteriaを検査に落とせる形へ書き直す必要があることを伝える (`mjun-specify <source>` で磨き直す)
-   - `TASK_TOO_LARGE` → 中止する。`SPLIT_PROPOSAL` を報告し、`mjun-to-tasks <source>` で再分解するよう案内する
+   - `CANNOT_VERIFY` → 中止する。`MISSING` (どんな検証手段があれば検査にできるか) を報告し、Acceptance Criteriaを検査に落とせる形へ書き直す必要があることを伝える (specの磨き直しが必要)
+   - `TASK_TOO_LARGE` → 中止する。`SPLIT_PROPOSAL` を報告し、taskの再分解が必要であることを案内する
 4. Run Logに `checks=<READY (n) | CANNOT_VERIFY | TOO_LARGE>` を記録する
 
 #### Phase 3.1: 実装とレビュー (taskごと)
@@ -153,8 +150,8 @@ BLOCKED、または差し戻し2周後のREJECTEDで起動する。debuggerはfr
 2. **NEXT_ACTIONの処理**: `## Debug Report` の `- NEXT_ACTION:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
    - `RETRY_TASK` → `FIX_PLAN` と `NOTES` を渡して新しいimplementerを起動し、Phase 3.1の3以降を1周だけ行う
    - `FIX_CHECK` → 検査自体の誤り。`ROOT_CAUSE` を渡してverifierに作り直させ (RED確認とハッシュ更新を行う)、implementerを起動してPhase 3.1の3以降を1周だけ行う
-   - `RETURN_TO_TASKS` → 中止し、`ROOT_CAUSE` と分割・順序の修正案を報告して `mjun-to-tasks <source>` を案内する
-   - `RETURN_TO_SPEC` → 中止し、contractと現実の矛盾箇所を報告して `mjun-specify <source>` を案内する (specは変更しない)
+   - `RETURN_TO_TASKS` → 中止し、`ROOT_CAUSE` と分割・順序の修正案を報告して、taskの再分解が必要であることを案内する
+   - `RETURN_TO_SPEC` → 中止し、contractと現実の矛盾箇所を報告して、specの磨き直しが必要であることを案内する (specは変更しない)
    - `STOP_FOR_HUMAN` → 中止し、`ROOT_CAUSE` と `HUMAN_QUESTION` (1問、選択肢付き) を報告する
 3. debuggerは同一taskで**最大2回**まで起動する。2回目の後も解決しなければ中止し、未解決の指摘、Acceptance Criterionごとの検査結果、試した仮説 (Debug Reportの要約) を報告する
 4. `CATEGORY` と `NEXT_ACTION` をRun Logに、次のtaskにも効く知見をImplementation Notesに記録する
@@ -193,11 +190,11 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 2. **`--no-pr` の場合**: ここで配送を終える。Phase 5へ進む
 3. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
    - Phase 1で決めた出力言語を `language` として渡す
-   - **specが `Source: #N` を持つ場合はそのIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。純Local specでは渡さない (specは内部文書であり、PR本文で言及しない。Contract reviewには `github-pr-review` の `--spec` を使う)
+   - **specが `Source: #N` を持つ場合はそのIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。純Local specでは渡さない (specは内部文書であり、PR本文で言及しない。PRレビューでcontractを照合するときはLocal specのパスを `--spec` で直接渡す)
    - push、PRタイトルと本文の生成、PR作成はすべて連結先skillが行う。手順を再実装しない
 4. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
 5. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
-6. **ADRを投影する** (spec modeのみ): `decisions.md` の `Status: accepted` のdecisionのうち、覆しにくい・文脈なしでは不可解・本物のtrade-offがあった、の3条件をすべて満たすものを `.mjun/adr/NNNN-<slug>.md` へ書く (形式と番号付けは [source-resolutionの用語集と決定記録](../mjun-specify/references/source-resolution.md#用語集と決定記録) に従い、`由来: <slug> / D-NNN` を添える)。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする。3条件を満たすdecisionが無ければ何も書かない
+6. **ADRを投影する** (spec modeのみ): `decisions.md` の `Status: accepted` のdecisionのうち、覆しにくい・文脈なしでは不可解・本物のtrade-offがあった、の3条件をすべて満たすものを `.mjun/adr/NNNN-<slug>.md` へ書く。`NNNN` は4桁連番 (既存の最大値 + 1)、本文は見出しと1〜3文 (文脈・決定・理由) とし、`由来: <slug> / D-NNN` を1行添える。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする。3条件を満たすdecisionが無ければ何も書かない
 
 ### Phase 5: 結果の表示
 

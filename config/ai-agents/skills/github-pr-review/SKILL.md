@@ -1,7 +1,7 @@
 ---
 name: github-pr-review
 description: >-
-  GitHubのPull Request(PR)のコードレビューを行うSkill。worktreeを作成してソースコード全体を読みながらFinder SubAgentで指摘候補を発見し、Verifier SubAgentで検証する。Standards SubAgentがmergeをブロックすべき規約違反・コードスメルを別軸でレビューする。spec source (`--spec` 引数、または関連Issueの `Closes #N`) を解決できる場合は、Contract SubAgentがspecとの整合を第3の軸でレビューする。レビューをレポートとインラインコメントで投稿する。self reviewにも対応する。
+  GitHubのPull Requestを敵対的にコードレビューし、検証を通過した指摘だけをレビューレポートとinline commentで投稿するSkill。`--spec` またはPRに紐づくIssueからspecを解決できる場合は、specとの整合も検査する。self reviewにも対応する。
   ユーザーが「このPRをレビューして」のように依頼したら使うこと。
 allowed-tools: Task, Read, Write, AskUserQuestion, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(mkdir:*), Bash(mktemp:*), Bash(rm:*), Bash(bash:*)
 ---

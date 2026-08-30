@@ -1,6 +1,6 @@
 ---
 name: self-review
-description: 自分のlocal変更を敵対的にコードレビューするSkill。commit未指定時はstaged、unstaged、untrackedを、指定時はそのcommitとfirst parentの差分を一時worktreeへ固定し、独立した2つのFinderと共通のStandards・Verifier agentで検証する。`--spec` でspec (GitHub Issueまたは`.mjun/specs/`のLocal spec) を渡すと、specとの整合を検証するContract軸を追加する。GitHub、PR、CI、review threadを使用せず、結果をチャットまたはterminalへ返す。ユーザーが「自分の変更を厳しくレビューして」「このcommitをself reviewして」のように依頼したら使うこと。
+description: 自分のlocal変更 (未commit変更、または指定した1 commit) を敵対的にコードレビューし、検証を通過した指摘だけをチャットへ返すSkill。`--spec` でspec (GitHub Issueまたは`.mjun/specs/`のLocal spec) を渡すと、specとの整合も検査する。GitHub、PR、CI、review threadは使わない。ユーザーが「自分の変更を厳しくレビューして」「このcommitをself reviewして」のように依頼したら使うこと。
 ---
 
 # Self Review
@@ -23,7 +23,7 @@ commit未指定時は，現在のGit repositoryにある以下の変更をまと
 - untracked files (`.gitignore`対象外のみ)
 
 commit指定時は，commitをsnapshot，そのfirst parentをbaselineとして，そのcommitが導入した差分だけを対象とする．現在の未commit変更は含めない．first parentがないroot commitは対象外とする．
-branch全体の差分やGitHub PRは対象外とする．PRは`github-pr-review`を使用する．
+branch全体の差分やGitHub PRは対象外とする．
 
 ## Workflow
 

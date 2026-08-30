@@ -3,28 +3,28 @@ name: mjun-to-tasks
 description: >-
   spec (`.mjun/specs/` のLocal spec、またはGitHub Issue) を、単独で検証可能なvertical sliceのtaskへ分解し、
   `.mjun/specs/` 配下の `tasks.md` へ永続化するSkill。
-  通常はmjun-specifyが承認後に自動で連結する。ユーザーが「taskに分解して」「分解をやり直して」と依頼したときや、
+  通常はspecの承認後に自動で呼び出される。ユーザーが「taskに分解して」「分解をやり直して」と依頼したときや、
   specの変更後に再分解したいときに単体で使うこと。実装そのもの、およびspec本文の作成・修正には使わない。
 allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(cat:*), Bash(ls:*), Bash(mkdir:*)
 ---
 
 # mjun-to-tasks
 
-specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化するSkill。分解はAgent-ownedの作業として承認なしで行う。正本は常にLocal specとする ([mjun-specifyのsource-resolution](../mjun-specify/references/source-resolution.md) の規則に従う)。
+specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化するSkill。分解はAgent-ownedの作業として承認なしで行う。正本は常に `.mjun/specs/<slug>/` のLocal specとし、GitHub Issueは `Source: #N` で逆引きする入口としてだけ扱う (Issueを正本として読み書きしない)。
 
 ## Arguments
 
 - `source` (必須): 分解対象。`.mjun/specs/<slug>` のLocal specディレクトリ、またはGitHub Issue番号 (`#123` / `123`)
 
-呼び出し元 (mjun-specifyなど) から調査済みの文脈 (requirements、boundary、変更対象の見当) を渡された場合はそれを使い、specの読み直しを最小にする。
+呼び出し元から調査済みの文脈 (requirements、boundary、変更対象の見当) を渡された場合はそれを使い、specの読み直しを最小にする。
 
 ### source解決
 
 1. `.mjun/specs/<slug>` のパス → そのspecを対象にする
-2. Issue番号 → activeなspec (`status: active`) から `Source: #<number>` を逆引きする (複数ヒットした場合は一覧を提示して選んでもらう)。無ければ中止し、`mjun-specify #<number>` での取り込みを案内する (入口は常にmjun-specify)
+2. Issue番号 → activeなspec (`status: active`) から `Source: #<number>` を逆引きする (複数ヒットした場合は一覧を提示して選んでもらう)。無ければ中止し、先にIssueをLocal specへ取り込む必要があることを案内する (取り込みはspec作成側の仕事で、このskillでは行わない)
 3. 判定できない場合は中止してユーザーに確認する
 
-対象specのRequirements・Acceptance Criteriaを読み取れない場合、または `design.md` が無い場合は中止し、`mjun-specify` での磨き上げを案内する。
+対象specのRequirements・Acceptance Criteriaを読み取れない場合、または `design.md` が無い場合は中止し、specの磨き上げが先に必要であることを案内する。
 
 ## 分解規則
 
@@ -60,7 +60,7 @@ specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化する
 - `Status` は `ready | in-progress | done`。新規taskは `ready` とする
 - 統合taskは `Boundary: <責務A>, <責務B> (integration)` と書く
 - 実装時のresumeと進捗管理に使われるため、この形式を崩さない
-- `mjun-implement` は初回worktreeの作成後、選択したbranchを `Implementation Branch: <branch-name>` としてファイル先頭へ記録する。`mjun-to-tasks` は新規作成時にはこの行を書かない
+- 実装側が初回worktreeの作成後、選択したbranchを `Implementation Branch: <branch-name>` としてファイル先頭へ記録する。このskillは新規作成時にはこの行を書かない
 
 ## 手順
 

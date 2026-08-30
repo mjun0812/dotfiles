@@ -5,7 +5,7 @@ description: >-
   ファイルへの書き込みは行わない。
   ユーザーが「specの状況を見せて」「進行中のspecを一覧して」「このspecはどこまで進んだ?」のように依頼したら使うこと。
   specの作成・磨き上げ・実装・task分解には使わない。
-allowed-tools: Read, Glob, Grep, Bash(git:*), Bash(gh:*), Bash(ls:*), Bash(cat:*)
+allowed-tools: Read, Glob, Grep, Bash(git rev-parse:*), Bash(git branch:*), Bash(git worktree list:*), Bash(gh issue view:*), Bash(gh pr list:*), Bash(ls:*), Bash(cat:*)
 ---
 
 # mjun-status

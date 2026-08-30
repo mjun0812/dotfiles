@@ -63,5 +63,3 @@ verdictが `confirmed` の候補だけを確定指摘とし、`refuted` と `unc
 ```
 
 FINDINGSが0件かつHUMAN_DECISION_CONFLICTSがnoneのときだけPASSとする。HUMAN_DECISION_CONFLICTSに挙げた矛盾はFINDINGSにも含める。省略した軸や検査できなかった観点 (sourceの原文が無い、Git repositoryでない) があれば、SUMMARYにその旨を含める。
-
-SubAgentが使えない環境では、両reviewerのチェックリストとverifierの反証をメイン会話で順に実施し、その旨をSUMMARYに含める。

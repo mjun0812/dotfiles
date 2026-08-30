@@ -1,12 +1,12 @@
 ---
 name: github-issue-update
 description: open issueを横断的に点検して、closeすべきもの・内容を追記すべきもの・ラベルを追加/削除すべきものを自動判定し、最後にsummaryを提示してユーザー承認の上で一括反映するSkill。「issueを整理して」「issueのラベルを整理して」のような依頼で使う。
-allowed-tools: Bash(gh:*), Bash(git:*), Bash(date:*), Bash(ls:*), Bash(cat:*), Bash(grep:*), Bash(rg:*), Read, Glob, Grep, AskUserQuestion
+allowed-tools: Bash(gh:*), Bash(date:*), Bash(ls:*), Bash(cat:*), Bash(grep:*), Bash(rg:*), Read, Glob, Grep, AskUserQuestion
 ---
 
 # GitHub Issue Update
 
-open issueを点検し、次の3種類の更新を行うSkill。ユーザーから「open issueを整理して」「stale issueを片付けて」「ラベルを整理して」のような依頼があったらこのSkillを使うこと。
+open issueを点検し、次の3種類の更新を行うSkill。
 
 1. **close**: 解決済み・重複・長期放置で閉じるべきもの
 2. **コメント追記**: 内容に追加すべき情報がある、本文と現状にズレがある（参照ファイルが消えた等）
@@ -99,7 +99,7 @@ Summary例:
 - #125 -bug
 ```
 
-承認は AskUserQuestion で多段に取る（AskUserQuestionツールが使えない環境では、同等の選択肢をテキストで提示して回答を待つ）:
+承認は AskUserQuestion で多段に取る:
 
 1. 「すべて反映 / 個別選択 / すべてキャンセル / 詳細を見たい候補がある」
 2. 「個別選択」: 4件以下は multiSelect、5件以上は除外番号をテキスト入力（"Other"）
@@ -110,21 +110,7 @@ Summary例:
 ### Phase 4: 一括反映
 
 承認された候補をactionごとに `gh` で処理する。**同一issueに対する複数actionはシリアル**、**異なるissueは5〜10件単位で並列**。
-
-```bash
-# close + 理由コメント（必ずcomment → close の順）
-gh issue comment <N> --body "<closeコメント本文>"
-gh issue close <N>
-
-# コメント追記のみ
-gh issue comment <N> --body "<本文>"
-
-# ラベル追加
-gh issue edit <N> --add-label <name> [--add-label <name>]
-
-# ラベル削除
-gh issue edit <N> --remove-label <name>
-```
+closeするissueには、必ず理由コメントを投稿してからcloseする。
 
 `gh issue close --comment` は使わない（バージョン差異がある）。コメント本文に複数行を含める場合は `--body-file <tmpfile>` を使い、エスケープ問題を避ける。
 

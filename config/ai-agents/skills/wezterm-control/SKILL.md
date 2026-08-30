@@ -4,8 +4,7 @@ description: >-
   weztermのpane・tab・windowを `wezterm cli` で操作するskill。paneの分割・フォーカス移動・リサイズ・zoom・close、
   tab/windowの作成・切替・リネーム、paneの表示内容の読み取り、paneへのコマンド送信と実行結果の確認を行う。
   ユーザーが「weztermのpaneを分割して」「weztermの別paneでコマンドを実行して」のように、weztermと明示して依頼したときだけ使うこと。
-  ユーザーはtmuxも併用しているため、「paneを分割して」のようにweztermと明示されていないpane/tab操作の依頼では使わない (Herdr管理下のセッションではherdrを優先し、それ以外ではどちらを指すかユーザーに確認する)。
-  tmuxの操作、およびwezterm自体の設定 (wezterm.luaやkeybinding) の変更にも使わない。
+  weztermと明示されていないpane/tab操作の依頼 (ユーザーはtmuxとHerdrも併用している)、tmuxの操作、wezterm自体の設定 (wezterm.luaやkeybinding) の変更には使わない。
 allowed-tools: Bash(wezterm:*), Bash(sleep:*)
 ---
 
@@ -13,7 +12,7 @@ allowed-tools: Bash(wezterm:*), Bash(sleep:*)
 
 ## Objective
 
-weztermのpane・tab・windowを `wezterm cli` サブコマンドで操作するSkill。
+自分が動いているpaneや依頼外のpaneに影響を与えずに目的のpaneだけを操作し、送ったコマンドの結果まで確認して報告するSkill。
 tmuxの知識で代用せず、必ず [cli_reference.md サブコマンド一覧](references/cli_reference.md#サブコマンド一覧) にある実機確認済みのコマンドだけを使うこと。
 
 ## Rules

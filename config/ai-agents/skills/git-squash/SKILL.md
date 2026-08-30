@@ -62,4 +62,3 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(cat:*), Bash(grep:*), B
 
 - ユーザー確認は原則行わない。危険な状態は自動判断で中止し、理由を報告する
 - `git push --force-with-lease` のみ使用し、`git push --force` は使用しない
-- squash中にconflictが発生した場合は `git-fix-conflict` Skill を使って解消する。本Skillの主手順（`reset --soft`主体）ではconflictは発生しない設計であり、万一発生した場合のみ委譲する
