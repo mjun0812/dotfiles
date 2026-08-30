@@ -8,7 +8,7 @@ description: >-
   仕様承認後にIssueへ記帳して、必要ならtask分解まで行う。
   ユーザーが「specを作って」「仕様を詰めて」「issueを磨いて」のように依頼したら使うこと。
   実装からPR作成まで進める依頼や、既にspecが承認済みの実装依頼には使わない。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grill), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-spec-review), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grilling), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-spec-review), Skill(mjun-to-tasks)
 ---
 
 # mjun-specify
@@ -20,7 +20,7 @@ allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*),
 GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影)であり、作業はすべてLocalファイル上で行う。
 規則は [references/source-resolution.md](references/source-resolution.md) に従う。
 
-意思決定の判断材料に `mjun-grill` / `mjun-research` / `mjun-prototype` を、
+意思決定の判断材料に `mjun-grilling` / `mjun-research` / `mjun-prototype` を、
 承認前のspec検査に `mjun-spec-review` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
 
 ## Arguments
@@ -70,7 +70,7 @@ gapから意思決定の論点を洗い出し、[references/decision-authority.m
 frontierの論点を1つずつ解決し、確定するたびに**Localのspecとdecision logへ逐次**反映する。decision logのentry形式は [references/decisions-template.md](references/decisions-template.md) に従う。
 
 - **Agent-owned**: decision-authority.mdの自己問答 (論点 → 調査 → 推奨案 → 反論 → 採択 + 確信度) で解決する。確信度lowは `Status: tentative` (要確認) として記録する
-- **Human-owned**: `mjun-grill` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
+- **Human-owned**: `mjun-grilling` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
 - **Evidence-blocked**: 不足の種類に応じて `mjun-research` (外部事実) / `mjun-prototype` (UI、状態、ロジックの実物) / trial implementation (Phase 5へ) で証拠を集め、再分類して解決する
 - `--grill` 指定時は、Agent-ownedのdecisionもHuman-ownedと同様に1問ずつ確認する
 - decisionの解決で用語が確定したら、その場で `.mjun/CONTEXT.md` へ追記する (無ければ作る)
@@ -102,7 +102,7 @@ frontierのdecisionがすべて解決したら、採択した設計を `design.m
 
 - `PASS` → Phase 6へ進む
 - `NEEDS_FIXES` → 各指摘を読み、contractの明文とコードの事実に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は `decisions.md` にentryを追記する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)
-- `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grill` の単一decisionモードで再解決し、`design.md` を更新してからPhase 6へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
+- `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grilling` の単一decisionモードで再解決し、`design.md` を更新してからPhase 6へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
 
 ### Phase 6: contractの提示と承認
 

@@ -22,7 +22,7 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 | Skill                                                                      | 用途                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`mjun-specify`](../config/ai-agents/skills/mjun-specify/SKILL.md)         | アイデア・GitHub Issue・ローカルMarkdownを実装可能なspec (contract) へ仕上げる。factsを調査してAgent権限内のdecisionを自分で決め、Human-ownedと判断に迷うdecisionを1問ずつ確認し、decisionの解決後にdesign.md (contract内の実装設計) を必ず書き、承認後に複数task規模ならtask分解を自動で行い、task一覧込みでIssueへ投影する (純Local specには投影時に投影先Issueの作成を提案する)。承認前に `mjun-spec-review` がcontractとdesign.mdをfresh contextで検査する                                    |
-| [`mjun-grill`](../config/ai-agents/skills/mjun-grill/SKILL.md)             | 計画・設計・specの意思決定を1問ずつの対話で解決する (全分岐を解消する設計全体モードと、1件だけ解決する単一decisionモード)                                                                                                                                                                                                                                                                                                                                                                         |
+| [`mjun-grilling`](../config/ai-agents/skills/mjun-grilling/SKILL.md)       | 計画・設計・specの意思決定を、前提が解決済みの論点 (frontier) をroundごとにまとめて聞く対話で解決する (設計ツリーの全分岐を解消する設計全体モードと、1件だけ解決する単一decisionモード)。事実の調査はSubAgentに委譲して待たず、共有理解の確認まで実行に移さない                                                                                                                                                                                                                                   |
 | [`mjun-research`](../config/ai-agents/skills/mjun-research/SKILL.md)       | 一次資料 (公式ドキュメント・ソースコード・仕様書) から外部事実を調査し、主張ごとに出典を付けてLocal specへ記録し、GitHubへ投稿せず呼び出し元へ返す                                                                                                                                                                                                                                                                                                                                                |
 | [`mjun-prototype`](../config/ai-agents/skills/mjun-prototype/SKILL.md)     | 会話では判断できないUI・状態・ロジックの設計質問を、使い捨ての試作品で検証する (1 prototype = 1 question)                                                                                                                                                                                                                                                                                                                                                                                         |
 | [`mjun-spec-review`](../config/ai-agents/skills/mjun-spec-review/SKILL.md) | spec (`.mjun/specs/<slug>`、GitHub Issue / PR番号、設計Markdown、会話中の設計) のcontractと実装設計を敵対的にレビューする。fresh contextのcontract reviewer (自己整合・ACの検証可能性・sourceとの乖離・Evidenceの実在) とdesign reviewer (contractの充足・Boundaries・コードベースとの整合・失敗経路・Test Seam・構造の過不足) が候補を出し、候補ごとにverifierが実コードとcontractの明文で反証してconfirmedだけをチャットへ返す。ファイルは編集しない                                            |
@@ -105,7 +105,7 @@ Skillのソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) �
 graph LR
     git-squash -. on conflict .-> git-fix-conflict
 
-    mjun-specify --> mjun-grill
+    mjun-specify --> mjun-grilling
     mjun-specify --> mjun-research
     mjun-specify --> mjun-prototype
     mjun-specify --> mjun-spec-review
@@ -124,7 +124,7 @@ graph LR
 | Caller           | Callee                                                           | タイミング                                                                     |
 | ---------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------ |
 | `git-squash`     | `git-fix-conflict`                                               | squash中にコンフリクトが発生した場合のみ                                       |
-| `mjun-specify`   | `mjun-grill`, `mjun-research`, `mjun-prototype`                  | Human-owned / Evidence-blockedなdecisionの解決が必要な場合                     |
+| `mjun-specify`   | `mjun-grilling`, `mjun-research`, `mjun-prototype`               | Human-owned / Evidence-blockedなdecisionの解決が必要な場合                     |
 | `mjun-specify`   | `mjun-spec-review`                                               | Phase 5.5 (承認前) でcontractとdesign.mdを検査し、妥当な指摘だけを反映         |
 | `mjun-specify`   | `mjun-to-tasks`                                                  | contract承認後、複数task規模の場合と既存tasks.mdの再分解が必要な場合に自動連結 |
 | `mjun-implement` | `git-commit`, `github-pr-create`                                 | Phase 4でworktreeの変更をcommitし、`--pr` 時にPRを作成                         |
@@ -134,7 +134,7 @@ graph LR
 
 以下のskillは他のskillへ委譲しません。
 
-`agent-browser`, `claude`, `codex`, `doc-sync`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `herdr`, `japanese-tech-writing`, `md-note`, `mjun-grill`, `mjun-prototype`, `mjun-research`, `mjun-spec-review`, `mjun-status`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
+`agent-browser`, `claude`, `codex`, `doc-sync`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `herdr`, `japanese-tech-writing`, `md-note`, `mjun-grilling`, `mjun-prototype`, `mjun-research`, `mjun-spec-review`, `mjun-status`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 
