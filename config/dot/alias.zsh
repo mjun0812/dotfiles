@@ -8,8 +8,8 @@ alias emacs='emacs -nw'
 alias vim='nvim'
 
 if command -v bat > /dev/null 2>&1; then
-    alias cat="bat --style=plain --paging=never --theme=OneHalfDark"
-    alias less="bat --style=plain --paging=always --theme=OneHalfDark"
+    alias cat="bat --style=plain --paging=never"
+    alias less="bat --style=plain --paging=always"
 fi
 if command -v eza > /dev/null 2>&1; then
     alias eza='eza --group-directories-first --time-style=long-iso --group'
