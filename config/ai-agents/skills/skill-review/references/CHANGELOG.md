@@ -1,5 +1,5 @@
 ---
-criteria-commit: e3838b5
+criteria-sha256: e52b5c83d2e8fb4c458c7c7d783db802e9d642c77bf8c70bbdfe6912d6eea2bc
 ---
 
 # 評価基準の変更記録

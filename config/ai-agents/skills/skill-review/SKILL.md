@@ -16,12 +16,7 @@ allowed-tools:
   - Bash(shellcheck *)
   - Bash(shfmt *)
   - Bash(ruff *)
-  - Bash(git log *)
-  - Bash(git diff *)
-  - Bash(realpath *)
   - AskUserQuestion
-  - Edit(~/.claude/skills/skill-review/references/CHANGELOG.md)
-  - Edit(~/.dotfiles/config/ai-agents/skills/skill-review/references/CHANGELOG.md)
 ---
 
 # skill-review
@@ -74,15 +69,13 @@ Agent skill (SKILL.mdとその付属ファイル)を評価基準に沿って点�
 
 ### 0. 基準の自己点検
 
-criteria.mdが変わったのにCHANGELOG.mdに記録が無い状態で評価を始めない。
+criteria.mdが変わったのにCHANGELOG.mdに記録が無い状態を、評価の前に検出する。
 
-1. skillディレクトリの実体を `realpath` で解決し、criteria.mdの最新commitを `git log -1 --format=%h -- references/criteria.md` で、未commitの差分を `git diff HEAD -- references/criteria.md` で取得する
-2. CHANGELOG.mdのfrontmatter `criteria-commit` と比較する
-   - commitが一致し、未commitの差分も無い → 手順1へ進む
-   - それ以外 → `git diff <criteria-commit>..HEAD -- references/criteria.md` と未commitの差分を読み、変更ごとにCHANGELOG.mdの形式でentryの下書き (種別・変更・理由・痕跡・修正) を作る。既存entryに記録済みの変更と、評価対象から確認できる痕跡を持たない変更は除く
-3. 理由は差分から推測せず、下書きを提示してAskUserQuestionでユーザーに確認する。種別と痕跡の表現もこのとき確定する
-4. 確認したentryをCHANGELOG.mdの先頭 (形式の説明の直後) に追記する。commit済みの変更を記録した場合は `criteria-commit` をその最新commitに更新する。未commitの変更を記録した場合は `criteria-commit` を変えない (次回の点検では記録済みの変更を除く)
-5. 記録が終わってから手順1へ進む
+1. `bash scripts/check_criteria.sh` を実行する (scriptは自分の位置からcriteria.mdとCHANGELOG.mdを解決するので、skillの配置場所やgit管理の有無を問わない)。出力の1行目が結果で、`DIFF` のときは2行目以降に記録済みの版からの差分が続く
+2. 結果で分岐する
+   - `UP_TO_DATE` → 手順1へ進む
+   - `DIFF` → 差分を読み、変更ごとにCHANGELOG.mdの形式でentryの下書き (種別・変更・理由・痕跡・修正) を作る。既存entryに記録済みの変更と、評価対象から確認できる痕跡を持たない変更は除く。理由は差分から推測せず、下書きを提示してAskUserQuestionでユーザーに確認する。確認したentryを `bash scripts/update_changelog.sh --add` の標準入力へ渡して追記する (scriptが記録済みhashも更新する)。記録が終わってから手順1へ進む
+   - `NO_BASELINE` → criteria.mdが記録より新しいが、記録済みの版を復元できない (git管理外、または該当するcommitが無い)。その旨と、gitのある環境で記録するかCHANGELOG.mdを手で更新する必要があることを警告し、評価は続ける
 
 ### 1. 対象の列挙
 
@@ -151,10 +144,10 @@ skillごとに以下の形式で出力する。
 仕様不適合の場合は、違反した要件、根拠、修正案を「仕様チェック」に列挙する。
 「削除してよい箇所」は該当が無ければ省略する。
 複数skillを評価した場合は、最後に全体サマリー(skill数、仕様不適合数、判定保留数、要改善の多い観点トップ3)を付ける。
-全件評価モードでは、痕跡が1件も見つからなかったentryをCHANGELOG.mdから削除し、削除したentryを全体サマリーに列挙する。指定パスだけの評価では削除しない。
+全件評価モードでは、痕跡が1件も見つからなかったentryを `bash scripts/update_changelog.sh --remove "<見出し>"` で削除し、削除したentryを全体サマリーに列挙する。指定パスだけの評価では削除しない。
 
 ## 原則
 
-- **編集しない**: このSkillは評価とレポートまで。修正の適用はユーザーの別途依頼を待つ。例外は自skillの `references/CHANGELOG.md` だけで、entryの追記と、痕跡が無くなったentryの削除以外は書き換えない。
+- **編集しない**: このSkillは評価とレポートまで。修正の適用はユーザーの別途依頼を待つ。例外は自skillの `references/CHANGELOG.md` だけで、entryの追記と、痕跡が無くなったentryの削除以外は書き換えない。書き込みは `scripts/update_changelog.sh` 経由で行う。
 - **好みを混ぜない**: 文体や語彙の好みは指摘しない。基準に照らして判定できる事項のみ扱う。
 - **基準外の重大問題は報告する**: 11観点に該当しなくても、明らかな誤り(壊れたリンク、矛盾した手順)を見つけたら「その他」として報告する。
