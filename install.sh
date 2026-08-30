@@ -84,7 +84,9 @@ fi
 
 if [ "$(uname -s)" = "Darwin" ]; then
     log_section "Applying mise bootstrap..."
-    mise bootstrap packages apply --yes
+    if [ "${DOTFILES_SKIP_BOOTSTRAP_PACKAGES:-0}" != "1" ]; then
+        mise bootstrap packages apply --yes
+    fi
     mise bootstrap launchd apply --yes
 
     # install Homebrew if not installed (for macOS)

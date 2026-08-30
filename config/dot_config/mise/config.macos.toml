@@ -9,6 +9,7 @@
 # For macOS
 "brew:coreutils" = "latest"
 "brew:curl" = "latest"
+"brew:eza" = "latest"
 "brew:ffmpeg" = "latest"
 "brew:git" = "latest"
 "brew:gitleaks" = "latest"

@@ -1,6 +1,7 @@
 #:schema https://mise.en.dev/schema/mise.json
 
 [tools]
+"github:eza-community/eza" = "latest"
 "pipx:headroom-ai" = { version = "latest", extras = "proxy,code" }
 "github:router-for-me/CLIProxyAPI" = "latest"
 
