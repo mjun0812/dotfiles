@@ -61,6 +61,10 @@ mise install
 mise reshim
 source "$HOME/.zshrc"
 
+################ [bat] ################
+log_section "Setting up bat themes..."
+bat cache --build
+
 ################ [Euporie] ################
 log_section "Setting up Euporie..."
 if [ "$(uname -s)" = "Darwin" ]; then
