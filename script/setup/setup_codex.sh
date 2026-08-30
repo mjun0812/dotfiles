@@ -7,20 +7,12 @@ log_section() {
 DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 CODEX_CONFIG_TARGET="$HOME/.codex/config.toml"
 CODEX_CONFIG_TEMPLATE="$DOTPATH/config/ai-agents/codex/config.toml"
-CODEX_AGENTS_SOURCE_DIR="$DOTPATH/config/ai-agents/codex/agents"
-
-# Purge dangling symlinks (left after their sources were removed); they make the backup cp -L fail
-for link in "$HOME/.codex/agents"/*(@N); do
-    [ -e "$link" ] || rm -f "$link"
-done
 
 # backup
 cp -aLf "$HOME/.codex/AGENTS.md" "$DOTPATH/.backup/AGENTS_codex.md" 2>/dev/null && rm -rf "$HOME/.codex/AGENTS.md"
-cp -aLf "$HOME/.codex/agents" "$DOTPATH/.backup/codex_agents" 2>/dev/null && rm -rf "$HOME/.codex/agents"
 cp -aLf "$HOME/.codex/hooks.json" "$DOTPATH/.backup/hooks_codex.json" 2>/dev/null && rm -rf "$HOME/.codex/hooks.json"
 
 mkdir -p "$HOME/.codex"
-mkdir -p "$HOME/.codex/agents"
 
 # Copy or merge config.toml
 if [ -e "$CODEX_CONFIG_TARGET" ] || [ -L "$CODEX_CONFIG_TARGET" ]; then
@@ -31,13 +23,6 @@ fi
 
 # AGENTS.md
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
-
-# Agents
-for agent_file in "$CODEX_AGENTS_SOURCE_DIR"/*.toml(N); do
-    agent_name=$(basename "$agent_file")
-    rm -rf "$HOME/.codex/agents/$agent_name"
-    ln -snfv "$agent_file" "$HOME/.codex/agents/$agent_name"
-done
 
 # Hooks
 ln -snfv "$DOTPATH/config/ai-agents/codex/hooks.json" "$HOME/.codex/hooks.json"
