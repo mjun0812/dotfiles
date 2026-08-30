@@ -70,7 +70,7 @@ return {
               { TransparentCursor = { strikethrough = true, blend = 100 } },
               { prefix = "SnacksExplorer" }
             )
-            local entry = "a:SnacksExplorerTransparentCursor/lCursor"
+            local entry = "n-v:SnacksExplorerTransparentCursor/lCursor"
             local function hide()
               vim.opt.guicursor:append(entry)
             end
