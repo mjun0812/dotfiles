@@ -13,7 +13,6 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Read, Glob, Grep, WebSearch,
 ## Arguments
 
 - `language`: Issueのタイトルと本文の言語（例: "ja", "en"）。デフォルト: "en"
-- `--dry-run`: Issueを作成せず、生成したタイトル・本文・ラベルの提示のみ行う
 
 ## Issue Templates
 
@@ -100,8 +99,6 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Read, Glob, Grep, WebSearch,
    - 下書き素材に無くて省略したセクション
    - 依頼と会話の矛盾（あれば）
    - **情報不足**: 下書き素材が乏しく、タイトルすら意味のある形で生成できない場合は、不足している点をユーザーに質問し、回答を反映してからステップ3以降をやり直す
-   - **dry-run**: `--dry-run` が指定されている場合は、上記の提示だけを行って終了する（Issueを作成しない。承認も求めない）
-
 10. **Issueの作成**:
 
     ```

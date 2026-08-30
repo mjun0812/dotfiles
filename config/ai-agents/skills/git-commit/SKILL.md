@@ -13,7 +13,6 @@ allowed-tools: Bash(git status:*), Bash(git add:*), Bash(git branch:*), Bash(git
 ## Arguments
 
 - `language`: コミットメッセージの言語（例: "ja", "en"）。デフォルト: "English"
-- `--dry-run`: 実行せず、生成したコミットメッセージとステージング予定の内容のみを提示する
 
 ## Context
 
@@ -36,6 +35,5 @@ allowed-tools: Bash(git status:*), Bash(git add:*), Bash(git branch:*), Bash(git
    - 2行目: 空行
    - 3行目以降: 変更内容を箇条書きで記述
 3. **重要: コミットメッセージは必ずユーザーが指定した言語（デフォルト: 英語）で記述する。** Conventional Commits 仕様はフォーマットの参考としてのみ使用し、実際のメッセージは指定された言語で記述する。
-4. `--dry-run` が指定された場合は、生成したコミットメッセージとステージング予定の内容のみを提示し、`git add` / `git commit` を実行せず終了する。
-5. `git commit -m "<メッセージ>"` でコミットを実行する。
-6. コミット完了後、生成したコミットメッセージのみを出力する。
+4. `git commit -m "<メッセージ>"` でコミットを実行する。
+5. コミット完了後、生成したコミットメッセージのみを出力する。
