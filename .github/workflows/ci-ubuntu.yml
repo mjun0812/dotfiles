@@ -81,6 +81,16 @@ jobs:
           for d in config/dot_config/*; do
             name=$(basename "$d")
             target="/home/testuser/.config/$name"
+            if [[ "$name" = "euporie" ]]; then
+              target="$target/config.json"
+              if [[ -f "$target" ]]; then
+                echo "✓ .config/euporie/config.json exists"
+              else
+                echo "✗ .config/euporie/config.json is missing"
+                exit 1
+              fi
+              continue
+            fi
             if [[ "$name" = "herdr" ]]; then
               target="$target/config.toml"
             fi

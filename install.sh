@@ -26,6 +26,14 @@ log_section "Setting up dot config..."
 for d in "$DOTPATH"/config/dot_config/*; do
     app=$(basename "$d")
 
+    if [ "$app" = "euporie" ]; then
+        if [ -L "$CONFIG_DIR/$app" ]; then
+            cp -aLf "$CONFIG_DIR/$app" "$DOTPATH/.backup/$app" 2>/dev/null || true
+            rm -f "$CONFIG_DIR/$app"
+        fi
+        continue
+    fi
+
     if [ "$app" = "herdr" ]; then
         mkdir -p "$CONFIG_DIR/$app"
         rm -rf "$CONFIG_DIR/$app/config.toml"
@@ -52,6 +60,23 @@ source "$HOME/.zshrc"
 mise install
 mise reshim
 source "$HOME/.zshrc"
+
+################ [Euporie] ################
+log_section "Setting up Euporie..."
+if [ "$(uname -s)" = "Darwin" ]; then
+    EUPORIE_CONFIG_DIR="$HOME/Library/Application Support/euporie"
+else
+    EUPORIE_CONFIG_DIR="$CONFIG_DIR/euporie"
+fi
+EUPORIE_CONFIG_TARGET="$EUPORIE_CONFIG_DIR/config.json"
+EUPORIE_CONFIG_TEMPLATE="$DOTPATH/config/dot_config/euporie/config.json"
+mkdir -p "$EUPORIE_CONFIG_DIR"
+if [ -e "$EUPORIE_CONFIG_TARGET" ] || [ -L "$EUPORIE_CONFIG_TARGET" ]; then
+    cp -aLf "$EUPORIE_CONFIG_TARGET" "$DOTPATH/.backup/euporie_config.json" 2>/dev/null || true
+    uv run python3 "$DOTPATH/script/setup/rewrite_euporie_config.py" "$EUPORIE_CONFIG_TEMPLATE" "$EUPORIE_CONFIG_TARGET"
+else
+    cp "$EUPORIE_CONFIG_TEMPLATE" "$EUPORIE_CONFIG_TARGET"
+fi
 
 if [ "$(uname -s)" = "Darwin" ]; then
     log_section "Applying mise bootstrap..."
@@ -89,18 +114,17 @@ uv pip install -U \
     pynvim \
     PyYAML \
     'python-lsp-server[all]' \
-    jupyter-client \
-    jupytext \
-    nbformat \
-    ipykernel \
-    pillow
+    ipykernel
+"$HOME/.venv/bin/python" -m ipykernel install \
+    --user \
+    --name home-venv \
+    --display-name "Python (~/.venv)"
 
 cd "$DOTPATH"
 
 ################ [Neovim] ################
 log_section "Setting up Neovim plugins..."
-NVIM_NOTEBOOK=all NVIM_NOTEBOOK_IMAGES=0 nvim --headless "+Lazy! restore" +qa
-NVIM_NOTEBOOK=molten NVIM_NOTEBOOK_IMAGES=0 nvim --headless "+UpdateRemotePlugins" +qa
+nvim --headless "+Lazy! restore" +qa
 nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa
 nvim --headless -c "lua require('config.mason-preinstall')()" +qa
 
