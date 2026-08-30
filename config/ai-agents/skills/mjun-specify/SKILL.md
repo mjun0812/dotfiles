@@ -1,11 +1,8 @@
 ---
 name: mjun-specify
 description: >-
-  アイデア、GitHub Issue、Markdownを実装可能な仕様へ仕上げるSkill。
-  仕様決定に伴う意思決定をAgentと人間が協力して行う。
-  事実や外部情報の調査によって自動で決定できる部分をAgentが行う、
-  人間の判断が必要な部分を1問ずつ確認して、仕様を決定する。
-  仕様承認後にIssueへ記帳して、必要ならtask分解まで行う。
+  アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できる仕様 (contract) へ磨き上げるSkill。
+  調査で決まる論点はAgentが決め、人間の判断が必要な論点だけを1問ずつ確認して仕様を確定し、承認後にIssueへ投影する。
   ユーザーが「specを作って」「仕様を詰めて」「issueを磨いて」のように依頼したら使うこと。
   実装からPR作成まで進める依頼や、既にspecが承認済みの実装依頼には使わない。
 allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grilling), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-spec-review), Skill(mjun-to-tasks)
@@ -48,7 +45,7 @@ sourceから対象を判別する。出力言語はsourceまたは依頼の言�
 
 ### Phase 1: sourceの確保
 
-Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontmatterを `approval: pending` にする。既存specを磨き直す場合も、最初の変更より先に `approved` から `pending` へ戻す。承認前にsessionが中断しても、未承認contractを `mjun-implement` が実装しないためのgateである。
+Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontmatterを `approval: pending` にする。既存specを磨き直す場合も、最初の変更より先に `approved` から `pending` へ戻す。承認前にsessionが中断しても、未承認contractが実装されないためのgateである。
 
 - **取り込み** (Issue番号または `.mjun/specs/` 外のMarkdown、未取り込みの場合): Issueは本文とコメントを、Markdownはファイル内容を `.mjun/specs/<slug>/spec.md` へ構造化する (slugはタイトルの英語kebab-case)。frontmatterに `status: active` と `approval: pending` を記録し、Issue由来はH1直下に `Source: #<number>` を書く (Markdown由来は書かず純Local扱いとし、元ファイルは変更しない)。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
 - **新規作成**: 会話の依頼内容を下書き素材とする。内容がまったく無い場合のみ自由テキストで概要を受け取る。spec化が過剰な依頼 (単発のtypo修正など) では、specを作らず直接実装する選択肢を提示し、選ばれたら終了する
@@ -137,4 +134,4 @@ specの規模を判定する。
 - **Review**: Phase 5.5のVERDICTと、反映した指摘の件数 (Phase 4へ戻したdecisionがあればそのD番号)
 - **要確認事項**: tentativeとして残したdecisionの一覧 (実装前に解消が必要)
 - **Tasks**: 分解した場合はtask一覧 (各taskのBoundary、AC数、Done whenと、数の目安を超える分割候補の印)、単一taskならその旨。粒度が粗い、または細かいと感じた場合は `mjun-to-tasks` で再分解できる旨を添える (ここは承認ではなく、人間が粒度を目視する場所)
-- **次の一手**: `mjun-implement <source>` で実装を開始できる旨 (要確認が残る場合はその解消が先であることを添える)
+- **次の一手**: このspecを実装に渡せる旨 (要確認が残る場合はその解消が先であることを添える)

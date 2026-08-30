@@ -6,7 +6,7 @@ allowed-tools: Bash(git status:*), Bash(git add:*), Bash(git branch:*), Bash(git
 
 # git commit
 
-現在の変更を確認して、コミットするSkill。
+変更内容を読み取り、内容を要約したメッセージでcommitするSkill。stagingが無ければ現在の変更をstageし、pushは行わない。
 コミットメッセージはConventional Commitsの形式に従って生成するが、
 実際のメッセージはユーザーが指定した言語（デフォルトは英語）で記述する。
 

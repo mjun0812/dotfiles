@@ -3,7 +3,7 @@ name: mjun-research
 description: >-
   意思決定に必要な外部事実を一次資料 (公式ドキュメント・ソースコード・仕様書) から調査し、主張ごとに出典を付けて記録するSkill。
   ユーザーが「一次資料で調べて」「公式ドキュメントを確認して」と依頼したときや、spec作成中に外部仕様の知識不足でdecisionが決められないときに使うこと。
-  会話済み内容のまとめ (md-note) や、対象リポジトリのコードを読むだけで足りる調査には使わない。
+  会話済み内容のまとめや、対象リポジトリのコードを読むだけで足りる調査には使わない。
 allowed-tools: Read, Write, Glob, Grep, WebSearch, WebFetch, Bash(git:*), Bash(mkdir:*), Bash(ls:*), Bash(cat:*)
 ---
 

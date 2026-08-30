@@ -1,6 +1,6 @@
 # Source Resolution
 
-specを扱うskill (mjun-specify / mjun-to-tasks / mjun-implement) が共有する、正本と投影の規則。専用のindexや同期状態ファイルは持たず、specと実装状態は毎回この規則で解決する。
+このskillが従う、正本と投影の規則。専用のindexや同期状態ファイルは持たず、specと実装状態は毎回この規則で解決する。
 
 ## 目次
 
@@ -22,7 +22,7 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 
 ```text
 取り込み: Issue → .mjun/specs/<slug>/ へspec化
-作業:     specify / to-tasks / implement はLocalの4文書だけを読み書きする
+作業:     spec作成・task分解・実装のどの段階でもLocalの4文書だけを読み書きする
 投影:     承認後、Localのcontractを Issue本文へ反映 (Sourceを持つspecのみ)
 配送:     worktreeで実装 → PR (SourceがあればCloses #N)
 ```
@@ -41,25 +41,25 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 
 - `<slug>` は内容を表す英語kebab-case。既存slugと衝突する場合は末尾に `-2`, `-3` を付ける
 - 最初からすべては作らない。`spec.md` だけから開始できる
-- frontmatterにはライフサイクル状態 `status: active | done` とcontract承認状態 `approval: pending | approved` を持つ。`mjun-implement` は `approval: approved` のspecだけを実装する
+- frontmatterにはライフサイクル状態 `status: active | done` とcontract承認状態 `approval: pending | approved` を持つ。実装の対象になるのは `approval: approved` のspecだけである
 - decision確定ごとの更新は常にLocalファイルへ逐次行う。task進捗は `tasks.md` の `Status`、resume先は同ファイルの `Implementation Branch` で管理する
-- `mjun-to-tasks` は単一taskでも `tasks.md` を作る。分解を省略した単一taskでは、`mjun-implement` がworktree作成後に同じ形式で作る
+- task分解は単一taskでも `tasks.md` を作る。分解を省略した単一taskでは、実装側がworktree作成後に同じ形式で作る
 - `Implementation Branch` があり、そのlocal branchが存在すればtaskのstatusにかかわらずそのbranchからresumeする。branchが存在しない場合は記録を破棄して新規branchで続行する。done taskのAcceptance Criteriaが変わった場合は `ready` に戻し、再実装・再検証の対象にする
 
 ## ライフサイクル状態 (`status`)
 
 specは増えていくため、堆積管理のためのライフサイクル状態をfrontmatterで持つ。
 
-- `mjun-specify` が作成・取り込み時に `status: active` を書き、`mjun-implement` が配送の完了時に `status: done` へ更新する
+- 作成・取り込み時に `status: active` を書き、配送の完了時に実装側が `status: done` へ更新する
 - **照合・逆引き・一覧の対象は `status: active` のspecだけ**とする。doneのspecも明示的にパスを渡せば読める
 - 放棄したspecは手動でdoneにするか削除する
 - `status` は堆積管理であり承認ゲートではない。contract承認は別の `approval` で管理する
 
 ## Contract承認状態 (`approval`)
 
-- `mjun-specify` はcontractの作成・更新を始める前に `approval: pending` を書き、Phase 6で人間が「反映する」を選んだ後にだけ `approval: approved` へ更新する
+- contractの作成・更新を始める前に `approval: pending` を書き、Phase 6で人間が「反映する」を選んだ後にだけ `approval: approved` へ更新する
 - session中断、tool障害、明示的なキャンセルのいずれでも、承認が完了していないspecは `pending` のまま残る
-- `mjun-implement` はspec modeで `approval: approved` 以外を受け付けない。doc modeには適用しない
+- 実装側は `approval: approved` 以外のspecを受け付けない (spec外の単発Markdownを起点にする実装には適用しない)
 
 ### 一覧の手順
 
@@ -90,15 +90,15 @@ Source: #123
 
 ## 取り込み (Issue → spec)
 
-- Issue本文とコメントを読み、spec.mdのcontract構成へ構造化する (slugはIssueタイトルから)。**取り込みを行うのは `mjun-specify` だけ**である
-- **入口は常に `mjun-specify`**: `mjun-to-tasks` / `mjun-implement` に未取り込みのIssue番号が渡された場合は中止し、`mjun-specify #N` を案内する。Issueが直行で実装できる品質かの判断を取り込み側で肩代わりしない (trivialな依頼はspecifyの「spec化が過剰なら直接実装を提示」で振り分けられる)
+- Issue本文とコメントを読み、spec.mdのcontract構成へ構造化する (slugはIssueタイトルから)。**取り込みを行うのはこのskillだけ**である
+- **入口は常にこのskill**: task分解や実装に未取り込みのIssue番号が渡された場合、それらは中止してこのskillでの取り込みを案内する。Issueが直行で実装できる品質かの判断を取り込み側で肩代わりしない (trivialな依頼はPhase 1の「spec化が過剰なら直接実装を提示」で振り分ける)
 
 ## 投影 (spec → Issue)
 
 `Source:` を持つspecは、contract承認後にIssue本文へ投影する。
 
 - 投影範囲: contract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes` + `tasks.md` があれば `## Tasks` (taskタイトルのチェックボックス一覧)
-- **task進捗は投影しない**。進捗は内部 (tasks.md) だけで管理し、外部からはPRで見える。implementはIssueへ一切書き込まない (Issueの `## Tasks` は承認時点のスナップショット)
+- **task進捗は投影しない**。進捗は内部 (tasks.md) だけで管理し、外部からはPRで見える。実装はIssueへ一切書き込まない (Issueの `## Tasks` は承認時点のスナップショット)
 - 書き換えは一時ファイル経由の一括更新 (`gh issue edit --body-file`) + 変更サマリの1コメント (body編集はwatcherに通知されないため)
 - 却下案・検討経緯はIssueコメントへ記録する
 - 純Local specは投影しない
@@ -124,8 +124,8 @@ specをまたいで効く語彙と決定は、spec配下ではなく `.mjun/` �
 - ADRは見出しと1〜3文 (文脈・決定・理由) で書く。必要なときだけ `Status: proposed | accepted | deprecated | superseded by NNNN` のfrontmatter、Considered Options、Consequencesを足す
 - ADRには由来 (出典) を必ず1行添える: specから投影したものは `由来: <slug> / D-NNN`、履歴から発掘したものは `由来: PR #N` / `Issue #N` / `docs/<path>`、会話中の決定は `由来: 会話 (YYYY-MM-DD)`。衝突時に人間が出典を見て判断できるようにする
 - ADRにするのは、**覆しにくい**・**文脈なしでは不可解**・**本物のtrade-offがあった**、の3条件をすべて満たす決定だけ。1つでも欠ければ `decisions.md` に留める
-- 投影: `mjun-implement` が配送の完了時に、`decisions.md` の `Status: accepted` のdecisionから3条件を満たすものをADRへ書く。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする
-- 発掘: `mjun-steering` が履歴 (merged PR、closed Issue、設計doc) から、理由が明文で書かれている決定と用語を追記する。コードからの推測はADRにせずsteeringの事実に留める
+- 投影: 実装の配送完了時に、`decisions.md` の `Status: accepted` のdecisionから3条件を満たすものをADRへ書く。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする
+- 発掘: steeringの整備時に履歴 (merged PR、closed Issue、設計doc) から、理由が明文で書かれている決定と用語を追記する。コードからの推測はADRにせずsteeringの事実に留める
 - 追記専用: どのskillも既存の用語・ADRを書き換えたり削除したりしない。決定を覆すときは新しいADRを書き、旧ADRを `superseded by NNNN` にする
 - repoに `docs/adr/` があればそれを正とし、`.mjun/adr/` へ複製しない。読み込む側は両方を読む
 - 読み込み: spec・design・taskを作る側とレビューする側は、`CONTEXT.md` の語彙を使い、既存ADRと矛盾する要求・設計を衝突として扱う (spec側を直すか、Human-owned decisionとしてADRを覆すかを人間が決める)
@@ -156,13 +156,13 @@ specをまたいで効く語彙と決定は、spec配下ではなく `.mjun/` �
 
 ライフサイクルと書き手:
 
-| 置き場所     | 再生成                  | 更新方式                               | 書き手                                                              |
-| ------------ | ----------------------- | -------------------------------------- | ------------------------------------------------------------------- |
-| `steering/`  | できる (Bootstrap)      | 追記主義だが、事実が変われば書き換える | `mjun-steering` だけ                                                |
-| `CONTEXT.md` | できない (seedはできる) | 追記専用                               | 用語を確定した側 (specify、会話中の作業) + `mjun-steering` の発掘   |
-| `adr/`       | できない (seedはできる) | 追記専用 + superseded                  | 決定した側 (implementの投影、会話中の作業) + `mjun-steering` の発掘 |
+| 置き場所     | 再生成                  | 更新方式                               | 書き手                                                         |
+| ------------ | ----------------------- | -------------------------------------- | -------------------------------------------------------------- |
+| `steering/`  | できる (Bootstrap)      | 追記主義だが、事実が変われば書き換える | steeringの整備だけ                                             |
+| `CONTEXT.md` | できない (seedはできる) | 追記専用                               | 用語を確定した側 (spec作成、会話中の作業) + 履歴からの発掘     |
+| `adr/`       | できない (seedはできる) | 追記専用 + superseded                  | 決定した側 (実装の配送時の投影、会話中の作業) + 履歴からの発掘 |
 
-「seedはできるが再生成はできない」がsteeringとの決定的な差であり、`mjun-steering` がCONTEXT.md / ADRに追記しかしないのはこのためである。
+「seedはできるが再生成はできない」がsteeringとの決定的な差であり、steeringの整備がCONTEXT.md / ADRに追記しかしないのはこのためである。
 
 ## git管理と参照規則
 

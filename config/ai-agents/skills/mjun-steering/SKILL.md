@@ -72,7 +72,7 @@ core 3ファイルの生成が完了してから開始する。Phase 1で得た�
 
 ### Phase 3: 用語集と決定記録の発掘
 
-steeringは「コードに証拠がある事実」を書く場所であり、用語の呼び分けと決定の理由は `.mjun/CONTEXT.md` と `.mjun/adr/` に分けて書く。形式と規則は [source-resolutionの用語集と決定記録](../mjun-specify/references/source-resolution.md#用語集と決定記録) に従う。どちらも**追記専用**で、既存の用語・ADRは書き換えず削除しない。
+steeringは「コードに証拠がある事実」を書く場所であり、用語の呼び分けと決定の理由は `.mjun/CONTEXT.md` と `.mjun/adr/` に分けて書く。形式と規則は [references/glossary_and_adr.md](references/glossary_and_adr.md) に従う。どちらも**追記専用**で、既存の用語・ADRは書き換えず削除しない。
 
 9. 発掘元を集める。全件を読まず、理由が書かれているものに絞る
    - 本文に理由が書かれたmerged PR (`gh pr list --state merged --json number,title,body` で本文を持つものを選ぶ)
