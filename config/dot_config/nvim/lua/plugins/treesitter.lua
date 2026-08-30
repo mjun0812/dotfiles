@@ -12,7 +12,6 @@ return {
       -- FileType / buftype による除外リスト
       local ignore_ft = {
         help = true,
-        fern = true,
         lazy = true,
         toggleterm = true,
         TelescopePrompt = true,

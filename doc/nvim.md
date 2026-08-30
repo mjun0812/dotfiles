@@ -6,25 +6,24 @@ This document describes the Neovim configuration and keyboard shortcuts.
 
 The configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) as the plugin manager.
 
-| Plugin                                                                | Description                          |
-| --------------------------------------------------------------------- | ------------------------------------ |
-| [tokyonight.nvim](https://github.com/folke/tokyonight.nvim)           | Color scheme                         |
-| [snacks.nvim](https://github.com/folke/snacks.nvim)                   | Terminal, indent guides, window zoom |
-| [blink.cmp](https://github.com/saghen/blink.cmp)                      | Completion engine                    |
-| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)    | Fuzzy finder                         |
-| [fern.vim](https://github.com/lambdalisue/fern.vim)                   | File explorer                        |
-| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)           | Git signs in gutter                  |
-| [trouble.nvim](https://github.com/folke/trouble.nvim)                 | Diagnostics and quickfix list        |
-| [which-key.nvim](https://github.com/folke/which-key.nvim)             | Keybinding help                      |
-| [mini.pairs](https://github.com/echasnovski/mini.pairs)               | Auto pairs                           |
-| [sidekick.nvim](https://github.com/folke/sidekick.nvim)               | AI CLI integration                   |
-| [mason.nvim](https://github.com/williamboman/mason.nvim)              | LSP server management                |
-| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Syntax highlighting                  |
-| [copilot.vim](https://github.com/github/copilot.vim)                  | GitHub Copilot                       |
-| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)          | Status line                          |
-| [ipynb.nvim](https://github.com/ajbucci/ipynb.nvim)                   | Direct `.ipynb` notebook editor      |
-| [molten-nvim](https://github.com/benlubas/molten-nvim)                | Jupyter kernel runner                |
-| [jupytext.nvim](https://github.com/goerz/jupytext.nvim)               | Notebook/plaintext conversion        |
+| Plugin                                                                | Description                                         |
+| --------------------------------------------------------------------- | --------------------------------------------------- |
+| [tokyonight.nvim](https://github.com/folke/tokyonight.nvim)           | Color scheme                                        |
+| [snacks.nvim](https://github.com/folke/snacks.nvim)                   | Terminal, indent guides, window zoom, file explorer |
+| [blink.cmp](https://github.com/saghen/blink.cmp)                      | Completion engine                                   |
+| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)    | Fuzzy finder                                        |
+| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)           | Git signs in gutter                                 |
+| [trouble.nvim](https://github.com/folke/trouble.nvim)                 | Diagnostics and quickfix list                       |
+| [which-key.nvim](https://github.com/folke/which-key.nvim)             | Keybinding help                                     |
+| [mini.pairs](https://github.com/echasnovski/mini.pairs)               | Auto pairs                                          |
+| [sidekick.nvim](https://github.com/folke/sidekick.nvim)               | AI CLI integration                                  |
+| [mason.nvim](https://github.com/williamboman/mason.nvim)              | LSP server management                               |
+| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Syntax highlighting                                 |
+| [copilot.vim](https://github.com/github/copilot.vim)                  | GitHub Copilot                                      |
+| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)          | Status line                                         |
+| [ipynb.nvim](https://github.com/ajbucci/ipynb.nvim)                   | Direct `.ipynb` notebook editor                     |
+| [molten-nvim](https://github.com/benlubas/molten-nvim)                | Jupyter kernel runner                               |
+| [jupytext.nvim](https://github.com/goerz/jupytext.nvim)               | Notebook/plaintext conversion                       |
 
 ## Keyboard Shortcuts
 
@@ -54,12 +53,30 @@ Leader key: `<Space>`, Local leader: `\`
 | `<M-`>`      | Normal/Terminal | Toggle floating terminal (90% size) |
 | `<leader>wm` | Normal          | Toggle window maximize (zoom)       |
 
-### File Explorer (Fern)
+### File Explorer (snacks.nvim explorer)
 
-| Key     | Mode        | Description                 |
-| ------- | ----------- | --------------------------- |
-| `<C-e>` | Normal      | Toggle file tree            |
-| `V`     | Fern buffer | Open file in vertical split |
+The explorer is configured in `lua/plugins/snacks-explorer.lua` with fern.vim-style keymaps.
+It watches the file system and refreshes automatically; the search input is hidden until `/` is pressed.
+
+| Key                     | Mode         | Description                                                  |
+| ----------------------- | ------------ | ------------------------------------------------------------ |
+| `<C-e>`                 | Normal       | Toggle file tree (reveals the current file)                  |
+| `l` / `h`               | Explorer     | Expand or open / collapse                                    |
+| `<CR>`                  | Explorer     | Open file, or make the directory the root                    |
+| `<C-h>` / `<BS>`        | Explorer     | Go to the parent directory                                   |
+| `i`                     | Explorer     | Reveal the file of the current buffer                        |
+| `!` / `H` / `I`         | Explorer     | Toggle hidden files / hidden files / git-ignored files       |
+| `e` / `E` / `V` / `t`   | Explorer     | Open / open in vertical split / horizontal split / tab       |
+| `x`                     | Explorer     | Open with the system application                             |
+| `-` / `<C-j>` / `<C-k>` | Explorer     | Toggle selection / select and move down / move up and select |
+| `N` / `K`               | Explorer     | Create a file or directory (end with `/` for a directory)    |
+| `D` / `R` / `m` / `c`   | Explorer     | Trash / rename / move / copy                                 |
+| `y` / `C` / `P`         | Explorer     | Yank path / yank path / paste (copy) into the directory      |
+| `r` / `<C-l>`           | Explorer     | Refresh                                                      |
+| `/`                     | Explorer     | Show the search input and search recursively                 |
+| `<CR>`                  | Search input | Reveal the match in the tree and hide the input              |
+| `<Esc>`                 | Search input | Leave the search and hide the input                          |
+| `?`                     | Explorer     | Show help                                                    |
 
 ### Fuzzy Finder (Telescope)
 

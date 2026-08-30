@@ -26,7 +26,6 @@ require("lazy").setup({
     spec = {
         { import = "plugins.blink-cmp" },
         { import = "plugins.conform" },
-        { import = "plugins.fern" },
         { import = "plugins.gitsigns" },
         { import = "plugins.image" },
         { import = "plugins.lualine" },
@@ -35,6 +34,7 @@ require("lazy").setup({
         { import = "plugins.notebook-molten" },
         { import = "plugins.sidekick" },
         { import = "plugins.snacks" },
+        { import = "plugins.snacks-explorer" },
         { import = "plugins.telescope" },
         { import = "plugins.theme" },
         { import = "plugins.treesitter" },
