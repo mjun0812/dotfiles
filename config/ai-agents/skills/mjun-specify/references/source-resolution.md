@@ -19,7 +19,7 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 .mjun/specs/<slug>/
 ├── spec.md          # 必須。人間が承認するcontract
 ├── decisions.md     # 非自明な意思決定が発生した場合だけ
-├── design.md        # contractだけでは実装方針が伝わらない場合だけ
+├── design.md        # 必須。contract内の実装設計。承認前に書く
 ├── tasks.md         # taskと実装状態。実装開始後は単一taskでも持つ
 ├── prototype/       # artifact自体を一次資料として残す場合だけ
 └── research/        # 外部調査が発生した場合だけ

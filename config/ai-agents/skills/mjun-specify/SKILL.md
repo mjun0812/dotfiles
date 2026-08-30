@@ -8,7 +8,7 @@ description: >-
   仕様承認後にIssueへ記帳して、必要ならtask分解まで行う。
   ユーザーが「specを作って」「仕様を詰めて」「issueを磨いて」のように依頼したら使うこと。
   実装からPR作成まで進める依頼や、既にspecが承認済みの実装依頼には使わない。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grill), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grill), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-design-review), Skill(mjun-to-tasks)
 ---
 
 # mjun-specify
@@ -21,8 +21,8 @@ GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影
 規則は [references/source-resolution.md](references/source-resolution.md) に従う。
 
 意思決定の判断材料に `mjun-grill` / `mjun-research` / `mjun-prototype` を、
-承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
-承認を求める前に、specを書いたメイン会話とは別のfresh contextのreviewer SubAgentがcontractを検査する (Phase 5.5)。
+承認前の設計検査に `mjun-design-review` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
+承認を求める前に、specを書いたメイン会話とは別のfresh contextでcontractとdesign.mdを検査する (Phase 5.5)。
 
 ## Arguments
 
@@ -74,41 +74,47 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 - **Evidence-blocked**: 不足の種類に応じて `mjun-research` (外部事実) / `mjun-prototype` (UI、状態、ロジックの実物) / trial implementation (Phase 5へ) で証拠を集め、再分類して解決する
 - `--grill` 指定時は、Agent-ownedのdecisionもHuman-ownedと同様に1問ずつ確認する
 
+### Phase 4.5: design.mdの作成
+
+frontierのdecisionがすべて解決したら、採択した設計を `design.md` へ [references/design-template.md](references/design-template.md) の構成で書く (既存specの磨き直しでは既存のdesign.mdを更新する)。design.mdは省略しない。spec.mdと同じく、調査しても埋まらないセクションは省略してよいが、Modules と Change Outline は必ず書く。decisions.mdに散らばる設計上の採択を1か所に集約し、実装者 (fresh context) がdecisions.mdを読み直さなくても構造が分かる状態にする。
+
 ### Phase 5: trial implementation
 
 `--skip-trial` 指定時は省略する。実装方針の実現可能性が不確かな場合に、一時worktreeで検証する:
 
 1. worktreeを作成する: branch名は `specify/<slug>-trial`、パスは `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける
 2. 修正方針の最小実装を行い、テストを実行して結果を確認する
-3. 検証結果 (実行したテスト、結果、落とし穴、方針の修正点) を要約してdesign.mdの材料にする。design.mdは [references/design-template.md](references/design-template.md) の構成で書く。diff全文は載せず、鍵になる数行のスニペットのみ許可する
-4. 方針の問題が見つかった場合はPhase 4へ戻り、decisionを更新する
+3. 検証結果 (実行したテスト、結果、落とし穴、方針の修正点) を要約して `design.md` の Trial Implementation Notes に書く。diff全文は載せず、鍵になる数行のスニペットのみ許可する
+4. 方針の問題が見つかった場合はPhase 4へ戻り、decisionと `design.md` を更新する
 5. **worktreeとbranchは、成功でも中断でも必ず削除する**: `git worktree remove --force <path>` → `git branch -D <branch>`。削除に失敗した場合はユーザーに警告する
 
-### Phase 5.5: contract review
+### Phase 5.5: contract reviewとdesign review
 
-承認を求める前に、fresh contextのreviewer SubAgentにcontractを検査させる。メイン会話はPhase 2〜5で自分が下した判断に引きずられるため、検査は必ず別のcontextで行う。`--grill` 指定時も省略しない。
+承認を求める前に、contractとdesign.mdをそれぞれfresh contextで検査させる。メイン会話はPhase 2〜5で自分が下した判断に引きずられるため、検査は必ず別のcontextで行う。`--grill` 指定時も省略しない。
 
-promptは [templates/contract-reviewer-prompt.md](templates/contract-reviewer-prompt.md) に次を合成して作る。
+**contract review**: reviewer SubAgentを起動する。promptは [templates/contract-reviewer-prompt.md](templates/contract-reviewer-prompt.md) に次を合成して作る。
 
 - repository rootの絶対パス (Evidenceの `file:line` を実際に読ませるため)
-- `spec.md` の全文。あれば `decisions.md` と `design.md` の全文
+- `spec.md` と `design.md` の全文。あれば `decisions.md` の全文
 - sourceの原文: Issueなら本文とコメント、Markdown取り込みなら元ファイルの内容、新規作成ならPhase 1の下書き素材
 - `.mjun/steering/*.md` のパス一覧 (あれば。reviewerが自分で読む)
 - Human-ownedとして人間が決めたdecisionの一覧 (D番号とタイトル)
 
 reviewerには読み取りだけを許可し、spec・decisions・design・コードを変更させない。
 
-`## Spec Review` の `- VERDICT:` フィールドだけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する。
+**design review**: `mjun-design-review` に `.mjun/specs/<slug>` を渡してSkill toolで呼び出す。design.md・spec.md・decisions.md・steering・Human-owned decisionの読み込みと、reviewer → verifierの2段検査はskill側が行う。
 
-- `PASS` → Phase 6へ進む
-- `NEEDS_FIXES` → 各指摘を読み、contractの明文に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は `decisions.md` にentryを追記する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)
-- `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grill` の単一decisionモードで再解決してからPhase 6へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
+両方の結果ブロック (`## Spec Review` と `## Design Review`) の `- VERDICT:` フィールドだけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する。
 
-SubAgentが使えない環境では、同じテンプレートのチェックリストをメイン会話で順に実施し、その旨をPhase 9の報告に含める。
+- 両方 `PASS` → Phase 6へ進む
+- いずれかが `NEEDS_FIXES` → 各指摘を読み、contractの明文とコードの事実に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は `decisions.md` にentryを追記する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)
+- いずれかの `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grill` の単一decisionモードで再解決し、`design.md` を更新してからPhase 6へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
+
+SubAgentが使えない環境では、contract reviewは同じテンプレートのチェックリストをメイン会話で順に実施し (design reviewはskill側が同様に代替する)、その旨をPhase 9の報告に含める。
 
 ### Phase 6: contractの提示と承認
 
-- specのcontract全文と、変更点サマリ (追加または変更したセクションと理由。Phase 5.5のreviewer指摘を反映した箇所はその旨を添える)、要確認 (tentative) の一覧を提示する
+- specのcontract全文、`design.md` の全文、変更点サマリ (追加または変更したセクションと理由。Phase 5.5の指摘を反映した箇所はその旨を添える)、要確認 (tentative) の一覧を提示する。承認対象はcontractであり、design.mdは人間が目視する場所とする (気になる点があれば「修正して再提示」で戻す)
 - AskUserQuestionで「反映する / 修正して再提示 / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
 - 「反映する」の場合は `spec.md` のfrontmatterを `approval: approved` へ更新してからPhase 7へ進む
 - 「キャンセル」の場合は以降のPhaseへ進まず、作成または更新済みのLocal specを削除するか `approval: pending` のまま残すかを確認する
@@ -136,7 +142,7 @@ specの規模を判定する。
 
 - **Spec**: Local specのパス (`Source:` があればIssue番号とURLも)
 - **変更点サマリ**: 追加または変更したセクション
-- **Review**: Phase 5.5のVERDICTと、反映した指摘の件数 (Phase 4へ戻したdecisionがあればそのD番号。SubAgentが使えずメイン会話で実施した場合はその旨)
+- **Review**: Phase 5.5の両VERDICT (contract / design) と、反映した指摘の件数 (Phase 4へ戻したdecisionがあればそのD番号。SubAgentが使えずメイン会話で実施した場合はその旨)
 - **要確認事項**: tentativeとして残したdecisionの一覧 (実装前に解消が必要)
 - **Tasks**: 分解した場合はtask一覧 (各taskのBoundary、AC数、Done whenと、数の目安を超える分割候補の印)、単一taskならその旨。粒度が粗い、または細かいと感じた場合は `mjun-to-tasks` で再分解できる旨を添える (ここは承認ではなく、人間が粒度を目視する場所)
 - **次の一手**: `mjun-implement <source>` で実装を開始できる旨 (要確認が残る場合はその解消が先であることを添える)

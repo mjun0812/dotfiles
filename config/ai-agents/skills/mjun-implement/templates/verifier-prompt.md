@@ -8,6 +8,7 @@
 
 - worktreeの絶対パス (ファイル操作とコマンド実行はすべてこの配下で行う)
 - specのタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)
+- 実装設計 (`design.md`。Local specの場合。Interfaces & Seams と Test Seams を検査対象の特定に使う)
 - 担当タスク: 説明、Acceptance Criteria、Boundary、Done when、Seam
 - 親が洗い出した検証コマンド (TEST / LINT / BUILD)
 - 過去タスクのImplementation Notes (あれば)

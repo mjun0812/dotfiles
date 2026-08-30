@@ -24,7 +24,7 @@ specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化する
 2. Issue番号 → activeなspec (`status: active`) から `Source: #<number>` を逆引きする (複数ヒットした場合は一覧を提示して選んでもらう)。無ければ中止し、`mjun-specify #<number>` での取り込みを案内する (入口は常にmjun-specify)
 3. 判定できない場合は中止してユーザーに確認する
 
-対象specのRequirements・Acceptance Criteriaを読み取れない場合は中止し、`mjun-specify` での磨き上げを案内する。
+対象specのRequirements・Acceptance Criteriaを読み取れない場合、または `design.md` が無い場合は中止し、`mjun-specify` での磨き上げを案内する。
 
 ## 分解規則
 
@@ -35,7 +35,7 @@ specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化する
   - **前提を先行taskにする**: 型・設定・配線・整形 (prefactoring) が要るなら別taskにしてBlocked byで結ぶ。存在すると仮定しない
   - **数の目安**: AC ≤ 3、触る責務 = 1。超える場合と、変更ファイルが5〜6を超える見込みの場合は分割候補として扱う (数字はrepositoryに合わせて調整してよい)
 - **分割と統合**: 独立に検証できる成果が2つ以上あるtaskは分割する。帳簿だけのtaskや単独で検証できないtaskは隣のtaskに統合する
-- **属性**: 各taskにBoundary (specのOwns内のどの責務か)、Blocked by (先に完了が必要なtask)、Done when (完了時に観察できることを1行)、Seam (検証する公開インターフェースを1行。実装時にはここに対して検査が書かれる)、Acceptance Criteria (機械的に判定できるcheckbox) を付ける
+- **属性**: 各taskにBoundary (specのOwns内のどの責務か)、Blocked by (先に完了が必要なtask)、Done when (完了時に観察できることを1行)、Seam (検証する公開インターフェースを1行。`design.md` の Interfaces & Seams から取る。実装時にはここに対して検査が書かれる)、Acceptance Criteria (機械的に判定できるcheckbox) を付ける
 - **記述**: task本文にファイルパス、関数名、コード断片を書かない (実装の間に腐るため)。振る舞いとSeamで書く。Acceptance Criteriaは「操作 → 観察できる結果」の形で、1件が1つの検査コマンドに落とせるように書く
 - **wide refactorの例外**: 1つの機械的変更のblast radiusがコードベース全体へ及ぶ場合だけvertical slice以外の分割を許可する。ただし旧形と新形を併存させる互換レイヤーや段階移行は作らない。各taskを独立に検証できる単位へ分けられない場合は、変更全体を1taskとして扱う。既存データを保護する必要があるDB変更だけは、repositoryの規約に従って安全なmigrationへ分解してよい
 - **依存検査**: Blocked byのグラフにcycleが無いことを確認する。cycleがあればtaskの切り方を見直す
@@ -64,7 +64,7 @@ specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化する
 
 ## 手順
 
-1. source解決に従って対象specを確定し、`spec.md` と、あれば `design.md` を読む
+1. source解決に従って対象specを確定し、`spec.md` と `design.md` を読む
 2. 分解規則に従ってtask一覧を作る
 3. 依存グラフ (Blocked by) を確認し、実装順に並べる
 4. 分解結果を提示する: task一覧 (各taskのBoundary、AC数、Done when)、依存関係、数の目安を超える分割候補、単一taskの場合はその旨

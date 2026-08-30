@@ -7,7 +7,7 @@
 ## 受け取るもの
 
 - repository rootの絶対パス
-- `spec.md` の全文。あれば `decisions.md` と `design.md` の全文
+- `spec.md` と `design.md` の全文。あれば `decisions.md` の全文
 - sourceの原文 (Issue本文とコメント、取り込み元のMarkdown、または依頼の下書き素材)
 - steeringファイルのパス一覧 (あれば)
 - 人間が決めたdecision (Human-owned) の一覧
@@ -28,7 +28,7 @@
 4. **decisionsとの整合**: 本文がacceptedな決定と食い違っていないか、supersededの決定内容が本文に残っていないか、tentativeの決定が本文で確定として書かれていないか
 5. **Evidenceの実在**: `decisions.md` のEvidence (`file:line`、`research/` のパス) が実在し、主張を支えているか
 6. **steeringとの衝突**: steeringの規約と矛盾する決定が、衝突として明示されずに入っていないか
-7. **design.mdとの整合** (design.mdがある場合): Modules / Interfaces & SeamsがcontractのBoundariesと一致しているか
+7. **design.mdとの整合**: Modules / Interfaces & SeamsがcontractのBoundariesと一致しているか
 
 ## Spec Review
 

@@ -9,6 +9,7 @@
 - worktreeの絶対パス (ファイル操作とコマンド実行はすべてこの配下で行う)
 - base branch名と作業branch名
 - spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope。specにある場合)
+- 実装設計 (`design.md`: Modules / Interfaces & Seams / Data Flow / Test Seams / Change Outline。Local specの場合)
 - verifierの `TASK_BRIEF`、`CHECK_FILES` (変更禁止)、`CHECK_COMMANDS`
 - 担当タスクの説明・Boundary・Done when (完了時に観察できること)・Seam、親が決めた実装方針
 - 親が洗い出した検証コマンドのうちタスクに関係するもの
@@ -26,7 +27,7 @@
 
 - 検査を1つずつgreenにする。1つの検査 → 最小の実装 → その検査と関係するテストの実行、の順で進め、全体のテストスイートは最後に1回だけ実行する
 - 変更のたびにlintと型検査 (あれば) を実行する
-- 設計制約に従う。変更は担当タスクに閉じ、スコープを広げない
+- 実装設計と設計制約に従う。変更は担当タスクに閉じ、スコープを広げない
 - 追加の単体テストを書いてよいが、`CHECK_FILES` は変更しない
 
 ### 3. 検証

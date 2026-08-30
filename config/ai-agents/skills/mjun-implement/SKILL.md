@@ -28,7 +28,7 @@ sourceの形からmodeを決める。
 2. Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経て **spec mode**
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
-spec modeでは、specディレクトリ配下の `spec.md` (必須)、`decisions.md`、`design.md`、`tasks.md` をReadする。
+spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (いずれも必須)、あれば `decisions.md` と `tasks.md` をReadする。
 
 ### Issue番号の逆引き
 
@@ -50,7 +50,7 @@ spec modeでは、specディレクトリ配下の `spec.md` (必須)、`decision
    - 現在のbranch: `git branch --show-current`、既存worktree: `git worktree list --porcelain`
 2. 出力言語をsourceの言語から決める (主に日本語なら日本語、それ以外または曖昧なら英語)。コメント、commit、PR作成に使う
 3. **内容検査**:
-   1. **contract承認** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、`mjun-specify <source>` でcontractを承認するよう案内する。実装依頼そのものをcontract承認の代わりにしない
+   1. **contract承認とdesign.md** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、`mjun-specify <source>` でcontractを承認するよう案内する。実装依頼そのものをcontract承認の代わりにしない。`design.md` が無い場合も中止し、`mjun-specify <source>` で設計を作成するよう案内する
    2. **情報の充足**: Goal、受け入れ基準、実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、`mjun-specify` でspecを詰めることを案内する。方針を推測で補って実装に進まない
    3. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` を `accepted` へ更新してから進む (確認済みの決定として記録し、再実行時に同じtentativeで止まらない)
    4. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込みと投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する。反映する場合は `approval: pending` へ戻してから反映し、更新後のcontractを提示して承認を得て `approved` へ更新してから進む。承認されなければ中止し、`mjun-specify <source>` での磨き直しを案内する
@@ -113,7 +113,7 @@ Phase 3の間の制約:
 taskキューの順に、taskごとに次を行ってからPhase 3.1へ進む。
 
 1. **task statusの更新**: `tasks.md` の該当taskを `Status: in-progress` へ更新する (spec modeのみ。メインrepo側のパスで)
-2. **verifierの起動**: テンプレートに、worktreeの絶対パス、contract、担当task (説明、Acceptance Criteria、Boundary、Done when、Seam)、検証コマンド、Implementation Notesを合成して起動する
+2. **verifierの起動**: テンプレートに、worktreeの絶対パス、contract、`design.md` の全文 (spec modeのみ)、担当task (説明、Acceptance Criteria、Boundary、Done when、Seam)、検証コマンド、Implementation Notesを合成して起動する
 3. **STATUSの処理**: `## Check Report` の `- STATUS:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
    - `CHECKS_READY` → `CHECK_COMMANDS` をworktreeで実行し (親が直接、またはSubAgentに実行を依頼して出力を受け取る)、**すべて失敗する**ことを確認する。通ってしまう検査があれば、その検査名を添えてverifierに1回だけ作り直させる。確認後、`CHECK_FILES` のハッシュを記録し、検査一覧 (Acceptance Criterion → コマンド) をユーザーに提示してPhase 3.1へ進む (承認は取らない。人間が「この検査が通れば完了」を見る場所)
    - `CANNOT_VERIFY` → 中止する。`MISSING` (どんな検証手段があれば検査にできるか) を報告し、Acceptance Criteriaを検査に落とせる形へ書き直す必要があることを伝える (`mjun-specify <source>` で磨き直す)
@@ -127,6 +127,7 @@ taskキューの順に、taskごとに次を行ってからPhase 3.1へ進む。
 1. **implementerの起動**: テンプレートに以下を合成して起動する
    - worktreeの絶対パス、base branch名と作業branch名
    - specのタイトルと本文の要約と、**contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)**
+   - `design.md` の全文 (spec modeのみ。実装設計)
    - verifierの `TASK_BRIEF`、`CHECK_FILES` (変更禁止)、`CHECK_COMMANDS`
    - 担当taskの説明、Boundary、Done when、Seam、Phase 1で決めた実装方針
    - taskに関係する検証コマンド
@@ -136,7 +137,7 @@ taskキューの順に、taskごとに次を行ってからPhase 3.1へ進む。
    - `CHECK_DISPUTE` → 親が `DISPUTE` の主張を担当taskのAcceptance Criteriaと照らして裁定する。検査が誤っていればverifierに `DISPUTE` を渡して1回だけ作り直させ (RED確認とハッシュ更新を行う)、implementerを再起動する。検査が正しければ裁定理由を添えてimplementerを再起動する。裁定は同一taskで1回まで
    - `NEEDS_CONTEXT` → `MISSING` の不足情報を用意して1回だけ再起動する。解決しなければ中止し、Phase 1と同じ形式でユーザーに質問する
    - `BLOCKED` → Phase 3.1'のdebuggerへ進む
-3. **reviewerの起動**: テンプレートに、task文脈、contract、`CHECK_COMMANDS`、`CHECK_FILES` と記録したハッシュ、検証コマンド、implementerのStatus Report (参照用)、周回 (`ROUND`) を合成して起動する。2周目以降は前回の `FINDINGS` と `REMEDIATION` も渡す (reviewerは前回指摘の解消を先に判定し、新規のREJECT根拠を検査の失敗・回帰・検査ファイルの改変・実在性・Boundary違反に限る)
+3. **reviewerの起動**: テンプレートに、task文脈、contract、`design.md` の全文 (spec modeのみ)、`CHECK_COMMANDS`、`CHECK_FILES` と記録したハッシュ、検証コマンド、implementerのStatus Report (参照用)、周回 (`ROUND`) を合成して起動する。2周目以降は前回の `FINDINGS` と `REMEDIATION` も渡す (reviewerは前回指摘の解消を先に判定し、新規のREJECT根拠を検査の失敗・回帰・検査ファイルの改変・実在性・Boundary違反に限る)
 4. **VERDICTの処理**: `## Review Verdict` の `- VERDICT:` フィールドだけをパースする
    - `APPROVED` → task完了。**先にworktree内でそのtaskの変更 (検査ファイルを含む) をcommitし** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)、成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。commit対象の差分が無い場合は、前回実行でcommit済みとみなしてstatus更新だけを行う。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。`NOTES` はPhase 3.3のために保持する。Run Logに周回数、差し戻しの証拠種別、結果を記録し、次のtaskへ進む
    - `REJECTED` → implementerを再起動する。渡すのは `REMEDIATION`、`FINDINGS`、reviewerが実行して失敗したコマンドの生の出力 (`MECHANICAL_RESULTS` と `FINDINGS` の証拠 (a))、前回のimplementerが取った方針の要約1行 (`EVIDENCE` と `FILES_CHANGED` から親が作る。「駄目だった方針」として渡す)。worktreeには前回の試行の未commit変更が残っているので、implementerに `git diff` で確認させてから直させる。同一taskの差し戻しは**最大2周**とし、2周後もREJECTEDならPhase 3.1'のdebuggerへ進む

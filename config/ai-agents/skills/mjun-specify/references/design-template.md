@@ -1,6 +1,6 @@
 # design.md Template
 
-contractの内側にある実装設計。contract (spec.md) だけでは実装方針が伝わらない場合にだけ作る。実装手順書ではなく、実装者 (fresh context) が迷わないための構造の記述に留める。
+contractの内側にある実装設計。承認前に必ず書き、後続のtask分解と実装が構造を読む正本とする。実装手順書ではなく、実装者 (fresh context) が迷わないための構造の記述に留める。spec.mdと同じく、調査しても埋まらないセクションは省略する (空セクションやプレースホルダーを残さない) が、Modules と Change Outline は省略しない。Trial Implementation Notes はtrial implementationを実施した場合だけ書く。
 
 ```markdown
 # Design: <Title>
