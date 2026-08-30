@@ -1,0 +1,40 @@
+name: mjun
+version: 1.0.0
+description: APM project for mjun
+author: Junya Morioka
+# Which agent platforms to deploy to.
+# Resolution order: --target flag > this field > auto-detect from filesystem.
+# Accepted values: agent-skills, antigravity, claude, codex, copilot, cursor, gemini, grok-build, kiro, opencode, windsurf
+targets:
+  - agent-skills
+  - antigravity
+  - claude
+  - codex
+dependencies:
+  apm:
+    - git: mjun0812/skills
+      ref: v0.3.0
+      skills:
+        - claude
+        - codex
+        - doc-sync
+        - experiment-plan
+        - git-commit
+        - git-fix-conflict
+        - git-squash
+        - github-fix-ci
+        - github-issue-create
+        - github-issue-update
+        - github-pr-create
+        - github-pr-fix
+        - github-pr-review
+        - github-resolve-pr-comment
+        - japanese-tech-writing
+        - md-note
+        - resume-other-agent
+        - skill-review
+        - stop-ai-slop-jp
+        - wezterm-control
+  mcp: []
+includes: auto
+scripts: {}

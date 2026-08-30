@@ -181,6 +181,12 @@ for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
     ln -snfv "$skill_dir" "$HOME/.agents/skills/$skill_name"
 done
 
+################ [APM] ################
+# Global apm subscription (skills from mjun0812/skills). Run `apm install -g` after linking.
+log_section "Setting up APM..."
+mkdir -p "$HOME/.apm"
+ln -snfv "$DOTPATH/config/ai-agents/apm.yml" "$HOME/.apm/apm.yml"
+
 ################ [Claude Code] ################
 log_section "Setting up Claude Code..."
 zsh "$DOTPATH/script/setup/setup_claude_code.sh"
