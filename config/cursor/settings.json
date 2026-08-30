@@ -43,6 +43,10 @@
     "editor.snippetSuggestions": "top",
     "editor.wordWrap": "on"
   },
+  "[lua]": {
+    "editor.defaultFormatter": "JohnnyMorganz.stylua",
+    "editor.formatOnSave": true
+  },
   "[php]": {
     "editor.defaultFormatter": "DEVSENSE.phptools-vscode"
   },

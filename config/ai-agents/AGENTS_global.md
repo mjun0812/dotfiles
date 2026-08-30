@@ -101,6 +101,12 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 - シェルスクリプトは関数をあまり使用せず、シンプルで手続き型な構造にしてください。
 - 関数を使用する場合は、3回以上呼び出されるコードに対してのみ使用してください。
 
+## Lua
+
+- コードのフォーマットには `stylua` を使用すること。
+- リポジトリに `.editorconfig` または `stylua.toml` (`.stylua.toml`) がある場合はその設定を優先し、オプションを付けずに `stylua .` を実行すること。
+- どちらも無い場合は、インデント2スペース・1行120桁をオプションで明示すること: `stylua --indent-type Spaces --indent-width 2 --column-width 120 .` (`--check` を付けると書き換えずに未整形のファイルだけ報告する)。
+
 ## Skill
 
 - Agent skill を作成・編集するときは、コマンド例を最小限にする。

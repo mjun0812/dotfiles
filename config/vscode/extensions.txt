@@ -15,6 +15,7 @@ docker.docker
 donjayamanne.githistory
 dotjoshjohnson.xml
 eamodio.gitlens
+editorconfig.editorconfig
 enkia.tokyo-night
 esbenp.prettier-vscode
 formulahendry.code-runner
@@ -24,6 +25,7 @@ golang.go
 google.gemini-cli-vscode-ide-companion
 grapecity.gc-excelviewer
 james-yu.latex-workshop
+johnnymorganz.stylua
 josetr.cmake-language-support-vscode
 llvm-vs-code-extensions.lldb-dap
 mads-hartmann.bash-ide-vscode
