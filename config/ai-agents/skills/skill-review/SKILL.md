@@ -71,11 +71,11 @@ Agent skill (SKILL.mdとその付属ファイル)を評価基準に沿って点�
 
 criteria.mdが変わったのにCHANGELOG.mdに記録が無い状態を、評価の前に検出する。
 
-1. `bash scripts/check_criteria.sh` を実行する (scriptは自分の位置からcriteria.mdとCHANGELOG.mdを解決するので、skillの配置場所やgit管理の有無を問わない)。出力の1行目が結果で、`DIFF` のときは2行目以降に記録済みの版からの差分が続く
+1. `bash scripts/check_criteria.sh` を実行する。scriptは記録時点のcriteria.mdのコピー (`scripts/criteria.baseline`) と現在のcriteria.mdを比較する。パスは自分の位置から解決するので、skillの配置場所やgit管理の有無を問わない。出力の1行目が結果で、`DIFF` のときは2行目以降にbaselineからの差分が続く
 2. 結果で分岐する
    - `UP_TO_DATE` → 手順1へ進む
-   - `DIFF` → 差分を読み、変更ごとにCHANGELOG.mdの形式でentryの下書き (種別・変更・理由・痕跡・修正) を作る。既存entryに記録済みの変更と、評価対象から確認できる痕跡を持たない変更は除く。理由は差分から推測せず、下書きを提示してAskUserQuestionでユーザーに確認する。確認したentryを `bash scripts/update_changelog.sh --add` の標準入力へ渡して追記する (scriptが記録済みhashも更新する)。記録が終わってから手順1へ進む
-   - `NO_BASELINE` → criteria.mdが記録より新しいが、記録済みの版を復元できない (git管理外、または該当するcommitが無い)。その旨と、gitのある環境で記録するかCHANGELOG.mdを手で更新する必要があることを警告し、評価は続ける
+   - `INITIALIZED` → baselineが無かったので現在のcriteria.mdを記録済みとして保存した。その旨を1行報告して手順1へ進む
+   - `DIFF` → 差分を読み、変更ごとにCHANGELOG.mdの形式でentryの下書き (種別・変更・理由・痕跡・修正) を作る。既存entryに記録済みの変更と、評価対象から確認できる痕跡を持たない変更は除く。理由は差分から推測せず、下書きを提示してAskUserQuestionでユーザーに確認する。確認したentryを `bash scripts/update_changelog.sh --add` の標準入力へ渡して追記する (scriptがbaselineも更新する)。記録すべき変更が1つも無ければ、entryを追記せずbaselineだけを更新するために `--add` の代わりに現在のcriteria.mdを `scripts/criteria.baseline` へコピーする。記録が終わってから手順1へ進む
 
 ### 1. 対象の列挙
 
@@ -148,6 +148,6 @@ skillごとに以下の形式で出力する。
 
 ## 原則
 
-- **編集しない**: このSkillは評価とレポートまで。修正の適用はユーザーの別途依頼を待つ。例外は自skillの `references/CHANGELOG.md` だけで、entryの追記と、痕跡が無くなったentryの削除以外は書き換えない。書き込みは `scripts/update_changelog.sh` 経由で行う。
+- **編集しない**: このSkillは評価とレポートまで。修正の適用はユーザーの別途依頼を待つ。例外は自skillの `references/CHANGELOG.md` と `scripts/criteria.baseline` だけで、entryの追記と、痕跡が無くなったentryの削除以外は書き換えない。書き込みは `scripts/update_changelog.sh` 経由で行う。`scripts/criteria.baseline` はscriptが管理する記録時点のコピーであり、基準として読まない。
 - **好みを混ぜない**: 文体や語彙の好みは指摘しない。基準に照らして判定できる事項のみ扱う。
 - **基準外の重大問題は報告する**: 11観点に該当しなくても、明らかな誤り(壊れたリンク、矛盾した手順)を見つけたら「その他」として報告する。

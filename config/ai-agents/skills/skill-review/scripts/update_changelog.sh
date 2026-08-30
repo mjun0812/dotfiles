@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
-# Add or remove an entry in references/CHANGELOG.md and refresh its criteria-sha256.
+# Add or remove an entry in references/CHANGELOG.md and record the current
+# references/criteria.md as scripts/criteria.baseline.
 #
 # Usage:
 #   update_changelog.sh --add < entry.md        # insert the entry read from stdin as the newest entry
 #   update_changelog.sh --remove "<heading>"    # delete the entry whose heading line is "## <heading>"
-#
-# Both modes rewrite criteria-sha256 in the frontmatter to the current hash of criteria.md.
 
 set -euo pipefail
 
 skill_dir="$(cd "$(dirname "$0")/.." && pwd)"
 criteria="$skill_dir/references/criteria.md"
 changelog="$skill_dir/references/CHANGELOG.md"
+baseline="$skill_dir/scripts/criteria.baseline"
 mode="${1:-}"
 
 if [[ $mode != "--add" && $mode != "--remove" ]]; then
-    sed -n '2,8p' "$0" >&2
+    sed -n '2,7p' "$0" >&2
     exit 2
 fi
 
@@ -63,16 +63,6 @@ else
     fi
 fi
 
-if command -v shasum >/dev/null 2>&1; then
-    current="$(shasum -a 256 "$criteria" | cut -d' ' -f1)"
-else
-    current="$(sha256sum "$criteria" | cut -d' ' -f1)"
-fi
-
-awk -v h="$current" '
-    /^---$/ { c++ }
-    c == 1 && /^criteria-sha256:/ { $0 = "criteria-sha256: " h }
-    { print }
-' "$tmp" >"$changelog"
-
-echo "$mode done (criteria-sha256: $current)"
+cp "$tmp" "$changelog"
+cp "$criteria" "$baseline"
+echo "$mode done (scripts/criteria.baseline updated)"

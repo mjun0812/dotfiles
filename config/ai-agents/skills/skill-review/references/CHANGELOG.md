@@ -1,10 +1,6 @@
----
-criteria-sha256: e52b5c83d2e8fb4c458c7c7d783db802e9d642c77bf8c70bbdfe6912d6eea2bc
----
-
 # 評価基準の変更記録
 
-criteria.md が現在の基準の唯一の正本であり、このファイルは基準の変更のうち、旧基準に合わせて書かれた箇所 (痕跡) が各skillに残りうるものだけを記録する。判定にはcriteria.mdだけを使い、このファイルは痕跡の検出と根拠の表示にだけ使う。
+criteria.md が現在の基準の唯一の正本であり、このファイルは基準の変更のうち、旧基準に合わせて書かれた箇所 (痕跡) が各skillに残りうるものだけを記録する。判定にはcriteria.mdだけを使い、このファイルは痕跡の検出と根拠の表示にだけ使う。記録した時点のcriteria.mdは `scripts/criteria.baseline` にそのまま保持され、`scripts/check_criteria.sh` が現在のcriteria.mdとの差分を取る。
 
 既存entryの本文は書き換えない。全件評価で痕跡が1件も見つからなくなったentryは削除する。同じ観点についての新しいentry (上にあるもの) が古いentryを上書きする。
 
