@@ -248,7 +248,7 @@ AIはコマンド自体の使い方を学習で獲得し、知っているため
 
 - 本文が参照するファイルパス・スクリプト・付属ファイルが実在する
 - 本文が前提とするコマンドが実在する(バージョン差異までは問わない)
-- 付属スクリプトにLinter・Formatter (shell: `shellcheck`, `shfmt -d` / Python: `ruff check`, `ruff format --check`) を適用して、警告も整形差分も出ない
+- 付属スクリプトにLinter・Formatter (shell: `shellcheck`, `shfmt -d` / Python: `ruff check`, `ruff format --check`。Formatterのオプションはリポジトリのformatter設定に従い、無ければ既定で実行する) を適用して、警告も整形差分も出ない
 - 付属スクリプトを副作用の無い引数 (`--help`、dry-run、読み取り専用の操作) で実行して、動作する
 
 要改善のシグナル:

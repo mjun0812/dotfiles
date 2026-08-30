@@ -5,6 +5,7 @@
 # Usage:
 #   update_changelog.sh --add < entry.md        # insert the entry read from stdin as the newest entry
 #   update_changelog.sh --remove "<heading>"    # delete the entry whose heading line is "## <heading>"
+#   update_changelog.sh --sync                  # record the current criteria.md without touching entries
 
 set -euo pipefail
 
@@ -14,9 +15,15 @@ changelog="$skill_dir/references/CHANGELOG.md"
 baseline="$skill_dir/scripts/criteria.baseline"
 mode="${1:-}"
 
-if [[ $mode != "--add" && $mode != "--remove" ]]; then
-    sed -n '2,7p' "$0" >&2
+if [[ $mode != "--add" && $mode != "--remove" && $mode != "--sync" ]]; then
+    sed -n '2,8p' "$0" >&2
     exit 2
+fi
+
+if [[ $mode == "--sync" ]]; then
+    cp "$criteria" "$baseline"
+    echo "--sync done (scripts/criteria.baseline updated)"
+    exit 0
 fi
 
 tmp="$(mktemp)"
