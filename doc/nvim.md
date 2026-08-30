@@ -6,23 +6,29 @@ This document describes the Neovim configuration and keyboard shortcuts.
 
 The configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) as the plugin manager.
 
-| Plugin                                                                | Description                                         |
-| --------------------------------------------------------------------- | --------------------------------------------------- |
-| [tokyonight.nvim](https://github.com/folke/tokyonight.nvim)           | Color scheme                                        |
-| [snacks.nvim](https://github.com/folke/snacks.nvim)                   | Terminal, indent guides, window zoom, file explorer |
-| [blink.cmp](https://github.com/saghen/blink.cmp)                      | Completion engine                                   |
-| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)    | Fuzzy finder                                        |
-| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)           | Git signs in gutter                                 |
-| [trouble.nvim](https://github.com/folke/trouble.nvim)                 | Diagnostics and quickfix list                       |
-| [which-key.nvim](https://github.com/folke/which-key.nvim)             | Keybinding help                                     |
-| [mini.pairs](https://github.com/echasnovski/mini.pairs)               | Auto pairs                                          |
-| [mason.nvim](https://github.com/williamboman/mason.nvim)              | LSP server management                               |
-| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Syntax highlighting                                 |
-| [copilot.vim](https://github.com/github/copilot.vim)                  | GitHub Copilot                                      |
-| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)          | Status line                                         |
-| [ipynb.nvim](https://github.com/ajbucci/ipynb.nvim)                   | Direct `.ipynb` notebook editor                     |
-| [molten-nvim](https://github.com/benlubas/molten-nvim)                | Jupyter kernel runner                               |
-| [jupytext.nvim](https://github.com/goerz/jupytext.nvim)               | Notebook/plaintext conversion                       |
+| Plugin                                                                                        | Description                                         |
+| --------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| [tokyonight.nvim](https://github.com/folke/tokyonight.nvim)                                   | Color scheme                                        |
+| [snacks.nvim](https://github.com/folke/snacks.nvim)                                           | Terminal, indent guides, window zoom, file explorer |
+| [blink.cmp](https://github.com/saghen/blink.cmp)                                              | Completion engine                                   |
+| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)                            | Fuzzy finder                                        |
+| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)                                   | Git signs in gutter                                 |
+| [trouble.nvim](https://github.com/folke/trouble.nvim)                                         | Diagnostics and quickfix list                       |
+| [which-key.nvim](https://github.com/folke/which-key.nvim)                                     | Keybinding help                                     |
+| [mason.nvim](https://github.com/mason-org/mason.nvim)                                         | LSP server installation                             |
+| [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim)                     | Bridge between Mason and nvim-lspconfig             |
+| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)                                    | LSP server configuration                            |
+| [conform.nvim](https://github.com/stevearc/conform.nvim)                                      | Formatter                                           |
+| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)                         | Syntax highlighting                                 |
+| [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) | Treesitter text objects                             |
+| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)                                  | Status line                                         |
+| [colorful-winsep.nvim](https://github.com/nvim-zh/colorful-winsep.nvim)                       | Highlight the borders of the active window          |
+| [vimade](https://github.com/tadaa/vimade)                                                     | Fade inactive windows                               |
+| [image.nvim](https://github.com/3rd/image.nvim)                                               | Inline images in Markdown and notebooks             |
+| [diagram.nvim](https://github.com/3rd/diagram.nvim)                                           | Render Mermaid diagrams in Markdown                 |
+| [ipynb.nvim](https://github.com/ajbucci/ipynb.nvim)                                           | Direct `.ipynb` notebook editor                     |
+| [molten-nvim](https://github.com/benlubas/molten-nvim)                                        | Jupyter kernel runner                               |
+| [jupytext.nvim](https://github.com/goerz/jupytext.nvim)                                       | Notebook/plaintext conversion                       |
 
 ## Keyboard Shortcuts
 
@@ -101,12 +107,16 @@ Preset: `enter`
 
 ### LSP / Code Intelligence
 
-| Key         | Mode   | Description              |
-| ----------- | ------ | ------------------------ |
-| `gd`        | Normal | Go to definition         |
-| `<leader>k` | Normal | Show hover documentation |
+| Key         | Mode   | Description                                                                        |
+| ----------- | ------ | ---------------------------------------------------------------------------------- |
+| `gd`        | Normal | Go to definition                                                                   |
+| `<leader>k` | Normal | Show hover documentation                                                           |
+| `<Tab>`     | Insert | Accept inline completion (Copilot), otherwise jump to the next snippet placeholder |
 
 Auto-format on save is enabled when the language server supports formatting.
+
+GitHub Copilot is not a plugin here: the `copilot` language server is installed through Mason
+(`lua/config/mason-servers.lua`) and its suggestions are shown as ghost text via `vim.lsp.inline_completion`.
 
 ### Diagnostics (Trouble)
 
