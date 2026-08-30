@@ -8,7 +8,7 @@ description: >-
   仕様承認後にIssueへ記帳して、必要ならtask分解まで行う。
   ユーザーが「specを作って」「仕様を詰めて」「issueを磨いて」のように依頼したら使うこと。
   実装からPR作成まで進める依頼や、既にspecが承認済みの実装依頼には使わない。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grill), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-design-review), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grill), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-spec-review), Skill(mjun-to-tasks)
 ---
 
 # mjun-specify
@@ -21,8 +21,7 @@ GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影
 規則は [references/source-resolution.md](references/source-resolution.md) に従う。
 
 意思決定の判断材料に `mjun-grill` / `mjun-research` / `mjun-prototype` を、
-承認前の設計検査に `mjun-design-review` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
-承認を求める前に、specを書いたメイン会話とは別のfresh contextでcontractとdesign.mdを検査する (Phase 5.5)。
+承認前のspec検査に `mjun-spec-review` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
 
 ## Arguments
 
@@ -88,29 +87,20 @@ frontierのdecisionがすべて解決したら、採択した設計を `design.m
 4. 方針の問題が見つかった場合はPhase 4へ戻り、decisionと `design.md` を更新する
 5. **worktreeとbranchは、成功でも中断でも必ず削除する**: `git worktree remove --force <path>` → `git branch -D <branch>`。削除に失敗した場合はユーザーに警告する
 
-### Phase 5.5: contract reviewとdesign review
+### Phase 5.5: spec review
 
-承認を求める前に、contractとdesign.mdをそれぞれfresh contextで検査させる。メイン会話はPhase 2〜5で自分が下した判断に引きずられるため、検査は必ず別のcontextで行う。`--grill` 指定時も省略しない。
+承認を求める前に、`mjun-spec-review` に `.mjun/specs/<slug>` を渡してSkill toolで呼び出し、contractとdesign.mdをfresh contextで検査させる。メイン会話はPhase 2〜5で自分が下した判断に引きずられるため、検査は必ず別のcontextで行う。`--grill` 指定時も省略しない。
 
-**contract review**: reviewer SubAgentを起動する。promptは [templates/contract-reviewer-prompt.md](templates/contract-reviewer-prompt.md) に次を合成して作る。
+呼び出し時に次の文脈を渡す (skillが取得し直さないため)。
 
-- repository rootの絶対パス (Evidenceの `file:line` を実際に読ませるため)
-- `spec.md` と `design.md` の全文。あれば `decisions.md` の全文
 - sourceの原文: Issueなら本文とコメント、Markdown取り込みなら元ファイルの内容、新規作成ならPhase 1の下書き素材
-- `.mjun/steering/*.md` のパス一覧 (あれば。reviewerが自分で読む)
 - Human-ownedとして人間が決めたdecisionの一覧 (D番号とタイトル)
 
-reviewerには読み取りだけを許可し、spec・decisions・design・コードを変更させない。
+結果ブロック `## Spec Review` の `- VERDICT:` フィールドだけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する。
 
-**design review**: `mjun-design-review` に `.mjun/specs/<slug>` を渡してSkill toolで呼び出す。design.md・spec.md・decisions.md・steering・Human-owned decisionの読み込みと、reviewer → verifierの2段検査はskill側が行う。
-
-両方の結果ブロック (`## Spec Review` と `## Design Review`) の `- VERDICT:` フィールドだけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する。
-
-- 両方 `PASS` → Phase 6へ進む
-- いずれかが `NEEDS_FIXES` → 各指摘を読み、contractの明文とコードの事実に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は `decisions.md` にentryを追記する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)
-- いずれかの `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grill` の単一decisionモードで再解決し、`design.md` を更新してからPhase 6へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
-
-SubAgentが使えない環境では、contract reviewは同じテンプレートのチェックリストをメイン会話で順に実施し (design reviewはskill側が同様に代替する)、その旨をPhase 9の報告に含める。
+- `PASS` → Phase 6へ進む
+- `NEEDS_FIXES` → 各指摘を読み、contractの明文とコードの事実に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は `decisions.md` にentryを追記する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)
+- `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grill` の単一decisionモードで再解決し、`design.md` を更新してからPhase 6へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
 
 ### Phase 6: contractの提示と承認
 
@@ -142,7 +132,7 @@ specの規模を判定する。
 
 - **Spec**: Local specのパス (`Source:` があればIssue番号とURLも)
 - **変更点サマリ**: 追加または変更したセクション
-- **Review**: Phase 5.5の両VERDICT (contract / design) と、反映した指摘の件数 (Phase 4へ戻したdecisionがあればそのD番号。SubAgentが使えずメイン会話で実施した場合はその旨)
+- **Review**: Phase 5.5のVERDICTと、反映した指摘の件数 (Phase 4へ戻したdecisionがあればそのD番号)
 - **要確認事項**: tentativeとして残したdecisionの一覧 (実装前に解消が必要)
 - **Tasks**: 分解した場合はtask一覧 (各taskのBoundary、AC数、Done whenと、数の目安を超える分割候補の印)、単一taskならその旨。粒度が粗い、または細かいと感じた場合は `mjun-to-tasks` で再分解できる旨を添える (ここは承認ではなく、人間が粒度を目視する場所)
 - **次の一手**: `mjun-implement <source>` で実装を開始できる旨 (要確認が残る場合はその解消が先であることを添える)
