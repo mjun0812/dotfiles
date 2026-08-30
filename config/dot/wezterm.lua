@@ -9,6 +9,9 @@ config.audible_bell = "Disabled"
 config.notification_handling = "AlwaysShow"
 -- 日本語入力
 config.use_ime = true
+-- kitty keyboard protocol を要求したアプリ (Claude Code, Codex, euporie など) にだけ
+-- Shift+Enter / Ctrl+Enter を区別して送る。要求しないアプリの入力は変わらない
+config.enable_kitty_keyboard = true
 -- Windowを閉じた時にWeztermを終了しない
 config.quit_when_all_windows_are_closed = false
 -- Windowを閉じるときの確認を無効
@@ -199,11 +202,6 @@ config.mouse_bindings = {
 }
 -- key binding
 config.keys = {
-  {
-    key = "Enter",
-    mods = "SHIFT",
-    action = wezterm.action.SendString("\n"),
-  },
   {
     -- ctrl+` はレガシーエンコーディングでは NUL に潰れるため、
     -- CSI-u で送って Herdr 経由でも nvim に届くようにする
