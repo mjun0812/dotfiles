@@ -24,9 +24,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     if client:supports_method("textDocument/hover") then
-      vim.keymap.set("n", "<leader>k",
-        function() vim.lsp.buf.hover({ border = "single" }) end,
-        { buffer = buf, desc = "Show hover documentation" })
+      vim.keymap.set("n", "<leader>k", function()
+        vim.lsp.buf.hover({ border = "single" })
+      end, { buffer = buf, desc = "Show hover documentation" })
     end
 
     -- Copilot等のinline completion (ghost text)

@@ -1,17 +1,17 @@
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-    if vim.v.shell_error ~= 0 then
-        vim.api.nvim_echo({
-            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-            { out,                            "WarningMsg" },
-            { "\nPress any key to exit..." },
-        }, true, {})
-        vim.fn.getchar()
-        os.exit(1)
-    end
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -23,30 +23,30 @@ vim.g.maplocalleader = "\\"
 
 -- Setup lazy.nvim
 require("lazy").setup({
-    spec = {
-        { import = "plugins.autopairs" },
-        { import = "plugins.blink-cmp" },
-        { import = "plugins.conform" },
-        { import = "plugins.gitsigns" },
-        { import = "plugins.image" },
-        { import = "plugins.lualine" },
-        { import = "plugins.mason" },
-        { import = "plugins.notebook-ipynb" },
-        { import = "plugins.notebook-molten" },
-        { import = "plugins.rainbow-delimiters" },
-        { import = "plugins.snacks" },
-        { import = "plugins.snacks-explorer" },
-        { import = "plugins.telescope" },
-        { import = "plugins.theme" },
-        { import = "plugins.treesitter" },
-        { import = "plugins.trouble" },
-        { import = "plugins.which-key" },
-        { import = "plugins.colorful-winsep" },
-        { import = "plugins.vimade" },
-    },
-    -- Configure any other settings here. See the documentation for more details.
-    -- colorscheme that will be used when installing plugins.
-    install = { colorscheme = { "tokyonight-night" } },
-    -- automatically check for plugin updates
-    checker = { enabled = true, notify = false },
+  spec = {
+    { import = "plugins.autopairs" },
+    { import = "plugins.blink-cmp" },
+    { import = "plugins.conform" },
+    { import = "plugins.gitsigns" },
+    { import = "plugins.image" },
+    { import = "plugins.lualine" },
+    { import = "plugins.mason" },
+    { import = "plugins.notebook-ipynb" },
+    { import = "plugins.notebook-molten" },
+    { import = "plugins.rainbow-delimiters" },
+    { import = "plugins.snacks" },
+    { import = "plugins.snacks-explorer" },
+    { import = "plugins.telescope" },
+    { import = "plugins.theme" },
+    { import = "plugins.treesitter" },
+    { import = "plugins.trouble" },
+    { import = "plugins.which-key" },
+    { import = "plugins.colorful-winsep" },
+    { import = "plugins.vimade" },
+  },
+  -- Configure any other settings here. See the documentation for more details.
+  -- colorscheme that will be used when installing plugins.
+  install = { colorscheme = { "tokyonight-night" } },
+  -- automatically check for plugin updates
+  checker = { enabled = true, notify = false },
 })
