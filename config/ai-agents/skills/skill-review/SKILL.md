@@ -79,9 +79,9 @@ criteria.mdが変わったのにCHANGELOG.mdに記録が無い状態で評価を
 1. skillディレクトリの実体を `realpath` で解決し、criteria.mdの最新commitを `git log -1 --format=%h -- references/criteria.md` で、未commitの差分を `git diff HEAD -- references/criteria.md` で取得する
 2. CHANGELOG.mdのfrontmatter `criteria-commit` と比較する
    - commitが一致し、未commitの差分も無い → 手順1へ進む
-   - それ以外 → `git diff <criteria-commit>..HEAD -- references/criteria.md` と未commitの差分を読み、変更ごとにCHANGELOG.mdの形式でentryの下書き (種別・変更・理由・痕跡・修正・由来) を作る。既存entryに記録済みの変更は除く
+   - それ以外 → `git diff <criteria-commit>..HEAD -- references/criteria.md` と未commitの差分を読み、変更ごとにCHANGELOG.mdの形式でentryの下書き (種別・変更・理由・痕跡・修正) を作る。既存entryに記録済みの変更と、評価対象から確認できる痕跡を持たない変更は除く
 3. 理由は差分から推測せず、下書きを提示してAskUserQuestionでユーザーに確認する。種別と痕跡の表現もこのとき確定する
-4. 確認したentryをCHANGELOG.mdの先頭 (形式の説明の直後) に追記する。commit済みの変更を記録した場合は `criteria-commit` をその最新commitに更新する。未commitの変更は由来を `未commit (YYYY-MM-DD)` と書き、`criteria-commit` は変えない
+4. 確認したentryをCHANGELOG.mdの先頭 (形式の説明の直後) に追記する。commit済みの変更を記録した場合は `criteria-commit` をその最新commitに更新する。未commitの変更を記録した場合は `criteria-commit` を変えない (次回の点検では記録済みの変更を除く)
 5. 記録が終わってから手順1へ進む
 
 ### 1. 対象の列挙
@@ -112,7 +112,7 @@ skillごとに以下を行う。
 3. 「要改善」には**該当行の引用**を根拠として付け、具体的な修正案を書く
 4. 観点10(鮮度)は、本文中のファイルパス・コマンド名の実在を確認し、付属スクリプトには `shellcheck` / `shfmt -d` (Pythonは `ruff check` / `ruff format --check`) を適用したうえで、副作用の無い引数 (`--help`、dry-run、読み取り専用の操作) で実行して判定する。書き込みや投稿を伴う引数では実行しない
 5. 観点2(description品質)は、列挙した他skillのdescriptionと発動条件を比較する
-6. CHANGELOG.mdの `Status: active` のentryごとに「痕跡」を評価対象から探し、種別で扱いを分ける
+6. CHANGELOG.mdのentryごとに「痕跡」を評価対象から探し、種別で扱いを分ける
    - `強化` の痕跡 → 該当観点の要改善に含め、根拠に「旧基準由来 (CHANGELOG YYYY-MM-DD <観点>)」と書く
    - `廃止` の痕跡 → 減点せず、レポートの「削除してよい箇所」に列挙する
    - `緩和` の痕跡 → 指摘しない
@@ -151,10 +151,10 @@ skillごとに以下の形式で出力する。
 仕様不適合の場合は、違反した要件、根拠、修正案を「仕様チェック」に列挙する。
 「削除してよい箇所」は該当が無ければ省略する。
 複数skillを評価した場合は、最後に全体サマリー(skill数、仕様不適合数、判定保留数、要改善の多い観点トップ3)を付ける。
-全件評価モードでは、痕跡が1件も見つからなかった `Status: active` のentryを `Status: retired` へ更新し、更新したentryを全体サマリーに列挙する (痕跡の掃除が完了した記録)。指定パスだけの評価ではStatusを変えない。
+全件評価モードでは、痕跡が1件も見つからなかったentryをCHANGELOG.mdから削除し、削除したentryを全体サマリーに列挙する。指定パスだけの評価では削除しない。
 
 ## 原則
 
-- **編集しない**: このSkillは評価とレポートまで。修正の適用はユーザーの別途依頼を待つ。例外は自skillの `references/CHANGELOG.md` だけで、entryの追記と `Status` の更新以外は書き換えない。
+- **編集しない**: このSkillは評価とレポートまで。修正の適用はユーザーの別途依頼を待つ。例外は自skillの `references/CHANGELOG.md` だけで、entryの追記と、痕跡が無くなったentryの削除以外は書き換えない。
 - **好みを混ぜない**: 文体や語彙の好みは指摘しない。基準に照らして判定できる事項のみ扱う。
 - **基準外の重大問題は報告する**: 11観点に該当しなくても、明らかな誤り(壊れたリンク、矛盾した手順)を見つけたら「その他」として報告する。
