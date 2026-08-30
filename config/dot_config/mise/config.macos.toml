@@ -71,6 +71,7 @@ args = [
   "--disable-kompress",
   "--lossless",
   "--code-aware",
+  "--no-rate-limit",
 ]
 run_at_load = true
 keep_alive = true
