@@ -7,11 +7,6 @@ alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 alias emacs='emacs -nw'
 alias vim='nvim'
 
-# Jupyter notebooks
-euporie-nb() {
-    command euporie-notebook "$@"
-}
-
 if command -v bat > /dev/null 2>&1; then
     alias cat="bat --style=plain --paging=never --theme=OneHalfDark"
     alias less="bat --style=plain --paging=always --theme=OneHalfDark"
