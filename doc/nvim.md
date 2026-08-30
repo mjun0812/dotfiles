@@ -109,13 +109,15 @@ Preset: `enter`
 
 ### LSP / Code Intelligence
 
-| Key         | Mode   | Description                                                                        |
-| ----------- | ------ | ---------------------------------------------------------------------------------- |
-| `gd`        | Normal | Go to definition                                                                   |
-| `<leader>k` | Normal | Show hover documentation                                                           |
-| `<Tab>`     | Insert | Accept inline completion (Copilot), otherwise jump to the next snippet placeholder |
+| Key                | Mode   | Description                                                                        |
+| ------------------ | ------ | ---------------------------------------------------------------------------------- |
+| `gd`               | Normal | Go to definition                                                                   |
+| `gD`               | Normal | Go to declaration                                                                  |
+| `<leader>k` / `gh` | Normal | Show hover documentation                                                           |
+| `<Tab>`            | Insert | Accept inline completion (Copilot), otherwise jump to the next snippet placeholder |
 
-Auto-format on save is enabled when the language server supports formatting.
+Formatting on save is handled by conform.nvim (`lua/plugins/conform.lua`): the formatter configured for the
+filetype (e.g. `shfmt`, `oxfmt`) runs first, and LSP formatting is used as a fallback.
 
 GitHub Copilot is not a plugin here: the `copilot` language server is installed through Mason
 (`lua/config/mason-servers.lua`) and its suggestions are shown as ghost text via `vim.lsp.inline_completion`.
@@ -151,9 +153,10 @@ nvim-molten notebook.ipynb
 
 ## Commands
 
-| Command     | Description                            |
-| ----------- | -------------------------------------- |
-| `:T [args]` | Open terminal at bottom with height 20 |
-| `:Trouble`  | Open Trouble diagnostics               |
-| `:Mason`    | Open Mason (LSP server management)     |
-| `:Lazy`     | Open lazy.nvim plugin manager          |
+| Command                                    | Description                                                                          |
+| ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `:T [args]`                                | Open terminal at bottom with height 20                                               |
+| `:Trouble`                                 | Open Trouble diagnostics                                                             |
+| `:Mason`                                   | Open Mason (LSP server management)                                                   |
+| `:Lazy`                                    | Open lazy.nvim plugin manager                                                        |
+| `:LspCopilotSignIn` / `:LspCopilotSignOut` | Sign in to / out of GitHub Copilot (available once the `copilot` server is attached) |
