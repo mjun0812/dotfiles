@@ -26,11 +26,8 @@ The configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) as the pl
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)                                  | Status line                                         |
 | [colorful-winsep.nvim](https://github.com/nvim-zh/colorful-winsep.nvim)                       | Highlight the borders of the active window          |
 | [vimade](https://github.com/tadaa/vimade)                                                     | Fade inactive windows                               |
-| [image.nvim](https://github.com/3rd/image.nvim)                                               | Inline images in Markdown and notebooks             |
+| [image.nvim](https://github.com/3rd/image.nvim)                                               | Inline images in Markdown                           |
 | [diagram.nvim](https://github.com/3rd/diagram.nvim)                                           | Render Mermaid diagrams in Markdown                 |
-| [ipynb.nvim](https://github.com/ajbucci/ipynb.nvim)                                           | Direct `.ipynb` notebook editor                     |
-| [molten-nvim](https://github.com/benlubas/molten-nvim)                                        | Jupyter kernel runner                               |
-| [jupytext.nvim](https://github.com/goerz/jupytext.nvim)                                       | Notebook/plaintext conversion                       |
 
 ## Keyboard Shortcuts
 
@@ -138,18 +135,6 @@ GitHub Copilot is not a plugin here: the `copilot` language server is installed 
 | Key         | Mode   | Description               |
 | ----------- | ------ | ------------------------- |
 | `<leader>?` | Normal | Show buffer local keymaps |
-
-## Jupyter Notebooks
-
-Euporie, ipynb.nvim, and Jupytext + Molten are documented in
-[notebooks.md](notebooks.md). Use the dedicated launch commands so the two
-Neovim `.ipynb` handlers are never enabled together:
-
-```bash
-euporie-nb notebook.ipynb
-nvim-ipynb notebook.ipynb
-nvim-molten notebook.ipynb
-```
 
 ## Commands
 

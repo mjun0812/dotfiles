@@ -1,9 +1,0 @@
-edit_mode = "vi"
-clipboard = "terminal"
-external_editor = "nvim"
-autocomplete = true
-enable_language_servers = true
-graphics = "auto"
-
-[notebook]
-show_cell_borders = true

@@ -31,8 +31,6 @@ require("lazy").setup({
     { import = "plugins.image" },
     { import = "plugins.lualine" },
     { import = "plugins.mason" },
-    { import = "plugins.notebook-ipynb" },
-    { import = "plugins.notebook-molten" },
     { import = "plugins.rainbow-delimiters" },
     { import = "plugins.snacks" },
     { import = "plugins.snacks-explorer" },

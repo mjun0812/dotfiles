@@ -1,0 +1,19 @@
+{
+  "edit_mode": "vi",
+  "clipboard": "terminal",
+  "autocomplete": true,
+  "autosuggest": "smart",
+  "autoinspect": true,
+  "enable_language_servers": true,
+  "language_servers": {
+    "pylsp": {}
+  },
+  "notebook": {
+    "external_editor": "nvim",
+    "show_cell_borders": true,
+    "line_numbers": true,
+    "relative_line_numbers": true,
+    "autoformat": false,
+    "run_after_external_edit": false
+  }
+}

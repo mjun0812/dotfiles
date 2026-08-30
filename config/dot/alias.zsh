@@ -8,14 +8,6 @@ alias emacs='emacs -nw'
 alias vim='nvim'
 
 # Jupyter notebooks
-nvim-molten() {
-    NVIM_NOTEBOOK=molten command nvim "$@"
-}
-
-nvim-ipynb() {
-    NVIM_NOTEBOOK=ipynb command nvim "$@"
-}
-
 euporie-nb() {
     command euporie-notebook "$@"
 }
