@@ -4,20 +4,17 @@
       "complex_modifications": {
         "rules": [
           {
-            "description": "コマンドキーを単体で押したときに、英数・かなキーを送信する。（左コマンドキーは英数、右コマンドキーはかな） (rev 3)",
+            "description": "コマンドキーを単体で押したときに、英数・かなキーを送信する。(左コマンドキーは英数、右コマンドキーはかな) (rev 4)",
             "manipulators": [
               {
                 "from": {
                   "key_code": "left_command",
                   "modifiers": { "optional": ["any"] }
                 },
-                "parameters": { "basic.to_if_held_down_threshold_milliseconds": 200 },
-                "to": [
-                  {
-                    "key_code": "left_command",
-                    "lazy": true
-                  }
-                ],
+                "parameters": {
+                  "basic.to_if_alone_timeout_milliseconds": 150,
+                  "basic.to_if_held_down_threshold_milliseconds": 150
+                },
                 "to_if_alone": [{ "key_code": "japanese_eisuu" }],
                 "to_if_held_down": [{ "key_code": "left_command" }],
                 "type": "basic"
@@ -27,13 +24,10 @@
                   "key_code": "right_command",
                   "modifiers": { "optional": ["any"] }
                 },
-                "parameters": { "basic.to_if_held_down_threshold_milliseconds": 200 },
-                "to": [
-                  {
-                    "key_code": "right_command",
-                    "lazy": true
-                  }
-                ],
+                "parameters": {
+                  "basic.to_if_alone_timeout_milliseconds": 150,
+                  "basic.to_if_held_down_threshold_milliseconds": 150
+                },
                 "to_if_alone": [{ "key_code": "japanese_kana" }],
                 "to_if_held_down": [{ "key_code": "right_command" }],
                 "type": "basic"
