@@ -2,6 +2,33 @@
 -- snacks.lua の opts に lazy.nvim がマージするので、ここでは explorer 関連だけを書く。
 return {
   "folke/snacks.nvim",
+  init = function()
+    vim.api.nvim_create_autocmd("QuitPre", {
+      callback = function()
+        if #Snacks.picker.get({ source = "explorer" }) == 0 then
+          return
+        end
+
+        local windows = vim.api.nvim_list_wins()
+        local snacks_windows = {}
+        local floating_windows = {}
+        for _, win in ipairs(windows) do
+          local buf = vim.api.nvim_win_get_buf(win)
+          if vim.bo[buf].filetype:match("^snacks_") then
+            table.insert(snacks_windows, win)
+          elseif vim.api.nvim_win_get_config(win).relative ~= "" then
+            table.insert(floating_windows, win)
+          end
+        end
+
+        if #windows - #floating_windows - #snacks_windows == 1 then
+          for _, win in ipairs(snacks_windows) do
+            vim.api.nvim_win_close(win, true)
+          end
+        end
+      end,
+    })
+  end,
   keys = {
     -- <C-e> で drawer を toggle (fern の :Fern . -reveal=% -drawer -toggle 相当。
     -- follow_file により開いたときに現在のファイルへ移動する)
