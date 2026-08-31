@@ -1,15 +1,16 @@
 # Agent Skills
 
-This document describes the AI agent skills bundled in this repository and how they depend on each other.
+This document describes the AI agent skills used from this repository and how they depend on each other. Skills come from two sources.
 
-Skill sources live under [`config/ai-agents/skills/`](../config/ai-agents/skills) and are deployed by `install.sh` as symlinks into:
+Private skills (`mjun-*`, `herdr`, `self-review`, `agent-browser`) live under [`config/ai-agents/skills/`](../config/ai-agents/skills) and are deployed by `install.sh` as symlinks into:
 
-- `~/.agents/skills/<skill>` — shared skills directory
+- `~/.agents/skills/<skill>` — shared skills directory (Codex reads this directory directly)
 - `~/.claude/skills/<skill>` — Claude Code
-- `~/.codex/skills/<skill>` — Codex
 - `~/.gemini/antigravity-cli/skills/<skill>` — Antigravity CLI
 
 Editing a file under `config/ai-agents/skills/` updates every agent at once via the symlink.
+
+The other skills (and the code-reviewer agents) are subscribed from [mjun0812/skills](https://github.com/mjun0812/skills) via apm. The subscription is declared in [`config/ai-agents/apm.yml`](../config/ai-agents/apm.yml) and `install.sh` runs `apm update -g -y` to deploy it; their links below point at the upstream repository.
 
 ## Skill List
 
@@ -33,44 +34,44 @@ The self-authored dev-flow skill suite under the `mjun-` prefix. Specs always li
 
 ### Git
 
-| Skill                                                                      | Purpose                                                                                                                                                |
-| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`git-commit`](../config/ai-agents/skills/git-commit/SKILL.md)             | Stage and commit the current changes in appropriate units                                                                                              |
-| [`git-squash`](../config/ai-agents/skills/git-squash/SKILL.md)             | Squash / tidy commits on the current branch, force-with-lease push if needed                                                                           |
-| [`git-fix-conflict`](../config/ai-agents/skills/git-fix-conflict/SKILL.md) | Detect and resolve conflicts from merge, rebase, cherry-pick, revert, apply, PR, etc.                                                                  |
-| [`self-review`](../config/ai-agents/skills/self-review/SKILL.md)           | Adversarially review uncommitted changes or one specified commit with two independent Finders (`--spec` adds a contract axis checked against the spec) |
+| Skill                                                                                                   | Purpose                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`git-commit`](https://github.com/mjun0812/skills/blob/main/skills/git/git-commit/SKILL.md)             | Stage and commit the current changes in appropriate units                                                                                              |
+| [`git-squash`](https://github.com/mjun0812/skills/blob/main/skills/git/git-squash/SKILL.md)             | Squash / tidy commits on the current branch, force-with-lease push if needed                                                                           |
+| [`git-fix-conflict`](https://github.com/mjun0812/skills/blob/main/skills/git/git-fix-conflict/SKILL.md) | Detect and resolve conflicts from merge, rebase, cherry-pick, revert, apply, PR, etc.                                                                  |
+| [`self-review`](../config/ai-agents/skills/self-review/SKILL.md)                                        | Adversarially review uncommitted changes or one specified commit with two independent Finders (`--spec` adds a contract axis checked against the spec) |
 
 ### GitHub
 
-| Skill                                                                                        | Purpose                                                                                                                                                                                                             |
-| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`github-issue-create`](../config/ai-agents/skills/github-issue-create/SKILL.md)             | Create one GitHub issue from a todo, memo, or bug note after verifying its claims (repo, then official docs when needed) and searching related issues (template and label auto-selection, approval before creation) |
-| [`github-issue-update`](../config/ai-agents/skills/github-issue-update/SKILL.md)             | Inspect open issues and propose closes (resolved, duplicate, stale), comments, and label changes, then apply them in bulk after approval                                                                            |
-| [`github-pr-create`](../config/ai-agents/skills/github-pr-create/SKILL.md)                   | Create a Pull Request from the current branch with a six-part description covering overview and background, related issues, implementation approach, changes, impact, and validation results                        |
-| [`github-pr-review`](../config/ai-agents/skills/github-pr-review/SKILL.md)                   | Find merge-blocking issues, standards findings, and spec mismatches (when a spec resolves via `--spec` or a linked issue) with parallel reviewers, verify each candidate, and replace the previous review snapshot  |
-| [`github-pr-fix`](../config/ai-agents/skills/github-pr-fix/SKILL.md)                         | Detect and fix all PR problems (conflicts, CI failures, review comments) inside a dedicated worktree                                                                                                                |
-| [`github-fix-ci`](../config/ai-agents/skills/github-fix-ci/SKILL.md)                         | Inspect CI status, analyze failures, and apply fixes                                                                                                                                                                |
-| [`github-resolve-pr-comment`](../config/ai-agents/skills/github-resolve-pr-comment/SKILL.md) | Triage PR review comments and respond / address them                                                                                                                                                                |
+| Skill                                                                                                                        | Purpose                                                                                                                                                                                                             |
+| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`github-issue-create`](https://github.com/mjun0812/skills/blob/main/skills/github/github-issue-create/SKILL.md)             | Create one GitHub issue from a todo, memo, or bug note after verifying its claims (repo, then official docs when needed) and searching related issues (template and label auto-selection, approval before creation) |
+| [`github-issue-update`](https://github.com/mjun0812/skills/blob/main/skills/github/github-issue-update/SKILL.md)             | Inspect open issues and propose closes (resolved, duplicate, stale), comments, and label changes, then apply them in bulk after approval                                                                            |
+| [`github-pr-create`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-create/SKILL.md)                   | Create a Pull Request from the current branch with a six-part description covering overview and background, related issues, implementation approach, changes, impact, and validation results                        |
+| [`github-pr-review`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-review/SKILL.md)                   | Find merge-blocking issues, standards findings, and spec mismatches (when a spec resolves via `--spec` or a linked issue) with parallel reviewers, verify each candidate, and replace the previous review snapshot  |
+| [`github-pr-fix`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-fix/SKILL.md)                         | Detect and fix all PR problems (conflicts, CI failures, review comments) inside a dedicated worktree                                                                                                                |
+| [`github-fix-ci`](https://github.com/mjun0812/skills/blob/main/skills/github/github-fix-ci/SKILL.md)                         | Inspect CI status, analyze failures, and apply fixes                                                                                                                                                                |
+| [`github-resolve-pr-comment`](https://github.com/mjun0812/skills/blob/main/skills/github/github-resolve-pr-comment/SKILL.md) | Triage PR review comments and respond / address them                                                                                                                                                                |
 
 ### Planning & Design
 
-| Skill                                                                    | Purpose                                                                                                                |
-| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| [`experiment-plan`](../config/ai-agents/skills/experiment-plan/SKILL.md) | Interview the user one decision at a time and save a testable machine-learning experiment plan to `.mjun/experiments/` |
+| Skill                                                                                                      | Purpose                                                                                                                |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| [`experiment-plan`](https://github.com/mjun0812/skills/blob/main/skills/planning/experiment-plan/SKILL.md) | Interview the user one decision at a time and save a testable machine-learning experiment plan to `.mjun/experiments/` |
 
 ### Docs & Notes
 
-| Skill                                                      | Purpose                                                                                                    |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| [`doc-sync`](../config/ai-agents/skills/doc-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift |
-| [`md-note`](../config/ai-agents/skills/md-note/SKILL.md)   | Save the current conversation's research as a self-contained Japanese Markdown file                        |
+| Skill                                                                                    | Purpose                                                                                                    |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [`doc-sync`](https://github.com/mjun0812/skills/blob/main/skills/docs/doc-sync/SKILL.md) | Diff repo docs (Markdown, docstrings, OpenAPI, config samples) against the implementation and update drift |
+| [`md-note`](https://github.com/mjun0812/skills/blob/main/skills/docs/md-note/SKILL.md)   | Save the current conversation's research as a self-contained Japanese Markdown file                        |
 
 ### Japanese Writing
 
-| Skill                                                                                | Purpose                                                                                                                                      |
-| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`japanese-tech-writing`](../config/ai-agents/skills/japanese-tech-writing/SKILL.md) | Style guide for writing and revising Japanese technical prose (formatting, paragraph-driven argument, removing LLM-flavored filler)          |
-| [`stop-ai-slop-jp`](../config/ai-agents/skills/stop-ai-slop-jp/SKILL.md)             | Edit AI-generated Japanese back into human-written prose — fixes missing authorial stance, propositional H2s, false-balance, monotone rhythm |
+| Skill                                                                                                                 | Purpose                                                                                                                                      |
+| --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`japanese-tech-writing`](https://github.com/mjun0812/skills/blob/main/skills/writing/japanese-tech-writing/SKILL.md) | Style guide for writing and revising Japanese technical prose (formatting, paragraph-driven argument, removing LLM-flavored filler)          |
+| [`stop-ai-slop-jp`](https://github.com/mjun0812/skills/blob/main/skills/writing/stop-ai-slop-jp/SKILL.md)             | Edit AI-generated Japanese back into human-written prose — fixes missing authorial stance, propositional H2s, false-balance, monotone rhythm |
 
 Sources:
 
@@ -82,20 +83,20 @@ These skills are user-invoked only — the agent does not trigger them on its ow
 
 Each skill defaults to a read-only consultation mode, and runs with edit permissions only when the user explicitly asks to delegate work. An agent never uses the skill for its own CLI.
 
-| Skill                                                  | Purpose                                                                                   |
-| ------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| [`claude`](../config/ai-agents/skills/claude/SKILL.md) | Consult Claude Code (`claude -p`, read-only) or delegate work to it with edit permissions |
-| [`codex`](../config/ai-agents/skills/codex/SKILL.md)   | Consult Codex (`codex exec`, read-only sandbox) or delegate work via `workspace-write`    |
+| Skill                                                                                      | Purpose                                                                                   |
+| ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| [`claude`](https://github.com/mjun0812/skills/blob/main/skills/delegation/claude/SKILL.md) | Consult Claude Code (`claude -p`, read-only) or delegate work to it with edit permissions |
+| [`codex`](https://github.com/mjun0812/skills/blob/main/skills/delegation/codex/SKILL.md)   | Consult Codex (`codex exec`, read-only sandbox) or delegate work via `workspace-write`    |
 
 ### Misc
 
-| Skill                                                                          | Purpose                                                                                                                                                                                                                                                                              |
-| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`agent-browser`](../config/ai-agents/skills/agent-browser/SKILL.md)           | Browser automation via the `agent-browser` CLI (vendored upstream stub; usage is loaded at runtime with `agent-browser skills get core`)                                                                                                                                             |
-| [`herdr`](../config/ai-agents/skills/herdr/SKILL.md)                           | Control herdr panes / tabs / workspaces from inside a herdr-managed pane (vendored from the binary via `herdr --skill`; regenerated by `setup_herdr.sh` on upgrade)                                                                                                                  |
-| [`resume-other-agent`](../config/ai-agents/skills/resume-other-agent/SKILL.md) | Resume another coding agent (Codex / Claude Code) by session ID, replaying its prior context                                                                                                                                                                                         |
-| [`skill-review`](../config/ai-agents/skills/skill-review/SKILL.md)             | Validate Agent Skills compliance and report per-criterion verdicts, including trigger conflicts with nearby skills and leftovers of superseded criteria; after a review, proposes rules that emerged from the fixes and, on approval, appends them to its own criteria and CHANGELOG |
-| [`wezterm-control`](../config/ai-agents/skills/wezterm-control/SKILL.md)       | Drive wezterm panes / tabs / windows via `wezterm cli`: split, focus, resize, read pane contents, send commands and verify their output                                                                                                                                              |
+| Skill                                                                                                              | Purpose                                                                                                                                                                                                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`agent-browser`](../config/ai-agents/skills/agent-browser/SKILL.md)                                               | Browser automation via the `agent-browser` CLI (vendored upstream stub; usage is loaded at runtime with `agent-browser skills get core`)                                                                                                                                             |
+| [`herdr`](../config/ai-agents/skills/herdr/SKILL.md)                                                               | Control herdr panes / tabs / workspaces from inside a herdr-managed pane (vendored from the binary via `herdr --skill`; regenerated by `setup_herdr.sh` on upgrade)                                                                                                                  |
+| [`resume-other-agent`](https://github.com/mjun0812/skills/blob/main/skills/delegation/resume-other-agent/SKILL.md) | Resume another coding agent (Codex / Claude Code) by session ID, replaying its prior context                                                                                                                                                                                         |
+| [`skill-review`](https://github.com/mjun0812/skills/blob/main/skills/review/skill-review/SKILL.md)                 | Validate Agent Skills compliance and report per-criterion verdicts, including trigger conflicts with nearby skills and leftovers of superseded criteria; after a review, proposes rules that emerged from the fixes and, on approval, appends them to its own criteria and CHANGELOG |
+| [`wezterm-control`](https://github.com/mjun0812/skills/blob/main/skills/tools/wezterm-control/SKILL.md)            | Drive wezterm panes / tabs / windows via `wezterm cli`: split, focus, resize, read pane contents, send commands and verify their output                                                                                                                                              |
 
 ## Dependencies
 

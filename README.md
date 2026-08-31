@@ -84,14 +84,12 @@ It dumps the settings and shows the resulting `git status`; review and commit th
 
 ### Agent Skills / Agents (apm)
 
-The shared agent skills and the code-reviewer agents are not managed in this repository. They are subscribed from [mjun0812/skills](https://github.com/mjun0812/skills) via [apm](https://github.com/microsoft/apm); the subscription is declared in `config/ai-agents/apm.yml` (symlinked to `~/.apm/apm.yml` by `install.sh`) and tracks the `main` branch.
+The shared agent skills and the code-reviewer agents are not managed in this repository. They are subscribed from [mjun0812/skills](https://github.com/mjun0812/skills) via [apm](https://github.com/microsoft/apm); the subscription is declared in `config/ai-agents/apm.yml` (symlinked to `~/.apm/apm.yml` and applied with `apm update -g -y` by `install.sh`) and tracks the `main` branch.
 
 ```bash
-# Follow updates after mjun0812/skills changes
+# install.sh already runs this after linking apm.yml; run it again to
+# follow mjun0812/skills changes without re-running install.sh
 apm update -g
-
-# Fresh machine: install.sh creates the symlink, then
-apm install -g
 ```
 
 `apm update -g` re-resolves `main`, deploys the changed skills/agents, and removes deleted ones automatically (lockfile-based cleanup). Since the subscription tracks a branch, `config/ai-agents/apm.yml` does not change on updates — there is usually nothing to commit here.
