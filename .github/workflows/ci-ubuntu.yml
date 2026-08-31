@@ -133,7 +133,7 @@ jobs:
           fi
           for d in config/ai-agents/skills/*(/); do
             name=$(basename "$d")
-            for base in "$home/.agents/skills" "$home/.claude/skills" "$home/.codex/skills" "$home/.gemini/antigravity-cli/skills"; do
+            for base in "$home/.agents/skills" "$home/.claude/skills" "$home/.gemini/antigravity-cli/skills"; do
               check_link "$base/$name"
             done
           done
