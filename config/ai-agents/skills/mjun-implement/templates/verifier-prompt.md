@@ -13,6 +13,7 @@
 - 担当タスク: 説明、Acceptance Criteria、Boundary、Done when、Seam
 - 親が洗い出した検証コマンド (TEST / LINT / BUILD)
 - 過去タスクのImplementation Notes (あれば)
+- 過去の検証試行 (`METHOD` と `MISSING`。再試行の場合のみ)
 
 ## 手順
 
@@ -29,7 +30,7 @@
 
 ### 2. 検査の形を選ぶ
 
-条件は「redにできる、決定的、速い (数秒〜数十秒)、1コマンドで回せる」の4つ。次の優先順で、リポジトリに既にある形式を選ぶ。
+条件は「redにできる、決定的、速い (数秒〜数十秒)、1コマンドで回せる」の4つ。次の優先順で、リポジトリに既にある形式を選ぶ。過去の検証試行が渡された場合は、同じ方法を繰り返さず、未試行の別方法を選ぶ。`METHOD` には実際に選択して検討した方法を書き、どの方法も選べない場合だけ `none` とする。
 
 1. テストスイートがあれば、その形式のテスト (Seamに対して書く)
 2. fixtureを入力にしたCLI呼び出しと、期待出力の比較 (golden file)
@@ -56,8 +57,11 @@
 - 1つのcriterionが2つ以上のSeamにまたがる
 - 検査がBoundaryの2つ以上の責務に触れる
 
+分割案は、各taskに説明、Acceptance Criteria、Boundary、Done when、Seam、Blocked byを含める。元taskのAcceptance Criteriaを追加・削除・再解釈せず、各criterionをいずれか1つのtaskへ割り当てる。
+
 ## 禁止事項
 
+- SubAgentを起動せず、担当作業を別Agentへ再移譲しない。自分で完了できない場合は、定められた構造化結果で親へ返す
 - 実装コードを書かない (足場は最小限に留める)
 - commitしない
 - specのDoes Not Own・Out of Scopeの領域に検査を置かない
@@ -71,12 +75,13 @@
 ## Check Report
 - STATUS: CHECKS_READY | CANNOT_VERIFY | TASK_TOO_LARGE
 - TASK: <タスクID>
+- METHOD: test-suite | cli-golden | http | headless-browser | schema-lint-type | minimal-harness | none
 - TASK_BRIEF: <受け入れ基準の言い換え / 完了定義 / 設計制約 / 検証方法>
 - CHECK_FILES: <作成または変更したファイルのカンマ区切り一覧>
 - CHECK_COMMANDS:
   - AC-1: <コマンド>
   - AC-2: <コマンド>
 - RED_OUTPUT: <各コマンドの失敗出力の要点>
-- SPLIT_PROPOSAL: <TASK_TOO_LARGEの場合のみ。分割案 (各taskのAcceptance CriteriaとSeam)>
+- SPLIT_PROPOSAL: <TASK_TOO_LARGEの場合のみ。各taskの説明、Acceptance Criteria、Boundary、Done when、Seam、Blocked byを含む分割案>
 - MISSING: <CANNOT_VERIFYの場合のみ。どんな検証手段や情報があれば検査にできるか>
 ```
