@@ -7,6 +7,23 @@ local opt = vim.opt
 
 opt.encoding = "utf-8"
 opt.fileencodings = { "utf-8", "cp932" }
+opt.autoread = true
+
+local checktime_timer = vim.uv.new_timer()
+checktime_timer:start(
+  3000,
+  3000,
+  vim.schedule_wrap(function()
+    vim.cmd("checktime")
+  end)
+)
+
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = function()
+    checktime_timer:stop()
+    checktime_timer:close()
+  end,
+})
 
 -- menuoneで、対象が1件しかなくても常に補完ウィンドウを表示
 -- noinsertで補完ウィンドウを表示時に挿入しない
