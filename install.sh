@@ -211,7 +211,7 @@ done
 cp -aLf "$HOME/.gemini/GEMINI.md" "$DOTPATH/.backup/GEMINI.md" && rm -rf "$HOME/.gemini/GEMINI.md"
 cp -aLf "$HOME/.gemini/skills" "$DOTPATH/.backup/gemini_skills" && rm -rf "$HOME/.gemini/skills"
 cp -aLf "$HOME/.gemini/antigravity-cli/settings.json" "$DOTPATH/.backup/antigravity_cli_settings.json" && rm -rf "$HOME/.gemini/antigravity-cli/settings.json"
-cp -aLf "$HOME/.gemini/antigravity-cli/skills" "$DOTPATH/.backup/antigravity_cli_skills" && rm -rf "$HOME/.gemini/antigravity-cli/skills"
+cp -aLf "$HOME/.gemini/antigravity-cli/skills" "$DOTPATH/.backup/antigravity_cli_skills" 2>/dev/null || true
 mkdir -p "$HOME/.gemini/antigravity-cli"
 mkdir -p "$HOME/.gemini/antigravity-cli/skills"
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.gemini/GEMINI.md"
