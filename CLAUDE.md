@@ -28,7 +28,7 @@ prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt + stylua
 script/tools/sync_vscode_extensions.sh --dry-run
 ```
 
-テストスイートは無い。検証はGitHub Actions (`ci-ubuntu.yml` / `ci-macos.yml`) がクリーンなコンテナで `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。
+テストスイートは無い。検証はGitHub Actions (`ci-ubuntu.yml` / `ci-macos.yml`) がクリーンなコンテナで `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。`ci-macos-packages.yml` は `mise bootstrap packages apply` (brew / brew-cask) の適用・冪等性・statusを、`ci-lint.yml` は `prek run --all-files` を検証する。
 
 ## アーキテクチャ
 
@@ -36,21 +36,24 @@ script/tools/sync_vscode_extensions.sh --dry-run
 
 `install.sh` と `script/setup/setup_*.sh` が以下のように展開する。展開先を直接編集しても実体はこのリポジトリ内のファイルである。
 
-| リポジトリ内                                                                                | 展開先                                                                                            |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `config/dot/<name>`                                                                         | `~/.<name>`                                                                                       |
-| `config/dot_config/<name>`                                                                  | `~/.config/<name>`                                                                                |
-| `config/ai-agents/claude/{CLAUDE.md,settings.json,mcp.json,statusline.py,agents/*,rules/*}` | `~/.claude/` 配下                                                                                 |
-| `config/ai-agents/skills/<skill>`                                                           | `~/.agents/skills/`, `~/.claude/skills/`, `~/.codex/skills/`, `~/.gemini/antigravity-cli/skills/` |
-| `config/ai-agents/codex/{hooks.json,agents/*}`                                              | `~/.codex/` 配下                                                                                  |
-| `config/ai-agents/AGENTS_global.md`                                                         | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                                       |
-| `config/vscode/`, `config/cursor/`                                                          | 各アプリのUserディレクトリ                                                                        |
+| リポジトリ内                                                                                              | 展開先                                                                        |
+| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `config/dot/<name>`                                                                                       | `~/.<name>`                                                                   |
+| `config/dot_config/<name>`                                                                                | `~/.config/<name>`                                                            |
+| `config/ai-agents/claude/{CLAUDE.md,settings.json,mcp.json,statusline.py,subagent_statusline.py,rules/*}` | `~/.claude/` 配下                                                             |
+| `config/ai-agents/skills/<skill>`                                                                         | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
+| `config/ai-agents/codex/hooks.json`                                                                       | `~/.codex/hooks.json`                                                         |
+| `config/ai-agents/AGENTS_global.md`                                                                       | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                   |
+| `config/ai-agents/gemini/antigravity-cli/settings.json`                                                   | `~/.gemini/antigravity-cli/settings.json`                                     |
+| `config/ai-agents/apm.yml`                                                                                | `~/.apm/apm.yml`                                                              |
+| `config/vscode/`, `config/cursor/`                                                                        | 各アプリのUserディレクトリ                                                    |
 
 上書き前の既存ファイルは `.backup/` に退避される。
 
 ### AI agent設定の共有構造
 
-- skillは `config/ai-agents/skills/` に一元管理され、Claude Code / Codex / Gemini / Antigravityの4箇所へsymlinkされる。1箇所の編集が全agentに反映される。
+- 共有skillとcode-reviewer agentはこのリポジトリでは管理せず、[mjun0812/skills](https://github.com/mjun0812/skills) の `main` をapmで購読する。購読定義は `config/ai-agents/apm.yml` (`~/.apm/apm.yml` へsymlink) にあり、`install.sh` が `apm update -g -y` を実行して展開する。
+- このリポジトリに残る私用skill (`mjun-*`, `herdr`, `self-review`, `agent-browser`) は `config/ai-agents/skills/` に一元管理され、`~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` の3箇所へsymlinkされる。Codexは `~/.agents/skills/` を直接読むため `~/.codex/skills/` には展開しない。1箇所の編集が全agentに反映される。
 - skillの一覧と依存関係は `doc/skills.md` (英語) と `doc/skills_ja.md` に記載されている。skillを追加・変更したらここも更新する (`doc-sync` skillがこの同期を担う)。
 - Codexの `~/.codex/config.toml` だけはsymlinkではなく、`script/setup/rewrite_config.py` (tomlkit) がテンプレート (`config/ai-agents/codex/config.toml`) 側のキーだけを既存ファイルへマージする方式。Codexが自動生成する `[projects.*]` や `[hooks.state]` などのローカル状態を温存するため。キーの上書きのみでキーの削除はできない点に注意。
 - Codexのhookは `config/ai-agents/codex/hooks.json` で管理され、`~/.codex/hooks.json` へsymlinkされる。hook定義を変更すると `[hooks.state]` の `trusted_hash` が無効になり、TUIの `/hooks` で再承認が必要になる。そのため通知の条件や文言はhooks.jsonではなくシェルスクリプト側に置く。
