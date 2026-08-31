@@ -31,14 +31,14 @@ allowed-tools: Read, Glob, Grep, Bash(git rev-parse:*), Bash(git branch:*), Bash
 
 specごとに次を読む。存在しないファイルは「なし」として扱い、エラーにしない。
 
-| 読むもの                                 | 取り出す項目                                                                                                                                                                                                                   |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `spec.md`                                | frontmatterの `status` / `approval`、H1タイトル、H1直下の `Source: #N`、`## Requirements` と `## Acceptance Criteria` の有無                                                                                                   |
-| `decisions.md`                           | `## D-NNN:` の件数と、`- Status:` が `tentative` のentry (D番号とタイトル)                                                                                                                                                     |
-| `design.md` / `research/` / `prototype/` | 有無                                                                                                                                                                                                                           |
-| `tasks.md`                               | 先頭の `Implementation Branch: <branch>`、`## T-NNN:` ごとの `- Status:` (`ready` / `in-progress` / `done`) の集計、`## Implementation Notes` の行数、`## Run Log` の行 (taskごとの周回数と差し戻しの証拠種別、debuggerの分類) |
-| git                                      | `git branch --list <branch>` でImplementation Branchのlocal branchの存在、`git worktree list --porcelain` でそのbranchをcheckoutしたworktreeの有無                                                                             |
-| GitHub (任意)                            | `Source: #N` があれば `gh issue view <N> --json state,url`、Implementation Branchがあれば `gh pr list --head <branch> --state all --json number,state,url --limit 1`。`gh` が失敗した場合は該当項目を `unknown` にして続行する |
+| 読むもの                                 | 取り出す項目                                                                                                                                                                                                                                                                                |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spec.md`                                | frontmatterの `status` / `approval`、H1タイトル、H1直下の `Source: #N`、`## Requirements` と `## Acceptance Criteria` の有無                                                                                                                                                                |
+| `decisions.md`                           | `## D-NNN:` の件数と、`- Status:` が `tentative` のentry (D番号とタイトル)                                                                                                                                                                                                                  |
+| `design.md` / `research/` / `prototype/` | 有無                                                                                                                                                                                                                                                                                        |
+| `tasks.md`                               | 先頭の `Implementation Branch: <branch>`、`## T-NNN:` ごとの `- Status:` (`ready` / `in-progress` / `blocked` / `done`) の集計、blocked taskの `Blocked reason` / `Resume when`、`## Implementation Notes` の行数、`## Run Log` の行 (taskごとの周回数と差し戻しの証拠種別、debuggerの分類) |
+| git                                      | `git branch --list <branch>` でImplementation Branchのlocal branchの存在、`git worktree list --porcelain` でそのbranchをcheckoutしたworktreeの有無                                                                                                                                          |
+| GitHub (任意)                            | `Source: #N` があれば `gh issue view <N> --json state,url`、Implementation Branchがあれば `gh pr list --head <branch> --state all --json number,state,url --limit 1`。`gh` が失敗した場合は該当項目を `unknown` にして続行する                                                              |
 
 ### 3. phaseの導出
 
@@ -56,7 +56,7 @@ phaseに応じた「次に必要なこと」を1行で添える。skill名や手
 
 - `drafting`: contractの承認待ち。tentativeがあれば件数を添える
 - `approved`: 実装を開始できる。tentativeが残っていれば「要確認 n件の解消が先」とする
-- `implementing`: 実装の再開 (branch名、残りtask数)
+- `implementing`: 実装の再開 (branch名、残りtask数、blocked task数)。実行可能taskが無ければ、blocked taskの再開条件の充足が必要と表示する
 - `delivering`: 配送 (PR) が未完了。branch名と、PRがあればそのURL
 - `done`: なし
 
@@ -77,7 +77,7 @@ phaseに応じた「次に必要なこと」を1行で添える。skill名や手
 
 ユーザーの言語で、チャットにだけ出力する。ファイルは作らない。
 
-**一覧 (`source` なし)**: specごとに1行の表。列は slug / タイトル / approval / phase / tasks (done数 / 総数。`tasks.md` が無ければ `-`) / branch または PR / 次に必要なこと。表の下に警告を spec ごとにまとめて列挙する。specが0件なら「activeなspecはありません」とだけ報告する。
+**一覧 (`source` なし)**: specごとに1行の表。列は slug / タイトル / approval / phase / tasks (done数 / 総数とblocked数。`tasks.md` が無ければ `-`) / branch または PR / 次に必要なこと。表の下に警告を spec ごとにまとめて列挙する。specが0件なら「activeなspecはありません」とだけ報告する。
 
 ```text
 | slug | title | approval | phase | tasks | branch / PR | next |
@@ -92,7 +92,7 @@ phaseに応じた「次に必要なこと」を1行で添える。skill名や手
 
 - Source: Issue番号、state、URL (あれば)
 - Decisions: D番号 / タイトル / Status の一覧 (tentativeを先頭に)
-- Tasks: T番号 / タイトル / Status / Blocked by の一覧と、Implementation Notesの件数
+- Tasks: T番号 / タイトル / Status / Blocked by の一覧と、blocked taskの直接原因・再開条件、Implementation Notesの件数
 - Run Log: `## Run Log` の行をそのまま (収束しなかったtaskの原因分析に使う)
 - 付随ファイル: design.md / research/ / prototype/ の有無
 - Revalidation Triggers: `spec.md` の `### Revalidation Triggers` の本文 (あれば。前提が崩れていないかを人間が見直すための再掲)

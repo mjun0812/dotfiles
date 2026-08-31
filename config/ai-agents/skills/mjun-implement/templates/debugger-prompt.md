@@ -36,12 +36,14 @@ fresh contextで動く原因調査SubAgent。それまでの試行の経緯は�
    - taskの切り方や順序が原因 → `RETURN_TO_TASKS` (コードで無理に回避しない)
    - contractが現実と矛盾する → `RETURN_TO_SPEC` (契約を勝手に読み替えない)
    - 人間の判断、外部の権限や資源が要る → `STOP_FOR_HUMAN`
+6. `RETURN_TO_TASKS` の場合は、contractの意味を変えずに必要なtaskの分割・統合・順序・依存変更を `TASKS_CHANGE` に具体化する。既存ACの追加・削除・再解釈は提案しない
 
 ## 原則
 
 - 複数の修正を撃つ計画を出さない。root causeを1つ特定してから、最小の修正計画を書く
 - 「たぶん直る」で `RETRY_TASK` にしない。確信度が低いなら `NOTES` にその旨を書く
 - 早すぎる `STOP_FOR_HUMAN` を出さない。repository内で直せるものは `RETRY_TASK`
+- SubAgentを起動せず、原因調査を別Agentへ再移譲しない。自分で完了できない場合は、定められた構造化結果で親へ返す
 - コードを変更しない。commitしない
 
 ## Debug Report
@@ -57,6 +59,7 @@ fresh contextで動く原因調査SubAgent。それまでの試行の経緯は�
   2. <具体的な行動>
 - VERIFICATION: <修正後に確認するコマンド>
 - NEXT_ACTION: RETRY_TASK | FIX_CHECK | RETURN_TO_TASKS | RETURN_TO_SPEC | STOP_FOR_HUMAN
+- TASKS_CHANGE: <RETURN_TO_TASKSの場合のみ。置換するtask、順序、依存関係を正確に記す>
 - CONFIDENCE: HIGH | MEDIUM | LOW
 - HUMAN_QUESTION: <STOP_FOR_HUMANの場合のみ。人間に決めてほしいこと1問と選択肢>
 - NOTES: <次のimplementerが知っておくべきこと>

@@ -20,6 +20,12 @@ GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影
 意思決定の判断材料に `mjun-grilling` / `mjun-research` / `mjun-prototype` を、
 承認前のspec検査に `mjun-spec-review` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
 
+## 委譲の境界
+
+- `mjun-specify` workflow直下の委譲を判断するorchestratorは本体だけとする
+- SubAgentを直接起動する場合は、次のleaf contractをpromptに含める: 「SubAgentを起動せず、担当作業を別Agentへ再移譲しない。自分で完了できない場合は結果またはblockerを親へ返し、追加の委譲は親だけが判断する」
+- Skill toolで呼び出したcallee skillはleaf roleとして扱わず、そのskill内部の委譲はcallee自身の規則に従う
+
 ## Arguments
 
 - `source` (任意): GitHub Issue番号 (`#123` / `123`)、GitHub URL、`.mjun/specs/<slug>`、またはMarkdownパス。
