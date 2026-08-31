@@ -1,26 +1,31 @@
 #:schema https://developers.openai.com/codex/config-schema.json
 
-model = "gpt-5.6-luna"
-model_reasoning_effort = "max"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "high"
 
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 web_search = "live"
 allow_login_shell = true
 suppress_unstable_features_warning = true
+service_tier = "default"
 
 [features]
-collaboration_modes = true
 shell_snapshot = true
 multi_agent = true
-remote_control = true
 hooks = true
 # plan mode以外でもユーザー入力を求められるようにする
 default_mode_request_user_input = true
 
+[features.multi_agent_v2]
+enabled = true
+min_wait_timeout_ms = 600000
+default_wait_timeout_ms = 1800000
+max_wait_timeout_ms = 3600000
+
 [agents]
-max_threads = 16
 max_depth = 4
+max_concurrent_threads_per_session = 6
 
 [sandbox_workspace_write]
 writable_roots = ["~/.cache", "~/.local/share", "/tmp", "/private/tmp"]
@@ -83,3 +88,18 @@ enabled = true
 
 [plugins."chrome@openai-bundled"]
 enabled = true
+
+[plugins."sites@openai-bundled"]
+enabled = false
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = false
+
+[plugins."codex-app-tools@openai-bundled"]
+enabled = false
