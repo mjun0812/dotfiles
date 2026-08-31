@@ -40,7 +40,7 @@ lazygit = "latest"
 actionlint = "latest"
 aqua = "latest"
 container = { version = "latest", os = ["macos"], postinstall = '''
-container system start
+container system start --disable-kernel-install
 # kata-static から推奨カーネルを取得して既定化する
 container system kernel set --recommended --force
 ''' }
