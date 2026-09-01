@@ -94,7 +94,7 @@ apm update -g
 
 `apm update -g` re-resolves `main`, deploys the changed skills/agents, and removes deleted ones automatically (lockfile-based cleanup). Since the subscription tracks a branch, `config/ai-agents/apm.yml` does not change on updates — there is usually nothing to commit here.
 
-Private skills (`mjun-*`, `herdr`, `self-review`, `agent-browser`) still live in `config/ai-agents/skills/` and are symlinked by `install.sh`.
+Private skills (`mjun-*`, `self-review`) still live in `config/ai-agents/skills/` and are symlinked by `install.sh`.
 
 ## Tools
 

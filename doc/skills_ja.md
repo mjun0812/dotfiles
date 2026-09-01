@@ -2,7 +2,7 @@
 
 このドキュメントは、本リポジトリから使うAI agent skillと、それらの依存関係について説明します。skillの供給元は2つあります。
 
-私用skill (`mjun-*`, `herdr`, `self-review`, `agent-browser`) のソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) 配下にあり、`install.sh` によって以下へsymlinkとしてデプロイされます。
+私用skill (`mjun-*`, `self-review`) のソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) 配下にあり、`install.sh` によって以下へsymlinkとしてデプロイされます。
 
 - `~/.agents/skills/<skill>` — 共有skillディレクトリ (Codexはこのディレクトリを直接読む)
 - `~/.claude/skills/<skill>` — Claude Code
@@ -10,7 +10,30 @@
 
 `config/ai-agents/skills/` 配下のファイルを編集すると、symlink経由ですべてのagentに同時に反映されます。
 
-それ以外のskill (とcode-reviewer agent) は [mjun0812/skills](https://github.com/mjun0812/skills) からapmで購読しています。購読定義は [`config/ai-agents/apm.yml`](../config/ai-agents/apm.yml) にあり、`install.sh` が `apm update -g -y` を実行して展開します。以下の表のリンクはupstreamリポジトリを指します。
+APM管理のskillとagentは [`config/ai-agents/apm.yml`](../config/ai-agents/apm.yml) に宣言され、`install.sh` が `apm update -g -y` を実行してデプロイします。以下の一覧はmanifestで明示的に選択した内容に従います。
+
+## APM管理のPrimitives
+
+APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`の各targetへデプロイします。
+
+### Skills
+
+| Package                                                                                     | 選択したskill                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`mjun0812/skills`](https://github.com/mjun0812/skills)                                     | `claude`, `codex`, `cognitive-rhythm-writing`, `doc-sync`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `git-squash`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-fix`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control` |
+| [`vercel-labs/agent-browser`](https://github.com/vercel-labs/agent-browser)                 | [`agent-browser`](https://github.com/vercel-labs/agent-browser/blob/main/skills/agent-browser/SKILL.md)                                                                                                                                                                                                                                                                                           |
+| [`herdrdev/herdr/skills/herdr`](https://github.com/herdrdev/herdr/tree/master/skills/herdr) | [`herdr`](https://github.com/herdrdev/herdr/blob/master/skills/herdr/SKILL.md)                                                                                                                                                                                                                                                                                                                    |
+
+### Agents
+
+4つのagentはすべて[`mjun0812/skills`](https://github.com/mjun0812/skills/tree/main/agents)から取得します。
+
+| Agent                                                                                                       | 用途                                                                                           |
+| ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [`code-reviewer-contract`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-contract.md)   | spec contractに明記されたrequirements、boundaries、acceptance criteriaとの整合だけを検査する。 |
+| [`code-reviewer-finder`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-finder.md)       | 変更が導入または露出した、対応すべき動作不良やregressionを発見する。                           |
+| [`code-reviewer-standards`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-standards.md) | 変更が導入した、リポジトリの必須規約違反とcode smellを発見する。                               |
+| [`code-reviewer-verifier`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-verifier.md)   | review候補1件の反証を試み、confirmed、refuted、uncertainのverdictを返す。                      |
 
 ## Skill一覧
 
@@ -92,8 +115,6 @@
 
 | Skill                                                                                                              | 用途                                                                                                                                                                                                                  |
 | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`agent-browser`](../config/ai-agents/skills/agent-browser/SKILL.md)                                               | `agent-browser` CLIによるブラウザ自動化 (upstreamのstubをvendor。使い方は `agent-browser skills get core` で実行時に読み込む)                                                                                         |
-| [`herdr`](../config/ai-agents/skills/herdr/SKILL.md)                                                               | herdr管理下のpaneからherdrのpane/tab/workspaceを操作する (バイナリ同梱版を `herdr --skill` でvendor。herdr更新時に `setup_herdr.sh` が再生成)                                                                         |
 | [`resume-other-agent`](https://github.com/mjun0812/skills/blob/main/skills/delegation/resume-other-agent/SKILL.md) | 別のcoding agent（Codex / Claude Code）をsession IDで指定し、直前のcontextを復元してresumeする                                                                                                                        |
 | [`skill-review`](https://github.com/mjun0812/skills/blob/main/skills/review/skill-review/SKILL.md)                 | Agent skillの仕様適合性を検証し、周辺skillとの発動競合や旧基準の痕跡を含む観点ごとの判定をレポートする。レビュー後の修正から新しい基準の候補を拾い、採用されたら自身の基準とCHANGELOGへ追記する。評価対象は編集しない |
 | [`wezterm-control`](https://github.com/mjun0812/skills/blob/main/skills/tools/wezterm-control/SKILL.md)            | weztermのpane/tab/windowを `wezterm cli` で操作する。分割・フォーカス・リサイズ・内容の読み取り・コマンド送信と結果検証                                                                                               |
@@ -135,7 +156,7 @@ graph LR
 
 以下のskillは他のskillへ委譲しません。
 
-`agent-browser`, `claude`, `codex`, `doc-sync`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `herdr`, `japanese-tech-writing`, `md-note`, `mjun-grilling`, `mjun-prototype`, `mjun-research`, `mjun-spec-review`, `mjun-status`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
+`claude`, `codex`, `doc-sync`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `md-note`, `mjun-grilling`, `mjun-prototype`, `mjun-research`, `mjun-spec-review`, `mjun-status`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 

@@ -2,7 +2,7 @@
 
 This document describes the AI agent skills used from this repository and how they depend on each other. Skills come from two sources.
 
-Private skills (`mjun-*`, `herdr`, `self-review`, `agent-browser`) live under [`config/ai-agents/skills/`](../config/ai-agents/skills) and are deployed by `install.sh` as symlinks into:
+Private skills (`mjun-*`, `self-review`) live under [`config/ai-agents/skills/`](../config/ai-agents/skills) and are deployed by `install.sh` as symlinks into:
 
 - `~/.agents/skills/<skill>` — shared skills directory (Codex reads this directory directly)
 - `~/.claude/skills/<skill>` — Claude Code
@@ -10,7 +10,30 @@ Private skills (`mjun-*`, `herdr`, `self-review`, `agent-browser`) live under [`
 
 Editing a file under `config/ai-agents/skills/` updates every agent at once via the symlink.
 
-The other skills (and the code-reviewer agents) are subscribed from [mjun0812/skills](https://github.com/mjun0812/skills) via apm. The subscription is declared in [`config/ai-agents/apm.yml`](../config/ai-agents/apm.yml) and `install.sh` runs `apm update -g -y` to deploy it; their links below point at the upstream repository.
+APM-managed skills and agents are declared in [`config/ai-agents/apm.yml`](../config/ai-agents/apm.yml), and `install.sh` runs `apm update -g -y` to deploy them. The inventory below follows the explicit selections in that manifest.
+
+## APM-managed Primitives
+
+APM deploys these packages to the `agent-skills`, `antigravity`, `claude`, and `codex` targets.
+
+### Skills
+
+| Package                                                                                     | Selected skills                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`mjun0812/skills`](https://github.com/mjun0812/skills)                                     | `claude`, `codex`, `cognitive-rhythm-writing`, `doc-sync`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `git-squash`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-fix`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `md-note`, `resume-other-agent`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control` |
+| [`vercel-labs/agent-browser`](https://github.com/vercel-labs/agent-browser)                 | [`agent-browser`](https://github.com/vercel-labs/agent-browser/blob/main/skills/agent-browser/SKILL.md)                                                                                                                                                                                                                                                                                           |
+| [`herdrdev/herdr/skills/herdr`](https://github.com/herdrdev/herdr/tree/master/skills/herdr) | [`herdr`](https://github.com/herdrdev/herdr/blob/master/skills/herdr/SKILL.md)                                                                                                                                                                                                                                                                                                                    |
+
+### Agents
+
+All four agents come from [`mjun0812/skills`](https://github.com/mjun0812/skills/tree/main/agents).
+
+| Agent                                                                                                       | Purpose                                                                                                 |
+| ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| [`code-reviewer-contract`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-contract.md)   | Check a change only against the requirements, boundaries, and acceptance criteria in its spec contract. |
+| [`code-reviewer-finder`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-finder.md)       | Find actionable behavioral defects and regressions introduced or exposed by a change.                   |
+| [`code-reviewer-standards`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-standards.md) | Find mandatory repository-standard violations and code smells introduced by a change.                   |
+| [`code-reviewer-verifier`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-verifier.md)   | Try to refute one review candidate and return a confirmed, refuted, or uncertain verdict.               |
 
 ## Skill List
 
@@ -92,8 +115,6 @@ Each skill defaults to a read-only consultation mode, and runs with edit permiss
 
 | Skill                                                                                                              | Purpose                                                                                                                                                                                                                                                                              |
 | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`agent-browser`](../config/ai-agents/skills/agent-browser/SKILL.md)                                               | Browser automation via the `agent-browser` CLI (vendored upstream stub; usage is loaded at runtime with `agent-browser skills get core`)                                                                                                                                             |
-| [`herdr`](../config/ai-agents/skills/herdr/SKILL.md)                                                               | Control herdr panes / tabs / workspaces from inside a herdr-managed pane (vendored from the binary via `herdr --skill`; regenerated by `setup_herdr.sh` on upgrade)                                                                                                                  |
 | [`resume-other-agent`](https://github.com/mjun0812/skills/blob/main/skills/delegation/resume-other-agent/SKILL.md) | Resume another coding agent (Codex / Claude Code) by session ID, replaying its prior context                                                                                                                                                                                         |
 | [`skill-review`](https://github.com/mjun0812/skills/blob/main/skills/review/skill-review/SKILL.md)                 | Validate Agent Skills compliance and report per-criterion verdicts, including trigger conflicts with nearby skills and leftovers of superseded criteria; after a review, proposes rules that emerged from the fixes and, on approval, appends them to its own criteria and CHANGELOG |
 | [`wezterm-control`](https://github.com/mjun0812/skills/blob/main/skills/tools/wezterm-control/SKILL.md)            | Drive wezterm panes / tabs / windows via `wezterm cli`: split, focus, resize, read pane contents, send commands and verify their output                                                                                                                                              |
@@ -135,7 +156,7 @@ graph LR
 
 These skills do not delegate to other skills:
 
-`agent-browser`, `claude`, `codex`, `doc-sync`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `herdr`, `japanese-tech-writing`, `md-note`, `mjun-grilling`, `mjun-prototype`, `mjun-research`, `mjun-spec-review`, `mjun-status`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
+`claude`, `codex`, `doc-sync`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `md-note`, `mjun-grilling`, `mjun-prototype`, `mjun-research`, `mjun-spec-review`, `mjun-status`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 

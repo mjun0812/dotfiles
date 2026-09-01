@@ -4,7 +4,6 @@ set -euo pipefail
 # setup_herdr.sh
 #
 # herdr の agent-state hook スクリプトを Claude Code / Codex に設置し、
-# バイナリ同梱の agent skill を dotfiles に取り込み、
 # dotfiles 管理の herdr plugin を link する。
 # mise の postinstall (config/dot_config/mise/config.toml) から herdr の
 # install / upgrade 時に呼ばれる。手動で再実行してもよい。
@@ -25,12 +24,6 @@ herdr integration install codex
 for plugin in "$DOTPATH"/config/dot_config/herdr/plugins/*/; do
     herdr plugin link "${plugin%/}"
 done
-
-# skill はバイナリ同梱版 (インストール済みバージョンと一致) を dotfiles 側に
-# 生成する。herdr の更新で内容が変わると git diff に現れるので commit する。
-# 各 agent への配布は既存の skill symlink 機構 (install.sh / setup_*.sh) が担う。
-mkdir -p "$DOTPATH/config/ai-agents/skills/herdr"
-herdr --skill >"$DOTPATH/config/ai-agents/skills/herdr/SKILL.md"
 
 normalize() {
     local file="$1" canonical="$2"

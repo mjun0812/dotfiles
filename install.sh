@@ -190,7 +190,6 @@ for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
 done
 
 ################ [APM] ################
-# Global apm subscription (skills/agents from mjun0812/skills main).
 log_section "Setting up APM..."
 mkdir -p "$HOME/.apm"
 cp -aLf "$HOME/.apm/apm.yml" "$DOTPATH/.backup/apm.yml" && rm -rf "$HOME/.apm/apm.yml"
