@@ -200,8 +200,42 @@ config.mouse_bindings = {
     action = wezterm.action.OpenLinkAtMouseCursor,
   },
 }
+-- 前面プロセスが Herdr のときだけ sequence を素のバイト列で送り、
+-- それ以外の pane では fallback のキーをそのまま送る
+local function send_to_herdr(sequence, fallback_key, fallback_mods)
+  return wezterm.action_callback(function(window, pane)
+    local process = pane:get_foreground_process_name() or ""
+    if process:match("/herdr$") then
+      pane:send_text(sequence)
+    else
+      window:perform_action(wezterm.action.SendKey({ key = fallback_key, mods = fallback_mods }), pane)
+    end
+  end)
+end
+
 -- key binding
 config.keys = {
+  {
+    -- herdr#1266: enable_kitty_keyboard 有効時、wezterm は Esc の押下を素の \x1b、
+    -- リリースを \x1b[27;1:3u で送る。Herdr は lone ESC を最大 150ms 保留するため
+    -- 両者が結合されて Esc が落ちる。押下を完結した CSI-u 列で送って保留を回避する
+    key = "Escape",
+    mods = "NONE",
+    action = send_to_herdr("\x1b[27;1u", "Escape", "NONE"),
+  },
+  {
+    -- herdr PR #3057: prefix mode 中の wezterm は Tab を関連テキスト付きの
+    -- \x1b[9;;9u で送り、Herdr 0.8.2 のパーサがこれを捨てて prefix+tab が効かない。
+    -- 関連テキストなしの CSI-u 列で送って回避する
+    key = "Tab",
+    mods = "NONE",
+    action = send_to_herdr("\x1b[9u", "Tab", "NONE"),
+  },
+  {
+    key = "Tab",
+    mods = "SHIFT",
+    action = send_to_herdr("\x1b[9;2u", "Tab", "SHIFT"),
+  },
   {
     -- ctrl+` はレガシーエンコーディングでは NUL に潰れるため、
     -- CSI-u で送って Herdr 経由でも nvim に届くようにする
