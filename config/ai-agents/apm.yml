@@ -16,7 +16,6 @@ dependencies:
       skills:
         - claude
         - codex
-        - cognitive-rhythm-writing
         - doc-sync
         - experiment-plan
         - git-commit
