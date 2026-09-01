@@ -2,9 +2,6 @@
 paths:
   - "**/*.ipynb"
   - "**/notebooks/**/*.py"
-  - "**/jupytext.toml"
-  - "**/tools/validate_notebooks.py"
-  - "**/scripts/check_notebooks.sh"
 ---
 
 # Jupyter Notebook
