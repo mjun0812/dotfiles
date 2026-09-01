@@ -94,6 +94,7 @@ opencode = "latest"
 apm = "latest"
 
 # Python CLI tools
+"cargo:nb-cli" = "latest"
 "pipx:ruff" = "latest"
 "pipx:glances" = "latest"
 "pipx:nvitop" = "latest"
@@ -101,6 +102,7 @@ apm = "latest"
 "pipx:copier" = "latest"
 "pipx:euporie" = "latest"
 "pipx:huggingface_hub" = "latest"
+"pipx:jupyter-mcp-server" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = []
