@@ -28,7 +28,7 @@
 2. **Boundariesとの整合**: ModulesがOwnsの範囲に収まっているか。Does Not Ownの領域を変更する設計になっていないか。Dependenciesに無い依存を導入していないか。Public Contracts Affectedに無い公開interfaceの変更が含まれていないか
 3. **コードベースとの整合**: Change Outlineの対象が実在するか。新設Moduleと同じ責務のものが既に無いか (あれば新設ではなく利用・拡張になるべき)。Interfaces & Seamsが既存の呼び出し規約・レイヤの依存方向・steeringの規約・既存ADRと食い違っていないか
 4. **失敗経路と状態**: Data Flowの各段が失敗したときの扱い (部分的成功、再実行、並行実行、不正入力、回復不能な状態) のうち、Requirements / Acceptance Criteriaに関わるものが設計で決まっているか
-5. **Test Seams**: 各Acceptance Criterionを検査できるSeamがあるか。差し替えられない外部依存や、検査に必要な観測点の欠落が無いか
+5. **観測点**: 各Acceptance Criterionを検査できる観測点 (関数、endpoint、CLI出力などの公開interface。CLI全体のようなcompositeな境界でもよい) が設計にあるか。検査に必要なのに差し替えられない外部依存が無いか。Interfaces & Seamsに列挙が無いことだけを理由に指摘せず、検査できるかどうかで判断する
 6. **構造の過不足**: 現在のRequirementsに無い抽象・設定項目・間接層・将来のための拡張点が入っていないか。実装が1つしかないinterface、責務が複数混ざったModule、複数のRequirementが同じ問題の変種なのに別々に設計されているものが無いか
 7. **decisionsとの整合** (決定の経緯がある場合): 設計がacceptedな決定と食い違っていないか。supersededの内容が設計に残っていないか。tentativeの決定が確定として設計されていないか
 
@@ -36,7 +36,7 @@
 
 - `contract`: そのままではRequirement / Acceptance Criterionが満たせない、またはacceptedなdecisionと矛盾する
 - `boundary`: Boundaries、steeringの規約、または既存ADRに反する
-- `structure`: contractは満たせるが、実装時に手戻りや欠陥を生む (失敗経路、Seam、責務分割、過剰な抽象)
+- `structure`: contractは満たせるが、実装時に手戻りや欠陥を生む (失敗経路、観測点、責務分割、過剰な抽象)
 
 ## Candidates
 

@@ -49,8 +49,9 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
 3. **内容検査**:
    1. **contract承認とdesign.md** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、contractの承認が先に必要であることを案内する。実装依頼そのものをcontract承認の代わりにしない。`design.md` が無い場合も中止し、実装設計の作成が先に必要であることを案内する
    2. **情報の充足**: Goal、受け入れ基準、実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、specを詰め直す必要があることを案内する。方針を推測で補って実装に進まない
-   3. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` を `accepted` へ更新してから進む (確認済みの決定として記録し、再実行時に同じtentativeで止まらない)
+   3. **要確認の残留**: decision log (`decisions.md`、または取り込んだspec本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。spec作成側が承認前にtentativeを解消するため、ここで残っているのは承認後に `decisions.md` が編集された場合などに限る。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` を `accepted` へ更新してから進む (確認済みの決定として記録し、再実行時に同じtentativeで止まらない)
    4. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込みと投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する。反映する場合は `approval: pending` へ戻してから反映し、更新後のcontractを提示して承認を得て `approved` へ更新してから進む。承認されなければ中止し、specの磨き直しが必要であることを案内する
+   5. **spec間依存** (spec modeのみ): BoundariesのDependenciesに `spec: <slug>` の行があれば `.mjun/specs/<slug>/spec.md` を読み、`status: done` を確認する。specが存在しない、またはdoneでない場合は中止し、先に該当specの配送が必要であることを案内する
 4. **taskキューを構築する**:
    - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)。`Status: blocked` のtaskは `Resume when` が現在満たされたと確認できた場合だけ `ready` へ戻し、それ以外はblocked一覧へ残す
    - 全taskが `done` の場合も終了せず、記録済みbranchからresumeしてPhase 3.2の最終検証とPhase 4の配送を再実行する
@@ -85,7 +86,7 @@ SubAgentは毎回新規に起動し、差し戻し時も前回のSubAgentを継�
 - **debugger** ([templates/debugger-prompt.md](templates/debugger-prompt.md)): 差し戻しが収束しない、またはBLOCKEDのときに、fresh contextでroot causeを分類し `## Debug Report` を返す
 - **refactorer** ([templates/refactorer-prompt.md](templates/refactorer-prompt.md)): 全task完了後、reviewerのNOTESとtask間の重複を全検査greenのまま整理し、`## Refactor Report` を返す
 
-SubAgentのmodel選択は、環境のグローバル指示 (CLAUDE.md, AGENTS.md等) のモデル指針を最優先する。指針が無ければメイン会話と同等のモデルをデフォルトとし、定型的で機械的な作業に限りimplementerに軽量モデルを指定してよい。reviewerにはimplementerと同等以上のモデルを使う。
+SubAgentのmodel選択は、環境のグローバル指示 (CLAUDE.md, AGENTS.md等) のモデル指針を最優先する。指針が無ければメイン会話と同等のモデルをデフォルトとし、定型的で機械的な作業に限りimplementerに軽量モデルを指定してよい。verifierとreviewerにはimplementerと同等以上のモデルを使う (出力が親の状態遷移に直接使われるため)。
 
 実装を始める前に、リポジトリから正規の検証コマンドを洗い出し、`TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` / `SMOKE_COMMANDS` として保持する。探索順は `.mjun/steering/` の記述 → manifest類 → タスクランナー → CI設定 → README。リポジトリの自動化が既に使っているコマンドを優先する。`SMOKE_COMMANDS` (起動して最初の利用可能な状態に達することを確かめるコマンド) は宣言されているものだけを使い、無ければ空のままにしてPhase 3.2でverifierの検査から代用する。
 
@@ -95,6 +96,8 @@ Phase 3の間の制約:
 - ループ内で `git reset --hard` 等の破壊的リセットを行わない (例外はPhase 3.3で整理の変更だけを戻す場合のみ)
 - pushとPR作成はPhase 4まで行わない。commitはtask承認ごとにメイン会話が行う (Phase 3.1)。SubAgentにはcommitさせない
 - SubAgentの完了主張を検証の代わりにしない。判定は構造化フィールドと、検査・reviewer・最終検証の実行結果だけで行う
+- 構造化値が無い、または曖昧なときの再要求は、作業したSubAgentを継続して行う (SendMessage等)。継続できない環境では、ブロックだけを別のSubAgentに求めず、そのroleを最初からやり直す (作業していないagentが返すブロックは捏造になる)。差し戻し時に新しいSubAgentを起動する規則とは別である
+- SubAgentの報告で `NOT_RUN` の項目は、親が該当コマンドを実行して埋める。推測で埋めない
 - verifierが書いた検査ファイル (`CHECK_FILES`) はverifier以外に変更させない。親は検査の作成直後にファイルのハッシュ (`shasum`) を記録し、reviewerがそれと照合する。検査を直す必要が生じた場合はverifierに作り直させ、ハッシュを更新する
 
 #### 自律継続とtaskの隔離
@@ -107,12 +110,12 @@ Phase 3の間の制約:
 
 #### Run Log
 
-`tasks.md` 末尾の `## Run Log` に、taskごとに1行で追記する (中断後のresumeでは既存行を保持し、新しい行を足す)。原因分析の材料にするため、周回数と差し戻しの証拠種別、debuggerの分類を残す。
+`tasks.md` 末尾の `## Run Log` に、taskごとに1行で追記する (中断後のresumeでは既存行を保持し、新しい行を足す)。原因分析の材料にするため、周回数と差し戻しの証拠種別、debuggerの分類を残す。証拠種別は a (失敗コマンドの出力)、b (file:line + 引用)、mismatch (reviewerの `MECHANICAL_RESULTS` と親の再実行が食い違った) のいずれか。
 
 ```text
 - T-001: checks=READY (3) | rounds=2 | reject=[a, b] | debug=LOGIC_ERROR→RETRY_TASK | result=done
 - T-002: checks=CANNOT_VERIFY (3) | result=blocked | resume=<検証手段が利用可能>
-- feature: validation=GO | refactor=DONE
+- feature: validation=GO | refactor=DONE | base-sync=CLEAN
 ```
 
 #### Phase 3.0: 検査の作成 (taskごと、実装前)
@@ -146,7 +149,8 @@ taskキューの順に、taskごとに次を行ってからPhase 3.1へ進む。
    - `BLOCKED` → Phase 3.1'のdebuggerへ進む
 3. **reviewerの起動**: テンプレートに、task文脈、contract、`design.md` の全文 (spec modeのみ)、関係するADR (あれば)、`CHECK_COMMANDS`、`CHECK_FILES` と記録したハッシュ、検証コマンド、implementerのStatus Report (参照用)、周回 (`ROUND`) を合成して起動する。2周目以降は前回の `FINDINGS` と `REMEDIATION` も渡す (reviewerは前回指摘の解消を先に判定し、新規のREJECT根拠を検査の失敗・回帰・検査ファイルの改変・実在性・Boundary違反に限る)
 4. **VERDICTの処理**: `## Review Verdict` の `- VERDICT:` フィールドだけをパースする
-   - `APPROVED` → task完了。**先にworktree内でそのtaskの変更 (検査ファイルを含む) をcommitし** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)、成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。commit対象の差分が無い場合は、前回実行でcommit済みとみなしてstatus更新だけを行う。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。`NOTES` はPhase 3.3のために保持する。Run Logに周回数、差し戻しの証拠種別、結果を記録し、次のtaskへ進む
+   - `APPROVED` → 親がworktreeで全 `CHECK_COMMANDS` を実行し、`CHECK_FILES` のハッシュを照合する (reviewerの `MECHANICAL_RESULTS` を検証の代わりにしない。`MECHANICAL_RESULTS` に `NOT_RUN` の項目があればそのコマンドも実行する)。1つでも失敗、または不一致なら、その出力を証拠 (a) として `REJECTED` と同じ差し戻しを行い、Run Logの `reject=` に `mismatch` を記録する。すべて通れば task完了。**先にworktree内でそのtaskの変更 (検査ファイルを含む) をcommitし** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)、成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。commit対象の差分が無い場合は、前回実行でcommit済みとみなしてstatus更新だけを行う。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。`NOTES` はPhase 3.3のために保持する。Run Logに周回数、差し戻しの証拠種別、結果を記録し、次のtaskへ進む
+   - `REJECTED` で根拠がChange Outline外のパスだけの場合: そのパスが担当taskのAcceptance Criteriaに必要で、かつspecのOwns内なら、親がメインrepo側の `design.md` のChange Outlineへそのdirectoryを追記し、Implementation Notesに1行残してreviewerだけを再起動する (差し戻しの周回に数えない)。Owns外、または必要性を示せない場合は次の通常の差し戻しとする
    - `REJECTED` → implementerを再起動する。渡すのは `REMEDIATION`、`FINDINGS`、reviewerが実行して失敗したコマンドの生の出力 (`MECHANICAL_RESULTS` と `FINDINGS` の証拠 (a))、前回のimplementerが取った方針の要約1行 (`EVIDENCE` と `FILES_CHANGED` から親が作る。「駄目だった方針」として渡す)。worktreeには前回の試行の未commit変更が残っているので、implementerに `git diff` で確認させてから直させる。同一taskの差し戻しは**最大2周**とし、2周後もREJECTEDならPhase 3.1'のdebuggerへ進む
 5. **知見の伝播**: task横断で有用な発見は、`tasks.md` 末尾の `## Implementation Notes` へ1行で永続化し、以降のverifierとimplementerのプロンプトに含める
 
@@ -168,12 +172,12 @@ BLOCKED、または差し戻し2周後のREJECTEDで起動する。debuggerはfr
 
 #### Phase 3.2: feature単位の検証
 
-キュー再評価の結果、全taskがdoneの場合だけ行う。実行可能taskが尽きた時点でdoneでないtaskが残る場合は、Phase 3.2、3.3、4をスキップし、specをactiveのまま `PARTIAL` としてPhase 5へ進む。各項目はSubAgentに依頼してよいが、判定は親が結果に基づいて行う。
+キュー再評価の結果、全taskがdoneの場合だけ行う。実行可能taskが尽きた時点でdoneでないtaskが残る場合は、Phase 3.2、3.3、4をスキップし、specをactiveのまま `PARTIAL` としてPhase 5へ進む。検証コマンドの実行 (手順1) は親が自分で行い、SubAgentの報告で代えない。判断を要する手順2〜4はSubAgentに依頼してよいが、判定は親が結果に基づいて行う。
 
 1. **検証コマンドの実行**: TEST / LINT / BUILD 全体と `SMOKE_COMMANDS`。SMOKEが宣言されていない場合は、各taskの `CHECK_COMMANDS` のうちend-to-endに最も近いものを代用する。どちらも無ければ「実行時検証: 未実施」として扱う
 2. **Acceptance Criteriaの照合**: specのAcceptance Criteria 1件ごとに、それを証明する検査 (`CHECK_COMMANDS`) と実装を対応づける。証明する検査が無いcriterionは、実装と検証結果から充足を判定し、判定できなければ未充足とする。specにAcceptance Criteriaが無いdoc modeでも、taskキューのAcceptance Criteriaは照合する
 3. **task間の整合**: task同士が共有するinterface、データ形、エラー形式、設定が一致しているかをコードから確認する
-4. **contract境界の照合**: branch全体の変更 (`git diff <base>..HEAD`) がspecのBoundaries (Owns / Does Not Own) とOut of Scopeに収まっているかを照合する。specにBoundariesもOut of Scopeも無い場合はスキップする
+4. **contract境界の照合**: branch全体の変更 (`git diff <base>..HEAD`) がspecのBoundaries (Owns / Does Not Own) とOut of Scopeに収まっているかを照合する。spec modeでは `git diff --name-only <base>..HEAD` の全パスが `design.md` のChange Outlineのdirectory配下にあるかも確かめる (`CHECK_FILES` は除く)。specにBoundariesもOut of Scopeも無い場合はスキップする
 
 判定:
 
@@ -197,14 +201,15 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。commit messageやPR本文などの外部向け出力には、`.mjun/` 配下のパスや内部spec文書を含めない (外部へ見せるspecの参照はGitHub Issue番号だけを使う)。
 
 1. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正など)。残変更が無ければスキップする
-2. **`--no-pr` の場合**: ここで配送を終える。Phase 5へ進む
-3. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
+2. **baseへの再同期**: `git fetch` で `<base-branch>` を最新化し、作業branchをその上へ `git rebase` する (worktree作成後に並行する他のspecの成果がmergeされている場合に備える。`--no-pr` でも行う。remoteに同名branchが既にある場合はrebaseではなく `git merge` で取り込む)。conflictが出たら自動解決せず中止し、worktreeとbranchを残して衝突ファイルを報告する。再同期後に全taskの `CHECK_COMMANDS` とTEST / LINT / BUILD / SMOKE (宣言済みのもの) を再実行し、失敗があればPhase 3.2の差し戻しと同じ手順 (implementer → reviewer、合わせて最大2周) で修正して `git-commit` skillでcommitする。収束しなければ中止し、worktreeとbranchを残して報告する。Run Logの `feature:` 行に `base-sync=<CLEAN | FIXED | CONFLICT>` を追記する
+3. **`--no-pr` の場合**: ここで配送を終える。Phase 5へ進む
+4. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
    - Phase 1で決めた出力言語を `language` として渡す
    - **specが `Source: #N` を持つ場合はそのIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。純Local specでは渡さない (specは内部文書であり、PR本文で言及しない。PRレビューでcontractを照合するときはLocal specのパスを `--spec` で直接渡す)
    - push、PRタイトルと本文の生成、PR作成はすべて連結先skillが行う。手順を再実装しない
-4. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
-5. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
-6. **ADRを投影する** (spec modeのみ): `decisions.md` の `Status: accepted` のdecisionのうち、覆しにくい・文脈なしでは不可解・本物のtrade-offがあった、の3条件をすべて満たすものを `.mjun/adr/NNNN-<slug>.md` へ書く。`NNNN` は4桁連番 (既存の最大値 + 1)、本文は見出しと1〜3文 (文脈・決定・理由) とし、`由来: <slug> / D-NNN` を1行添える。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする。3条件を満たすdecisionが無ければ何も書かない
+5. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
+6. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
+7. **ADRを投影する** (spec modeのみ): `decisions.md` の `Status: accepted` のdecisionのうち、覆しにくい・文脈なしでは不可解・本物のtrade-offがあった、の3条件をすべて満たすものを `.mjun/adr/NNNN-<slug>.md` へ書く。`NNNN` は4桁連番 (既存の最大値 + 1)、本文は見出しと1〜3文 (文脈・決定・理由) とし、`由来: <slug> / D-NNN` を1行添える。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする。3条件を満たすdecisionが無ければ何も書かない
 
 ### Phase 5: 結果の表示
 
@@ -217,6 +222,7 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 - **Checks**: taskごとの検査数と結果 (Phase 3.0で作成した検査がすべて通ったか)
 - **AC coverage**: Acceptance Criteriaの充足状況 (充足数 / 総数と、各criterionの判定、証明した検査)
 - **Validation**: Phase 3.2の判定 (GO / MANUAL_VERIFY_REQUIRED。`PARTIAL` では「未実施」)。実行時検証が未実施ならその旨
+- **Base sync**: Phase 4の再同期の結果 (CLEAN / FIXED と修正内容 / CONFLICT と衝突ファイル。`PARTIAL` では「未実施」)
 - **Refactor**: Phase 3.3の結果 (DONE / SKIPPED / REJECTED。`PARTIAL` では「未実施」) と、見送ったNOTES
 - **Run Log**: 周回数と差し戻しの要約 (`tasks.md` の `## Run Log` から)
 - **Blocked Tasks**: task IDとタイトル、直接原因、再開条件、これに依存して未実行のtask。無ければ「なし」
@@ -226,7 +232,7 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 
 - **`--pr` で成功した場合**: `git worktree remove --force <worktree-path>` → `git branch -D <branch-name>` (remote branchはPRのheadとして残る)
 - **`--no-pr` で成功した場合**: worktreeだけを削除し、**local branchは削除しない**。merge / pushの判断はユーザーに委ねる
-- **PR作成に失敗した場合**: worktreeとlocal branchを残して報告する (手動修復の余地を残す)
+- **PR作成に失敗した場合、またはPhase 4の再同期でconflictした、もしくは再検査が収束しなかった場合**: worktreeとlocal branchを残して報告する (手動修復の余地を残す)
 - **`PARTIAL` の場合**: task隔離後にworktreeがcleanなら、この実行で新規作成したworktreeだけを削除してlocal branchは残す。resumeで採用した既存worktreeは残す。変更の所有を特定できずcleanにできない場合はworktreeとbranchを残して警告する
 - **Phase 2〜5の途中でエラーまたはユーザーの中止により中断した場合**: この実行で新規作成したworktreeを削除し、commitが存在するならbranchを残してその旨を報告する。commitが無ければbranchも削除する。resumeで採用した既存worktreeとbranchは削除しない。未commitの検査 (Phase 3.0で作成し、taskがdoneに達していないもの) は失われ、resume時にPhase 3.0からやり直す
 - クリーンアップに失敗した場合はユーザーに警告する

@@ -3,7 +3,7 @@
 その変更における判断履歴。1決定 = 1エントリで追記していく。現在有効なcontractはspec.mdが持ち、ここには経緯 (採用理由・却下案) を残す。
 
 - `Status: accepted` — 確定した決定
-- `Status: tentative` — 確信度lowの暫定決定 (「要確認」)。mjun-implementの起動時検査が検出する
+- `Status: tentative` — 確信度lowの暫定決定 (「要確認」)。承認前にmjun-specifyが証拠または人間の確認で解消し、承認後の残留はmjun-implementの起動時検査が検出する
 - 決定を覆した場合は、旧エントリを `Status: superseded by D-NNN` に変え、新エントリを追加する
 
 ```markdown

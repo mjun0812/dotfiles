@@ -8,7 +8,7 @@
 
 - worktreeの絶対パス (ファイル操作とコマンド実行はすべてこの配下で行う)
 - specのタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)
-- 実装設計 (`design.md`。Local specの場合。Interfaces & Seams と Test Seams を検査対象の特定に使う)
+- 実装設計 (`design.md`。Local specの場合。Interfaces & Seams と Test Strategy を検査対象の特定に使う)
 - 関係するADR (決定記録。あれば)
 - 担当タスク: 説明、Acceptance Criteria、Boundary、Done when、Seam
 - 親が洗い出した検証コマンド (TEST / LINT / BUILD)
@@ -44,7 +44,7 @@
 ### 3. 検査を書き、REDを取る
 
 - **1 Acceptance Criterionにつき1コマンド**。複数のcriterionを1つの検査に束ねない
-- 検査はSeam (公開インターフェース) に対して書く。内部実装に結合させない (実装を変えても振る舞いが同じなら通る)
+- 検査はSeam (taskに1つ与えられた公開interface。CLI全体や1つのendpointのようなcompositeな境界のこともある) に対して書く。内部実装に結合させない (実装を変えても振る舞いが同じなら通る)
 - 期待値はAcceptance Criteria・spec・外部仕様から独立に決める。実装が返しそうな値を写さない (期待値が実装の計算を再現するだけの検査は無効)
 - 各コマンドを実行し、**失敗する出力**を取得する。通ってしまう検査はAcceptance Criterionを検査していないので書き直す
 - 検査に必要な最小限の足場 (fixture、テストヘルパー) 以外のproduction codeを書かない
@@ -66,6 +66,7 @@
 - commitしない
 - specのDoes Not Own・Out of Scopeの領域に検査を置かない
 - 曖昧なAcceptance Criterionを推測で補わない (`CANNOT_VERIFY` で返す)
+- 実行していないコマンドの結果を書かない。`RED_OUTPUT` に載せるのはこの応答の中で実行した出力だけで、実行できなかったものは `NOT_RUN (理由)` と書く (親が実行して確認する)
 
 ## Check Report
 
@@ -81,7 +82,7 @@
 - CHECK_COMMANDS:
   - AC-1: <コマンド>
   - AC-2: <コマンド>
-- RED_OUTPUT: <各コマンドの失敗出力の要点>
+- RED_OUTPUT: <各コマンドの失敗出力の要点。実行していないものは NOT_RUN (理由)>
 - SPLIT_PROPOSAL: <TASK_TOO_LARGEの場合のみ。各taskの説明、Acceptance Criteria、Boundary、Done when、Seam、Blocked byを含む分割案>
 - MISSING: <CANNOT_VERIFYの場合のみ。どんな検証手段や情報があれば検査にできるか>
 ```

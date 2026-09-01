@@ -38,7 +38,7 @@ Source: #<N>
 
 ### Dependencies
 
-<依存してよい既存の仕組み・モジュール>
+<依存してよい既存の仕組み・モジュール。進行中の他specの成果に依存する場合は `spec: <slug>` の行で書く (そのspecが `status: done` になるまで実装を開始しない)>
 
 ### Public Contracts Affected
 

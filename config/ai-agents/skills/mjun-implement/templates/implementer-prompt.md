@@ -9,7 +9,7 @@
 - worktreeの絶対パス (ファイル操作とコマンド実行はすべてこの配下で行う)
 - base branch名と作業branch名
 - spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope。specにある場合)
-- 実装設計 (`design.md`: Modules / Interfaces & Seams / Data Flow / Test Seams / Change Outline。Local specの場合)
+- 実装設計 (`design.md`: Modules / Interfaces & Seams / Data Flow / Test Strategy / Change Outline。Local specの場合)
 - 関係するADR (決定記録。あれば。決定に反する実装をしない)
 - verifierの `TASK_BRIEF`、`CHECK_FILES` (変更禁止)、`CHECK_COMMANDS`
 - 担当タスクの説明・Boundary・Done when (完了時に観察できること)・Seam、親が決めた実装方針
@@ -54,6 +54,7 @@
 - 担当タスク外へスコープを広げない
 - specのBoundaries (Does Not Own) やOut of Scopeが定める領域に変更を加えない。実装上必要になった場合は黙って触れず `BLOCKED` で報告する
 - sourceやリポジトリ規約との矛盾を黙って回避しない (`BLOCKED` で報告する)
+- 実行していないコマンドの結果を書かない。`CHECKS_RUN` と `TESTS_RUN` にはこの応答の中で実行した結果だけを書き、実行できなかったものは `NOT_RUN (理由)` と書く
 
 ## Status Report
 
@@ -63,9 +64,9 @@
 ## Status Report
 - STATUS: READY_FOR_REVIEW | CHECK_DISPUTE | BLOCKED | NEEDS_CONTEXT
 - TASK: <タスクID>
-- CHECKS_RUN: <各CHECK_COMMANDと結果 (PASS | FAIL)>
+- CHECKS_RUN: <各CHECK_COMMANDと結果 (PASS | FAIL | NOT_RUN (理由))>
 - FILES_CHANGED: <変更ファイルのカンマ区切り一覧>
-- TESTS_RUN: <実行した検証コマンドと最終結果>
+- TESTS_RUN: <実行した検証コマンドと最終結果。実行していないものは NOT_RUN (理由)>
 - CONCERNS: <任意。reviewerに注意してほしい非ブロッキングの懸念>
 - DISPUTE: <CHECK_DISPUTEの場合のみ。どの検査が、Acceptance Criteriaのどの記述と食い違うか>
 - BLOCKER: <BLOCKEDの場合のみ。完了を妨げているもの>

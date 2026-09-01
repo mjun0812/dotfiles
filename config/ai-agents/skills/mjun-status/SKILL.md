@@ -31,14 +31,15 @@ allowed-tools: Read, Glob, Grep, Bash(git rev-parse:*), Bash(git branch:*), Bash
 
 specごとに次を読む。存在しないファイルは「なし」として扱い、エラーにしない。
 
-| 読むもの                                 | 取り出す項目                                                                                                                                                                                                                                                                                |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `spec.md`                                | frontmatterの `status` / `approval`、H1タイトル、H1直下の `Source: #N`、`## Requirements` と `## Acceptance Criteria` の有無                                                                                                                                                                |
-| `decisions.md`                           | `## D-NNN:` の件数と、`- Status:` が `tentative` のentry (D番号とタイトル)                                                                                                                                                                                                                  |
-| `design.md` / `research/` / `prototype/` | 有無                                                                                                                                                                                                                                                                                        |
-| `tasks.md`                               | 先頭の `Implementation Branch: <branch>`、`## T-NNN:` ごとの `- Status:` (`ready` / `in-progress` / `blocked` / `done`) の集計、blocked taskの `Blocked reason` / `Resume when`、`## Implementation Notes` の行数、`## Run Log` の行 (taskごとの周回数と差し戻しの証拠種別、debuggerの分類) |
-| git                                      | `git branch --list <branch>` でImplementation Branchのlocal branchの存在、`git worktree list --porcelain` でそのbranchをcheckoutしたworktreeの有無                                                                                                                                          |
-| GitHub (任意)                            | `Source: #N` があれば `gh issue view <N> --json state,url`、Implementation Branchがあれば `gh pr list --head <branch> --state all --json number,state,url --limit 1`。`gh` が失敗した場合は該当項目を `unknown` にして続行する                                                              |
+| 読むもの                   | 取り出す項目                                                                                                                                                                                                                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spec.md`                  | frontmatterの `status` / `approval`、H1タイトル、H1直下の `Source: #N`、`## Requirements` と `## Acceptance Criteria` の有無、`## Boundaries` の Owns / Public Contracts Affected / Dependencies (`spec: <slug>` 行)                                                                        |
+| `decisions.md`             | `## D-NNN:` の件数と、`- Status:` が `tentative` のentry (D番号とタイトル)                                                                                                                                                                                                                  |
+| `design.md`                | 有無と `## Change Outline` のmodule / directory一覧                                                                                                                                                                                                                                         |
+| `research/` / `prototype/` | 有無                                                                                                                                                                                                                                                                                        |
+| `tasks.md`                 | 先頭の `Implementation Branch: <branch>`、`## T-NNN:` ごとの `- Status:` (`ready` / `in-progress` / `blocked` / `done`) の集計、blocked taskの `Blocked reason` / `Resume when`、`## Implementation Notes` の行数、`## Run Log` の行 (taskごとの周回数と差し戻しの証拠種別、debuggerの分類) |
+| git                        | `git branch --list <branch>` でImplementation Branchのlocal branchの存在、`git worktree list --porcelain` でそのbranchをcheckoutしたworktreeの有無                                                                                                                                          |
+| GitHub (任意)              | `Source: #N` があれば `gh issue view <N> --json state,url`、Implementation Branchがあれば `gh pr list --head <branch> --state all --json number,state,url --limit 1`。`gh` が失敗した場合は該当項目を `unknown` にして続行する                                                              |
 
 ### 3. phaseの導出
 
@@ -55,7 +56,7 @@ specごとに次を読む。存在しないファイルは「なし」として�
 phaseに応じた「次に必要なこと」を1行で添える。skill名や手順ではなく、状態として書く。
 
 - `drafting`: contractの承認待ち。tentativeがあれば件数を添える
-- `approved`: 実装を開始できる。tentativeが残っていれば「要確認 n件の解消が先」とする
+- `approved`: 実装を開始できる。tentativeが残っていれば「要確認 n件の解消が先」、Dependenciesの `spec: <slug>` が `done` でなければ「spec <slug> の完了が先」とする
 - `implementing`: 実装の再開 (branch名、残りtask数、blocked task数)。実行可能taskが無ければ、blocked taskの再開条件の充足が必要と表示する
 - `delivering`: 配送 (PR) が未完了。branch名と、PRがあればそのURL
 - `done`: なし
@@ -72,6 +73,10 @@ phaseに応じた「次に必要なこと」を1行で添える。skill名や手
 - 同じ `Source: #N` を持つactiveなspecが複数ある
 - `spec.md` に `## Requirements` または `## Acceptance Criteria` が無い
 - `status: active` なのに `spec.md` が無い、またはfrontmatterに `status` が無い (壊れたspec)
+- 他のactiveなspecとOwnsが重なる、Public Contracts Affectedが同じ公開interfaceを指す、または `design.md` のChange Outlineのdirectoryが重なる (両方のspecに付ける)
+- Dependenciesの `spec: <slug>` が指すspecが存在しない、または `done` でない (実装を開始できない)
+
+spec間の警告は、`source` 指定時もactiveなspec全件の `spec.md` と `design.md` を読んで判定する。
 
 ### 5. 出力
 

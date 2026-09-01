@@ -27,7 +27,7 @@ Agentが調査し、自分で決める。次のいずれかに該当するもの
 4. **反論**: 採択する前に、その案への反論 (devil's advocate) を必ず一つ挙げて検討する
 5. **採択**: 案を決定し、確信度を high / medium / low で記録する
 
-確信度lowの決定は「要確認」(`Status: tentative`) としてdecision logへ明示的に残す。無断でacceptedにしない。tentativeの残留はmjun-implementの起動時検査で検出され、人間の確認を求める関所として働く (機械的に実装を止めるhard gateではない。人間が続行を選んだdecisionは `accepted` へ更新される)。
+確信度lowの決定は「要確認」(`Status: tentative`) としてdecision logへ明示的に残す。無断でacceptedにしない。tentativeは承認の前 (mjun-specify Phase 5.7) に、証拠で確信度を上げるか人間に確認して解消し、承認時点で0件にする。承認後に残留したtentativeはmjun-implementの起動時検査が検出し、人間の確認を求める関所として働く (機械的に実装を止めるhard gateではない。人間が続行を選んだdecisionは `accepted` へ更新される)。
 
 ## Human-owned
 

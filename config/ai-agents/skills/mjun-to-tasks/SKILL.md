@@ -36,7 +36,7 @@ specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化する
   - **前提を先行taskにする**: 型・設定・配線・整形 (prefactoring) が要るなら別taskにしてBlocked byで結ぶ。存在すると仮定しない
   - **数の目安**: AC ≤ 3、触る責務 = 1。超える場合と、変更ファイルが5〜6を超える見込みの場合は分割候補として扱う (数字はrepositoryに合わせて調整してよい)
 - **分割と統合**: 独立に検証できる成果が2つ以上あるtaskは分割する。帳簿だけのtaskや単独で検証できないtaskは隣のtaskに統合する
-- **属性**: 各taskにBoundary (specのOwns内のどの責務か)、Blocked by (先に完了が必要なtask)、Done when (完了時に観察できることを1行)、Seam (検証する公開インターフェースを1行。`design.md` の Interfaces & Seams から取る。実装時にはここに対して検査が書かれる)、Acceptance Criteria (機械的に判定できるcheckbox) を付ける
+- **属性**: 各taskにBoundary (specのOwns内のどの責務か)、Blocked by (先に完了が必要なtask)、Done when (完了時に観察できることを1行)、Seam (検証する公開interfaceを1行。`design.md` の Interfaces & Seams から取る。CLI全体や1つのendpointのようなcompositeな境界でもよい。実装時にはここに対して検査が書かれる)、Acceptance Criteria (機械的に判定できるcheckbox) を付ける
 - **記述**: task本文にファイルパス、関数名、コード断片を書かない (実装の間に腐るため)。振る舞いとSeamで書く。Acceptance Criteriaは「操作 → 観察できる結果」の形で、1件が1つの検査コマンドに落とせるように書く
 - **wide refactorの例外**: 1つの機械的変更のblast radiusがコードベース全体へ及ぶ場合だけvertical slice以外の分割を許可する。ただし旧形と新形を併存させる互換レイヤーや段階移行は作らない。各taskを独立に検証できる単位へ分けられない場合は、変更全体を1taskとして扱う。既存データを保護する必要があるDB変更だけは、repositoryの規約に従って安全なmigrationへ分解してよい
 - **依存検査**: Blocked byのグラフにcycleが無いことを確認する。cycleがあればtaskの切り方を見直す
@@ -72,12 +72,12 @@ specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化する
    - specのAcceptance Criteria 1件ごと → それを含むtaskがちょうど1つある (どのtaskにも無い、または複数taskに重複していれば修正する)
    - specのRequirements 1件ごと → 実現するtaskが1つ以上ある
    - `design.md` のModules (新設・変更) 1件ごと → いずれかのtaskのBoundaryが触る
-   - `design.md` のInterfaces & Seams 1件ごと → いずれかのtaskのSeamに現れる
+   - `design.md` のInterfaces & Seamsのうち、specのAcceptance Criteriaが観測するもの1件ごと → いずれかのtaskのSeamに現れる (ACが観測しないinterfaceと、差し替える依存点は対象外)
    - `design.md` のData Flowでmodule境界をまたぐ箇所ごと → 統合taskで検証される、または単一taskの中で完結する
    - taskが前提とする型・設定・配線ごと → 先行taskとして存在する、または既存コードに存在する
    - 2周の修正後も残る未カバーは、task分解では解消できないspec / designの穴として扱う。中止して未カバー一覧を報告し、specの磨き直しが先に必要であることを案内する
 5. **task-plan review**: draftが2 task以上の場合、[templates/reviewer-prompt.md](templates/reviewer-prompt.md) に `spec.md` の全文、`design.md` の全文、draftのtask一覧を合成し、fresh contextのSubAgentを1体起動する。reviewerには読み取り (Read / Glob / Grep) だけを許可し、ファイルを変更させない。単一taskの場合は省略する (graphとして検査するものが無いため)
-   - 出力の `## Task Plan Review` から `- VERDICT:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
+   - 出力の `## Task Plan Review` から `- VERDICT:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する (作業したSubAgentを継続して求める。継続できなければreviewerを最初からやり直す。作業していないagentが返すブロックは捏造になる)
    - `NEEDS_REPAIR` の各指摘を、specと `design.md` の明文に照らして妥当なものだけdraftへ反映し、妥当でない指摘は捨てる。反映後は手順4のcoverage検査だけを再実行して閉じ、**再レビューはしない**
 6. 分解結果を提示する: task一覧 (各taskのBoundary、AC数、Done when)、依存関係、coverage (specのAC数とカバー数)、reviewerのVERDICTと反映した指摘の件数 (省略した場合はその旨)、数の目安を超える分割候補、単一taskの場合はその旨
 7. `.mjun/specs/<slug>/tasks.md` へTask形式で書き込む。新規作成時は末尾に空の `## Implementation Notes` と `## Run Log` セクションを置く。既存のtasks.mdがある場合は次を守って更新する:

@@ -12,6 +12,7 @@
 - あれば決定の経緯 (`decisions.md` の全文、またはIssue本文の `## Decision Log`)
 - あればsourceの原文 (Issue本文とコメント、取り込み元のMarkdown、または依頼の下書き素材)
 - steering・`CONTEXT.md` (用語集)・ADR (決定記録) のパス一覧 (あれば)
+- 対象以外のactiveなspecの `spec.md` と `design.md` のパス一覧 (あれば。spec間の境界衝突の検査に使う)
 - 人間が決めたdecision (Human-owned) の一覧 (あれば)
 
 ## 原則
@@ -32,6 +33,7 @@
 5. **Evidenceの実在** (決定の経緯がある場合): Evidence (`file:line`、`research/` のパス) が実在し、主張を支えているか
 6. **steering・ADR・用語集との衝突** (ある場合): steeringの規約や既存ADRと矛盾する決定が、衝突として明示されずに入っていないか。`CONTEXT.md` の定義と異なる意味で用語を使っていないか
 7. **実装設計との整合** (実装設計がある場合): Modules / Interfaces & SeamsがcontractのBoundariesと一致しているか
+8. **他のactive specとの衝突** (他のactive specのパス一覧がある場合): 対象のOwnsが他specのOwnsと重なっていないか。Public Contracts Affectedが他specと同じ公開interfaceを指していないか。実装設計のChange Outlineのdirectoryが他specのChange Outlineと重なっていないか。他specのOwnsに属する仕組みに依存しているのにDependenciesに `spec: <slug>` が無いか。Dependenciesの `spec: <slug>` が実在するspecを指しているか。重なりは対象specの該当セクションを引用し、根拠に相手specのパスと引用を書く
 
 ## Candidates
 
@@ -42,7 +44,7 @@
 
 ### C-1: <タイトル>
 - 軸: contract
-- 観点: <1〜7>
+- 観点: <1〜8>
 - 深刻度: contract
 - 対象: <contractのセクション名> — 引用: "<該当箇所>"
 - 問題: <何が問題か>

@@ -61,6 +61,7 @@ Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontm
 
 - `.mjun/steering/` (あれば) と関連コードを読み、原因、変更箇所、既存パターンを特定する
 - `.mjun/CONTEXT.md` と `.mjun/adr/*.md` (あれば) を読む。specの用語がCONTEXT.mdの定義と衝突していればspec側を定義に揃え (定義を変えたい場合はHuman-owned decisionにする)、既存ADRと矛盾する要求はHuman-owned decisionとして扱う ([references/source-resolution.md 用語集と決定記録](references/source-resolution.md#用語集と決定記録))
+- 対象以外のactiveなspec (source-resolution.mdの一覧手順で列挙) の `spec.md` のBoundariesと `design.md` のChange Outlineを読む。Ownsの重なり、Public Contracts Affectedが同じ公開interfaceを指す、Change Outlineのdirectoryの重なりがあれば、どちらのspecが所有するか (または分割・統合するか) をHuman-owned decisionとして扱う。対象specが他のactive specの成果に依存するなら、BoundariesのDependenciesに `spec: <slug>` と書く ([references/source-resolution.md spec間の依存と境界](references/source-resolution.md#spec間の依存と境界))
 - 現在のspecを [references/spec-template.md](references/spec-template.md) のcontract構成と突き合わせ、欠落セクション、曖昧な記述、実装者が追加調査を要する箇所を列挙する。取り込んだIssueコメントの合意事項は反映対象として扱う
 - スコープ外の問題を見つけた場合は本文に混ぜず、Out of Scopeへの記載と別spec化の提案に回す
 
@@ -72,7 +73,7 @@ gapから意思決定の論点を洗い出し、[references/decision-authority.m
 
 frontierの論点を1つずつ解決し、確定するたびに**Localのspecとdecision logへ逐次**反映する。decision logのentry形式は [references/decisions-template.md](references/decisions-template.md) に従う。
 
-- **Agent-owned**: decision-authority.mdの自己問答 (論点 → 調査 → 推奨案 → 反論 → 採択 + 確信度) で解決する。確信度lowは `Status: tentative` (要確認) として記録する
+- **Agent-owned**: decision-authority.mdの自己問答 (論点 → 調査 → 推奨案 → 反論 → 採択 + 確信度) で解決する。確信度lowは `Status: tentative` (要確認) として記録し、Phase 5.7で解消する
 - **Human-owned**: `mjun-grilling` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
 - **Evidence-blocked**: 不足の種類に応じて `mjun-research` (外部事実) / `mjun-prototype` (UI、状態、ロジックの実物) / trial implementation (Phase 5へ) で証拠を集め、再分類して解決する
 - `--grill` 指定時は、Agent-ownedのdecisionもHuman-ownedと同様に1問ずつ確認する
@@ -80,7 +81,7 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 
 ### Phase 4.5: design.mdの作成
 
-frontierのdecisionがすべて解決したら、採択した設計を `design.md` へ [references/design-template.md](references/design-template.md) の構成で書く (既存specの磨き直しでは既存のdesign.mdを更新する)。design.mdは省略しない。spec.mdと同じく、調査しても埋まらないセクションは省略してよいが、Modules と Change Outline は必ず書く。decisions.mdに散らばる設計上の採択を1か所に集約し、実装者 (fresh context) がdecisions.mdを読み直さなくても構造が分かる状態にする。
+frontierのdecisionがすべて解決したら、採択した設計を `design.md` へ [references/design-template.md](references/design-template.md) の構成で書く (既存specの磨き直しでは既存のdesign.mdを更新する)。design.mdは省略しない。spec.mdと同じく、調査しても埋まらないセクションは省略してよいが、Modules と Change Outline (module / directory単位。ファイルは書かない) は必ず書く。decisions.mdに散らばる設計上の採択を1か所に集約し、実装者 (fresh context) がdecisions.mdを読み直さなくても構造が分かる状態にする。
 
 ### Phase 5: trial implementation
 
@@ -103,13 +104,20 @@ frontierのdecisionがすべて解決したら、採択した設計を `design.m
 
 結果ブロック `## Spec Review` の `- VERDICT:` フィールドだけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する。
 
-- `PASS` → Phase 6へ進む
+- `PASS` → Phase 5.7へ進む
 - `NEEDS_FIXES` → 各指摘を読み、contractの明文とコードの事実に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は `decisions.md` にentryを追記する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)
-- `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grilling` の単一decisionモードで再解決し、`design.md` を更新してからPhase 6へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
+- `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grilling` の単一decisionモードで再解決し、`design.md` を更新してからPhase 5.7へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
+
+### Phase 5.7: tentativeの解消
+
+承認を求める前に、`decisions.md` に残る `Status: tentative` のdecisionをすべて解消し、承認時点でtentativeを0件にする。Phase 4の途中でAgent-ownedの論点を人間に投げない代わりに、ここで証拠を集め、証拠で決まらなかったものだけを人間に確認する。
+
+1. **証拠による昇格**: 確信度が低い原因が証拠の不足なら、Evidence-blockedと同じ経路で証拠を集めて再判定する (外部事実は `mjun-research`、UI・状態・ロジックの実物は `mjun-prototype`、現行codeでの実現可能性はPhase 5の手順によるtrial implementation。`--skip-trial` 指定時はtrial implementationを使わない)。確信度がhigh / mediumになれば `Status: accepted` へ更新し、Evidenceに根拠を追記する
+2. **人間の確認**: 証拠で上がらなかったものは、Human-ownedと同じく `mjun-grilling` の単一decisionモードへ論点、選択肢、agentの採択案 (推奨として)、調査結果を渡して1問ずつ解決する。人間の決定がagentの採択と同じなら、entryの `Status` を `accepted`、`Owner` を `human` に更新する。異なるなら旧entryを `Status: superseded by D-NNN` にして `Owner: human` の新entryを追加し、`spec.md` と `design.md` の該当箇所を更新する
 
 ### Phase 6: contractの提示と承認
 
-- specのcontract全文、`design.md` の全文、変更点サマリ (追加または変更したセクションと理由。Phase 5.5の指摘を反映した箇所はその旨を添える)、要確認 (tentative) の一覧を提示する。承認対象はcontractであり、design.mdは人間が目視する場所とする (気になる点があれば「修正して再提示」で戻す)
+- specのcontract全文、`design.md` の全文、変更点サマリ (追加または変更したセクションと理由。Phase 5.5の指摘を反映した箇所はその旨を添える)、Phase 5.7で解消したdecisionの一覧 (D番号と、証拠で昇格 / 人間の決定の別) を提示する。承認対象はcontractであり、design.mdは人間が目視する場所とする (気になる点があれば「修正して再提示」で戻す)
 - AskUserQuestionで「反映する / 修正して再提示 / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
 - 「反映する」の場合は `spec.md` のfrontmatterを `approval: approved` へ更新してからPhase 7へ進む
 - 「キャンセル」の場合は以降のPhaseへ進まず、作成または更新済みのLocal specを削除するか `approval: pending` のまま残すかを確認する
@@ -128,7 +136,7 @@ specの規模を判定する。
 承認済みcontractをIssueへ投影する:
 
 1. `gh issue view` で最新のIssueを取得する。取り込み後に付いた新しいコメントや、Local specに反映されていない本文の記述があれば内容を提示し、specへ取り込むかを確認する (取り込む場合は `approval: pending` へ戻してからPhase 4へ戻る)
-2. Issue本文を一時ファイル経由で一括更新する (`gh issue edit <number> --body-file <tmpfile>`)。本文にはcontract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes` + `tasks.md` があれば `## Tasks` (taskタイトルを `- [ ]` のチェックボックスで列挙) を置く。task進捗はLocalの `tasks.md` だけで管理し、Issueのチェックボックスへは同期しない
+2. Issue本文を一時ファイル経由で一括更新する (`gh issue edit <number> --body-file <tmpfile>`)。本文にはcontract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes` + `tasks.md` があれば `## Tasks` (taskタイトルを `- [ ]` のチェックボックスで列挙) を置く。Dependenciesの `spec: <slug>` 行は、そのspecに `Source: #M` があれば `#M` に置き換え、無ければ除く (specは内部文書)。task進捗はLocalの `tasks.md` だけで管理し、Issueのチェックボックスへは同期しない
 3. 却下案と検討経緯は `gh issue comment` で記録し、変更サマリのコメントを1件追記する (body編集はwatcherに通知されないため)
 
 ### Phase 9: 結果報告
@@ -138,6 +146,6 @@ specの規模を判定する。
 - **Spec**: Local specのパス (`Source:` があればIssue番号とURLも)
 - **変更点サマリ**: 追加または変更したセクション
 - **Review**: Phase 5.5のVERDICTと、反映した指摘の件数 (Phase 4へ戻したdecisionがあればそのD番号)
-- **要確認事項**: tentativeとして残したdecisionの一覧 (実装前に解消が必要)
+- **Decisions**: Phase 5.7で解消したtentativeの一覧 (D番号と、証拠で昇格 / 人間の決定の別)。無ければ「なし」
 - **Tasks**: 分解した場合はtask一覧 (各taskのBoundary、AC数、Done whenと、数の目安を超える分割候補の印)、単一taskならその旨。粒度が粗い、または細かいと感じた場合は `mjun-to-tasks` で再分解できる旨を添える (ここは承認ではなく、人間が粒度を目視する場所)
-- **次の一手**: このspecを実装に渡せる旨 (要確認が残る場合はその解消が先であることを添える)
+- **次の一手**: このspecを実装に渡せる旨

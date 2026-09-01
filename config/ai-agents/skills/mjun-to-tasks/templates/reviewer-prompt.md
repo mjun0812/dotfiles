@@ -27,7 +27,7 @@
 3. **境界の重なりと凝集**: 複数のtaskが同じ責務・同じ変更対象を触っていないか。1つの振る舞いが複数taskへ分散して単独では検証できなくなっていないか。統合taskの明示なしに2つ以上の責務へ触るtaskが無いか
 4. **大きすぎるtask**: 失敗コマンド1つでredにできても、greenにする変更がdesign.mdの複数Moduleへ及ぶ、または1つのfresh contextで実装しきれない見込みのtask
 5. **integrationの配置**: design.mdのData Flowでmodule境界をまたぐ箇所が、統合taskでも単一taskでも検証されないままになっていないか。統合taskが、統合する責務の先行taskより後に置かれているか
-6. **検証可能性の実質**: Done when / Seam / Acceptance Criteriaが観察可能な振る舞いになっているか。帳簿だけのtaskや、ACが実装手順の言い換えにすぎないtaskが無いか
+6. **検証可能性の実質**: Done when / Seam / Acceptance Criteriaが観察可能な振る舞いになっているか。帳簿だけのtaskや、ACが実装手順の言い換えにすぎないtaskが無いか。SeamはCLI全体や1つのendpointのようなcompositeな境界でもよく、interface単位でないことを理由に指摘しない
 
 ## Task Plan Review
 

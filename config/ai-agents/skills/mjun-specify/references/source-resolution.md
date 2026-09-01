@@ -8,6 +8,7 @@
 - Local specの配置
 - ライフサイクル状態 (`status`)
 - Contract承認状態 (`approval`)
+- spec間の依存と境界
 - `Source:` 行
 - Context
 - 取り込み (Issue → spec)
@@ -71,6 +72,15 @@ grep -m1 "^# " <spec.md>                          # H1タイトル
 grep -m1 "^Source: " <spec.md>                    # 投影先 (あれば)
 ```
 
+## spec間の依存と境界
+
+複数のspecが同時にactiveになり、別々の会話 (別のagent) で並行して実装されることを前提にする。
+
+- 他のactive specの成果に依存するspecは、BoundariesのDependenciesに `spec: <slug>` の行を書く。実装側はそのspecが `status: done` になるまで実装を開始しない
+- 境界の重なり (Ownsの重なり、Public Contracts Affectedが同じ公開interfaceを指す、`design.md` のChange Outlineのdirectoryの重なり) は、spec作成時の調査とspec review、および状況表示で検出する。どちらのspecが所有するか、分割・統合するかは人間が決める (Human-owned)
+- `design.md` のChange Outlineはmodule / directory単位で書き、ファイルは書かない。実装のreviewerはdiffのパスがこの範囲に収まるかを機械的に照合し、feature検証ではbranch全体で同じ照合を行う
+- 配送の前に作業branchをbase branchの最新へrebaseし、全検査を再実行する。並行するspecの成果が先にmergeされている場合の衝突をここで拾う
+
 ## `Source:` 行
 
 GitHub Issueから取り込んだspec (または投影時に投影先Issueを作ったspec) は、`spec.md` のH1直下に投影先への参照を1行持つ。
@@ -98,6 +108,7 @@ Source: #123
 `Source:` を持つspecは、contract承認後にIssue本文へ投影する。
 
 - 投影範囲: contract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes` + `tasks.md` があれば `## Tasks` (taskタイトルのチェックボックス一覧)
+- Dependenciesの `spec: <slug>` は、そのspecに `Source: #M` があれば `#M` に置き換え、無ければ投影しない (specは内部文書)
 - **task進捗は投影しない**。進捗は内部 (tasks.md) だけで管理し、外部からはPRで見える。実装はIssueへ一切書き込まない (Issueの `## Tasks` は承認時点のスナップショット)
 - 書き換えは一時ファイル経由の一括更新 (`gh issue edit --body-file`) + 変更サマリの1コメント (body編集はwatcherに通知されないため)
 - 却下案・検討経緯はIssueコメントへ記録する
