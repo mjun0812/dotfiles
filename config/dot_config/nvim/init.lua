@@ -116,6 +116,10 @@ vim.api.nvim_create_autocmd("TermOpen", {
 })
 
 -- ########## Keys ########
+-- 折り返し中は表示行単位で上下移動
+vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
+vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
+
 -- Option(Alt)+hjkl でリサイズ
 vim.keymap.set("n", "<A-j>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
 vim.keymap.set("n", "<A-k>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
