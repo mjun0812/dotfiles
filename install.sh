@@ -120,6 +120,14 @@ uv pip install -U \
     pynvim \
     PyYAML \
     'python-lsp-server[all]' \
+    jupyterlab \
+    jupyter-collaboration \
+    jupyter-mcp-tools \
+    jupytext \
+    nbformat \
+    nbclient \
+    nbconvert \
+    nbmake \
     ipykernel
 "$HOME/.venv/bin/python" -m ipykernel install \
     --user \
