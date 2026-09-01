@@ -205,6 +205,11 @@
   "language": "japanese",
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "effortLevel": "high"
+    }
+  },
   "awaySummaryEnabled": false,
   "plansDirectory": "./.claude/plans",
   "tui": "fullscreen",
