@@ -13,10 +13,10 @@ targets:
 dependencies:
   apm:
     - git: mjun0812/skills
-      ref: main
       skills:
         - claude
         - codex
+        - cognitive-rhythm-writing
         - doc-sync
         - experiment-plan
         - git-commit
