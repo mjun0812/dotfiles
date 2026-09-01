@@ -193,6 +193,7 @@ done
 # Global apm subscription (skills/agents from mjun0812/skills main).
 log_section "Setting up APM..."
 mkdir -p "$HOME/.apm"
+cp -aLf "$HOME/.apm/apm.yml" "$DOTPATH/.backup/apm.yml" && rm -rf "$HOME/.apm/apm.yml"
 ln -snfv "$DOTPATH/config/ai-agents/apm.yml" "$HOME/.apm/apm.yml"
 apm update -g -y
 
