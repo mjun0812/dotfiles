@@ -189,18 +189,6 @@ Steering Updated
 - src/orders/ が adr/0001 (event-sourced) に反して直接UPDATEしている
 ```
 
-## Examples
-
-### Bootstrap
-
-- **Input**: steeringが空のReact TypeScriptプロジェクト (Vitest導入済み)
-- **Output**: core 3ファイル ("Feature-first"、"TypeScript strict"、"React 19") に加え、tests/の実パターンを根拠にtesting.mdを自動生成
-
-### Sync
-
-- **Input**: steeringあり、新しい `/api` ディレクトリが追加されている
-- **Output**: structure.mdを更新し、規約に従っていないファイルを警告し、src/api/の実パターンを根拠にapi-standards.mdを自動生成
-
 ## Safety & Fallback
 
 - **Security**: API key、パスワード、secretは絶対に書かない ([`references/steering_principles.md` の Security](references/steering_principles.md#security) を参照)

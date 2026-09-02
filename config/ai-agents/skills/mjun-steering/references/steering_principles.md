@@ -75,7 +75,6 @@ Never include:
 
 - Preserve user sections and custom examples
 - Additive by default (add, don't replace)
-- Add `updated_at` timestamp
 - Note why changes were made
 
 ---
