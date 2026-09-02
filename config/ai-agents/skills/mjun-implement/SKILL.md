@@ -132,7 +132,7 @@ taskキューの順に、taskごとに次を行ってからPhase 3.1へ進む。
 
 #### Phase 3.1: 実装とレビュー (taskごと)
 
-**1 task = 1イテレーション**で直列に処理する (実行可能なtaskから1つずつ処理し、並列実行しない)。複数taskを1つのSubAgentにまとめて渡さない。
+**1 task = 1イテレーション**で直列に処理する (実行可能なtaskから1つずつ処理する)。taskは同じworktreeを共有し、承認ごとに親がcommitして `CHECK_FILES` のハッシュを照合するため、複数taskを並列に実装すると未commit変更とハッシュの照合が混ざる。複数taskを1つのSubAgentにまとめて渡さない。
 
 1. **implementerの起動**: テンプレートに以下を合成して起動する
    - worktreeの絶対パス、base branch名と作業branch名
