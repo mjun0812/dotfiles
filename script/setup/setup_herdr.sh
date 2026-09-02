@@ -19,12 +19,6 @@ DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 herdr integration install claude
 herdr integration install codex
 
-# dotfiles 管理の herdr plugin をすべて link する (link は冪等)。
-# 実体は config/dot_config/herdr/plugins/ にあり、編集はそのまま反映される。
-for plugin in "$DOTPATH"/config/dot_config/herdr/plugins/*/; do
-    herdr plugin link "${plugin%/}"
-done
-
 normalize() {
     local file="$1" canonical="$2"
     [ -f "$file" ] || return 0
@@ -50,5 +44,13 @@ normalize() {
     rm -f "$tmp"
 }
 
+# herdr plugin link は herdr server が古い (protocol mismatch) と失敗して
+# set -e で終了するため、integration install の後始末である正規化を先に行う。
 normalize "$HOME/.claude/settings.json" 'bash ~/.claude/hooks/herdr-agent-state.sh session'
 normalize "$HOME/.codex/hooks.json" 'bash ~/.codex/herdr-agent-state.sh session'
+
+# dotfiles 管理の herdr plugin をすべて link する (link は冪等)。
+# 実体は config/dot_config/herdr/plugins/ にあり、編集はそのまま反映される。
+for plugin in "$DOTPATH"/config/dot_config/herdr/plugins/*/; do
+    herdr plugin link "${plugin%/}"
+done
