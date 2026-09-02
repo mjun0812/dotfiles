@@ -23,3 +23,7 @@ command = ["./sync.sh"]
 [[events]]
 on = "workspace.reordered"
 command = ["./sync.sh"]
+
+[[events]]
+on = "pane.exited"
+command = ["./sync.sh"]
