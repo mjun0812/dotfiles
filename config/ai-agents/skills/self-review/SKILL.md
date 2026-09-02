@@ -12,7 +12,7 @@ FinderとStandardsが出した候補を1件ずつVerifierで検証し，`confirm
 ## Arguments
 
 - `commit`: reviewするcommit-ish．省略時は現在の未commit変更を対象にする
-- `--spec <source>`: spec source (GitHub Issue番号または`.mjun/specs/<slug>`のパス)．指定時はContract軸 (specとの整合) のレビューを追加する．省略時は従来どおりFinderとStandardsの2軸で行う
+- `--spec <source>`: spec source (GitHub Issue番号または`.mjun/specs/<slug>`のパス)．指定時はContract軸 (specとの整合) のレビューを追加する．省略時はFinderとStandardsの2軸で行う
 
 ## 対象
 
