@@ -237,6 +237,15 @@ config.keys = {
     action = send_to_herdr("\x1b[9;2u", "Tab", "SHIFT"),
   },
   {
+    -- Tab と同じく、navigate mode 中の wezterm は Enter を \x1b[13;;13u で送り、
+    -- Herdr 0.8.2 のパーサがこれを捨てて navigate mode の Enter が効かない。
+    -- 素の Enter を束縛すると wezterm が IME より先にキーを消費して変換確定が
+    -- できなくなるため、IME に渡らない cmd+enter を Herdr 向けの Enter にする
+    key = "Enter",
+    mods = "CMD",
+    action = send_to_herdr("\x1b[13u", "Enter", "NONE"),
+  },
+  {
     -- ctrl+` はレガシーエンコーディングでは NUL に潰れるため、
     -- CSI-u で送って Herdr 経由でも nvim に届くようにする
     key = "`",
