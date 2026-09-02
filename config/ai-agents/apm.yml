@@ -16,7 +16,10 @@ dependencies:
       skills:
         - claude
         - codex
+        - deep-research
         - doc-sync
+        - exhtml
+        - exmd
         - experiment-plan
         - git-commit
         - git-fix-conflict
@@ -29,7 +32,7 @@ dependencies:
         - github-pr-review
         - github-resolve-pr-comment
         - japanese-tech-writing
-        - md-note
+        - chat-note
         - resume-other-agent
         - skill-review
         - stop-ai-slop-jp
