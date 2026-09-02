@@ -5,7 +5,7 @@ description: >-
   ファイルへの書き込みは行わない。
   ユーザーが「specの状況を見せて」「進行中のspecを一覧して」「このspecはどこまで進んだ?」のように依頼したら使うこと。
   specの作成・磨き上げ・実装・task分解には使わない。
-allowed-tools: Read, Glob, Grep, Bash(git rev-parse:*), Bash(git branch:*), Bash(git worktree list:*), Bash(gh issue view:*), Bash(gh pr list:*), Bash(ls:*), Bash(cat:*)
+allowed-tools: Read, Glob, Grep, Bash(zsh:*), Bash(git rev-parse:*), Bash(gh issue view:*), Bash(gh pr list:*), Bash(ls:*), Bash(cat:*)
 ---
 
 # mjun-status
@@ -21,29 +21,34 @@ allowed-tools: Read, Glob, Grep, Bash(git rev-parse:*), Bash(git branch:*), Bash
 
 ### 1. 対象の確定
 
-1. `git rev-parse --show-toplevel` でrepository rootを特定し、`<root>/.mjun/specs/` が無ければ「specなし」と報告して終了する
+1. `git rev-parse --show-toplevel` でrepository rootを特定し、`scripts/mjun_status_scan.sh` を実行する。`NO_SPECS` が返れば「specなし」と報告して終了する
+
+   ```bash
+   zsh "<skill-dir>/scripts/mjun_status_scan.sh" "<repo-root>"       # activeなspecだけ
+   zsh "<skill-dir>/scripts/mjun_status_scan.sh" "<repo-root>" --all # doneのspecも含める
+   ```
+
 2. 対象specを決める
-   - `source` なし: `grep -l "^status: active" .mjun/specs/*/spec.md` で列挙する。`--all` 指定時は `.mjun/specs/*/spec.md` 全件
-   - `.mjun/specs/<slug>` のパス: そのspec (`status` を問わない)
-   - Issue番号: activeなspecの `spec.md` から `Source: #<number>` を検索する。複数ヒットした場合は全件を対象に警告付きで表示する。activeに無ければdoneのspecからも検索し、見つかれば「実装済み」として表示する。どちらにも無ければ「未取り込み」と報告して終了する
+   - `source` なし: scriptの出力全件 (`--all` 指定時は `--all` を付けて実行する)
+   - `.mjun/specs/<slug>` のパス: `--all` で実行し、そのslugのブロックだけを対象にする (`status` を問わない)
+   - Issue番号: 出力の `source:` が `#<number>` と一致するactiveなspec。複数ヒットした場合は全件を対象に警告付きで表示する。activeに無ければ `--all` の出力からも検索し、見つかれば「実装済み」として表示する。どちらにも無ければ「未取り込み」と報告して終了する
 
 ### 2. 各specの読み取り
 
-specごとに次を読む。存在しないファイルは「なし」として扱い、エラーにしない。
+scriptはspecごとに `## <slug>` ブロックを出力する。`status` / `approval`、タイトル、`Source`、phase、Requirements / Acceptance Criteriaの有無、Dependencies (`spec: <slug>`)、design / research / prototypeの有無、decisions件数とtentativeの一覧、Implementation Branchとそのlocal branch・worktreeの有無、task statusの集計、blocked taskの原因と再開条件、Implementation Notesの件数、Run Logの行は、この出力から取る (再パースしない)。
 
-| 読むもの                   | 取り出す項目                                                                                                                                                                                                                                                                                |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `spec.md`                  | frontmatterの `status` / `approval`、H1タイトル、H1直下の `Source: #N`、`## Requirements` と `## Acceptance Criteria` の有無、`## Boundaries` の Owns / Public Contracts Affected / Dependencies (`spec: <slug>` 行)                                                                        |
-| `decisions.md`             | `## D-NNN:` の件数と、`- Status:` が `tentative` のentry (D番号とタイトル)                                                                                                                                                                                                                  |
-| `design.md`                | 有無と `## Change Outline` のmodule / directory一覧                                                                                                                                                                                                                                         |
-| `research/` / `prototype/` | 有無                                                                                                                                                                                                                                                                                        |
-| `tasks.md`                 | 先頭の `Implementation Branch: <branch>`、`## T-NNN:` ごとの `- Status:` (`ready` / `in-progress` / `blocked` / `done`) の集計、blocked taskの `Blocked reason` / `Resume when`、`## Implementation Notes` の行数、`## Run Log` の行 (taskごとの周回数と差し戻しの証拠種別、debuggerの分類) |
-| git                        | `git branch --list <branch>` でImplementation Branchのlocal branchの存在、`git worktree list --porcelain` でそのbranchをcheckoutしたworktreeの有無                                                                                                                                          |
-| GitHub (任意)              | `Source: #N` があれば `gh issue view <N> --json state,url`、Implementation Branchがあれば `gh pr list --head <branch> --state all --json number,state,url --limit 1`。`gh` が失敗した場合は該当項目を `unknown` にして続行する                                                              |
+scriptが出さない次の項目だけを自分で読む。存在しないファイルは「なし」として扱い、エラーにしない。
+
+| 読むもの                    | 取り出す項目                                                                                                                                                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `spec.md`                   | `## Boundaries` の Owns / Public Contracts Affected (spec間の警告に使う)。詳細表示では `### Revalidation Triggers` の本文                                                                                                      |
+| `design.md`                 | `## Change Outline` のmodule / directory一覧 (spec間の警告に使う)                                                                                                                                                              |
+| `decisions.md` / `tasks.md` | 詳細表示のみ: 全decisionの D番号 / タイトル / Status、全taskの T番号 / タイトル / Status / Blocked by                                                                                                                          |
+| GitHub (任意)               | `Source: #N` があれば `gh issue view <N> --json state,url`、Implementation Branchがあれば `gh pr list --head <branch> --state all --json number,state,url --limit 1`。`gh` が失敗した場合は該当項目を `unknown` にして続行する |
 
 ### 3. phaseの導出
 
-保存されたphaseは存在しないため、次の順に判定する (先に一致した行を採用する)。
+保存されたphaseは存在しないため、scriptが次の順に判定する (先に一致した行を採用する)。
 
 | phase          | 条件                                                                                                                                                  |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
