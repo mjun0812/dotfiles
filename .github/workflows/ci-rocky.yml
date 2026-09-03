@@ -23,7 +23,8 @@ jobs:
       CI: "true"
 
     steps:
-      # curl は image 同梱の curl-minimal で足りる (curl を指定すると curl-minimal と衝突する)
+      # curl は image 同梱の curl-minimal で足りる (curl を指定すると curl-minimal と衝突する)。
+      # perl は cargo:nb-cli が vendored OpenSSL をビルドするのに必要 (git が入れる perl-interpreter では足りない)。
       - name: Install prerequisites
         run: |
           dnf install -y \
@@ -34,6 +35,7 @@ jobs:
             gcc \
             gcc-c++ \
             make \
+            perl \
             which \
             procps-ng
 
