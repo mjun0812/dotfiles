@@ -1,4 +1,4 @@
-name: CI Ubuntu
+name: CI Rocky Linux
 
 on:
   push:
@@ -8,42 +8,36 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-ubuntu:
-    name: Test on Ubuntu ${{ matrix.ubuntu }}
+  test-rocky:
+    name: Test on Rocky Linux ${{ matrix.rocky }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        ubuntu: ["22.04", "24.04", "26.04"]
+        rocky: ["9", "10"]
     container:
-      image: ubuntu:${{ matrix.ubuntu }}
+      image: rockylinux/rockylinux:${{ matrix.rocky }}
     env:
       NONINTERACTIVE: "1"
       CI: "true"
-      DEBIAN_FRONTEND: noninteractive
 
     steps:
+      # curl は image 同梱の curl-minimal で足りる (curl を指定すると curl-minimal と衝突する)。
+      # perl は cargo:nb-cli が vendored OpenSSL をビルドするのに必要 (git が入れる perl-interpreter では足りない)。
       - name: Install prerequisites
         run: |
-          apt-get update
-          apt-get install -y \
+          dnf install -y \
             zsh \
-            curl \
             git \
             sudo \
             ca-certificates \
-            build-essential
-
-      # 22.04 標準の git 2.34 は gitconfig の merge.conflictStyle = zdiff3 (git 2.35+) を解釈できず、
-      # lazy.nvim の git checkout がすべて失敗するため git-core PPA の git を使う
-      - name: Install git from git-core PPA (Ubuntu 22.04)
-        if: matrix.ubuntu == '22.04'
-        run: |
-          apt-get install -y software-properties-common gnupg
-          add-apt-repository -y ppa:git-core/ppa
-          apt-get update
-          apt-get install -y git
+            gcc \
+            gcc-c++ \
+            make \
+            perl \
+            which \
+            procps-ng
 
       - name: Create test user
         run: |
@@ -198,11 +192,11 @@ jobs:
           echo "=== Checking interactive zsh ==="
           su - testuser -c 'zsh -i -c "echo ✓ interactive zsh starts successfully"'
 
-  # ruleset の必須 check 名 (Test on Ubuntu) を matrix の増減から切り離すための集約 job
-  test-ubuntu-summary:
-    name: Test on Ubuntu
+  # ruleset の必須 check 名 (Test on Rocky Linux) を matrix の増減から切り離すための集約 job
+  test-rocky-summary:
+    name: Test on Rocky Linux
     runs-on: ubuntu-latest
-    needs: test-ubuntu
+    needs: test-rocky
     if: always()
     steps:
-      - run: test "${{ needs.test-ubuntu.result }}" = "success"
+      - run: test "${{ needs.test-rocky.result }}" = "success"

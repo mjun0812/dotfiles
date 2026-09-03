@@ -9,7 +9,8 @@
 # apm の prebuilt binary (PyInstaller) は glibc 2.38 を要求するため、Linux では PyPI の apm-cli を使う。
 # apm-cli は requires-python >= 3.10 を宣言しつつ typing.Self (3.11+) を使うので、system python を避けて 3.12 を指定する
 "pipx:apm-cli" = { version = "latest", uvx_args = "--python 3.12" }
-"pipx:headroom-ai" = { version = "latest", extras = "proxy,code" }
+# headroom-ai は Python >= 3.10 を要求するが、uv は system の python3 (Rocky 9 では 3.9) を優先するため Python 要件を明示する
+"pipx:headroom-ai" = { version = "latest", extras = "proxy,code", uvx_args = "--python >=3.10" }
 "github:router-for-me/CLIProxyAPI" = "latest"
 
 [bootstrap.linux.systemd.units.codex-remote-control]
