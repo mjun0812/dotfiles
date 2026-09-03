@@ -230,12 +230,12 @@ _term_tab_title() {
 }
 
 _term_tab_title_precmd() {
-    _is_ssh_session || return
+    _is_ssh_session || return 0
     _term_tab_title "${HOST}@zsh"
 }
 
 _term_tab_title_preexec() {
-    _is_ssh_session || return
+    _is_ssh_session || return 0
     _term_tab_title "${HOST}@$1"
 }
 

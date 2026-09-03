@@ -16,7 +16,7 @@ jq = "latest"
 starship = "latest"
 tmux = "latest"
 usage = "latest"
-yazi = { version = "latest", postinstall = "ya pkg install" }
+yazi = { version = "latest", os = ["macos"], postinstall = "ya pkg install" }
 yq = "latest"
 zoxide = "latest"
 "aqua:sharkdp/bat" = "latest"

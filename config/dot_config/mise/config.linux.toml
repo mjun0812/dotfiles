@@ -2,6 +2,8 @@
 
 [tools]
 "github:eza-community/eza" = "latest"
+# aqua の yazi は glibc 2.39 を要求する gnu build を選ぶため、Linux では静的リンクの musl build を使う
+"github:sxyazi/yazi" = { version = "latest", matching = "musl", strip_components = 1, postinstall = "ya pkg install" }
 "pipx:headroom-ai" = { version = "latest", extras = "proxy,code" }
 "github:router-for-me/CLIProxyAPI" = "latest"
 
