@@ -191,3 +191,12 @@ jobs:
         run: |
           echo "=== Checking interactive zsh ==="
           su - testuser -c 'zsh -i -c "echo ✓ interactive zsh starts successfully"'
+
+  # ruleset の必須 check 名 (Test on Rocky Linux) を matrix の増減から切り離すための集約 job
+  test-rocky-summary:
+    name: Test on Rocky Linux
+    runs-on: ubuntu-latest
+    needs: test-rocky
+    if: always()
+    steps:
+      - run: test "${{ needs.test-rocky.result }}" = "success"
