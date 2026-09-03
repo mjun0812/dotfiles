@@ -1,0 +1,191 @@
+name: CI Rocky Linux
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test-rocky:
+    name: Test on Rocky Linux ${{ matrix.rocky }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        rocky: ["9", "10"]
+    container:
+      image: rockylinux/rockylinux:${{ matrix.rocky }}
+    env:
+      NONINTERACTIVE: "1"
+      CI: "true"
+
+    steps:
+      # curl は image 同梱の curl-minimal で足りる (curl を指定すると curl-minimal と衝突する)
+      - name: Install prerequisites
+        run: |
+          dnf install -y \
+            zsh \
+            git \
+            sudo \
+            ca-certificates \
+            gcc \
+            gcc-c++ \
+            make \
+            which \
+            procps-ng
+
+      - name: Create test user
+        run: |
+          useradd -m -s /bin/zsh testuser
+          echo "testuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          path: dotfiles
+
+      - name: Move dotfiles to testuser home
+        run: |
+          mv dotfiles /home/testuser/.dotfiles
+          chown -R testuser:testuser /home/testuser/.dotfiles
+
+      - name: Run install script
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          su - testuser -c "export GITHUB_TOKEN='${GITHUB_TOKEN}' && cd ~/.dotfiles && zsh -e ./install.sh"
+
+      - name: Re-run install script (idempotency)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          su - testuser -c "export GITHUB_TOKEN='${GITHUB_TOKEN}' && cd ~/.dotfiles && zsh -e ./install.sh"
+
+      - name: Verify symlinks (dotfiles)
+        shell: zsh {0}
+        run: |
+          echo "=== Checking dotfile symlinks ==="
+          cd /home/testuser/.dotfiles
+          for f in config/dot/*; do
+            name=".$(basename "$f")"
+            if [[ -L "/home/testuser/$name" ]]; then
+              echo "✓ $name is a symlink"
+            else
+              echo "✗ $name is NOT a symlink"
+              exit 1
+            fi
+          done
+
+      - name: Verify symlinks (config)
+        shell: zsh {0}
+        run: |
+          echo "=== Checking .config symlinks ==="
+          cd /home/testuser/.dotfiles
+          for d in config/dot_config/*; do
+            name=$(basename "$d")
+            target="/home/testuser/.config/$name"
+            if [[ "$name" = "euporie" ]]; then
+              target="$target/config.json"
+              if [[ -f "$target" ]]; then
+                echo "✓ .config/euporie/config.json exists"
+              else
+                echo "✗ .config/euporie/config.json is missing"
+                exit 1
+              fi
+              continue
+            fi
+            if [[ "$name" = "herdr" ]]; then
+              target="$target/config.toml"
+            fi
+            if [[ "$name" = "cli-proxy-api" ]]; then
+              target="$target/config.yaml"
+            fi
+            if [[ -L "$target" ]]; then
+              echo "✓ .config/$name is a symlink"
+            else
+              echo "✗ .config/$name is NOT a symlink"
+              exit 1
+            fi
+          done
+
+      - name: Verify symlinks (AI agents)
+        shell: zsh {0}
+        run: |
+          echo "=== Checking AI agent symlinks ==="
+          cd /home/testuser/.dotfiles
+          home=/home/testuser
+          check_link() {
+            if [[ -L "$1" ]]; then
+              echo "✓ $1 is a symlink"
+            else
+              echo "✗ $1 is NOT a symlink"
+              exit 1
+            fi
+          }
+          for f in CLAUDE.md settings.json mcp.json statusline.py subagent_statusline.py; do
+            check_link "$home/.claude/$f"
+          done
+          check_link "$home/.codex/AGENTS.md"
+          check_link "$home/.codex/hooks.json"
+          check_link "$home/.gemini/GEMINI.md"
+          if [[ -f "$home/.codex/config.toml" ]]; then
+            echo "✓ .codex/config.toml exists"
+          else
+            echo "✗ .codex/config.toml is missing"
+            exit 1
+          fi
+          for d in config/ai-agents/skills/*(/); do
+            name=$(basename "$d")
+            for base in "$home/.agents/skills" "$home/.claude/skills" "$home/.gemini/antigravity-cli/skills"; do
+              check_link "$base/$name"
+            done
+          done
+
+      - name: Verify mise installation
+        run: |
+          echo "=== Checking mise ==="
+          su - testuser -c 'source ~/.zshrc && mise --version'
+          echo "✓ mise is installed"
+
+      - name: Verify uv installation
+        run: |
+          echo "=== Checking uv ==="
+          su - testuser -c 'source ~/.zshrc && uv --version'
+          echo "✓ uv is installed"
+
+      - name: Verify sheldon installation
+        run: |
+          echo "=== Checking sheldon ==="
+          su - testuser -c 'source ~/.zshrc && sheldon --version'
+          echo "✓ sheldon is installed"
+
+      - name: Verify Node.js (via mise)
+        run: |
+          echo "=== Checking Node.js ==="
+          su - testuser -c 'source ~/.zshrc && node --version'
+          echo "✓ Node.js is installed"
+
+      - name: Verify bun (via mise)
+        run: |
+          echo "=== Checking bun ==="
+          su - testuser -c 'source ~/.zshrc && bun --version'
+          echo "✓ bun is installed"
+
+      - name: Verify Python virtual environment
+        run: |
+          echo "=== Checking Python venv ==="
+          su - testuser -c 'source ~/.zshrc && source ~/.venv/bin/activate && python --version'
+          echo "✓ Python venv is configured"
+
+      - name: Verify Neovim setup
+        run: |
+          echo "=== Checking Neovim plugins, treesitter parsers, and LSP servers ==="
+          su - testuser -c 'source ~/.zshrc && nvim --headless -c "luafile ~/.dotfiles/script/ci/check_nvim.lua" +qa'
+
+      - name: Verify interactive zsh startup
+        run: |
+          echo "=== Checking interactive zsh ==="
+          su - testuser -c 'zsh -i -c "echo ✓ interactive zsh starts successfully"'

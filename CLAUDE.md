@@ -28,7 +28,7 @@ prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt + stylua
 script/tools/sync_vscode_extensions.sh --dry-run
 ```
 
-テストスイートは無い。検証はGitHub Actions (`ci-ubuntu.yml` / `ci-macos.yml`) がクリーンなコンテナで `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。`ci-macos-packages.yml` は `mise bootstrap packages apply` (brew / brew-cask) の適用・冪等性・statusを、`ci-lint.yml` は `prek run --all-files` を検証する。
+テストスイートは無い。検証はGitHub Actions (`ci-ubuntu.yml` / `ci-rocky.yml` / `ci-macos.yml`) がクリーンなコンテナで `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。`ci-macos-packages.yml` は `mise bootstrap packages apply` (brew / brew-cask) の適用・冪等性・statusを、`ci-lint.yml` は `prek run --all-files` を検証する。
 
 ## アーキテクチャ
 
