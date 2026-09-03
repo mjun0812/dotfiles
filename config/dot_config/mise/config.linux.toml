@@ -4,6 +4,10 @@
 "github:eza-community/eza" = "latest"
 # aqua の yazi は glibc 2.39 を要求する gnu build を選ぶため、Linux では静的リンクの musl build を使う
 "github:sxyazi/yazi" = { version = "latest", matching = "musl", strip_components = 1, postinstall = "ya pkg install" }
+# tree-sitter の prebuilt binary は glibc 2.39 を要求し musl build も無いため、Linux ではソースからビルドする
+"cargo:tree-sitter-cli" = "latest"
+# apm の prebuilt binary (PyInstaller) は glibc 2.38 を要求するため、Linux では PyPI の apm-cli を使う
+"pipx:apm-cli" = "latest"
 "pipx:headroom-ai" = { version = "latest", extras = "proxy,code" }
 "github:router-for-me/CLIProxyAPI" = "latest"
 

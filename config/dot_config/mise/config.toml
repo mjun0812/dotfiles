@@ -25,7 +25,7 @@ zoxide = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
 
 # Editor
-tree-sitter = "latest"
+tree-sitter = { version = "latest", os = ["macos"] }
 "aqua:neovim/neovim" = "latest"
 
 # Git
@@ -91,7 +91,7 @@ opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = "latest"
 "npm:@github/copilot" = "latest"
 "npm:@xai-official/grok" = "latest"
-apm = "latest"
+apm = { version = "latest", os = ["macos"] }
 
 # Python CLI tools
 "cargo:nb-cli" = "latest"
