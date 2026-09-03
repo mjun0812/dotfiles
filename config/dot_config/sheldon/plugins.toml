@@ -59,9 +59,9 @@ export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
 hooks.post = """
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
-# enable arrow key bindings
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
+# enable arrow key bindings (terminfo が無い環境では skip)
+[[ -n "$terminfo[kcuu1]" ]] && bindkey "$terminfo[kcuu1]" history-substring-search-up
+[[ -n "$terminfo[kcud1]" ]] && bindkey "$terminfo[kcud1]" history-substring-search-down
 # enable emacs-style keybindings
 bindkey -M emacs '^P' history-substring-search-up
 bindkey -M emacs '^N' history-substring-search-down
@@ -230,12 +230,12 @@ _term_tab_title() {
 }
 
 _term_tab_title_precmd() {
-    _is_ssh_session || return
+    _is_ssh_session || return 0
     _term_tab_title "${HOST}@zsh"
 }
 
 _term_tab_title_preexec() {
-    _is_ssh_session || return
+    _is_ssh_session || return 0
     _term_tab_title "${HOST}@$1"
 }
 
