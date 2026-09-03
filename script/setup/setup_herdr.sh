@@ -16,8 +16,19 @@ set -euo pipefail
 
 DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 
-herdr integration install claude
-herdr integration install codex
+# フレッシュ環境の mise install 中は ~/.claude / ~/.codex がまだ無く、
+# herdr integration install が失敗する。install.sh が Claude Code / Codex の
+# 設定後に本スクリプトを再実行するので、その時点ではスキップしてよい。
+if [ -d "$HOME/.claude" ]; then
+    herdr integration install claude
+else
+    echo "skip herdr integration install claude: $HOME/.claude not found"
+fi
+if [ -d "$HOME/.codex" ]; then
+    herdr integration install codex
+else
+    echo "skip herdr integration install codex: $HOME/.codex not found"
+fi
 
 normalize() {
     local file="$1" canonical="$2"

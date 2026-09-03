@@ -9,11 +9,15 @@ on:
 
 jobs:
   test-ubuntu:
-    name: Test on Ubuntu
+    name: Test on Ubuntu ${{ matrix.ubuntu }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu: ["22.04", "24.04", "26.04"]
     container:
-      image: ubuntu:latest
+      image: ubuntu:${{ matrix.ubuntu }}
     env:
       NONINTERACTIVE: "1"
       CI: "true"
@@ -50,13 +54,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          su - testuser -c "export GITHUB_TOKEN='${GITHUB_TOKEN}' && cd ~/.dotfiles && zsh ./install.sh"
+          su - testuser -c "export GITHUB_TOKEN='${GITHUB_TOKEN}' && cd ~/.dotfiles && zsh -e ./install.sh"
 
       - name: Re-run install script (idempotency)
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          su - testuser -c "export GITHUB_TOKEN='${GITHUB_TOKEN}' && cd ~/.dotfiles && zsh ./install.sh"
+          su - testuser -c "export GITHUB_TOKEN='${GITHUB_TOKEN}' && cd ~/.dotfiles && zsh -e ./install.sh"
 
       - name: Verify symlinks (dotfiles)
         shell: zsh {0}

@@ -33,11 +33,11 @@ jobs:
 
       - name: Run install script
         run: |
-          ./install.sh
+          zsh -e ./install.sh
 
       - name: Re-run install script (idempotency)
         run: |
-          ./install.sh
+          zsh -e ./install.sh
 
       - name: Verify symlinks (dotfiles)
         run: |
