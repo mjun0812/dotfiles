@@ -47,7 +47,6 @@ return {
   "powershell",
   "ssh_config",
   "swift",
-  "tmux",
   "xml",
   "zsh",
 }
