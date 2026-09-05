@@ -85,8 +85,8 @@ keep_alive = true
 kickstart = true
 
 [bootstrap.macos.launchd.agents.codex-remote-control]
-program = "~/.codex/packages/standalone/current/codex"
-args = ["app-server", "daemon", "start"]
+program = "/bin/sh"
+args = ["-c", 'export PATH="$HOME/.local/share/mise/shims:$PATH"; exec "$HOME/.codex/packages/standalone/current/codex" app-server daemon start']
 run_at_load = true
 kickstart = true
 

@@ -76,6 +76,7 @@ shfmt = "latest"
 "aqua:anthropics/claude-code" = "latest"
 "aqua:openai/codex" = { version = "latest", postinstall = '''
 set -eu
+export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 current="${CODEX_HOME:-$HOME/.codex}/packages/standalone/current"
 
