@@ -106,6 +106,7 @@ apm = { version = "latest", os = ["macos"] }
 "pipx:jupyter-mcp-server" = "latest"
 
 [settings]
+upgrade.auto_prune = false
 idiomatic_version_file_enable_tools = []
 pipx.uvx = true
 npm.package_manager = "bun"

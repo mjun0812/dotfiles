@@ -249,7 +249,17 @@ show_agent_labels_on_pane_borders = true
 # $number は workspace-number plugin (config/dot_config/herdr/plugins/) が報告する
 # prefix+shift+1..9 のジャンプ番号。
 [ui.sidebar.spaces]
-rows = [["state_icon", { token = "$number", dim = true }, "workspace"], ["branch", "git_status"]]
+rows = [
+  [
+    "state_icon",
+    { token = "$number", dim = true },
+    "workspace",
+  ],
+  [
+    "branch",
+    "git_status",
+  ],
+]
 
 # Accent color for highlights, borders, and navigation UI.
 # Accepts: hex (#89b4fa), named colors (cyan, blue, magenta), or rgb(r,g,b)
@@ -289,7 +299,7 @@ enabled = true
 [session]
 # Resume supported AI-agent panes into their native conversation sessions after
 # a Herdr server restart. Requires official integrations that report session refs.
-# resume_agents_on_restore = true
+resume_agents_on_restore = true
 
 [remote]
 # Whether herdr manages the ssh config used for `herdr --remote`.
@@ -311,7 +321,7 @@ allow_nested = true
 # kitty_graphics = false
 kitty_graphics = true
 # Save recent pane screen history across full server restarts.
-pane_history = false
+pane_history = true
 # While prefix mode is active, temporarily switch the host input source to
 # an ASCII-capable mode so prefix commands register even when an IME is
 # active, then restore the previous input source when prefix mode exits. On
