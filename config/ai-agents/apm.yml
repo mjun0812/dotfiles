@@ -38,9 +38,10 @@ dependencies:
         - stop-ai-slop-jp
         - wezterm-control
     - git: vercel-labs/agent-browser
+      ref: ^0.36.0
       skills:
         - agent-browser
-    - herdrdev/herdr/skills/herdr
+    - herdrdev/herdr/skills/herdr#^0.8.0
   mcp: []
 includes: auto
 scripts: {}
