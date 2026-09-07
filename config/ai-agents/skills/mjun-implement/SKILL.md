@@ -4,6 +4,7 @@ description: >-
   承認済みのspec (`.mjun/specs/` のLocal spec、GitHub Issue番号、または単発の設計doc) を起点に、task単位の実装からAcceptance Criteriaの照合、commit、必要ならPR作成までを一気通貫で行うSkill。
   ユーザーが「#Nを実装して」「このspecを実装して」「実装してPRまで」のように依頼したら使うこと。
   specの作成・磨き上げ・承認や、未取り込みIssueの取り込みには使わない。
+  specも設計docも無く、会話の中で決めた小規模な変更にも使わない (直接実装する)。
 allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create)
 ---
 
@@ -25,7 +26,7 @@ sourceの形からmodeを決める。
 2. Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経て **spec mode**
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
-spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (いずれも必須)、あれば `decisions.md` と `tasks.md` をReadする。`.mjun/adr/*.md` (あれば) も読み、taskに関係するADRをSubAgentへ渡す (worktreeには `.mjun/` が無い)。
+spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (いずれも必須)、あれば `decisions.md` と `tasks.md` をReadする。`.mjun/adr/*.md` (あれば) も読み、taskに関係するADRをSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
 
 ### Issue番号の逆引き
 
@@ -35,7 +36,7 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
 2. activeに無ければ、doneのspecからも `Source: #<number>` を検索する。見つかれば「実装済みのspec (`<path>`) がある。再開する場合は `status` を `active` へ戻すか、Issueを取り込み直す」と案内して中止する
 3. どちらにも無ければ中止し、Issueを先にLocal specへ取り込んで磨き上げる必要があることを案内する
 
-**Local specの参照と更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のためworktreeやPR checkoutには存在しない。SubAgentへはspecの内容をプロンプトに合成して渡し、worktree内の `.mjun/` パスを読ませない。
+**Local specの参照と更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のため新規のworktreeやPR checkoutには存在しない。Phase 2でworktree内にメインrepositoryの `.mjun/` へのsymlinkを張り、worktree内のcwdから相対パスで参照しても同じファイルを指すようにする。SubAgentへはspecの内容をプロンプトに合成して渡し、`.mjun/` パスを読ませない。
 
 ## Task
 
@@ -45,7 +46,7 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
    - リポジトリ情報: `gh repo view --json defaultBranchRef,nameWithOwner` (Local spec / doc modeでghが失敗する場合は `git symbolic-ref --short refs/remotes/origin/HEAD`、それも失敗したら現在のbranch)
    - source本文 (source種別に従う)
    - 現在のbranch: `git branch --show-current`、既存worktree: `git worktree list --porcelain`
-2. 出力言語をsourceの言語から決める (主に日本語なら日本語、それ以外または曖昧なら英語)。コメント、commit、PR作成に使う
+2. 出力言語をrepositoryの慣習から決める: 既存のPR・commit message・READMEの言語に合わせ、判別できなければ英語とする。specや依頼の言語には合わせない。コメント、commit、PR作成に使う
 3. **内容検査**:
    1. **contract承認とdesign.md** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、contractの承認が先に必要であることを案内する。実装依頼そのものをcontract承認の代わりにしない。`design.md` が無い場合も中止し、実装設計の作成が先に必要であることを案内する
    2. **情報の充足**: Goal、受け入れ基準、実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、specを詰め直す必要があることを案内する。方針を推測で補って実装に進まない
@@ -58,7 +59,7 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
    - spec modeで `tasks.md` が無い場合は、独立に検証可能な振る舞いが複数あれば1 task 1振る舞いのvertical sliceへ分解し、それ以外はspec全体を `T-001` とする。分解の判定は次の規則で行う: 各taskのAcceptance Criteriaを1つの失敗コマンドでredにできる (できなければ分割)、Boundaryは specのOwnsのうち1つ (2つ以上に触るなら `Boundary: <責務A>, <責務B> (integration)` と明示して先行taskの後に置く)、型・設定・配線などの前提は先行taskにしてBlocked byで結ぶ、各taskに `Done when:` (完了時に観察できること) と `Seam:` (検証する公開インターフェース) を1行ずつ付ける、AC ≤ 3を目安とし超えるものは分割候補とする。ここでは会話内に保持し、Phase 2のworktree作成後に `tasks.md` へ書く
    - doc modeでは同じ基準で会話内のキューを作り、Local specの `tasks.md` は作らない
    - 各taskの受け入れ基準、Boundary (specにBoundariesがある場合)、Done when、Seamを確認し、依存順 (Blocked by) に並べる。`Blocked by` の全taskが `done` のtaskだけを実行可能とし、blocked taskに依存するtaskは実行せず依存待ち一覧へ残す
-5. `--pr` / `--no-pr` が未指定なら、ここでAskUserQuestionにより配送方法を確認する (使えない環境では選択肢をテキストで提示する)
+5. `--pr` / `--no-pr` が未指定なら、ここでAskUserQuestionにより配送方法を確認する (使えない環境では選択肢をテキストで提示する)。ただし手順1の `gh repo view` が失敗した (GitHub remoteが無い) 場合はPRを作れないため、確認せず `--no-pr` とする
 6. 実装方針とtask一覧を**簡潔に**提示し、確認を取らずPhase 2へ進む
 
 ### Phase 2: worktreeの作成
@@ -70,6 +71,7 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
    - resumeの場合は、Phase 1で取得した `git worktree list --porcelain` から `<branch-name>` をcheckout済みのworktreeを探す。見つかればそのパスを採用し、worktree作成をスキップする (PR作成失敗時に保持したworktreeの再利用)。未commit変更が残っている場合は中止して報告する。見つからなければ `git worktree add <worktree-path> <branch-name>` で既存branchをcheckoutする
    - 新規の場合は `git worktree add -b <branch-name> <worktree-path> <base-branch>` (`<base-branch>` は最新のdefault branch)
    - 作成失敗時は中止してエラーを伝える
+   - 作成後 (resumeで既存worktreeを採用した場合も)、`<worktree-path>/.mjun` が無ければ `ln -s <repo-root>/.mjun <worktree-path>/.mjun` を張る。`.mjun/` はgit管理外でworktreeに無いため、symlinkが無いとworktree内のcwdから相対パスで行った `tasks.md` などの更新が失われる
 5. 新規実行のspec modeでは、worktree作成成功後にPhase 1のtaskキューを `tasks.md` へ書き、先頭へ `Implementation Branch: <branch-name>`、末尾へ `## Implementation Notes` と `## Run Log` を置く。既存の `tasks.md` がある場合はtask内容を変えず、先頭の `Implementation Branch:` を設定し、`## Run Log` が無ければ末尾に追加する
 6. branch名、worktreeパス、base branch名を記録する (クリーンアップで使う)
 
