@@ -87,11 +87,19 @@ frontierのdecisionがすべて解決したら、採択した設計を `design.m
 
 `--skip-trial` 指定時は省略する。実装方針の実現可能性が不確かな場合に、一時worktreeで検証する:
 
-1. worktreeを作成する: branch名は `specify/<slug>-trial`、パスは `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける
+1. worktreeを作成する: branch名は `specify/<slug>-trial`、パスは `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける。作成後に `ln -s <repo-root>/.mjun <worktree-path>/.mjun` を張る (`.mjun/` はgit管理外でworktreeに無く、symlinkが無いとworktree内から相対パスで行ったspecの更新が失われる)
 2. 修正方針の最小実装を行い、テストを実行して結果を確認する
 3. 検証結果 (実行したテスト、結果、落とし穴、方針の修正点) を要約して `design.md` の Trial Implementation Notes に書く。diff全文は載せず、鍵になる数行のスニペットのみ許可する
 4. 方針の問題が見つかった場合はPhase 4へ戻り、decisionと `design.md` を更新する
 5. **worktreeとbranchは、成功でも中断でも必ず削除する**: `git worktree remove --force <path>` → `git branch -D <branch>`。削除に失敗した場合はユーザーに警告する
+
+### Phase 5.3: 承認前のセルフ検査
+
+Phase 5.5のreviewerに機械的な指摘を残さないため、spec reviewを呼ぶ前に次を自分で検査し、欠けをspec / decisionsへ反映する。
+
+1. **AC 1件 = 1コマンド**: Acceptance Criteriaの各項目が1つの検査コマンドに落ちるか。複数の観察 (複数のシナリオ、バージョン、dispatch) を1件に束ねていれば分割する
+2. **Requirement ↔ ACの対応**: Requirements 1件ごとに、それを観察するACが1つ以上あるか。無ければACを追加する (対応表は会話内に保持し、specへは書かない)
+3. **Evidenceの実在確認**: `decisions.md` のEvidenceにある `file:line`、引用、件数を、その場でファイルを読み直す、またはコマンドを再実行して照合する。食い違いは書き直す
 
 ### Phase 5.5: spec review
 
@@ -131,7 +139,7 @@ specの規模を判定する。
 
 ### Phase 8: Issueへの記帳
 
-`Source:` の無いspecでは、投影先Issueを作成するかをAskUserQuestionで確認する (使えない環境では選択肢をテキストで提示する)。作成しない場合は純LocalのままこのPhaseを終了する。作成する場合は、リポジトリ内 `.github/ISSUE_TEMPLATE/` (無ければ [references/ISSUE_TEMPLATE](references/ISSUE_TEMPLATE)、日本語は [references/ISSUE_TEMPLATE_JA](references/ISSUE_TEMPLATE_JA)) から種別を自動判定してタイトルとラベル (既存ラベルのみ) を生成し、`gh issue create` で投影先Issueを作成して `Source:` を記録する (本文は次の投影手順で書き込む)。
+`Source:` の無いspecでは、投影先Issueを作成するかをAskUserQuestionで確認する (使えない環境では選択肢をテキストで提示する)。ただし `gh repo view` が失敗する (GitHub remoteが無い) 場合は確認せず、純LocalのままこのPhaseを終了する。作成しない場合も純LocalのままこのPhaseを終了する。作成する場合は、リポジトリ内 `.github/ISSUE_TEMPLATE/` (無ければ [references/ISSUE_TEMPLATE](references/ISSUE_TEMPLATE)、日本語は [references/ISSUE_TEMPLATE_JA](references/ISSUE_TEMPLATE_JA)) から種別を自動判定してタイトルとラベル (既存ラベルのみ) を生成し、`gh issue create` で投影先Issueを作成して `Source:` を記録する (本文は次の投影手順で書き込む)。
 
 承認済みcontractをIssueへ投影する:
 
