@@ -248,6 +248,7 @@ show_agent_labels_on_pane_borders = true
 
 # $number は workspace-number plugin (config/dot_config/herdr/plugins/) が報告する
 # prefix+shift+1..9 のジャンプ番号。
+agent_panel_sort = "spaces"
 [ui.sidebar.spaces]
 rows = [
   [
