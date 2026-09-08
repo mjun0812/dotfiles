@@ -12,6 +12,7 @@
 # headroom-ai は Python >= 3.10 を要求するが、uv は system の python3 (Rocky 9 では 3.9) を優先するため Python 要件を明示する
 "pipx:headroom-ai" = { version = "latest", extras = "proxy,code", uvx_args = "--python >=3.10" }
 "github:router-for-me/CLIProxyAPI" = "latest"
+"aqua:imagemagick" = "latest"
 
 [bootstrap.linux.systemd.units.codex-remote-control]
 description = "Start the Codex Remote Control daemon"

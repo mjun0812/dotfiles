@@ -5,6 +5,15 @@
 "pipx:headroom-ai" = { version = "latest", extras = "proxy,code", postinstall = "launchctl kickstart -k gui/$(id -u)/dev.mise.headroom-proxy 2>/dev/null || true" }
 "github:router-for-me/CLIProxyAPI" = { version = "latest", postinstall = "launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api 2>/dev/null || true" }
 "github:mjun0812/yobirin" = { version = "latest", asset_pattern = "yobirin", minimum_release_age = "0s", postinstall = "yobirin install && yobirin install --profile claude --icon ~/.dotfiles/assets/notify-claude.png && yobirin install --profile codex --icon ~/.dotfiles/assets/notify-codex.png" }
+yazi = { version = "latest", postinstall = "ya pkg install" }
+tree-sitter = "latest"
+container = { version = "latest", postinstall = '''
+container system start --disable-kernel-install
+# kata-static から推奨カーネルを取得して既定化する
+container system kernel set --recommended --force
+''' }
+imagemagick = "latest"
+apm = "latest"
 
 [bootstrap.packages]
 # For macOS
@@ -86,7 +95,10 @@ kickstart = true
 
 [bootstrap.macos.launchd.agents.codex-remote-control]
 program = "/bin/sh"
-args = ["-c", 'export PATH="$HOME/.local/share/mise/shims:$PATH"; exec "$HOME/.codex/packages/standalone/current/codex" app-server daemon start']
+args = [
+  "-c",
+  'export PATH="$HOME/.local/share/mise/shims:$PATH"; exec "$HOME/.codex/packages/standalone/current/codex" app-server daemon start',
+]
 run_at_load = true
 kickstart = true
 
