@@ -44,11 +44,10 @@
 
 ## SubAgent
 
-- SubAgentはGPT-5.6 Familyのモデルを使用すること。
+- SubAgentはGPT-5.6のモデルを使用すること。
 - SubAgentへ移譲する際は、タスクの性質に応じて呼び出し時にmodelを指定する
   - Luna: 決定的・機械的な定型作業や標準的な実装・調査。迷ったらこのモデルを使う。
-  - Terra: 設計判断や曖昧な要件(アーキ設計、複数ファイル横断リファクタ、難しいデバッグ)
-  - Sol: 設計判断や曖昧な要件(アーキ設計、複数ファイル横断リファクタ、難しいデバッグ)で、Terraよりもさらに慎重に検討する必要がある場合。Terraの結果をレビューする場合にも使用する。
+  - Sol: 設計判断や曖昧な要件(アーキ設計、複数ファイル横断リファクタ、難しいデバッグ)を伴う作業。
 - SubAgentの完了を待つときは `wait_agent` をtimeout 10分以上で呼ぶ。`sleep` や `list_agents` の繰り返しでpollingしない。
 - 実行中のSubAgentへ進捗確認の `send_message` を送らない。結果はSubAgentの最終応答で受け取る。
 - SubAgentとして動くときは、親へ途中経過のmessageを送らず、結果は最終応答だけで返す。
@@ -131,8 +130,4 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 - `.ipynb`をraw JSONとして編集しない。
 - Jupytextのpaired `py:percent` fileがある場合は`.py`をGit上の正本とし、通常の編集は`.py`へ行う。
 - JupyterLabを使わないcell-level操作には`nb-cli`のlocal modeを使う。
-- live kernel、plot、rich outputを扱う場合は`jupyter-mcp-server`を使う。
-- 同じNotebookをJupytext、`nb-cli`、Jupyter MCPから同時に書き換えない。
-- Jupyter MCPがactiveな間は`nb connect`、`nb-cli` local write、Jupytext syncを行わない。
-- 部分実行だけで完了とせず、最後にfresh kernelで全セルを上から実行する。
-- Jupyter KernelはAgentの通常sandboxとは別のcode execution境界として扱う。
+- 同じNotebookをJupytext、`nb-cli`から同時に書き換えない。
