@@ -1,0 +1,169 @@
+# .pre-commit-config.yaml としてコピーし、不要なhookを削除して使う。
+# miseで各ツールを導入し、miseのshimsがPATHにある環境で実行する。
+# Pythonツールはuvxを使用する。初回実行時にダウンロードされる場合がある。
+# 整形・lintのルールは各repoの設定ファイルで管理する。
+# Styluaは.editorconfig / stylua.tomlを用意する。設定が無い場合は
+# entryに --indent-type Spaces --indent-width 2 --column-width 120 を追加する。
+# 導入: prek install / 全件検査: prek run --all-files (pre-commitでも同じ設定を使用可能)
+default_stages: [pre-commit]
+exclude: |
+  (?x)(
+    (^|/)(node_modules|vendor|dist|build|target|\.venv|venv|__pycache__|\.mypy_cache|\.ruff_cache|\.pytest_cache)/|
+    \.ipynb$|
+    \.min\.(js|css)$
+  )
+
+repos:
+  - repo: local
+    hooks:
+      # ステージ済み差分の検査。--all-filesでも履歴全体の検査にはならない。
+      - id: gitleaks
+        name: gitleaks (staged)
+        entry: gitleaks git --pre-commit --staged --redact
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      # 自動修正を先に行い、その後で整形する。
+      - id: ruff-check
+        name: ruff check
+        entry: uvx ruff check --fix
+        language: system
+        types_or: [python, pyi]
+
+      - id: ruff-format
+        name: ruff format
+        entry: uvx ruff format
+        language: system
+        types_or: [python, pyi]
+
+      - id: oxlint
+        name: oxlint
+        entry: oxlint --fix --deny-warnings --no-error-on-unmatched-pattern
+        language: system
+        types: [file]
+        files: \.(?:[cm]?[jt]sx?)$
+
+      # TOMLはTaploが担当する。除外設定で対象が0件になっても成功させる。
+      - id: oxfmt
+        name: oxfmt
+        entry: oxfmt --no-error-on-unmatched-pattern
+        language: system
+        types: [file]
+        files: |
+          (?x)(
+            \.(?:[cm]?[jt]sx?|jsonc?|json5|ya?ml|md|markdown|mdx|html?|xhtml|vue|css|scss|less|pcss|postcss|graphql|gql|graphqls)$|
+            (^|/)\.(?:babelrc|swcrc)$
+          )
+
+      - id: taplo-format
+        name: taplo format
+        entry: taplo format
+        language: system
+        types: [toml]
+
+      - id: taplo-lint
+        name: taplo lint
+        entry: taplo lint
+        language: system
+        types: [toml]
+
+      - id: shfmt
+        name: shfmt
+        entry: shfmt -w
+        language: system
+        types: [shell]
+        exclude_types: [zsh, fish, csh, tcsh]
+
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck
+        language: system
+        types: [shell]
+        exclude_types: [zsh, fish, csh, tcsh]
+
+      # Zsh対応のshfmtが必要。生成された設定などはrepoごとにexcludeへ追加する。
+      - id: shfmt-zsh
+        name: shfmt (zsh)
+        entry: shfmt -w --ln=zsh
+        language: system
+        types: [zsh]
+
+      # zsh -nは1ファイルだけを読むため、渡された全ファイルを順に検査する。
+      - id: zsh-syntax
+        name: zsh syntax
+        entry: 'zsh -f -c ''for file in "$@"; do zsh -f -n -- "$file" || exit; done'' --'
+        language: system
+        types: [zsh]
+
+      - id: stylua
+        name: stylua
+        entry: stylua
+        language: system
+        types: [lua]
+
+      - id: gofmt
+        name: gofmt
+        entry: gofmt -w
+        language: system
+        types: [go]
+
+      - id: tex-fmt
+        name: tex-fmt
+        entry: tex-fmt
+        language: system
+        types: [file]
+        files: \.(tex|sty|cls|bib)$
+
+      - id: actionlint
+        name: actionlint
+        entry: actionlint
+        language: system
+        types: [yaml]
+        files: ^\.github/workflows/[^/]+\.ya?ml$
+
+      # 以下は依存環境を用意し、プロジェクトルート・対象を調整して有効化する。
+      # ファイル単位のexcludeは全体検査には適用されない。各ツール側でも設定する。
+      # モノレポではプロジェクトごとにhookを分ける。
+
+      # - id: ty
+      #   name: ty
+      #   entry: uvx ty check
+      #   language: system
+      #   files: (\.(py|pyi)$|(^|/)(pyproject\.toml|ty\.toml|uv\.lock)$)
+      #   pass_filenames: false
+      #   require_serial: true
+
+      # - id: tsc
+      #   name: TypeScript type check
+      #   entry: tsc --noEmit --project tsconfig.json
+      #   language: system
+      #   files: (\.[cm]?[jt]sx?$|(^|/)(tsconfig[^/]*\.json|package\.json|pnpm-lock\.yaml|package-lock\.json|bun\.lock)$)
+      #   pass_filenames: false
+      #   require_serial: true
+
+      # - id: go-vet
+      #   name: go vet
+      #   entry: go vet ./...
+      #   language: system
+      #   files: (\.go$|(^|/)go\.(mod|sum|work|work\.sum)$)
+      #   pass_filenames: false
+      #   require_serial: true
+
+      # rustfmt・clippyを導入済みのRust toolchainで実行する。
+      # all-featuresが成立しないrepoではfeature指定を調整する。
+      # - id: cargo-fmt
+      #   name: cargo fmt
+      #   entry: cargo fmt --all
+      #   language: system
+      #   files: (\.rs$|(^|/)(Cargo\.toml|\.?rustfmt\.toml)$)
+      #   pass_filenames: false
+      #   require_serial: true
+
+      # - id: cargo-clippy
+      #   name: cargo clippy
+      #   entry: cargo clippy --all-targets --all-features -- -D warnings
+      #   language: system
+      #   files: (\.rs$|(^|/)(Cargo\.(toml|lock)|rust-toolchain(\.toml)?|\.cargo/config(\.toml)?)$)
+      #   pass_filenames: false
+      #   require_serial: true

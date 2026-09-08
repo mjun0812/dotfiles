@@ -55,6 +55,7 @@ taplo = "latest"
 "npm:md-to-pdf" = { version = "latest", install_env = { PUPPETEER_SKIP_DOWNLOAD = "1" } }
 "npm:neovim" = "latest"
 "npm:oxfmt" = "latest"
+"npm:oxlint" = "latest"
 "npm:prettier" = "latest"
 "npm:pyright" = "latest"
 "npm:typescript" = "latest"
