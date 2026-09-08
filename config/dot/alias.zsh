@@ -93,12 +93,6 @@ alias codex-commit-ja='command codex exec \
     -c model_reasoning_effort=low \
     "git-commit skillを使って日本語でコミットしてください。" 2>/dev/null'
 
-# Copilot-cli
-alias copilot-commit='copilot \
-    -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はEnglishです。"'
-alias copilot-commit-ja='copilot \
-    -i "~/.dotfiles/config/ai-agents/skills/git-commit/SKILL.md に書かれたTaskを実行してください。言語はJapaneseです。"'
-
 # Antigravity-cli (agy)
 alias agy-commit='command agy \
     --dangerously-skip-permissions \

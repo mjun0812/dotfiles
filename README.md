@@ -119,12 +119,9 @@ Private skills (`mjun-*`, `self-review`) still live in `config/ai-agents/skills/
 | eza         | Modern `ls`                            |
 | fd          | Modern `find`                          |
 | gh          | GitHub CLI                             |
-| ghq         | Repository management                  |
 | git-lfs     | Git Large File Storage                 |
-| gwq         | Git worktree management                |
 | jq          | JSON processor                         |
 | kubectl     | Kubernetes CLI                         |
-| lazygit     | Git TUI                                |
 | pre-commit  | Git commit hooks manager               |
 | prek        | pre-commit runner in Rust              |
 | ripgrep     | Modern `grep`                          |
@@ -139,7 +136,6 @@ Private skills (`mjun-*`, `self-review`) still live in `config/ai-agents/skills/
 | tree-sitter | Parser generator tool                  |
 | uv          | Python package and tool manager        |
 | vp          | Vite Plus CLI                          |
-| yazi        | Terminal file manager                  |
 | yq          | YAML processor                         |
 | zoxide      | Smart `cd` command                     |
 

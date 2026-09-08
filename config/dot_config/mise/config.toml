@@ -30,9 +30,6 @@ zoxide = "latest"
 delta = "latest"
 git-lfs = "latest"
 gh = "latest"
-ghq = "latest"
-lazygit = "latest"
-"github:d-kuro/gwq" = "latest"
 
 # Dev tooling
 actionlint = "latest"
@@ -82,8 +79,6 @@ ln -sfn "$MISE_TOOL_INSTALL_PATH" "$current"
 ''' }
 opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = "latest"
-"npm:@github/copilot" = "latest"
-"npm:@xai-official/grok" = "latest"
 
 # Python CLI tools
 "cargo:nb-cli" = "latest"
