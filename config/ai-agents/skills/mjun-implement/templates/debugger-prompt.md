@@ -44,6 +44,7 @@ fresh contextで動く原因調査SubAgent。それまでの試行の経緯は�
 - 「たぶん直る」で `RETRY_TASK` にしない。確信度が低いなら `NOTES` にその旨を書く
 - 早すぎる `STOP_FOR_HUMAN` を出さない。repository内で直せるものは `RETRY_TASK`
 - SubAgentを起動せず、原因調査を別Agentへ再移譲しない。自分で完了できない場合は、定められた構造化結果で親へ返す
+- 親へ途中経過のmessageを送らない。結果は最終応答の構造化ブロックだけで返す (途中のmessageは親を起こして待機を中断させる)
 - コードを変更しない。commitしない
 
 ## Debug Report
