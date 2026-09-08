@@ -156,4 +156,7 @@ specの規模を判定する。
 - **Review**: Phase 5.5のVERDICTと、反映した指摘の件数 (Phase 4へ戻したdecisionがあればそのD番号)
 - **Decisions**: Phase 5.7で解消したtentativeの一覧 (D番号と、証拠で昇格 / 人間の決定の別)。無ければ「なし」
 - **Tasks**: 分解した場合はtask一覧 (各taskのBoundary、AC数、Done whenと、数の目安を超える分割候補の印)、単一taskならその旨。粒度が粗い、または細かいと感じた場合は `mjun-to-tasks` で再分解できる旨を添える (ここは承認ではなく、人間が粒度を目視する場所)
-- **次の一手**: このspecを実装に渡せる旨
+- **次の一手**: 次の入力へそのままコピペできる `mjun-implement` の呼び出しを、1行の `text` コードブロックで提示する。
+  - 実行中のAgentに合わせ、Codexでは `$mjun-implement <source>`、Claude Codeでは `/mjun-implement <source>` とする
+  - `<source>` は `Source: #N` があれば実際のIssue番号、無ければ実際のLocal specディレクトリのパスに置き換える。`<source>`、`#N`、`...` などのプレースホルダーを出力に残さない
+  - 「次は以下を入力してください」などの案内はコードブロックの外に置き、ブロック内には呼び出しだけを書く
