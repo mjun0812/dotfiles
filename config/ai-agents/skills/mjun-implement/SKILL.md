@@ -1,7 +1,7 @@
 ---
 name: mjun-implement
 description: >-
-  承認済みのspec (`.mjun/specs/` のLocal spec、GitHub Issue番号、または単発の設計doc) を起点に、task単位の実装からAcceptance Criteriaの照合、commit、必要ならPR作成までを一気通貫で行うSkill。
+  承認済みのspec (`.mjun/specs/` のLocal spec、GitHub Issue番号、または単発の設計doc) を起点に、task group単位の実装からAcceptance Criteriaの照合、commit、必要ならPR作成までを一気通貫で行うSkill。
   ユーザーが「#Nを実装して」「このspecを実装して」「実装してPRまで」のように依頼したら使うこと。
   specの作成・磨き上げ・承認や、未取り込みIssueの取り込みには使わない。
   specも設計docも無く、会話の中で決めた小規模な変更にも使わない (直接実装する)。
@@ -59,8 +59,9 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
    - spec modeで `tasks.md` が無い場合は、独立に検証可能な振る舞いが複数あれば1 task 1振る舞いのvertical sliceへ分解し、それ以外はspec全体を `T-001` とする。分解の判定は次の規則で行う: 各taskのAcceptance Criteriaを1つの失敗コマンドでredにできる (できなければ分割)、Boundaryは specのOwnsのうち1つ (2つ以上に触るなら `Boundary: <責務A>, <責務B> (integration)` と明示して先行taskの後に置く)、型・設定・配線などの前提は先行taskにしてBlocked byで結ぶ、各taskに `Done when:` (完了時に観察できること) と `Seam:` (検証する公開インターフェース) を1行ずつ付ける、AC ≤ 3を目安とし超えるものは分割候補とする。ここでは会話内に保持し、Phase 2のworktree作成後に `tasks.md` へ書く
    - doc modeでは同じ基準で会話内のキューを作り、Local specの `tasks.md` は作らない
    - 各taskの受け入れ基準、Boundary (specにBoundariesがある場合)、Done when、Seamを確認し、依存順 (Blocked by) に並べる。`Blocked by` の全taskが `done` のtaskだけを実行可能とし、blocked taskに依存するtaskは実行せず依存待ち一覧へ残す
+   - **task groupへ区切る**: groupがPhase 3.0〜3.1の単位 (verifier、implementer、reviewer、commit) になる。依存順に並べたキューを先頭から走査し、現在のgroupのいずれかのtaskとspecのOwnsの同じ責務 (Boundary) に属するtaskは現在のgroupへ加え、属さなければ新しいgroupを始める (Boundariesが無い場合はSeamが同じ公開interfaceかで判定する)。1 groupはtask 5件・Acceptance Criteria合計12件を上限の目安とし、超える場合は依存順で区切る (verifierとimplementerが1つのfresh contextで扱える大きさ)。groupは依存順に直列で処理するため、先行groupのtaskは処理時点でdoneになっている。単一taskのgroupも同じ手順で扱う
 5. `--pr` / `--no-pr` が未指定なら、ここでAskUserQuestionにより配送方法を確認する (使えない環境では選択肢をテキストで提示する)。ただし手順1の `gh repo view` が失敗した (GitHub remoteが無い) 場合はPRを作れないため、確認せず `--no-pr` とする
-6. 実装方針とtask一覧を**簡潔に**提示し、確認を取らずPhase 2へ進む
+6. 実装方針とtask一覧 (group区切り付き) を**簡潔に**提示し、確認を取らずPhase 2へ進む
 
 ### Phase 2: worktreeの作成
 
@@ -77,13 +78,13 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
 
 ### Phase 3: 実装
 
-実装はSubAgentで行う。受け渡しはすべてメイン会話が構造化ブロックをパースして仲介する。プロンプトはskill内のテンプレートにtask文脈を合成して作る。
-SubAgentは毎回新規に起動し、差し戻し時も前回のSubAgentを継続しない。失敗した試行の履歴はプロンプトに含めず、`REMEDIATION` など修正に必要な情報だけを渡す。
+実装はSubAgentで行う。受け渡しはすべてメイン会話が構造化ブロックをパースして仲介する。プロンプトはskill内のテンプレートにgroup (Phase 1で区切ったtask group) の文脈を合成して作る。
+verifier、reviewer、debugger、refactorerは毎回新規に起動する (fresh context)。implementerはgroupごとに1回起動し、同じgroupの差し戻し・裁定・不足情報の補充は**同じimplementerを継続して** (send_message / resume等) 行う。継続できない環境では新規に起動し、失敗した試行の履歴は含めず `REMEDIATION` など修正に必要な情報と、前回の方針の要約1行だけを渡す。
 
 役割は5つある。
 
-- **verifier** ([templates/verifier-prompt.md](templates/verifier-prompt.md)): 実装の前に、taskのAcceptance Criteriaを「今は失敗する実行可能な検査」に落とし、Task Briefと一緒に `## Check Report` を返す。検査がimplementerの成功の定義になる
-- **implementer** ([templates/implementer-prompt.md](templates/implementer-prompt.md)): verifierの検査をgreenにする実装と検証を担い、`## Status Report` を返す
+- **verifier** ([templates/verifier-prompt.md](templates/verifier-prompt.md)): 実装の前に、groupの各taskのAcceptance Criteriaを「今は失敗する実行可能な検査」に落とし、検査ファイルをformatterとlintに通してから、Task Briefと一緒に `## Check Report` を返す。検査がimplementerの成功の定義になる
+- **implementer** ([templates/implementer-prompt.md](templates/implementer-prompt.md)): groupの全taskについてverifierの検査をgreenにする実装と検証を担い、`## Status Report` を返す
 - **reviewer** ([templates/reviewer-prompt.md](templates/reviewer-prompt.md)): 検査の実行結果、検査ファイルの不変、実在性、Boundaryを中心に敵対的に検証し、`## Review Verdict` を返す
 - **debugger** ([templates/debugger-prompt.md](templates/debugger-prompt.md)): 差し戻しが収束しない、またはBLOCKEDのときに、fresh contextでroot causeを分類し `## Debug Report` を返す
 - **refactorer** ([templates/refactorer-prompt.md](templates/refactorer-prompt.md)): 全task完了後、reviewerのNOTESとtask間の重複を全検査greenのまま整理し、`## Refactor Report` を返す
@@ -96,67 +97,68 @@ Phase 3の間の制約:
 
 - verifier、implementer、reviewer、debugger、refactorerはleaf roleとし、SubAgentを起動せず、担当作業を別Agentへ再移譲しない。自分で完了できない場合はrole固有の構造化結果で親へ返し、追加の委譲は親だけが判断する
 - ループ内で `git reset --hard` 等の破壊的リセットを行わない (例外はPhase 3.3で整理の変更だけを戻す場合のみ)
-- pushとPR作成はPhase 4まで行わない。commitはtask承認ごとにメイン会話が行う (Phase 3.1)。SubAgentにはcommitさせない
+- pushとPR作成はPhase 4まで行わない。commitはgroup承認ごとにメイン会話が行う (Phase 3.1)。SubAgentにはcommitさせない
 - SubAgentの完了主張を検証の代わりにしない。判定は構造化フィールドと、検査・reviewer・最終検証の実行結果だけで行う
-- 構造化値が無い、または曖昧なときの再要求は、作業したSubAgentを継続して行う (SendMessage等)。継続できない環境では、ブロックだけを別のSubAgentに求めず、そのroleを最初からやり直す (作業していないagentが返すブロックは捏造になる)。差し戻し時に新しいSubAgentを起動する規則とは別である
+- 構造化値が無い、または曖昧なときの再要求は、作業したSubAgentを継続して行う (SendMessage等)。継続できない環境では、ブロックだけを別のSubAgentに求めず、そのroleを最初からやり直す (作業していないagentが返すブロックは捏造になる)
 - SubAgentの報告で `NOT_RUN` の項目は、親が該当コマンドを実行して埋める。推測で埋めない
 - verifierが書いた検査ファイル (`CHECK_FILES`) はverifier以外に変更させない。親は検査の作成直後にファイルのハッシュ (`shasum`) を記録し、reviewerがそれと照合する。検査を直す必要が生じた場合はverifierに作り直させ、ハッシュを更新する
 
 #### 自律継続とtaskの隔離
 
-- 各taskのPhase 3.0開始時にHEADと `git status --porcelain` を記録する。taskをblockedへ移すときは、このtaskで変更したと証明できるtracked pathだけを開始時の状態へ戻し、このtaskで作成したと証明できるuntracked pathだけを削除する。対象pathを特定できなければ、他の変更を失う危険があるため中止する。worktree全体へのresetやcleanは使わない
-- taskをblockedへ移す場合、spec modeでは `Status: blocked`、`Blocked reason: <直接原因>`、`Resume when: <再開条件>` を `tasks.md` に記録し、doc modeでは同じ情報を会話内のキューに保持する。Run Logにも原因を追記し、blocked一覧へ加える
-- blockedへ移した後はキューを再評価し、依存taskがすべてdoneの独立taskを続行する。blocked taskに依存するtaskは実行せず、依存待ちとして保持する
+- 各groupのPhase 3.0開始時にHEADと `git status --porcelain` を記録する。taskまたはgroupをblockedへ移すときは、その作業で変更したと証明できるtracked pathだけを開始時の状態へ戻し、その作業で作成したと証明できるuntracked pathだけを削除する。対象pathを特定できなければ、他の変更を失う危険があるため中止する。worktree全体へのresetやcleanは使わない
+- taskをblockedへ移す場合、spec modeでは `Status: blocked`、`Blocked reason: <直接原因>`、`Resume when: <再開条件>` を `tasks.md` に記録し、doc modeでは同じ情報を会話内のキューに保持する。Run Logにも原因を追記し、blocked一覧へ加える。groupがblockedになる場合は、groupの全taskに同じ記録を行う
+- blockedへ移した後はキューを再評価し、依存taskがすべてdoneの独立taskを続行する。blocked taskに依存するtaskは実行せず、依存待ちとして保持する。groupの一部のtaskだけがblockedになった場合は、そのtaskと、それに依存するgroup内のtaskをgroupから外し、残りのtaskでgroupを続行する
 - taskの分割・順序・依存だけを直す変更は、contractのRequirements / Boundaries / Acceptance Criteria / Out of Scopeと外部から観察できる振る舞いを一切変えず、既存ACを欠落・追加・再解釈しない場合に限り、ユーザー確認なしでtaskキューへ反映する。contractの意味が変わる場合は自動修正せず `RETURN_TO_SPEC` として中止する
 - 自動再分解とdebugger由来のtask計画修正は、それぞれ元taskごとに最大2回とする。上限後も実行可能にならないtaskはblockedへ移す
 
 #### Run Log
 
-`tasks.md` 末尾の `## Run Log` に、taskごとに1行で追記する (中断後のresumeでは既存行を保持し、新しい行を足す)。原因分析の材料にするため、周回数と差し戻しの証拠種別、debuggerの分類を残す。証拠種別は a (失敗コマンドの出力)、b (file:line + 引用)、mismatch (reviewerの `MECHANICAL_RESULTS` と親の再実行が食い違った) のいずれか。
+`tasks.md` 末尾の `## Run Log` に、groupごとに1行で追記する (中断後のresumeでは既存行を保持し、新しい行を足す)。原因分析の材料にするため、周回数と差し戻しの証拠種別、debuggerの分類を残す。証拠種別は a (失敗コマンドの出力)、b (file:line + 引用)、mismatch (reviewerの `MECHANICAL_RESULTS` と親の再実行が食い違った) のいずれか。groupから外れてblockedになったtaskは別行にする。
 
 ```text
 - T-001: checks=READY (3) | rounds=2 | reject=[a, b] | debug=LOGIC_ERROR→RETRY_TASK | result=done
-- T-002: checks=CANNOT_VERIFY (3) | result=blocked | resume=<検証手段が利用可能>
+- T-002,T-003,T-004: checks=READY (8) | rounds=1 | result=done
+- T-005: checks=CANNOT_VERIFY (3) | result=blocked | resume=<検証手段が利用可能>
 - feature: validation=GO | refactor=DONE | base-sync=CLEAN
 ```
 
-#### Phase 3.0: 検査の作成 (taskごと、実装前)
+#### Phase 3.0: 検査の作成 (groupごと、実装前)
 
-taskキューの順に、taskごとに次を行ってからPhase 3.1へ進む。
+groupの順に、groupごとに次を行ってからPhase 3.1へ進む。
 
-1. **task statusの更新**: `tasks.md` の該当taskを `Status: in-progress` へ更新する (spec modeのみ。メインrepo側のパスで)
-2. **verifierの起動**: テンプレートに、worktreeの絶対パス、contract、`design.md` の全文 (spec modeのみ)、関係するADR (あれば)、担当task (説明、Acceptance Criteria、Boundary、Done when、Seam)、検証コマンド、Implementation Notesを合成して起動する
+1. **task statusの更新**: `tasks.md` のgroupの各taskを `Status: in-progress` へ更新する (spec modeのみ。メインrepo側のパスで)
+2. **verifierの起動**: テンプレートに、worktreeの絶対パス、contract、`design.md` の全文 (spec modeのみ)、関係するADR (あれば)、担当groupの各task (ID、説明、Acceptance Criteria、Boundary、Done when、Seam、Blocked by)、検証コマンドとformatter / lintの実行コマンド、Implementation Notesを合成して起動する
 3. **STATUSの処理**: `## Check Report` の `- STATUS:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
-   - `CHECKS_READY` → `CHECK_COMMANDS` をworktreeで実行し (親が直接、またはSubAgentに実行を依頼して出力を受け取る)、**すべて失敗する**ことを確認する。通ってしまう検査があれば、その検査名を添えてverifierに1回だけ作り直させる。確認後、`CHECK_FILES` のハッシュを記録し、検査一覧 (Acceptance Criterion → コマンド) をユーザーに提示してPhase 3.1へ進む (承認は取らない。人間が「この検査が通れば完了」を見る場所)
-   - `CANNOT_VERIFY` → `METHOD` と `MISSING` を記録し、試した方法と不足をfresh verifierへ渡して、未試行の別方法を選ばせる。初回を含め最大3回まで試す。`CHECKS_READY` になれば通常どおり進み、3回とも検査化できなければtaskをblockedへ移してキューを再評価する
-   - `TASK_TOO_LARGE` → `SPLIT_PROPOSAL` を検査する。分割後taskのACの和集合が元taskのACと等しく、Boundaryが元taskとspecのOwns内、Seamがdesignに存在し、依存関係が循環しない場合は、元taskを次の未使用IDを持つ分割taskへ置き換える。元taskの `Blocked by` は分割後のすべてのroot taskへ継承し、元taskに依存していた後続taskは完了に必要なすべてのterminal taskへ付け替え、キューを再評価してPhase 3.0から続ける。条件を満たさない、または2回の再分解でも大きすぎる場合はtaskをblockedへ移す
+   - `CHECKS_READY` → `CHECK_COMMANDS` をworktreeで実行し (親が直接、またはSubAgentに実行を依頼して出力を受け取る)、**すべて失敗する**ことを確認する。通ってしまう検査があれば、その検査名を添えてverifierに1回だけ作り直させる。`CHECK_LINT` が `NOT_RUN` のformatterがあれば親が `CHECK_FILES` に対して実行し、失敗すればその出力を添えてverifierに1回だけ作り直させる (lintは実装前にcompileできない検査には実行できないため、verifierの規約確認に委ねる)。確認後、`CHECK_FILES` のハッシュを記録し、検査一覧 (task / Acceptance Criterion → コマンド) をユーザーに提示してPhase 3.1へ進む (承認は取らない。人間が「この検査が通れば完了」を見る場所)
+   - `CANNOT_VERIFY` → `TASKS` で `READY` のtaskの検査は上と同じ手順で採用し (RED確認、ハッシュ記録)、`CANNOT_VERIFY` のtaskだけを処理する。`METHOD` と `MISSING` を記録し、試した方法と不足を、該当taskだけを担当するfresh verifierへ渡して、未試行の別方法を選ばせる。初回を含め最大3回まで試す。`CHECKS_READY` になれば検査をgroupへ合流させ、3回とも検査化できなければそのtaskをblockedへ移してgroupから外し、キューを再評価する
+   - `TASK_TOO_LARGE` → `READY` のtaskの検査は上と同じ手順で採用し、`TOO_LARGE` のtaskごとに `SPLIT_PROPOSAL` を検査する。分割後taskのACの和集合が元taskのACと等しく、Boundaryが元taskとspecのOwns内、Seamがdesignに存在し、依存関係が循環しない場合は、元taskを次の未使用IDを持つ分割taskへ置き換える。元taskの `Blocked by` は分割後のすべてのroot taskへ継承し、元taskに依存していた後続taskは完了に必要なすべてのterminal taskへ付け替える。分割後のtaskは元のgroupに入れ (上限の目安を超える分は次のgroupへ送る)、分割後のtaskだけを担当するverifierでPhase 3.0を続ける。条件を満たさない、または2回の再分解でも大きすぎる場合はそのtaskをblockedへ移してgroupから外す
 4. Run Logに `checks=<READY (n) | CANNOT_VERIFY | TOO_LARGE>` を記録する
 
-#### Phase 3.1: 実装とレビュー (taskごと)
+#### Phase 3.1: 実装とレビュー (groupごと)
 
-**1 task = 1イテレーション**で直列に処理する (実行可能なtaskから1つずつ処理する)。taskは同じworktreeを共有し、承認ごとに親がcommitして `CHECK_FILES` のハッシュを照合するため、複数taskを並列に実装すると未commit変更とハッシュの照合が混ざる。複数taskを1つのSubAgentにまとめて渡さない。
+**1 group = 1イテレーション**で直列に処理する。groupの全taskを1つのimplementerに渡す。groupは同じworktreeを共有し、承認ごとに親がcommitして `CHECK_FILES` のハッシュを照合するため、複数groupを並列に実装すると未commit変更とハッシュの照合が混ざる。
 
 1. **implementerの起動**: テンプレートに以下を合成して起動する
    - worktreeの絶対パス、base branch名と作業branch名
    - specのタイトルと本文の要約と、**contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)**
    - `design.md` の全文 (spec modeのみ。実装設計) と、関係するADR (あれば)
    - verifierの `TASK_BRIEF`、`CHECK_FILES` (変更禁止)、`CHECK_COMMANDS`
-   - 担当taskの説明、Boundary、Done when、Seam、Phase 1で決めた実装方針
-   - taskに関係する検証コマンド
+   - 担当groupの各taskの説明、Boundary、Done when、Seam、Blocked by、Phase 1で決めた実装方針
+   - groupに関係する検証コマンド
    - これまでのImplementation Notes (あれば)
 2. **STATUSの処理**: `## Status Report` の `- STATUS:` フィールドだけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
    - `READY_FOR_REVIEW` → 3へ進む
-   - `CHECK_DISPUTE` → 親が `DISPUTE` の主張を担当taskのAcceptance Criteriaと照らして裁定する。検査が誤っていればverifierに `DISPUTE` を渡して1回だけ作り直させ (RED確認とハッシュ更新を行う)、implementerを再起動する。検査が正しければ裁定理由を添えてimplementerを再起動する。裁定は同一taskで1回まで
-   - `NEEDS_CONTEXT` → `MISSING` の不足情報を用意して1回だけ再起動する。解決しなければ中止し、Phase 1と同じ形式でユーザーに質問する
+   - `CHECK_DISPUTE` → 親が `DISPUTE` の主張を該当taskのAcceptance Criteriaと照らして裁定する。検査が誤っていればverifierに `DISPUTE` を渡して1回だけ作り直させ (RED確認とハッシュ更新を行う)、更新後の検査を添えてimplementerを継続する。検査が正しければ裁定理由を添えてimplementerを継続する。裁定は同一taskで1回まで
+   - `NEEDS_CONTEXT` → `MISSING` の不足情報を用意して1回だけimplementerを継続する。解決しなければ中止し、Phase 1と同じ形式でユーザーに質問する
    - `BLOCKED` → Phase 3.1'のdebuggerへ進む
-3. **reviewerの起動**: テンプレートに、task文脈、contract、`design.md` の全文 (spec modeのみ)、関係するADR (あれば)、`CHECK_COMMANDS`、`CHECK_FILES` と記録したハッシュ、検証コマンド、implementerのStatus Report (参照用)、周回 (`ROUND`) を合成して起動する。2周目以降は前回の `FINDINGS` と `REMEDIATION` も渡す (reviewerは前回指摘の解消を先に判定し、新規のREJECT根拠を検査の失敗・回帰・検査ファイルの改変・実在性・Boundary違反に限る)
+3. **reviewerの起動**: テンプレートに、groupの各taskの文脈、contract、`design.md` の全文 (spec modeのみ)、関係するADR (あれば)、`CHECK_COMMANDS`、`CHECK_FILES` と記録したハッシュ、検証コマンド、implementerのStatus Report (参照用)、周回 (`ROUND`) を合成して起動する。2周目以降は前回の `FINDINGS` と `REMEDIATION` も渡す (reviewerは前回指摘の解消を先に判定し、新規のREJECT根拠を検査の失敗・回帰・検査ファイルの改変・実在性・Boundary違反に限る)
 4. **VERDICTの処理**: `## Review Verdict` の `- VERDICT:` フィールドだけをパースする
-   - `APPROVED` → 親がworktreeで全 `CHECK_COMMANDS` を実行し、`CHECK_FILES` のハッシュを照合する (reviewerの `MECHANICAL_RESULTS` を検証の代わりにしない。`MECHANICAL_RESULTS` に `NOT_RUN` の項目があればそのコマンドも実行する)。1つでも失敗、または不一致なら、その出力を証拠 (a) として `REJECTED` と同じ差し戻しを行い、Run Logの `reject=` に `mismatch` を記録する。すべて通れば task完了。**先にworktree内でそのtaskの変更 (検査ファイルを含む) をcommitし** (Conventional Commits形式で、taskのタイトルを要約したメッセージ)、成功後に `tasks.md` の該当taskを `Status: done` へ更新する (Issueへは書き込まない)。commit対象の差分が無い場合は、前回実行でcommit済みとみなしてstatus更新だけを行う。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。`NOTES` はPhase 3.3のために保持する。Run Logに周回数、差し戻しの証拠種別、結果を記録し、次のtaskへ進む
-   - `REJECTED` で根拠がChange Outline外のパスだけの場合: そのパスが担当taskのAcceptance Criteriaに必要で、かつspecのOwns内なら、親がメインrepo側の `design.md` のChange Outlineへそのdirectoryを追記し、Implementation Notesに1行残してreviewerだけを再起動する (差し戻しの周回に数えない)。Owns外、または必要性を示せない場合は次の通常の差し戻しとする
-   - `REJECTED` → implementerを再起動する。渡すのは `REMEDIATION`、`FINDINGS`、reviewerが実行して失敗したコマンドの生の出力 (`MECHANICAL_RESULTS` と `FINDINGS` の証拠 (a))、前回のimplementerが取った方針の要約1行 (`EVIDENCE` と `FILES_CHANGED` から親が作る。「駄目だった方針」として渡す)。worktreeには前回の試行の未commit変更が残っているので、implementerに `git diff` で確認させてから直させる。同一taskの差し戻しは**最大2周**とし、2周後もREJECTEDならPhase 3.1'のdebuggerへ進む
-5. **知見の伝播**: task横断で有用な発見は、`tasks.md` 末尾の `## Implementation Notes` へ1行で永続化し、以降のverifierとimplementerのプロンプトに含める
+   - `APPROVED` → 親がworktreeで全 `CHECK_COMMANDS` を実行し、`CHECK_FILES` のハッシュを照合する (reviewerの `MECHANICAL_RESULTS` を検証の代わりにしない。`MECHANICAL_RESULTS` に `NOT_RUN` の項目があればそのコマンドも実行する)。1つでも失敗、または不一致なら、その出力を証拠 (a) として `REJECTED` と同じ差し戻しを行い、Run Logの `reject=` に `mismatch` を記録する。すべて通れば group完了。**先にworktree内でそのgroupの変更 (検査ファイルを含む) をcommitし** (Conventional Commits形式で、groupのtaskのタイトルを要約したメッセージ)、成功後に `tasks.md` のgroupの各taskを `Status: done` へ更新する (Issueへは書き込まない)。commit対象の差分が無い場合は、前回実行でcommit済みとみなしてstatus更新だけを行う。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。`NOTES` はPhase 3.3のために保持する。implementerを終了し、Run Logに周回数、差し戻しの証拠種別、結果を記録し、次のgroupへ進む
+   - `REJECTED` で根拠がChange Outline外のパスだけの場合: そのパスが担当groupのtaskのAcceptance Criteriaに必要で、かつspecのOwns内なら、親がメインrepo側の `design.md` のChange Outlineへそのdirectoryを追記し、Implementation Notesに1行残してreviewerだけを再起動する (差し戻しの周回に数えない)。Owns外、または必要性を示せない場合は次の通常の差し戻しとする
+   - `REJECTED` → 同じimplementerを継続する。渡すのは `REMEDIATION`、`FINDINGS`、reviewerが実行して失敗したコマンドの生の出力 (`MECHANICAL_RESULTS` と `FINDINGS` の証拠 (a))。継続できない環境では新規に起動し、前回のimplementerが取った方針の要約1行 (`EVIDENCE` と `FILES_CHANGED` から親が作る。「駄目だった方針」として渡す) を加え、worktreeに残る前回の未commit変更を `git diff` で確認させてから直させる。同一groupの差し戻しは**最大2周**とし、2周後もREJECTEDならPhase 3.1'のdebuggerへ進む
+5. **知見の伝播**: group横断で有用な発見は、`tasks.md` 末尾の `## Implementation Notes` へ1行で永続化し、以降のverifierとimplementerのプロンプトに含める
 
-中断後に再実行された場合は、Phase 1のキュー構築が完了taskをスキップするため、未完了taskから再開される。未完了taskの検査はcommitされていないため、Phase 3.0からやり直す。
+中断後に再実行された場合は、Phase 1のキュー構築が完了taskをスキップし、未完了taskだけでgroupを区切り直すため、未完了taskから再開される。未完了taskの検査はcommitされていないため、Phase 3.0からやり直す。
 
 #### Phase 3.1': 原因調査 (収束しないとき)
 
@@ -166,11 +168,11 @@ BLOCKED、または差し戻し2周後のREJECTEDで起動する。debuggerはfr
 2. **NEXT_ACTIONの処理**: `## Debug Report` の `- NEXT_ACTION:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
    - `RETRY_TASK` → `FIX_PLAN` と `NOTES` を渡して新しいimplementerを起動し、Phase 3.1の3以降を1周だけ行う
    - `FIX_CHECK` → 検査自体の誤り。`ROOT_CAUSE` を渡してverifierに作り直させ (RED確認とハッシュ更新を行う)、implementerを起動してPhase 3.1の3以降を1周だけ行う
-   - `RETURN_TO_TASKS` → `TASKS_CHANGE` を検査する。contractの意味を変えず、taskの分割・統合・順序・依存変更、またはcontract/designですでに要求されている前提taskの追加だけで解決できる場合はキューへ反映し、現在taskの変更をtask隔離の規則で戻してPhase 3.0から続ける。既存ACの追加・削除・再解釈、BoundaryやOut of Scopeの変更、外部から観察できる振る舞いの変更が必要なら `RETURN_TO_SPEC` として中止する
+   - `RETURN_TO_TASKS` → `TASKS_CHANGE` を検査する。contractの意味を変えず、taskの分割・統合・順序・依存変更、またはcontract/designですでに要求されている前提taskの追加だけで解決できる場合はキューへ反映し、現在groupの変更をtask隔離の規則で戻し、groupを区切り直してPhase 3.0から続ける。既存ACの追加・削除・再解釈、BoundaryやOut of Scopeの変更、外部から観察できる振る舞いの変更が必要なら `RETURN_TO_SPEC` として中止する
    - `RETURN_TO_SPEC` → 中止し、contractと現実の矛盾箇所を報告して、specの磨き直しが必要であることを案内する (specは変更しない)
    - `STOP_FOR_HUMAN` → 中止し、`ROOT_CAUSE` と `HUMAN_QUESTION` (1問、選択肢付き) を報告する
-3. debuggerは同一taskで**最大2回**まで起動する。2回目の後も解決しなければtaskをblockedへ移し、キューを再評価して独立taskを続ける
-4. `CATEGORY` と `NEXT_ACTION` をRun Logに、次のtaskにも効く知見をImplementation Notesに記録する
+3. debuggerは同一groupで**最大2回**まで起動する。2回目の後も解決しなければgroupをblockedへ移し (`ROOT_CAUSE` が特定のtaskに閉じている場合はそのtaskと依存taskだけをblockedにしてgroupを続行する)、キューを再評価して独立taskを続ける
+4. `CATEGORY` と `NEXT_ACTION` をRun Logに、次のgroupにも効く知見をImplementation Notesに記録する
 
 #### Phase 3.2: feature単位の検証
 
@@ -185,7 +187,7 @@ BLOCKED、または差し戻し2周後のREJECTEDで起動する。debuggerはfr
 
 - 検証コマンドがすべて成功し、全criterionが充足し、task間が整合し、boundary違反が無い → `GO`。Phase 3.3へ進む
 - 実行時検証だけが「未実施」で、他はすべて成功 → `MANUAL_VERIFY_REQUIRED`。Phase 3.3へ進むが、Phase 5の報告とPR本文の検証結果に未実施を明記する
-- 検証コマンドの失敗、criterionの未充足、task間の不整合、またはboundary違反 → 内容を添えてimplementerに差し戻す (合わせて最大2周)。差し戻しは該当criterionを持つtaskの文脈で行い、全taskの `CHECK_COMMANDS` と `CHECK_FILES` のハッシュを渡す。**差し戻しで生じた修正は、Phase 3.1と同じreviewerの検査に合格してからPhase 3.3へ進む** (最終検証後の変更だけがboundary検査等を迂回する経路を作らない)。収束しなければ中止し、未充足のcriterionを明示して報告する
+- 検証コマンドの失敗、criterionの未充足、task間の不整合、またはboundary違反 → 内容を添えてimplementerを新規に起動して差し戻す (合わせて最大2周。2周目は同じimplementerを継続する)。差し戻しは該当criterionを持つtaskの文脈で行い、全taskの `CHECK_COMMANDS` と `CHECK_FILES` のハッシュを渡す。**差し戻しで生じた修正は、Phase 3.1と同じreviewerの検査に合格してからPhase 3.3へ進む** (最終検証後の変更だけがboundary検査等を迂回する経路を作らない)。収束しなければ中止し、未充足のcriterionを明示して報告する
 
 Run Logに `feature: validation=<GO | MANUAL_VERIFY_REQUIRED | NO-GO>` を記録する。
 
@@ -221,7 +223,7 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 - **PR**: 作成したPRのURL (`--no-pr` の場合は「PRなし。branch `<name>` に成果があります」。`PARTIAL` の場合は「未作成。branch `<name>` に完了taskのcommitがあります」)
 - **変更概要**: ファイル数、追加/削除行数 (`git diff --stat <base>..HEAD`)
 - **task進捗**: 完了task数と、スキップした完了済みtask数 (resume時)
-- **Checks**: taskごとの検査数と結果 (Phase 3.0で作成した検査がすべて通ったか)
+- **Checks**: groupごとの検査数 (task別の内訳付き) と結果 (Phase 3.0で作成した検査がすべて通ったか)
 - **AC coverage**: Acceptance Criteriaの充足状況 (充足数 / 総数と、各criterionの判定、証明した検査)
 - **Validation**: Phase 3.2の判定 (GO / MANUAL_VERIFY_REQUIRED。`PARTIAL` では「未実施」)。実行時検証が未実施ならその旨
 - **Base sync**: Phase 4の再同期の結果 (CLEAN / FIXED と修正内容 / CONFLICT と衝突ファイル。`PARTIAL` では「未実施」)
