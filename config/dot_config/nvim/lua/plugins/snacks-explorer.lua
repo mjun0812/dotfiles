@@ -3,6 +3,9 @@
 return {
   "folke/snacks.nvim",
   init = function()
+    -- dotfile のファイル名は灰色 (NonText) にせず通常色にする。gitignore 対象は灰色のまま
+    vim.api.nvim_set_hl(0, "SnacksPickerPathHidden", { link = "SnacksPickerFile" })
+
     vim.api.nvim_create_autocmd("QuitPre", {
       callback = function()
         if #Snacks.picker.get({ source = "explorer" }) == 0 then
@@ -54,6 +57,13 @@ return {
           ignored = true,
           -- 検索の入力欄は普段隠し、/ を押したときだけ出す。幅は fern の drawer_width と同じ 30 列
           layout = { hidden = { "input" }, layout = { width = 30 } },
+          -- git 未追跡のファイル名は通常色にし、右端の ? アイコンだけで区別する。
+          -- (git_status_hl はファイル名に git status の色を乗せるかのフラグ。未追跡のときだけ切ることで、
+          -- 変更ありなど他の git status の色付けとアイコンの色は維持される)
+          format = function(item, picker)
+            picker.opts.formatters.file.git_status_hl = item.status ~= "??"
+            return Snacks.picker.format.file(item, picker)
+          end,
           actions = {
             -- fern の open-or-enter: ファイルなら開く、ディレクトリなら root にする
             open_or_enter = function(picker, item)
