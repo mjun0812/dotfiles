@@ -7,3 +7,8 @@ command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 
 [[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local
+
+# マシン固有の設定 (このrepoでは管理しない)。ディレクトリが無ければ何もしない
+for f in ~/.config/zsh/profiles/*.zsh(N); do
+    source "$f"
+done
