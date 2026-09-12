@@ -17,3 +17,13 @@ if command -v docker >/dev/null 2>&1; then
     docker completion zsh >"$COMPLETIONS_DIR/_docker"
     echo "Updated: _docker ($(docker version --format '{{.Client.Version}}' 2>/dev/null || echo 'unknown version'))"
 fi
+
+# 生成されるのは `mise __complete_word__` を呼ぶ薄いwrapperで、subcommand一覧は実行時にmise本体から取得される。
+# そのためmiseを更新しても再生成は不要
+if command -v mise >/dev/null 2>&1; then
+    mise completion zsh >"$COMPLETIONS_DIR/_mise"
+    echo "Updated: _mise ($(mise --version 2>/dev/null | head -1))"
+fi
+
+# compinit -C は24時間以内の .zcompdump をそのまま使うため、新しい補完ファイルを認識させるには削除して再構築させる
+rm -f "${ZDOTDIR:-$HOME}/.zcompdump"(N) "${ZDOTDIR:-$HOME}/.zcompdump.zwc"(N)

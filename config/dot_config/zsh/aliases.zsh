@@ -1,4 +1,28 @@
-########## alias ##########
+# alias。zsh-defer で最初のprompt後に読み込む。
+
+# Directory stack
+alias d='dirs -v'
+for i in {1..9}; do alias "$i"="cd +$i"; done
+alias l='ls -1A'  # Lists in one column, hidden files.
+alias ll='ls -lh' # Lists human readable sizes.
+alias la='ll -A'  # Lists human readable sizes, hidden files.
+
+# Disable correction (setopt CORRECT).
+alias cd='nocorrect cd'
+alias cp='nocorrect cp'
+alias gcc='nocorrect gcc'
+alias grep='nocorrect grep'
+alias ln='nocorrect ln'
+alias mkdir='nocorrect mkdir'
+alias mv='nocorrect mv'
+alias rm='nocorrect rm'
+
+# Disable globbing.
+alias find='noglob find'
+alias history='noglob history'
+alias rsync='noglob rsync'
+alias scp='noglob scp'
+
 alias sync="~/workspace/sync.sh"
 alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
 alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
@@ -7,11 +31,11 @@ alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 alias emacs='emacs -nw'
 alias vim='nvim'
 
-if command -v bat > /dev/null 2>&1; then
+if command -v bat >/dev/null 2>&1; then
     alias cat="bat --style=plain --paging=never"
     alias less="bat --style=plain --paging=always"
 fi
-if command -v eza > /dev/null 2>&1; then
+if command -v eza >/dev/null 2>&1; then
     alias eza='eza --group-directories-first --time-style=long-iso --group'
     alias ls='eza'
     alias lt='eza -T'
@@ -25,12 +49,6 @@ alias pbp='pbpaste'
 alias df='df -kh'
 alias du='du -kh'
 
-# Visual diff
-diff() {
-  command diff -u "$@" | delta
-  return $pipestatus[1]
-}
-
 # Claude Code
 alias claude="claude \
     --mcp-config=${HOME}/.claude/mcp.json \
@@ -43,23 +61,6 @@ alias cc-commit-ja='command claude \
     --model=haiku \
     --dangerously-skip-permissions \
     -p "/git-commit ja"'
-claude-headroom() {
-    ANTHROPIC_BASE_URL=http://127.0.0.1:8787 command claude \
-        --mcp-config="${HOME}/.claude/mcp.json" --allow-dangerously-skip-permissions "$@"
-}
-claudex() {
-    env \
-        ANTHROPIC_BASE_URL="http://127.0.0.1:8317" \
-        ANTHROPIC_AUTH_TOKEN="$CLIPROXY_API_KEY" \
-        CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
-        CLAUDE_CODE_MAX_CONTEXT_TOKENS=900000 \
-        ANTHROPIC_DEFAULT_FABLE_MODEL="gpt-5.6-sol" \
-        ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-5.6-sol" \
-        ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-5.6-luna" \
-        ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-5.6-luna" \
-        command claude --mcp-config=${HOME}/.claude/mcp.json \
-            --allow-dangerously-skip-permissions --model "gpt-5.6-luna" "$@"
-}
 
 # Codex
 alias codex-remote='command codex -C "$PWD" --remote unix://'
@@ -68,18 +69,6 @@ alias codex-full='command codex \
     --remote unix:// \
     --yolo \
     --dangerously-bypass-hook-trust'
-# headroomはapp-serverを経由しない。remote接続では-cオーバーライドが
-# daemonへ転送されず、model_provider指定が無視されるため。
-codex-headroom() {
-    command codex \
-        -c model_provider=headroom \
-        -c 'model_providers.headroom.name="headroom"' \
-        -c 'model_providers.headroom.base_url="http://127.0.0.1:8787/v1"' \
-        "$@"
-}
-codex-headroom-full() {
-    codex-headroom --yolo --dangerously-bypass-hook-trust "$@"
-}
 CODEX_COMMIT_MODEL="gpt-5.6-luna"
 alias codex-commit='command codex exec \
     --dangerously-bypass-approvals-and-sandbox \
@@ -108,6 +97,6 @@ alias gemini-commit-ja='agy-commit-ja'
 
 # euporie
 # herdr内ではSGR-pixel mouseが壊れるので問い合わせを抑止したwrapper経由で起動する (herdrdev/herdr#3295)
-if [[ "$HERDR_ENV" == 1 ]]; then
+if [[ $HERDR_ENV == 1 ]]; then
     alias euporie='"$HOME/.local/share/mise/installs/pipx-euporie/latest/euporie/bin/python" ~/.dotfiles/config/dot_config/euporie/euporie_nopixel.py'
 fi

@@ -1,11 +1,33 @@
-# Ensure that a non-login, non-interactive shell has a defined environment.
-if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprofile"
-fi
+# 全shell (非対話・script含む) で必要な環境変数だけを置く。コマンド実行やPATH操作はしない。
+# PATHの組み立ては ~/.zprofile、対話shellの設定は ~/.zshrc と ~/.config/zsh/ にある。
 
-# Vite+ bin (https://viteplus.dev)
-[ -f "$HOME/.vite-plus/env" ] && . "$HOME/.vite-plus/env"
+# XDG Base Directory
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
 
-export PATH="$HOME/.local/share/mise/shims:$PATH"
+# Editors / Pager / Browser
+export EDITOR='vi'
+export VISUAL='vi'
+export PAGER='less'
+[[ "$OSTYPE" == darwin* ]] && export BROWSER='open'
 
+# Tool settings
+export CUDA_HOME="/usr/local/cuda"
+export BUN_INSTALL_BIN="$HOME/.bun/bin"
+export BUN_INSTALL_GLOBAL_DIR="$HOME/.bun/install/global"
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export EZA_CONFIG_DIR="$HOME/.config/eza"
+export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME}/aquaproj-aqua/aqua.yaml"
 export CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1
+# uv/cargo-dist 系インストーラに rc ファイルを書き換えさせない
+export INSTALLER_NO_MODIFY_PATH=1
+# Apple Container で他platformのimageを使わない
+[[ "$OSTYPE" == darwin* ]] && export CONTAINER_DEFAULT_PLATFORM=linux/arm64
+
+# login shellを経由しない非対話shell (CI・エディタ・cron) でもPATHをそろえる。
+# 親shellが既に ~/.zprofile を読んでいれば __ZPROFILE_SOURCED が継承されるので二重には読まない。
+if [[ ! -o LOGIN && -z "$__ZPROFILE_SOURCED" && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
+    source "${ZDOTDIR:-$HOME}/.zprofile"
+fi

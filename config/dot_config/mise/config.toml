@@ -34,6 +34,7 @@ gh = "latest"
 # Dev tooling
 actionlint = "latest"
 aqua = "latest"
+fzf = "latest"
 gcloud = "latest"
 gitleaks = "latest"
 herdr = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup_herdr.sh' }
@@ -90,6 +91,7 @@ opencode = "latest"
 "pipx:copier" = "latest"
 "pipx:euporie" = "latest"
 "pipx:huggingface_hub" = "latest"
+"pipx:danielrobbins/keychain" = { version = "latest", uvx_args = "--python >=3.9" }
 
 [settings]
 upgrade.auto_prune = false

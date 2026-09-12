@@ -1,27 +1,39 @@
-# Browser
-if [[ "$OSTYPE" == darwin* ]]; then
-  export BROWSER='open'
-fi
+# login shellで1回だけ実行するPATHの組み立て。
+# login shellを経由しない場合は ~/.zshenv がこのファイルをsourceする。
+export __ZPROFILE_SOURCED=1
 
-# Editors
-export EDITOR='vi'
-export VISUAL='vi'
-export PAGER='less'
-
-# Paths
-# Ensure path arrays do not contain duplicates.
+# 重複するエントリを自動で除去する
 typeset -gU cdpath fpath mailpath path
 
-# Set the list of directories that Zsh searches for programs.
-path=(
-  /usr/local/{bin,sbin}
-  $path
-)
-
-if [[ ! -o interactive ]] && command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate zsh --shims)"
+# Homebrew (Apple Silicon)
+if [[ "$OSTYPE" == darwin* ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# >>> Codex installer >>>
-export PATH="/Users/mjun/.local/bin:$PATH"
-# <<< Codex installer <<<
+# 前に置くものほど優先される。後ろの並びは補助的なtool
+path=(
+    $PNPM_HOME
+    $HOME/.bun/bin
+    $HOME/.venv/bin
+    $HOME/.local/bin # mise, uv tool, Codex
+    $HOME/.cargo/bin
+    /usr/local/cuda/bin
+    $HOME/bin
+    /usr/lib/wsl/lib # WSL
+    /usr/local/{bin,sbin}
+    $path
+    $HOME/.bin
+    /opt/rocm/bin
+    $HOME/Library/Android/sdk/platform-tools
+    $HOME/Android/sdk/platform-tools
+)
+
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/usr/local/lib:$LD_LIBRARY_PATH"
+
+# Vite+ (https://viteplus.dev)
+[[ -f "$HOME/.vite-plus/env" ]] && . "$HOME/.vite-plus/env"
+
+# 非対話shellではshim経由でmiseのtoolを解決する (対話shellは ~/.zshrc の mise activate)
+if [[ ! -o interactive ]] && command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate zsh --shims)"
+fi
