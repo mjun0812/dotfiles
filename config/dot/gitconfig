@@ -75,12 +75,6 @@
   required = true
   clean = git-lfs clean -- %f
 
-[ghq]
-  root = ~/workspace
-
-[ghq "https://github.com/mjun0812/"]
-  root = ~/workspace
-
 [delta]
   navigate = true
   dark = true

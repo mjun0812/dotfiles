@@ -241,18 +241,6 @@ agy-commit-ja # AIが生成した日本語のコミットメッセージでコ�
 # zoxideの履歴をfzfで選択してcdする
 # Ctrl+f でも同様の操作が可能
 fzf-zoxide-cd
-
-# ghq + fzf
-# ghqで管理しているリポジトリをfzfで選択してcdする
-# cd for ghq repository
-cd_repo
-# Ctrl+] でも同様の操作が可能
-
-# gwq + fzf
-# gwqで管理しているワークツリーをfzfで選択してcdする
-# cd git worktree with gwq
-# cd for git worktree
-cd_gwq
 ```
 
 ### Git Commands
