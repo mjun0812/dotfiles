@@ -1,4 +1,28 @@
-########## alias ##########
+# alias と、コマンドの代替として使う関数。zsh-defer で最初のprompt後に読み込む。
+
+# Directory stack
+alias d='dirs -v'
+for i in {1..9}; do alias "$i"="cd +$i"; done
+alias l='ls -1A'  # Lists in one column, hidden files.
+alias ll='ls -lh' # Lists human readable sizes.
+alias la='ll -A'  # Lists human readable sizes, hidden files.
+
+# Disable correction (setopt CORRECT).
+alias cd='nocorrect cd'
+alias cp='nocorrect cp'
+alias gcc='nocorrect gcc'
+alias grep='nocorrect grep'
+alias ln='nocorrect ln'
+alias mkdir='nocorrect mkdir'
+alias mv='nocorrect mv'
+alias rm='nocorrect rm'
+
+# Disable globbing.
+alias find='noglob find'
+alias history='noglob history'
+alias rsync='noglob rsync'
+alias scp='noglob scp'
+
 alias sync="~/workspace/sync.sh"
 alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
 alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
@@ -7,11 +31,11 @@ alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 alias emacs='emacs -nw'
 alias vim='nvim'
 
-if command -v bat > /dev/null 2>&1; then
+if command -v bat >/dev/null 2>&1; then
     alias cat="bat --style=plain --paging=never"
     alias less="bat --style=plain --paging=always"
 fi
-if command -v eza > /dev/null 2>&1; then
+if command -v eza >/dev/null 2>&1; then
     alias eza='eza --group-directories-first --time-style=long-iso --group'
     alias ls='eza'
     alias lt='eza -T'
@@ -27,8 +51,8 @@ alias du='du -kh'
 
 # Visual diff
 diff() {
-  command diff -u "$@" | delta
-  return $pipestatus[1]
+    command diff -u "$@" | delta
+    return $pipestatus[1]
 }
 
 # Claude Code
@@ -58,7 +82,7 @@ claudex() {
         ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-5.6-luna" \
         ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-5.6-luna" \
         command claude --mcp-config=${HOME}/.claude/mcp.json \
-            --allow-dangerously-skip-permissions --model "gpt-5.6-luna" "$@"
+        --allow-dangerously-skip-permissions --model "gpt-5.6-luna" "$@"
 }
 
 # Codex
@@ -108,6 +132,6 @@ alias gemini-commit-ja='agy-commit-ja'
 
 # euporie
 # herdr内ではSGR-pixel mouseが壊れるので問い合わせを抑止したwrapper経由で起動する (herdrdev/herdr#3295)
-if [[ "$HERDR_ENV" == 1 ]]; then
+if [[ $HERDR_ENV == 1 ]]; then
     alias euporie='"$HOME/.local/share/mise/installs/pipx-euporie/latest/euporie/bin/python" ~/.dotfiles/config/dot_config/euporie/euporie_nopixel.py'
 fi

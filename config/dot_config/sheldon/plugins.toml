@@ -1,23 +1,15 @@
+# 対話shellの初期化順序はこのファイルの並び順で決まる。
+# 順序の制約:
+#   - zsh-completions (fpath追加) は zsh-completion (compinit) より前
+#   - zsh-functions は widget を定義するので zsh-autosuggestions より前
+#   - zsh-syntax-highlighting は最後
 shell = "zsh"
 
 [templates]
 defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
-fzf-install = "{{ dir }}/install --bin > /dev/null \n path=($path {{ dir }}/bin(N-/))\n"
-fzf-source = "source <(fzf --zsh)"
 
 [plugins.zsh-defer]
 github = "romkatv/zsh-defer"
-apply = ["source"]
-
-# [plugins.starship]
-# inline = 'command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"'
-
-[plugins.powerlevel10k-instant-prompt]
-inline = """
-if [[ -r "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-    source "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-"""
 
 [plugins.powerlevel10k]
 github = "romkatv/powerlevel10k"
@@ -26,32 +18,19 @@ hooks.post = """
 (( ! ${+functions[p10k]} )) || p10k finalize
 """
 
-[plugins.fzf]
-github = 'junegunn/fzf'
-apply = ['fzf-install', 'fzf-source']
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
 
-[plugins.256color]
-github = "chrissicool/zsh-256color"
-apply = ["defer"]
+[plugins.zsh-options]
+local = "~/.config/zsh"
+use = ["options.zsh"]
 
-[plugins.zsh-autosuggestions]
-github = "zsh-users/zsh-autosuggestions"
-apply = ["defer"]
-
-[plugins.zsh-syntax-highlighting]
-github = "zsh-users/zsh-syntax-highlighting"
-apply = ["defer"]
-
-[plugins.keybindings]
-inline = """
-bindkey -e # Use Emacs key bindings
-bindkey "^[[Z" reverse-menu-complete
-WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
-"""
+[plugins.zsh-completion]
+local = "~/.config/zsh"
+use = ["completion.zsh"]
 
 [plugins.zsh-history-substring-search]
 github = "zsh-users/zsh-history-substring-search"
-apply = ["source"]
 hooks.pre = """
 unset HISTORY_SUBSTRING_SEARCH_PREFIXED
 export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
@@ -67,254 +46,24 @@ bindkey -M emacs '^P' history-substring-search-up
 bindkey -M emacs '^N' history-substring-search-down
 """
 
-[plugins.zoxide-cd]
-inline = '''
-# [ctrl + f] cd zoxide alias
-function fzf-zoxide-cd() {
-    local dir
-    # zoxide の履歴一覧を取得し、fzf に渡して選択させる
-    dir=$(zoxide query -l | fzf --height=50% --layout=reverse --info=inline --prompt="cd > ")
+[plugins.zsh-functions]
+local = "~/.config/zsh"
+use = ["functions.zsh"]
+apply = ["defer"]
 
-    # ディレクトリが選択された場合のみ cd で移動
-    if [[ -n "$dir" ]]; then
-        cd "$dir"
-        zle accept-line
-        zle .reset-prompt
-    fi
-}
-zle -N fzf-zoxide-cd
-bindkey '^f' fzf-zoxide-cd
-'''
+[plugins.zsh-aliases]
+local = "~/.config/zsh"
+use = ["aliases.zsh"]
+apply = ["defer"]
 
-[plugins.zsh-options]
-inline = """
-# Completion
-setopt COMPLETE_IN_WORD # Complete from both ends of a word.
-setopt ALWAYS_TO_END    # Move cursor to the end of a completed word.
-setopt PATH_DIRS        # Perform path search even on command names with slashes.
-setopt AUTO_MENU        # Show completion menu on a successive tab press.
-setopt AUTO_LIST        # Automatically list choices on ambiguous completion.
-setopt AUTO_PARAM_SLASH # If completed parameter is a directory, add a trailing slash.
-setopt EXTENDED_GLOB    # Needed for file modification glob modifiers with compinit.
-setopt MENU_COMPLETE    # autoselect the first completion entry.
-unsetopt FLOW_CONTROL   # Disable start/stop characters in shell editor.
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+apply = ["defer"]
 
-# Directory stack
-setopt AUTO_PUSHD        # Push the old directory onto the stack on cd.
-setopt PUSHD_IGNORE_DUPS # Do not store duplicates in the stack.
-setopt PUSHD_SILENT      # Do not print the directory stack after pushd or popd.
-setopt PUSHD_TO_HOME     # Push to home directory when no argument is given.
-setopt CDABLE_VARS       # Change directory to a path stored in a variable.
-setopt MULTIOS           # Write to multiple descriptors.
+[plugins.256color]
+github = "chrissicool/zsh-256color"
+apply = ["defer"]
 
-# Command correction
-setopt CORRECT         # Correct the spelling of a command before executing it.
-setopt COMBINING_CHARS # Combine zero-length punctuation characters (accents)
-# with the base character.
-setopt INTERACTIVE_COMMENTS # Enable comments in interactive shell.
-setopt RC_QUOTES            # Allow 'Henry''s Garage' instead of 'Henry's Garage'.
-
-# Jobs
-setopt LONG_LIST_JOBS # List jobs in the long format by default.
-setopt NOTIFY         # Report status of background jobs immediately.
-unsetopt BG_NICE      # Don't run all background jobs at a lower priority.
-unsetopt HUP          # Don't kill jobs on shell exit.
-unsetopt CHECK_JOBS   # Don't report on jobs when shell exit.
-"""
-
-[plugins.prezto-directory-aliases]
-inline = '''
-# Directory
-alias d='dirs -v'
-for index ({1..9}) alias "$index"="cd +${index}"; unset index
-alias l='ls -1A'         # Lists in one column, hidden files.
-alias ll='ls -lh'        # Lists human readable sizes.
-alias la='ll -A'         # Lists human readable sizes, hidden files.
-'''
-
-[plugins.prezto-correction-aliases]
-inline = '''
-# Disable correction.
-alias cd='nocorrect cd'
-alias cp='nocorrect cp'
-alias gcc='nocorrect gcc'
-alias grep='nocorrect grep'
-alias ln='nocorrect ln'
-alias mkdir='nocorrect mkdir'
-alias mv='nocorrect mv'
-alias rm='nocorrect rm'
-'''
-
-[plugins.prezto-globbing-aliases]
-inline = '''
-# Disable globbing.
-alias find='noglob find'
-alias history='noglob history'
-alias rsync='noglob rsync'
-alias scp='noglob scp'
-'''
-
-[plugins.ssh-session]
-inline = '''
-# tmux 内で SSH agent forwarding の SSH_AUTH_SOCK が古くなる問題を自己修復する。
-# 正常時は stat 1 回で即 return するためプロンプトは遅くならない。
-_refresh_ssh_auth_sock() {
-    [ -z "$TMUX" ] && return            # tmux 外は何もしない
-    [ -S "$SSH_AUTH_SOCK" ] && return   # 既に有効なら fork せず終了
-    local sock
-    sock=$(tmux show-environment SSH_AUTH_SOCK 2>/dev/null)
-    sock=${sock#SSH_AUTH_SOCK=}
-    [ -S "$sock" ] && export SSH_AUTH_SOCK="$sock"
-}
-precmd_functions+=(_refresh_ssh_auth_sock)
-
-# SSH セッションかどうか
-_is_ssh_session() {
-    [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]
-}
-
-# Term のタブタイトルを hostname@command にする
-_term_tab_title() {
-    local title="$1"
-    if [[ -n "$TMUX" ]]; then
-        # tmux passthrough + OSC 1
-        printf '\033Ptmux;\033\033]1;%s\007\033\\' "$title"
-    else
-        # tmux 外では普通に OSC 1
-        printf '\033]1;%s\007' "$title"
-    fi
-}
-
-_term_tab_title_precmd() {
-    _is_ssh_session || return 0
-    _term_tab_title "${HOST}@zsh"
-}
-
-_term_tab_title_preexec() {
-    _is_ssh_session || return 0
-    _term_tab_title "${HOST}@$1"
-}
-
-precmd_functions+=(_term_tab_title_precmd)
-preexec_functions+=(_term_tab_title_preexec)
-'''
-
-[plugins.zsh-history]
-inline = """
-setopt BANG_HIST              # Treat the '!' character specially during expansion.
-setopt EXTENDED_HISTORY       # Write the history file in the ':start:elapsed;command' format.
-setopt SHARE_HISTORY          # Share history between all sessions.
-setopt HIST_EXPIRE_DUPS_FIRST # Expire a duplicate event first when trimming history.
-setopt HIST_IGNORE_DUPS       # Do not record an event that was just recorded again.
-setopt HIST_IGNORE_ALL_DUPS   # Delete an old recorded event if a new event is a duplicate.
-setopt HIST_FIND_NO_DUPS      # Do not display a previously found event.
-setopt HIST_IGNORE_SPACE      # Do not record an event starting with a space.
-setopt HIST_SAVE_NO_DUPS      # Do not write a duplicate event to the history file.
-setopt HIST_VERIFY            # Do not execute immediately upon history expansion.
-setopt HIST_BEEP              # Beep when accessing non-existent history.
-
-export HISTFILE="${HISTFILE:-${ZDOTDIR:-$HOME}/.zsh_history}" # The path to the history file.
-export HISTSIZE=50000
-export SAVEHIST=$HISTSIZE
-"""
-
-[plugins.zsh-completions]
-hooks.post = '''
-LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
-
-# Defaults.
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-
-# Case-insensitive (all), partial-word, and then substring completion.
-zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}' 'm:{[:upper:]}={[:lower:]}'  'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-
-# Group matches and describe.
-zstyle ':completion:*:*:*:*:*' menu select
-zstyle ':completion:*:matches' group 'yes'
-zstyle ':completion:*:options' description 'yes'
-zstyle ':completion:*:options' auto-description '%d'
-zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
-zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
-zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
-zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
-zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' verbose yes
-
-# Fuzzy match mistyped completions.
-zstyle ':completion:*' completer _complete _match _approximate
-zstyle ':completion:*:match:*' original only
-zstyle ':completion:*:approximate:*' max-errors 1 numeric
-
-# Don't complete unavailable commands.
-zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
-
-# Array completion element sorting.
-zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
-
-# Directories
-zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
-zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
-zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
-zstyle ':completion:*' squeeze-slashes true
-
-# History
-zstyle ':completion:*:history-words' stop yes
-zstyle ':completion:*:history-words' remove-all-dups yes
-zstyle ':completion:*:history-words' list false
-zstyle ':completion:*:history-words' menu yes
-
-# Environment Variables
-zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
-
-# SSH hosts
-zstyle -e ":completion:*:hosts" hosts 'reply=(
-  # ~/.ssh/config Host
-  ${${${(@M)${(f)"$(<~/.ssh/config 2>/dev/null)"}:#Host *}#Host }:#*[*?]*}
-)'
-# ignore localhost and ip6
-zstyle ":completion:*:*:*:hosts" ignored-patterns "localhost*" "ip6*"
-
-# Don't complete uninteresting users...
-zstyle ':completion:*:*:*:users' ignored-patterns \
-  adm amanda apache avahi beaglidx bin cacti canna clamav daemon \
-  dbus distcache dovecot fax ftp games gdm gkrellmd gopher \
-  hacluster haldaemon halt hsqldb ident junkbust ldap lp mail \
-  mailman mailnull mldonkey mysql nagios \
-  named netdump news nfsnobody nobody nscd ntp nut nx openvpn \
-  operator pcap postfix postgres privoxy pulse pvm quagga radvd \
-  rpc rpcuser rpm shutdown squid sshd sync uucp vcsa xfs '_*'
-
-# ... unless we really want to.
-zstyle '*' single-ignored show
-
-# Ignore multiple entries.
-zstyle ':completion:*:(rm|kill|diff):*' ignore-line other
-zstyle ':completion:*:rm:*' file-patterns '*:all-files'
-
-# Kill
-zstyle ':completion:*:*:*:*:processes' command 'ps -u $LOGNAME -o pid,user,command -w'
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;36=0=01'
-zstyle ':completion:*:*:kill:*' menu yes select
-zstyle ':completion:*:*:kill:*' force-list always
-zstyle ':completion:*:*:kill:*' insert-ids single
-
-# Man
-zstyle ':completion:*:manuals' separate-sections true
-zstyle ':completion:*:manuals.(^1*)' insert-sections true
-
-# SSH/SCP/RSYNC
-zstyle ':completion:*:(ssh|scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip address *'
-zstyle ':completion:*:(scp|rsync):*' group-order users files all-files hosts-domain hosts-host hosts-ipaddr
-zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hosts-ipaddr
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
-
-# Git completion is often expensive; avoid fuzzy/approximate matching for git.
-zstyle ':completion:*:*:git:*' completer _complete
-zstyle ':completion:*:*:git:*' matcher-list ''
-'''
-github = "zsh-users/zsh-completions"
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
 apply = ["defer"]

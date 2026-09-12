@@ -56,10 +56,11 @@ done
 ################ [mise] ################
 log_section "Setting up mise..."
 $DOTPATH/script/setup/install_mise.sh
-source "$HOME/.zshrc"
+# このスクリプトは symlink を作る前に起動しているので ~/.zshenv は読まれていない。
+# PATH (~/.local/bin, mise shims) を組み立てる ~/.zprofile を明示的に読む
+source "$HOME/.zprofile"
 mise install
 mise reshim
-source "$HOME/.zshrc"
 
 ################ [bat] ################
 log_section "Setting up bat themes..."
@@ -103,7 +104,7 @@ $DOTPATH/script/setup/update_completions.sh
 
 ################ [Zsh Plugin Warm-up] ################
 log_section "Warming up zsh plugins..."
-# sheldon plugin clone and fzf binary download
+# sheldon plugin clone
 zsh -i -c exit
 # install powerlevel10k gitstatusd
 sh "$HOME/.local/share/sheldon/repos/github.com/romkatv/powerlevel10k/gitstatus/install"

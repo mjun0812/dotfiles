@@ -1,97 +1,16 @@
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_STATE_HOME="$HOME/.local/state"
-
-# add local PATH
-export PATH="$HOME/bin:$PATH:$HOME/.bin"
-export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
-
-# CUDA
-export PATH="/usr/local/cuda/bin:$PATH"
-export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
-export CUDA_HOME="/usr/local/cuda"
-
-# ROCM
-export PATH=$PATH:/opt/rocm/bin
-
-if [ "$(uname)" = 'Darwin' ]; then
-    # Apple Silicon Mac Homebrew
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    # exclude other platform image using Apple Container
-    export CONTAINER_DEFAULT_PLATFORM=linux/arm64
+# powerlevel10k instant prompt
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# WSL
-if [ -e /usr/lib/wsl/lib ]; then
-    export PATH="/usr/lib/wsl/lib:$PATH"
-fi
-
-# rust
-[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
-# uv/cargo-dist 系インストーラに rc ファイルを書き換えさせない
-export INSTALLER_NO_MODIFY_PATH=1
-
-# uv
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.venv/bin:$PATH"
-
-# bun
-export BUN_INSTALL_BIN="$HOME/.bun/bin"
-export BUN_INSTALL_GLOBAL_DIR="$HOME/.bun/install/global"
-export PATH="$HOME/.bun/bin:$PATH"
-
-# pnpm
-export PNPM_HOME="$HOME/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
-
-# Vite+ bin (https://viteplus.dev)
-[ -f "$HOME/.vite-plus/env" ] && . "$HOME/.vite-plus/env"
-
-# Android SDK
-export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
-export PATH="$PATH:$HOME/Android/sdk/platform-tools"
-
-# aqua
-export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME:-$HOME/.config}/aquaproj-aqua/aqua.yaml"
-
-# eza
-export EZA_CONFIG_DIR="$HOME/.config/eza"
-
-# mise
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
-
-# sheldon (below line must after mise init)
 command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 
-# zoxide (below line must after mise init)
-if [[ -o interactive ]] && command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init zsh --cmd cd)"
-fi
+[[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local
 
-# ######### zsh completion ##########
-if [ -d ~/.config/zsh_completions ]; then
-    fpath=(~/.config/zsh_completions $fpath)
-fi
-autoload -Uz compinit
-if [[ -n $(print -r -- "${ZDOTDIR:-$HOME}/.zcompdump"(N.mh-24)) ]]; then
-    compinit -C
-else
-    compinit
-fi
-autoload -Uz bashcompinit && bashcompinit
-# AWS CLI completion
-if command -v aws_completer >/dev/null 2>&1; then
-    complete -C "$(command -v aws_completer)" aws
-fi
-# gwq completion
-if command -v gwq >/dev/null 2>&1; then
-    source <(gwq completion zsh)
-fi
-# mise completion
-if command -v mise >/dev/null 2>&1; then
-    source <(mise completion zsh)
-fi
-
-[ -f ~/.alias.zsh ] && source ~/.alias.zsh
-[ ! -f ~/.zshrc.local ] || source ~/.zshrc.local
+# マシン固有の設定 (このrepoでは管理しない)。ディレクトリが無ければ何もしない。
+# sheldonの遅延読み込み (functions.zsh, aliases.zsh) より後に評価させるため zsh-defer に積む。
+# これにより profiles 側で同名の関数や alias を定義し直せば、その定義が最終的に有効になる
+for f in ~/.config/zsh/profiles/*.zsh(N); do
+    zsh-defer source "$f"
+done

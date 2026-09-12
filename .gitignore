@@ -28,6 +28,8 @@
 
 .DS_Store
 config/dot_config/mise/github_tokens.toml
+# ~/.config/zsh はこのディレクトリへのsymlinkなので、マシン固有のprofilesは物理的にここにできる
+config/dot_config/zsh/profiles/
 config/dot_config/uv/uv-receipt.json
 config/mac/karabiner/assets
 config/mac/karabiner/automatic_backups

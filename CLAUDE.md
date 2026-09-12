@@ -50,6 +50,19 @@ script/tools/sync_vscode_extensions.sh --dry-run
 
 上書き前の既存ファイルは `.backup/` に退避される。
 
+### zsh起動ファイルの役割分担
+
+| ファイル                      | 読まれるタイミング          | 置くもの                                                                                      |
+| ----------------------------- | --------------------------- | --------------------------------------------------------------------------------------------- |
+| `config/dot/zshenv`           | 全shell                     | 環境変数のみ。login shellを経由しない場合は `~/.zprofile` をsourceする (`__ZPROFILE_SOURCED`) |
+| `config/dot/zprofile`         | login時1回                  | PATHの組み立て、`brew shellenv`、非対話shell用の `mise activate --shims`                      |
+| `config/dot/zshrc`            | 対話shell                   | p10k instant prompt、`mise activate`、`sheldon source`、`~/.zshrc.local` のみ                 |
+| `config/dot_config/zsh/*.zsh` | sheldonがlocal pluginとして | options / completion (即時)、functions / aliases (zsh-defer)                                  |
+| `config/dot_config/sheldon/`  | zshrcから1回                | サードパーティpluginと上記ファイルの読み込み順序・遅延指定                                    |
+| `config/dot_config/mise/`     | tool解決時                  | toolとバージョンのみ                                                                          |
+
+順序の制約 (zsh-completionsのfpath追加 → compinit、history設定は即時、syntax-highlightingは最後) は `plugins.toml` 冒頭のコメントにある。tool別の補完ファイル (`_mise`, `_docker`, `_kubectl`) は `script/setup/update_completions.sh` が `~/.config/zsh_completions/` に生成し、`.zcompdump` を削除して次回起動で再構築させる。
+
 ### AI agent設定の共有構造
 
 - 共有skillとcode-reviewer agentはこのリポジトリでは管理せず、[mjun0812/skills](https://github.com/mjun0812/skills) の `main` をapmで購読する。購読定義は `config/ai-agents/apm.yml` (`~/.apm/apm.yml` へsymlink) にあり、`install.sh` が `apm update -g -y` を実行して展開する。

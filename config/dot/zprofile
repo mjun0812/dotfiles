@@ -1,27 +1,36 @@
-# Browser
+export __ZPROFILE_SOURCED=1
+
+# 重複するエントリを自動で除去する
+typeset -gU cdpath fpath mailpath path PATH
+
+# Homebrew (Apple Silicon)
 if [[ "$OSTYPE" == darwin* ]]; then
-  export BROWSER='open'
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# Editors
-export EDITOR='vi'
-export VISUAL='vi'
-export PAGER='less'
+export PATH="$PATH:/usr/local/bin:/usr/local/sbin"
+export PATH="$PATH:$HOME/.bin"
+export PATH="$PATH:/opt/rocm/bin" # ROCm
 
-# Paths
-# Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath path
+# Andropid SDK
+export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
+export PATH="$PATH:$HOME/Android/sdk/platform-tools"
 
-# Set the list of directories that Zsh searches for programs.
-path=(
-  /usr/local/{bin,sbin}
-  $path
-)
+export PATH="/usr/lib/wsl/lib:$PATH" # WSL
+export PATH="$HOME/bin:$PATH"
+export PATH="/usr/local/cuda/bin:$PATH" # CUDA
+export PATH="$HOME/.cargo/bin:$PATH" # Rust
+export PATH="$HOME/.local/bin:$PATH" # mise, uv tool, Codex
+export PATH="$HOME/.venv/bin:$PATH" # Python
+export PATH="$HOME/.bun/bin:$PATH" # bun
+export PATH="$PNPM_HOME:$PATH"
 
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/usr/local/lib:$LD_LIBRARY_PATH"
+
+# Vite+ (https://viteplus.dev)
+[[ -f "$HOME/.vite-plus/env" ]] && . "$HOME/.vite-plus/env"
+
+# 非対話shellではshim経由でmiseのtoolを解決する (対話shellは ~/.zshrc の mise activate)
 if [[ ! -o interactive ]] && command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate zsh --shims)"
+    eval "$(mise activate zsh --shims)"
 fi
-
-# >>> Codex installer >>>
-export PATH="/Users/mjun/.local/bin:$PATH"
-# <<< Codex installer <<<

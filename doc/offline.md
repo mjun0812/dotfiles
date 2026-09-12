@@ -4,7 +4,7 @@
 
 ## 前提
 
-network接続がある段階 (例: Docker Imageのbuild時) で `install.sh` を実行し、成果物を焼き込む構成を想定している。`install.sh` はmise tools・Neovimのplugin / treesitter parser / LSP server・uv venv・zsh plugin (sheldon・fzf binary・p10kのgitstatusd) までを一括でdownloadする。
+network接続がある段階 (例: Docker Imageのbuild時) で `install.sh` を実行し、成果物を焼き込む構成を想定している。`install.sh` はmise tools・Neovimのplugin / treesitter parser / LSP server・uv venv・zsh plugin (sheldon・p10kのgitstatusd) までを一括でdownloadする。
 
 ## 注意点
 
