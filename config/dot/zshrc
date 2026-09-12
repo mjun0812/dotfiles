@@ -8,7 +8,9 @@ command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 
 [[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local
 
-# マシン固有の設定 (このrepoでは管理しない)。ディレクトリが無ければ何もしない
+# マシン固有の設定 (このrepoでは管理しない)。ディレクトリが無ければ何もしない。
+# sheldonの遅延読み込み (functions.zsh, aliases.zsh) より後に評価させるため zsh-defer に積む。
+# これにより profiles 側で同名の関数や alias を定義し直せば、その定義が最終的に有効になる
 for f in ~/.config/zsh/profiles/*.zsh(N); do
-    source "$f"
+    zsh-defer source "$f"
 done
