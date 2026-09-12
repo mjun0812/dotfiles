@@ -1,4 +1,13 @@
-# 自作の関数とzle widget。zsh-defer で最初のprompt後に読み込む。
+# 外部toolのshell integrationと自作の関数・widget。最初のpromptに不要なので zsh-defer で遅延して読み込む。
+# mise activate (~/.zshrc) の後で評価されるため、mise管理のtoolがPATHにある。
+
+# zoxide / fzf
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init zsh --cmd cd)"
+fi
+if command -v fzf >/dev/null 2>&1; then
+    source <(fzf --zsh)
+fi
 
 # [ctrl + f] zoxide の履歴から fzf でディレクトリを選んで cd する
 function fzf-zoxide-cd() {

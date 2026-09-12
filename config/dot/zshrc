@@ -1,8 +1,4 @@
-# 対話shell専用。環境変数は ~/.zshenv、PATHは ~/.zprofile にある。
-# option・補完・keybind・alias・関数は ~/.config/zsh/ にあり、sheldon (~/.config/sheldon/plugins.toml) が
-# 読み込み順序と遅延 (zsh-defer) を決める。
-
-# powerlevel10k instant prompt。これより前に出力を伴う処理を置かない
+# powerlevel10k instant prompt
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi

@@ -1,7 +1,7 @@
 # 対話shellの初期化順序はこのファイルの並び順で決まる。
 # 順序の制約:
-#   - zsh-completions (fpath追加) は zsh-config の completion.zsh (compinit) より前
-#   - zsh-config-lazy は widget を定義するので zsh-autosuggestions より前
+#   - zsh-completions (fpath追加) は zsh-completion (compinit) より前
+#   - zsh-functions は widget を定義するので zsh-autosuggestions より前
 #   - zsh-syntax-highlighting は最後
 shell = "zsh"
 
@@ -21,10 +21,15 @@ hooks.post = """
 [plugins.zsh-completions]
 github = "zsh-users/zsh-completions"
 
-# 自前設定 (即時)。最初のpromptより前に効いている必要があるもの
-[plugins.zsh-config]
+# 自前設定 (即時)。最初のpromptより前に効いている必要があるもの。
+# sheldonは use 内のファイルを名前順にsourceするので、順序が要るものは1ファイル1 pluginにする
+[plugins.zsh-options]
 local = "~/.config/zsh"
-use = ["options.zsh", "history.zsh", "keybindings.zsh", "completion.zsh"]
+use = ["options.zsh"]
+
+[plugins.zsh-completion]
+local = "~/.config/zsh"
+use = ["completion.zsh"]
 
 [plugins.zsh-history-substring-search]
 github = "zsh-users/zsh-history-substring-search"
@@ -44,9 +49,14 @@ bindkey -M emacs '^N' history-substring-search-down
 """
 
 # 自前設定 (遅延)。最初のpromptに不要なもの
-[plugins.zsh-config-lazy]
+[plugins.zsh-functions]
 local = "~/.config/zsh"
-use = ["tools.zsh", "functions.zsh", "aliases.zsh"]
+use = ["functions.zsh"]
+apply = ["defer"]
+
+[plugins.zsh-aliases]
+local = "~/.config/zsh"
+use = ["aliases.zsh"]
 apply = ["defer"]
 
 [plugins.zsh-autosuggestions]

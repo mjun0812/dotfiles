@@ -57,7 +57,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/dot/zshenv`           | 全shell                     | 環境変数のみ。login shellを経由しない場合は `~/.zprofile` をsourceする (`__ZPROFILE_SOURCED`) |
 | `config/dot/zprofile`         | login時1回                  | PATHの組み立て、`brew shellenv`、非対話shell用の `mise activate --shims`                      |
 | `config/dot/zshrc`            | 対話shell                   | p10k instant prompt、`mise activate`、`sheldon source`、`~/.zshrc.local` のみ                 |
-| `config/dot_config/zsh/*.zsh` | sheldonがlocal pluginとして | options / history / keybindings / completion (即時)、tools / functions / aliases (zsh-defer)  |
+| `config/dot_config/zsh/*.zsh` | sheldonがlocal pluginとして | options / completion (即時)、functions / aliases (zsh-defer)                                  |
 | `config/dot_config/sheldon/`  | zshrcから1回                | サードパーティpluginと上記ファイルの読み込み順序・遅延指定                                    |
 | `config/dot_config/mise/`     | tool解決時                  | toolとバージョンのみ                                                                          |
 
