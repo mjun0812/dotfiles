@@ -21,8 +21,6 @@ hooks.post = """
 [plugins.zsh-completions]
 github = "zsh-users/zsh-completions"
 
-# 自前設定 (即時)。最初のpromptより前に効いている必要があるもの。
-# sheldonは use 内のファイルを名前順にsourceするので、順序が要るものは1ファイル1 pluginにする
 [plugins.zsh-options]
 local = "~/.config/zsh"
 use = ["options.zsh"]
@@ -48,7 +46,6 @@ bindkey -M emacs '^P' history-substring-search-up
 bindkey -M emacs '^N' history-substring-search-down
 """
 
-# 自前設定 (遅延)。最初のpromptに不要なもの
 [plugins.zsh-functions]
 local = "~/.config/zsh"
 use = ["functions.zsh"]
