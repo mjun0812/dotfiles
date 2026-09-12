@@ -9,7 +9,7 @@ config.audible_bell = "Disabled"
 config.notification_handling = "AlwaysShow"
 -- 日本語入力
 config.use_ime = true
--- kitty keyboard protocol を要求したアプリ (Claude Code, Codex, euporie など) にだけ
+-- kitty keyboard protocol を要求したアプリ (Claude Code, Codex など) にだけ
 -- Shift+Enter / Ctrl+Enter を区別して送る。要求しないアプリの入力は変わらない
 config.enable_kitty_keyboard = true
 -- Windowを閉じた時にWeztermを終了しない

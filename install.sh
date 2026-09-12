@@ -26,14 +26,6 @@ log_section "Setting up dot config..."
 for d in "$DOTPATH"/config/dot_config/*; do
     app=$(basename "$d")
 
-    if [ "$app" = "euporie" ]; then
-        if [ -L "$CONFIG_DIR/$app" ]; then
-            cp -aLf "$CONFIG_DIR/$app" "$DOTPATH/.backup/$app" 2>/dev/null || true
-            rm -f "$CONFIG_DIR/$app"
-        fi
-        continue
-    fi
-
     if [ "$app" = "herdr" ]; then
         mkdir -p "$CONFIG_DIR/$app"
         rm -rf "$CONFIG_DIR/$app/config.toml"
@@ -56,32 +48,9 @@ done
 ################ [mise] ################
 log_section "Setting up mise..."
 $DOTPATH/script/setup/install_mise.sh
-# このスクリプトは symlink を作る前に起動しているので ~/.zshenv は読まれていない。
-# PATH (~/.local/bin, mise shims) を組み立てる ~/.zprofile を明示的に読む
 source "$HOME/.zprofile"
 mise install
 mise reshim
-
-################ [bat] ################
-log_section "Setting up bat themes..."
-bat cache --build
-
-################ [Euporie] ################
-log_section "Setting up Euporie..."
-if [ "$(uname -s)" = "Darwin" ]; then
-    EUPORIE_CONFIG_DIR="$HOME/Library/Application Support/euporie"
-else
-    EUPORIE_CONFIG_DIR="$CONFIG_DIR/euporie"
-fi
-EUPORIE_CONFIG_TARGET="$EUPORIE_CONFIG_DIR/config.json"
-EUPORIE_CONFIG_TEMPLATE="$DOTPATH/config/dot_config/euporie/config.json"
-mkdir -p "$EUPORIE_CONFIG_DIR"
-if [ -e "$EUPORIE_CONFIG_TARGET" ] || [ -L "$EUPORIE_CONFIG_TARGET" ]; then
-    cp -aLf "$EUPORIE_CONFIG_TARGET" "$DOTPATH/.backup/euporie_config.json" 2>/dev/null || true
-    uv run python3 "$DOTPATH/script/setup/rewrite_euporie_config.py" "$EUPORIE_CONFIG_TEMPLATE" "$EUPORIE_CONFIG_TARGET"
-else
-    cp "$EUPORIE_CONFIG_TEMPLATE" "$EUPORIE_CONFIG_TARGET"
-fi
 
 if [ "$(uname -s)" = "Darwin" ]; then
     log_section "Applying mise bootstrap..."
@@ -98,6 +67,10 @@ elif [ "$(uname -s)" = "Linux" ]; then
     log_section "Applying mise bootstrap..."
     mise bootstrap systemd apply --yes
 fi
+
+################ [bat] ################
+log_section "Setting up bat themes..."
+bat cache --build
 
 ################ [Zsh Completion Update] ################
 $DOTPATH/script/setup/update_completions.sh
@@ -206,8 +179,6 @@ log_section "Setting up Codex..."
 zsh "$DOTPATH/script/setup/setup_codex.sh"
 
 ################ [herdr] ################
-# mise の postinstall でも実行されるが、herdr がインストール済みの環境では走らないため
-# ここでも実行する。Claude Code / Codex の設定 symlink を前提にするので、その後に置く。
 log_section "Setting up herdr..."
 bash "$DOTPATH/script/setup/setup_herdr.sh"
 

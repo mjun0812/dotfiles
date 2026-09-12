@@ -89,7 +89,6 @@ opencode = "latest"
 "pipx:nvitop" = "latest"
 "pipx:ty" = "latest"
 "pipx:copier" = "latest"
-"pipx:euporie" = "latest"
 "pipx:huggingface_hub" = "latest"
 "pipx:danielrobbins/keychain" = { version = "latest", uvx_args = "--python >=3.9" }
 
