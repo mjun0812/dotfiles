@@ -21,6 +21,7 @@
   <img src="https://shieldcn.dev/badge/Powerlevel10k-38BDF8.svg?size=xs&logo=zsh&logoColor=white&valueColor=white" alt="Powerlevel10k">
   <img src="https://shieldcn.dev/badge/sheldon-20609F.svg?size=xs&logo=ri:RiPlugFill&logoColor=white" alt="sheldon">
   <img src="https://shieldcn.dev/badge/tmux-1BB91F.svg?size=xs&logo=tmux&logoColor=white" alt="tmux">
+  <img src="https://shieldcn.dev/badge/herdr-17171A.svg?size=xs&logo=ri:RiRobot2Fill&logoColor=white" alt="herdr">
   <img src="https://shieldcn.dev/badge/mise-258577.svg?size=xs&logo=ri:RiTerminalBoxFill&logoColor=white" alt="mise">
   <br>
   <!-- Languages / Package Managers -->
