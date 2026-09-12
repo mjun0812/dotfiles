@@ -1,10 +1,11 @@
+# すべてのzsh起動時に読み込まれる設定
+
 # XDG Base Directory
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 
-# Editors / Pager / Browser
 export EDITOR='vi'
 export VISUAL='vi'
 export PAGER='less'

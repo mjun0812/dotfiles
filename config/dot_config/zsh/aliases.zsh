@@ -1,4 +1,4 @@
-# alias。zsh-defer で最初のprompt後に読み込む。
+# alias と、コマンドの代替として使う関数。zsh-defer で最初のprompt後に読み込む。
 
 # Directory stack
 alias d='dirs -v'
@@ -49,6 +49,12 @@ alias pbp='pbpaste'
 alias df='df -kh'
 alias du='du -kh'
 
+# Visual diff
+diff() {
+    command diff -u "$@" | delta
+    return $pipestatus[1]
+}
+
 # Claude Code
 alias claude="claude \
     --mcp-config=${HOME}/.claude/mcp.json \
@@ -61,6 +67,23 @@ alias cc-commit-ja='command claude \
     --model=haiku \
     --dangerously-skip-permissions \
     -p "/git-commit ja"'
+claude-headroom() {
+    ANTHROPIC_BASE_URL=http://127.0.0.1:8787 command claude \
+        --mcp-config="${HOME}/.claude/mcp.json" --allow-dangerously-skip-permissions "$@"
+}
+claudex() {
+    env \
+        ANTHROPIC_BASE_URL="http://127.0.0.1:8317" \
+        ANTHROPIC_AUTH_TOKEN="$CLIPROXY_API_KEY" \
+        CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
+        CLAUDE_CODE_MAX_CONTEXT_TOKENS=900000 \
+        ANTHROPIC_DEFAULT_FABLE_MODEL="gpt-5.6-sol" \
+        ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-5.6-sol" \
+        ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-5.6-luna" \
+        ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-5.6-luna" \
+        command claude --mcp-config=${HOME}/.claude/mcp.json \
+        --allow-dangerously-skip-permissions --model "gpt-5.6-luna" "$@"
+}
 
 # Codex
 alias codex-remote='command codex -C "$PWD" --remote unix://'
@@ -69,6 +92,18 @@ alias codex-full='command codex \
     --remote unix:// \
     --yolo \
     --dangerously-bypass-hook-trust'
+# headroomはapp-serverを経由しない。remote接続では-cオーバーライドが
+# daemonへ転送されず、model_provider指定が無視されるため。
+codex-headroom() {
+    command codex \
+        -c model_provider=headroom \
+        -c 'model_providers.headroom.name="headroom"' \
+        -c 'model_providers.headroom.base_url="http://127.0.0.1:8787/v1"' \
+        "$@"
+}
+codex-headroom-full() {
+    codex-headroom --yolo --dangerously-bypass-hook-trust "$@"
+}
 CODEX_COMMIT_MODEL="gpt-5.6-luna"
 alias codex-commit='command codex exec \
     --dangerously-bypass-approvals-and-sandbox \

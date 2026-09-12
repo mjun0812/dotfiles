@@ -1,4 +1,5 @@
-# 外部toolのshell integrationと自作の関数・widget。最初のpromptに不要なので zsh-defer で遅延して読み込む。
+# 外部toolのshell integration、zle widget、hook関数。最初のpromptに不要なので zsh-defer で遅延して読み込む。
+# コマンドの代替として使う関数 (diff, claudex など) は aliases.zsh にある。
 # mise activate (~/.zshrc) の後で評価されるため、mise管理のtoolがPATHにある。
 
 # zoxide / fzf
@@ -63,42 +64,3 @@ _term_tab_title_preexec() {
 
 precmd_functions+=(_term_tab_title_precmd)
 preexec_functions+=(_term_tab_title_preexec)
-
-# Visual diff
-diff() {
-    command diff -u "$@" | delta
-    return $pipestatus[1]
-}
-
-# Claude Code
-claude-headroom() {
-    ANTHROPIC_BASE_URL=http://127.0.0.1:8787 command claude \
-        --mcp-config="${HOME}/.claude/mcp.json" --allow-dangerously-skip-permissions "$@"
-}
-claudex() {
-    env \
-        ANTHROPIC_BASE_URL="http://127.0.0.1:8317" \
-        ANTHROPIC_AUTH_TOKEN="$CLIPROXY_API_KEY" \
-        CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
-        CLAUDE_CODE_MAX_CONTEXT_TOKENS=900000 \
-        ANTHROPIC_DEFAULT_FABLE_MODEL="gpt-5.6-sol" \
-        ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-5.6-sol" \
-        ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-5.6-luna" \
-        ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-5.6-luna" \
-        command claude --mcp-config=${HOME}/.claude/mcp.json \
-        --allow-dangerously-skip-permissions --model "gpt-5.6-luna" "$@"
-}
-
-# Codex
-# headroomはapp-serverを経由しない。remote接続では-cオーバーライドが
-# daemonへ転送されず、model_provider指定が無視されるため。
-codex-headroom() {
-    command codex \
-        -c model_provider=headroom \
-        -c 'model_providers.headroom.name="headroom"' \
-        -c 'model_providers.headroom.base_url="http://127.0.0.1:8787/v1"' \
-        "$@"
-}
-codex-headroom-full() {
-    codex-headroom --yolo --dangerously-bypass-hook-trust "$@"
-}
