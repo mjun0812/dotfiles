@@ -6,24 +6,25 @@ The main configuration file is `config/dot/wezterm.lua`, which is linked to `~/.
 
 ## Settings
 
-| Setting                     | Value                                                         |
-| --------------------------- | ------------------------------------------------------------- |
-| Auto reload configuration   | Yes                                                           |
-| Audible bell                | Disabled                                                      |
-| Notification handling       | Always show                                                   |
-| IME                         | Enabled                                                       |
-| Quit when all windows close | No                                                            |
-| Window close confirmation   | Never prompt                                                  |
-| Background opacity          | 0.70                                                          |
-| macOS background blur       | 30                                                            |
-| Font                        | RobotoMonoJP, Roboto Mono, Noto Color Emoji, Noto Sans CJK JP |
-| Font size                   | 12.0                                                          |
-| Initial size                | 110 columns x 30 rows                                         |
-| Tab max width               | 30                                                            |
-| Hide tab bar for one tab    | No                                                            |
-| Show tab close button       | No                                                            |
-| Show new tab button         | No                                                            |
-| Show tab index              | No                                                            |
+| Setting                     | Value                                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Auto reload configuration   | Yes                                                                                                     |
+| Audible bell                | Disabled                                                                                                |
+| Notification handling       | Always show                                                                                             |
+| IME                         | Enabled                                                                                                 |
+| Quit when all windows close | No                                                                                                      |
+| Window close confirmation   | Never prompt                                                                                            |
+| Background opacity          | 0.70                                                                                                    |
+| macOS background blur       | 30                                                                                                      |
+| Font                        | RobotoMonoLineSeed-Mono, RobotoMonoPlex-Mono, RobotoMonoJP, Roboto Mono                                 |
+| Kitty keyboard protocol     | Enabled (apps that request it, e.g. Claude Code / Codex, get Shift+Enter / Ctrl+Enter as distinct keys) |
+| Font size                   | 12.0                                                                                                    |
+| Initial size                | 110 columns x 30 rows                                                                                   |
+| Tab max width               | 30                                                                                                      |
+| Hide tab bar for one tab    | No                                                                                                      |
+| Show tab close button       | No                                                                                                      |
+| Show new tab button         | No                                                                                                      |
+| Show tab index              | No                                                                                                      |
 
 ## Keyboard Shortcuts
 
@@ -33,21 +34,24 @@ On macOS, WezTerm displays the `Cmd` key as `SUPER` in `wezterm show-keys`.
 
 These bindings are defined in `config.keys`.
 
-| Key                    | Description                                     |
-| ---------------------- | ----------------------------------------------- |
-| `Shift + Enter`        | Send a literal newline                          |
-| `Cmd + d`              | Split pane horizontally (left/right layout)     |
-| `Cmd + Shift + d`      | Split pane vertically (top/bottom layout)       |
-| `Cmd + w`              | Close the current pane without confirmation     |
-| `Cmd + Shift + w`      | Close the current tab with confirmation         |
-| `Cmd + Option + Left`  | Focus pane to the left                          |
-| `Cmd + Option + Right` | Focus pane to the right                         |
-| `Cmd + Option + Up`    | Focus pane above                                |
-| `Cmd + Option + Down`  | Focus pane below                                |
-| `Cmd + Ctrl + Left`    | Resize the current pane to the left by 3 cells  |
-| `Cmd + Ctrl + Right`   | Resize the current pane to the right by 3 cells |
-| `Cmd + Ctrl + Up`      | Resize the current pane upward by 3 cells       |
-| `Cmd + Ctrl + Down`    | Resize the current pane downward by 3 cells     |
+| Key                    | Description                                                                                                |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `Escape`               | Send as CSI-u to Herdr so a lone ESC is not held back (plain key elsewhere)                                |
+| `Tab` / `Shift + Tab`  | Send as CSI-u to Herdr so prefix/navigate mode accepts it (plain key elsewhere)                            |
+| `Cmd + Enter`          | Send Enter as CSI-u to Herdr for navigate mode without stealing Enter from the IME (plain Enter elsewhere) |
+| `` Ctrl + ` ``         | Send as CSI-u so it reaches nvim through Herdr instead of collapsing to NUL                                |
+| `Cmd + d`              | Split pane horizontally (left/right layout)                                                                |
+| `Cmd + Shift + d`      | Split pane vertically (top/bottom layout)                                                                  |
+| `Cmd + w`              | Close the current pane without confirmation                                                                |
+| `Cmd + Shift + w`      | Close the current tab with confirmation                                                                    |
+| `Cmd + Option + Left`  | Focus pane to the left                                                                                     |
+| `Cmd + Option + Right` | Focus pane to the right                                                                                    |
+| `Cmd + Option + Up`    | Focus pane above                                                                                           |
+| `Cmd + Option + Down`  | Focus pane below                                                                                           |
+| `Cmd + Ctrl + Left`    | Resize the current pane to the left by 3 cells                                                             |
+| `Cmd + Ctrl + Right`   | Resize the current pane to the right by 3 cells                                                            |
+| `Cmd + Ctrl + Up`      | Resize the current pane upward by 3 cells                                                                  |
+| `Cmd + Ctrl + Down`    | Resize the current pane downward by 3 cells                                                                |
 
 ### Common Built-in Bindings
 

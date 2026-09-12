@@ -21,10 +21,12 @@ Edit files under `config/dot/hammerspoon/` directly. Since `~/.hammerspoon` is a
 
 Hammerspoon registers URL handlers via `hs.urlevent.bind`. They can be invoked from any process with `open -g "hammerspoon://<handler>"`.
 
-| URL                                          | Description                                              |
-| -------------------------------------------- | -------------------------------------------------------- |
-| `hammerspoon://center`                       | Center the focused window on the current screen          |
-| `hammerspoon://aerospace-workspace?ws=<num>` | Show a transient HUD with the AeroSpace workspace number |
+| URL                                                           | Description                                                            |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `hammerspoon://center`                                        | Center the focused window on the current screen                        |
+| `hammerspoon://aerospace-workspace?ws=<num>`                  | Show a transient HUD with the AeroSpace workspace number               |
+| `hammerspoon://claude-wezterm-capture?session=<id>&pane=<id>` | Remember the focused WezTerm window and pane for a Claude Code session |
+| `hammerspoon://claude-wezterm-focus?session=<id>&pane=<id>`   | Bring back the WezTerm window and pane recorded for that session       |
 
 ### `hammerspoon://center`
 
@@ -45,6 +47,10 @@ Example:
 ```bash
 open -g "hammerspoon://aerospace-workspace?ws=3"
 ```
+
+### `hammerspoon://claude-wezterm-capture` / `hammerspoon://claude-wezterm-focus`
+
+`claude-wezterm-capture` records the currently focused WezTerm window together with the `pane` id under the `session` key (re-captured when the recorded window is gone). `claude-wezterm-focus` activates the recorded window and pane. Both are called from the Claude Code hook scripts under `script/hooks/` and `script/notify/`, not by hand.
 
 ## AeroSpace Integration
 

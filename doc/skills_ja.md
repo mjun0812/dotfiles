@@ -57,12 +57,12 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`の�
 
 ### Git
 
-| Skill                                                                                                   | 用途                                                                                                                                    |
-| ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [`git-commit`](https://github.com/mjun0812/skills/blob/main/skills/git/git-commit/SKILL.md)             | 現在の変更を適切な単位でstaging・commitする                                                                                             |
-| [`git-squash`](https://github.com/mjun0812/skills/blob/main/skills/git/git-squash/SKILL.md)             | 現在のbranchのcommitをsquash・整理し、必要なら force-with-lease でpushする                                                              |
-| [`git-fix-conflict`](https://github.com/mjun0812/skills/blob/main/skills/git/git-fix-conflict/SKILL.md) | merge、rebase、cherry-pick、revert、apply、PR などで発生したコンフリクトを検出して解消する                                              |
-| [`self-review`](../config/ai-agents/skills/self-review/SKILL.md)                                        | 未commit変更または指定commitをsnapshot化し、独立した2つのFinderで敵対的にreviewする (`--spec` でspecとの整合を検証するContract軸を追加) |
+| Skill                                                                                                   | 用途                                                                                                                                                    |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`git-commit`](https://github.com/mjun0812/skills/blob/main/skills/git/git-commit/SKILL.md)             | 現在の変更を適切な単位でstaging・commitする                                                                                                             |
+| [`git-squash`](https://github.com/mjun0812/skills/blob/main/skills/git/git-squash/SKILL.md)             | 現在のbranchのcommitをsquash・整理し、必要なら force-with-lease でpushする                                                                              |
+| [`git-fix-conflict`](https://github.com/mjun0812/skills/blob/main/skills/git/git-fix-conflict/SKILL.md) | merge、rebase、cherry-pick、revert、apply、PR などで発生したコンフリクトを検出して解消する                                                              |
+| [`self-review`](../config/ai-agents/skills/self-review/SKILL.md)                                        | 未commit変更または指定commitをsnapshot化し、独立した2つのFinderと1つのStandardsで敵対的にreviewする (`--spec` でspecとの整合を検証するContract軸を追加) |
 
 ### GitHub
 
@@ -128,7 +128,7 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`の�
 
 ```mermaid
 graph LR
-    git-squash -. on conflict .-> git-fix-conflict
+    github-pr-create -. default branch / 未commit変更時 .-> git-commit
 
     mjun-specify --> mjun-grilling
     mjun-specify --> mjun-research
@@ -146,20 +146,20 @@ graph LR
 
 ### Caller → callee 表
 
-| Caller           | Callee                                                           | タイミング                                                                                  |
-| ---------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `git-squash`     | `git-fix-conflict`                                               | squash中にコンフリクトが発生した場合のみ                                                    |
-| `mjun-specify`   | `mjun-grilling`, `mjun-research`, `mjun-prototype`               | Human-owned / Evidence-blockedなdecisionの解決と、承認前に残ったtentativeの解消が必要な場合 |
-| `mjun-specify`   | `mjun-spec-review`                                               | Phase 5.5 (承認前) でcontractとdesign.mdを検査し、妥当な指摘だけを反映                      |
-| `mjun-specify`   | `mjun-to-tasks`                                                  | contract承認後、複数task規模の場合と既存tasks.mdの再分解が必要な場合に自動連結              |
-| `mjun-implement` | `git-commit`, `github-pr-create`                                 | Phase 4でworktreeの変更をcommitし、`--pr` 時にPRを作成                                      |
-| `github-pr-fix`  | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | 対応する問題が検出された場合のみ各calleeを実行                                              |
+| Caller             | Callee                                                           | タイミング                                                                                  |
+| ------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `github-pr-create` | `git-commit`                                                     | Phase 0のみ、現在のbranchがdefault branchまたは未commit変更がある場合                       |
+| `mjun-specify`     | `mjun-grilling`, `mjun-research`, `mjun-prototype`               | Human-owned / Evidence-blockedなdecisionの解決と、承認前に残ったtentativeの解消が必要な場合 |
+| `mjun-specify`     | `mjun-spec-review`                                               | Phase 5.5 (承認前) でcontractとdesign.mdを検査し、妥当な指摘だけを反映                      |
+| `mjun-specify`     | `mjun-to-tasks`                                                  | contract承認後、複数task規模の場合と既存tasks.mdの再分解が必要な場合に自動連結              |
+| `mjun-implement`   | `git-commit`, `github-pr-create`                                 | Phase 4でworktreeの変更をcommitし、`--pr` 時にPRを作成                                      |
+| `github-pr-fix`    | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | 対応する問題が検出された場合のみ各calleeを実行                                              |
 
 ### Standalone skills
 
 以下のskillは他のskillへ委譲しません。
 
-`chat-note`, `claude`, `codex`, `deep-research`, `doc-sync`, `exhtml`, `exmd`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `mjun-grilling`, `mjun-prototype`, `mjun-research`, `mjun-spec-review`, `mjun-status`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
+`chat-note`, `claude`, `codex`, `deep-research`, `doc-sync`, `exhtml`, `exmd`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `git-squash`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `mjun-grilling`, `mjun-prototype`, `mjun-research`, `mjun-spec-review`, `mjun-status`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 

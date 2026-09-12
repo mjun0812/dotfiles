@@ -57,12 +57,12 @@ The self-authored dev-flow skill suite under the `mjun-` prefix. Specs always li
 
 ### Git
 
-| Skill                                                                                                   | Purpose                                                                                                                                                |
-| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`git-commit`](https://github.com/mjun0812/skills/blob/main/skills/git/git-commit/SKILL.md)             | Stage and commit the current changes in appropriate units                                                                                              |
-| [`git-squash`](https://github.com/mjun0812/skills/blob/main/skills/git/git-squash/SKILL.md)             | Squash / tidy commits on the current branch, force-with-lease push if needed                                                                           |
-| [`git-fix-conflict`](https://github.com/mjun0812/skills/blob/main/skills/git/git-fix-conflict/SKILL.md) | Detect and resolve conflicts from merge, rebase, cherry-pick, revert, apply, PR, etc.                                                                  |
-| [`self-review`](../config/ai-agents/skills/self-review/SKILL.md)                                        | Adversarially review uncommitted changes or one specified commit with two independent Finders (`--spec` adds a contract axis checked against the spec) |
+| Skill                                                                                                   | Purpose                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`git-commit`](https://github.com/mjun0812/skills/blob/main/skills/git/git-commit/SKILL.md)             | Stage and commit the current changes in appropriate units                                                                                                                       |
+| [`git-squash`](https://github.com/mjun0812/skills/blob/main/skills/git/git-squash/SKILL.md)             | Squash / tidy commits on the current branch, force-with-lease push if needed                                                                                                    |
+| [`git-fix-conflict`](https://github.com/mjun0812/skills/blob/main/skills/git/git-fix-conflict/SKILL.md) | Detect and resolve conflicts from merge, rebase, cherry-pick, revert, apply, PR, etc.                                                                                           |
+| [`self-review`](../config/ai-agents/skills/self-review/SKILL.md)                                        | Adversarially review uncommitted changes or one specified commit with two independent Finders and a Standards reviewer (`--spec` adds a contract axis checked against the spec) |
 
 ### GitHub
 
@@ -128,7 +128,7 @@ The following skills invoke other skills through the agent's `Skill` tool. Arrow
 
 ```mermaid
 graph LR
-    git-squash -. on conflict .-> git-fix-conflict
+    github-pr-create -. default branch / uncommitted changes .-> git-commit
 
     mjun-specify --> mjun-grilling
     mjun-specify --> mjun-research
@@ -146,20 +146,20 @@ graph LR
 
 ### Caller → callee table
 
-| Caller           | Callee                                                           | When                                                                                                            |
-| ---------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `git-squash`     | `git-fix-conflict`                                               | Only if a conflict surfaces during squash                                                                       |
-| `mjun-specify`   | `mjun-grilling`, `mjun-research`, `mjun-prototype`               | When a human-owned / evidence-blocked decision needs resolving, or a tentative decision remains before approval |
-| `mjun-specify`   | `mjun-spec-review`                                               | Phase 5.5 (before approval) reviews the contract and design.md; only valid findings are applied                 |
-| `mjun-specify`   | `mjun-to-tasks`                                                  | Auto-chained after contract approval for multi-task specs, or to re-decompose an existing tasks.md              |
-| `mjun-implement` | `git-commit`, `github-pr-create`                                 | Phase 4 commits the worktree changes; PR only with `--pr`                                                       |
-| `github-pr-fix`  | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | Each callee runs only if the corresponding problem is detected                                                  |
+| Caller             | Callee                                                           | When                                                                                                            |
+| ------------------ | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `github-pr-create` | `git-commit`                                                     | Phase 0 only, when the current branch is the default branch or has uncommitted changes                          |
+| `mjun-specify`     | `mjun-grilling`, `mjun-research`, `mjun-prototype`               | When a human-owned / evidence-blocked decision needs resolving, or a tentative decision remains before approval |
+| `mjun-specify`     | `mjun-spec-review`                                               | Phase 5.5 (before approval) reviews the contract and design.md; only valid findings are applied                 |
+| `mjun-specify`     | `mjun-to-tasks`                                                  | Auto-chained after contract approval for multi-task specs, or to re-decompose an existing tasks.md              |
+| `mjun-implement`   | `git-commit`, `github-pr-create`                                 | Phase 4 commits the worktree changes; PR only with `--pr`                                                       |
+| `github-pr-fix`    | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | Each callee runs only if the corresponding problem is detected                                                  |
 
 ### Standalone skills
 
 These skills do not delegate to other skills:
 
-`chat-note`, `claude`, `codex`, `deep-research`, `doc-sync`, `exhtml`, `exmd`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-create`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `mjun-grilling`, `mjun-prototype`, `mjun-research`, `mjun-spec-review`, `mjun-status`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
+`chat-note`, `claude`, `codex`, `deep-research`, `doc-sync`, `exhtml`, `exmd`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `git-squash`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `mjun-grilling`, `mjun-prototype`, `mjun-research`, `mjun-spec-review`, `mjun-status`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `wezterm-control`.
 
 ## Conventions
 

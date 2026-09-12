@@ -84,7 +84,7 @@ The agent resolves the config via its `working_directory`, but interactive login
 
 ```sh
 cli-proxy-api -config ~/.config/cli-proxy-api/config.yaml -codex-login
-mise run cli-proxy-api-restart # reload the agent after logging in
+launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api # reload the agent after logging in
 ```
 
 Note: the config symlink must exist before `mise bootstrap launchd apply`; without a config the binary exits immediately and `KeepAlive` respawns it in a loop. `install.sh` runs the steps in that order.

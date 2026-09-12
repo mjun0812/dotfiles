@@ -28,7 +28,7 @@ prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt + stylua
 script/tools/sync_vscode_extensions.sh --dry-run
 ```
 
-テストスイートは無い。検証はGitHub Actions (`ci-ubuntu.yml` / `ci-rocky.yml` / `ci-macos.yml`) がクリーンなコンテナで `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。`ci-macos-packages.yml` は `mise bootstrap packages apply` (brew / brew-cask) の適用・冪等性・statusを、`ci-lint.yml` は `prek run --all-files` を検証する。
+テストスイートは無い。検証はGitHub Actions (`ci-ubuntu.yml` / `ci-rocky.yml` / `ci-macos.yml`) がクリーンな環境で `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。`ci-macos-packages.yml` は `mise bootstrap packages apply` (brew / brew-cask) の適用・冪等性・statusを、`ci-lint.yml` は `prek run --all-files` を検証する。
 
 ## アーキテクチャ
 
@@ -40,26 +40,28 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `config/dot/<name>`                                                                                       | `~/.<name>`                                                                   |
 | `config/dot_config/<name>`                                                                                | `~/.config/<name>`                                                            |
+| `config/dot_config/herdr/config.toml`, `config/dot_config/cli-proxy-api/config.yaml`                      | `~/.config/<name>/` 配下にファイル単位でsymlink (ディレクトリは実体)          |
+| `config/dot_config/herdr/plugins/<plugin>`                                                                | `herdr plugin link` で登録 (symlinkではない。`setup_herdr.sh` が実行)         |
 | `config/ai-agents/claude/{CLAUDE.md,settings.json,mcp.json,statusline.py,subagent_statusline.py,rules/*}` | `~/.claude/` 配下                                                             |
 | `config/ai-agents/skills/<skill>`                                                                         | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
 | `config/ai-agents/codex/hooks.json`                                                                       | `~/.codex/hooks.json`                                                         |
 | `config/ai-agents/AGENTS_global.md`                                                                       | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                   |
 | `config/ai-agents/gemini/antigravity-cli/settings.json`                                                   | `~/.gemini/antigravity-cli/settings.json`                                     |
 | `config/ai-agents/apm.yml`                                                                                | `~/.apm/apm.yml`                                                              |
-| `config/vscode/`, `config/cursor/`                                                                        | 各アプリのUserディレクトリ                                                    |
+| `config/{vscode,cursor}/{settings.json,keybindings.json}`                                                 | 各アプリのUserディレクトリ (`extensions.txt` は展開されず参照専用)            |
 
 上書き前の既存ファイルは `.backup/` に退避される。
 
 ### zsh起動ファイルの役割分担
 
-| ファイル                      | 読まれるタイミング          | 置くもの                                                                                      |
-| ----------------------------- | --------------------------- | --------------------------------------------------------------------------------------------- |
-| `config/dot/zshenv`           | 全shell                     | 環境変数のみ。login shellを経由しない場合は `~/.zprofile` をsourceする (`__ZPROFILE_SOURCED`) |
-| `config/dot/zprofile`         | login時1回                  | PATHの組み立て、`brew shellenv`、非対話shell用の `mise activate --shims`                      |
-| `config/dot/zshrc`            | 対話shell                   | p10k instant prompt、`mise activate`、`sheldon source`、`~/.zshrc.local` のみ                 |
-| `config/dot_config/zsh/*.zsh` | sheldonがlocal pluginとして | options / completion (即時)、functions / aliases (zsh-defer)                                  |
-| `config/dot_config/sheldon/`  | zshrcから1回                | サードパーティpluginと上記ファイルの読み込み順序・遅延指定                                    |
-| `config/dot_config/mise/`     | tool解決時                  | toolとバージョンのみ                                                                          |
+| ファイル                      | 読まれるタイミング          | 置くもの                                                                                                                             |
+| ----------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `config/dot/zshenv`           | 全shell                     | 環境変数のみ。login shellを経由しない場合は `~/.zprofile` をsourceする (`__ZPROFILE_SOURCED`)                                        |
+| `config/dot/zprofile`         | login時1回                  | PATHの組み立て、`brew shellenv`、非対話shell用の `mise activate --shims`                                                             |
+| `config/dot/zshrc`            | 対話shell                   | p10k instant prompt、`mise activate`、`sheldon source`、`~/.zshrc.local`、`~/.config/zsh/profiles/*.zsh` (マシン固有設定、zsh-defer) |
+| `config/dot_config/zsh/*.zsh` | sheldonがlocal pluginとして | options / completion (即時)、functions / aliases (zsh-defer)                                                                         |
+| `config/dot_config/sheldon/`  | zshrcから1回                | サードパーティpluginと上記ファイルの読み込み順序・遅延指定                                                                           |
+| `config/dot_config/mise/`     | tool解決時                  | toolとバージョン、postinstall、`[settings]`、task、macOSのbrewパッケージ・launchd定義 (`bootstrap.*`)                                |
 
 順序の制約 (zsh-completionsのfpath追加 → compinit、history設定は即時、syntax-highlightingは最後) は `plugins.toml` 冒頭のコメントにある。tool別の補完ファイル (`_mise`, `_docker`, `_kubectl`) は `script/setup/update_completions.sh` が `~/.config/zsh_completions/` に生成し、`.zcompdump` を削除して次回起動で再構築させる。
 
@@ -74,6 +76,6 @@ script/tools/sync_vscode_extensions.sh --dry-run
 
 ## 規約
 
-- スクリプトはzsh (`#!/usr/bin/env zsh`)。pre-commitのshfmt (`-s -i 4`) が `.sh` はshebangからのzsh自動判定で、`.zsh` は `--ln=zsh` 指定でフォーマットする。ただし `p10k.zsh` (生成ファイル) と `alias.zsh` (shfmtが未対応のzsh構文を含む) は対象外。
+- スクリプトはzsh (`#!/usr/bin/env zsh`)。pre-commitのshfmt (`-s -i 4`) が `.sh` はshebangからのzsh自動判定で、`.zsh` は `--ln=zsh` 指定でフォーマットする。ただし `p10k.zsh` (生成ファイル) は対象外。
 - oxfmtの対象外ファイルは `.oxfmtrc.json` の `ignorePatterns` に定義されている (`config/ai-agents/claude/settings.json` など)。フォーマッタが壊す設定ファイルを追加する場合はここに登録する。
 - `main` にはrulesetでレビュー必須が設定されているが、owner (mjun0812) はこれをbypassしてよい。PRは `gh pr merge --admin` でmergeし、軽微な変更は `main` へ直接commit・pushして構わない。

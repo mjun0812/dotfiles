@@ -116,10 +116,14 @@ Private skills (`mjun-*`, `self-review`) still live in `config/ai-agents/skills/
 | aws-cli     | AWS command-line interface             |
 | bat         | Modern `cat` with syntax highlighting  |
 | delta       | Git diff pager                         |
+| dust        | Modern `du`                            |
 | eza         | Modern `ls`                            |
 | fd          | Modern `find`                          |
+| fzf         | Fuzzy finder                           |
+| gcloud      | Google Cloud CLI                       |
 | gh          | GitHub CLI                             |
 | git-lfs     | Git Large File Storage                 |
+| gitleaks    | Secret scanner                         |
 | herdr       | Terminal multiplexer for coding agents |
 | jq          | JSON processor                         |
 | kubectl     | Kubernetes CLI                         |
@@ -132,6 +136,7 @@ Private skills (`mjun-*`, `self-review`) still live in `config/ai-agents/skills/
 | shfmt       | Shell script formatter                 |
 | starship    | Cross-shell prompt                     |
 | stylua      | Lua formatter                          |
+| taplo       | TOML formatter                         |
 | tex-fmt     | LaTeX formatter                        |
 | tmux        | Terminal multiplexer                   |
 | tree-sitter | Parser generator tool                  |
@@ -147,7 +152,6 @@ Private skills (`mjun-*`, `self-review`) still live in `config/ai-agents/skills/
 | Claude Code     | AI agent for daily use                |
 | Codex           | AI agent for daily use                |
 | Antigravity-cli | AI agent for generate commit messages |
-| Copilot-cli     | AI agent for code                     |
 | OpenCode        | AI agent for code                     |
 
 Agent skills (shared across Claude Code / Codex / Gemini / Antigravity) are documented in [doc/skills.md](doc/skills.md).
@@ -163,23 +167,31 @@ Details of configuration and keyboard shortcuts are documented in [doc/macOS.md]
 | Alt-Tab            | Windows-style window switcher     |
 | azooKey            | Japanese input method             |
 | balenaEtcher       | USB flash tool                    |
+| BetterDisplay      | Display management                |
 | BetterTouchTool    | Input device customization        |
 | ChatGPT            | OpenAI desktop client             |
 | Claude             | Anthropic desktop client          |
 | Clipy              | Clipboard manager                 |
+| CodexBar           | Menu bar usage monitor for agents |
 | Cursor             | AI-powered IDE                    |
 | DeepL              | Translator                        |
+| Discord            | Chat                              |
+| draw.io            | Diagram editor                    |
 | Ghostty            | Terminal emulator                 |
 | Hammerspoon        | macOS automation                  |
 | Homerow            | Keyboard-driven mouse replacement |
 | Inkscape           | Vector graphics editor            |
 | iTerm2             | Terminal emulator                 |
 | Karabiner-Elements | Keyboard customization            |
+| KeyCastr           | Keystroke visualizer              |
+| MacTeX (no GUI)    | LaTeX distribution                |
+| Miraktest          | Mirakurun TV client               |
 | Nani               | Translator                        |
 | Notion             | Notes and knowledge base          |
 | Obsidian           | Markdown knowledge base           |
 | Ollama             | Local LLM runtime                 |
 | Raycast            | Launcher                          |
+| Thaw               | Menu bar manager                  |
 | Visual Studio Code | Code editor                       |
 | WezTerm            | Terminal emulator                 |
 | XQuartz            | X11 for macOS                     |
@@ -229,10 +241,6 @@ gemini-commit-ja # AIが生成した日本語のコミットメッセージで�
 # Codex
 codex-commit # AIが生成したコミットメッセージでコミットする
 codex-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
-
-# Copilot-cli
-copilot-commit # AIが生成したコミットメッセージでコミットする
-copilot-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
 
 # Antigravity-cli
 agy-commit # AIが生成したコミットメッセージでコミットする
