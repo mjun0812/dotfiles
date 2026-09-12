@@ -120,6 +120,7 @@ Private skills (`mjun-*`, `self-review`) still live in `config/ai-agents/skills/
 | fd          | Modern `find`                          |
 | gh          | GitHub CLI                             |
 | git-lfs     | Git Large File Storage                 |
+| herdr       | Terminal multiplexer for coding agents |
 | jq          | JSON processor                         |
 | kubectl     | Kubernetes CLI                         |
 | pre-commit  | Git commit hooks manager               |
