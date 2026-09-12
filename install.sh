@@ -56,10 +56,11 @@ done
 ################ [mise] ################
 log_section "Setting up mise..."
 $DOTPATH/script/setup/install_mise.sh
-source "$HOME/.zshrc"
+# このスクリプトは symlink を作る前に起動しているので ~/.zshenv は読まれていない。
+# PATH (~/.local/bin, mise shims) を組み立てる ~/.zprofile を明示的に読む
+source "$HOME/.zprofile"
 mise install
 mise reshim
-source "$HOME/.zshrc"
 
 ################ [bat] ################
 log_section "Setting up bat themes..."
