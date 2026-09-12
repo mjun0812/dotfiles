@@ -1,2 +1,1 @@
-# kill ssh-agent
-ssh-agent -k > /dev/null 2>&1
+# ssh-agent は Keychain で共有するため、ログアウト時には停止しない。

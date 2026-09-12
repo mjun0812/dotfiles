@@ -90,7 +90,6 @@ opencode = "latest"
 "pipx:copier" = "latest"
 "pipx:euporie" = "latest"
 "pipx:huggingface_hub" = "latest"
-"pipx:jupyter-mcp-server" = "latest"
 
 [settings]
 upgrade.auto_prune = false
