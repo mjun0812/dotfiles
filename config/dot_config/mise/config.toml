@@ -10,6 +10,7 @@ pnpm = "latest"
 cmake = "latest"
 uv = "latest"
 python = "latest"
+ruby = "latest"
 
 # Shell & CLI utilities
 dust = "latest"
@@ -111,6 +112,12 @@ experimental = true
 
 [settings.ruby]
 compile = false
+
+[settings.python]
+compile = false
+
+[settings.github]
+credential_command = "gh auth token"
 
 [tasks.headroom-proxy]
 description = "Start the Headroom proxy"
