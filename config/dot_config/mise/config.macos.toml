@@ -96,9 +96,10 @@ kickstart = true
 program = "/bin/sh"
 args = [
   "-c",
-  'export PATH="$HOME/.local/share/mise/shims:$PATH"; exec "$HOME/.codex/packages/standalone/current/codex" app-server daemon start',
+  'export PATH="$HOME/.local/share/mise/shims:$PATH"; exec "$HOME/.codex/packages/standalone/current/codex" app-server --remote-control --listen unix://',
 ]
 run_at_load = true
+keep_alive = true
 kickstart = true
 
 [tasks.no-sleep-mac]
