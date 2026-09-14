@@ -33,7 +33,7 @@ delta = "latest"
 git-lfs = "latest"
 gh = "latest"
 
-# Dev tooling
+# Dev tool
 actionlint = "latest"
 aqua = "latest"
 fzf = "latest"
@@ -95,6 +95,7 @@ opencode = "latest"
 "pipx:danielrobbins/keychain" = { version = "latest" }
 
 [env]
+# mise管理のPythonではなく、homeのvenvを使うようにする
 _.path = ["~/.venv/bin"]
 
 [settings]
@@ -109,6 +110,7 @@ minimum_release_age_excludes = [
   "aqua:openai/codex",
   "aqua:google-antigravity/antigravity-cli",
   "herdr",
+  "github:mjun0812/yobirin",
 ]
 auto_env = true
 not_found_auto_install = false
