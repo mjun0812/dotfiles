@@ -81,14 +81,6 @@ container system kernel set --recommended --force
 "ci7lus/miraktest" = "https://github.com/ci7lus/homebrew-miraktest.git"
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
 
-[bootstrap.hooks.post-packages]
-# mise does not support AeroSpace's HOMEBREW_PREFIX constant.
-run = '''
-if ! brew list --cask aerospace >/dev/null 2>&1; then
-    brew install --cask nikitabobko/tap/aerospace
-fi
-'''
-
 [bootstrap.macos.launchd.agents.headroom-proxy]
 program = "~/.local/share/mise/shims/headroom"
 args = [

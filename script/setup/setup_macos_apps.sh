@@ -7,6 +7,11 @@ if ! brew list --cask mactex-no-gui >/dev/null 2>&1; then
     brew install --cask mactex-no-gui || exit
 fi
 
+# mise does not support AeroSpace's HOMEBREW_PREFIX constant.
+if ! brew list --cask aerospace >/dev/null 2>&1; then
+    brew install --cask nikitabobko/tap/aerospace || exit
+fi
+
 # dotfiles の plist から各 app の設定を反映
 # (Clipy のスニペット本体は Realm DB のため対象外)
 APP_DEFAULTS=(
