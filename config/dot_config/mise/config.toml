@@ -94,10 +94,6 @@ opencode = "latest"
 "pipx:danielrobbins/keychain" = { version = "latest" }
 
 [env]
-# mise activate は hook-env で PATH を再構成し、activate 前から PATH にあった entry
-# (親 shell から継承した分を含む) を tool paths より下に置き直す。
-# _.path は常に tool paths より上に挿入されるため、~/.venv の python を確実に優先させる。
-# --shims モードの非対話 shell には適用されないので、そちらは zprofile が担当する。
 _.path = ["~/.venv/bin"]
 
 [settings]
