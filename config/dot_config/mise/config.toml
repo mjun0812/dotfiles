@@ -9,6 +9,7 @@ bun = "latest"
 pnpm = "latest"
 cmake = "latest"
 uv = "latest"
+python = "latest"
 
 # Shell & CLI utilities
 dust = "latest"
@@ -90,7 +91,7 @@ opencode = "latest"
 "pipx:ty" = "latest"
 "pipx:copier" = "latest"
 "pipx:huggingface_hub" = "latest"
-"pipx:danielrobbins/keychain" = { version = "latest", uvx_args = "--python >=3.9" }
+"pipx:danielrobbins/keychain" = { version = "latest" }
 
 [settings]
 upgrade.auto_prune = false
@@ -108,6 +109,9 @@ minimum_release_age_excludes = [
 auto_env = true
 not_found_auto_install = false
 experimental = true
+
+[settings.ruby]
+compile = false
 
 [tasks.headroom-proxy]
 description = "Start the Headroom proxy"
