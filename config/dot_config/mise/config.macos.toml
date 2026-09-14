@@ -31,11 +31,13 @@ container system kernel set --recommended --force
 "brew:gitleaks" = "latest"
 "brew:htop" = "latest"
 "brew:librsvg" = "latest"
+"brew:lld" = "latest"
 "brew:llvm" = "latest"
 "brew:mactop" = "latest"
 "brew:mcat" = "latest"
 "brew:mysql" = "latest"
 "brew:ninja" = "latest"
+"brew:powershell" = "latest"
 "brew:resvg" = "latest"
 "brew:subversion" = "latest"
 "brew:swiftlint" = "latest"
@@ -69,8 +71,14 @@ container system kernel set --recommended --force
 "brew-cask:betterdisplay" = "latest"
 "brew-cask:inkscape" = "latest"
 "brew-cask:wezterm@nightly" = "latest"
+"brew-cask:azookey" = "latest"
+"brew-cask:ci7lus/miraktest/miraktest" = "latest"
+"brew-cask:karabiner-elements" = "latest"
+"brew-cask:raycast" = "latest"
+"brew-cask:xquartz" = "latest"
 
 [bootstrap.brew.taps]
+"ci7lus/miraktest" = "https://github.com/ci7lus/homebrew-miraktest.git"
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
 
 [bootstrap.macos.launchd.agents.headroom-proxy]
