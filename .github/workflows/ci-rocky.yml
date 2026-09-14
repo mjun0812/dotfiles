@@ -142,6 +142,15 @@ jobs:
           su - testuser -c 'source ~/.zshrc && mise --version'
           echo "✓ mise is installed"
 
+      - name: Verify mise lock
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          echo "=== Checking mise lock ==="
+          su - testuser -c "export GITHUB_TOKEN='${GITHUB_TOKEN}' && source ~/.zshrc && mise lock --global --platform linux-x64 && MISE_LOCKED=1 mise install --dry-run"
+          test -f /home/testuser/.config/mise/mise.lock
+          echo "✓ mise lock succeeded"
+
       - name: Verify uv installation
         run: |
           echo "=== Checking uv ==="

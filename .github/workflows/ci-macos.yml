@@ -109,6 +109,18 @@ jobs:
           mise --version
           echo "✓ mise is installed"
 
+      - name: Verify mise lock
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          echo "=== Checking mise lock ==="
+          source "$HOME/.zshrc"
+          mise lock --global --platform macos-arm64
+          MISE_LOCKED=1 mise install --dry-run
+          test -f "$HOME/.config/mise/mise.lock"
+          test -f "$HOME/.config/mise/mise.macos.lock"
+          echo "✓ mise lock succeeded"
+
       - name: Verify yobirin profiles
         run: |
           echo "=== Checking yobirin profiles ==="
