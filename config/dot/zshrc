@@ -5,6 +5,7 @@ fi
 
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
+export PATH="$HOME/.venv/bin:$PATH"
 
 [[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local
 

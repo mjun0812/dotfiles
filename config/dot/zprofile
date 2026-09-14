@@ -21,7 +21,6 @@ export PATH="$HOME/bin:$PATH"
 export PATH="/usr/local/cuda/bin:$PATH" # CUDA
 export PATH="$HOME/.cargo/bin:$PATH" # Rust
 export PATH="$HOME/.local/bin:$PATH" # mise, uv tool, Codex
-export PATH="$HOME/.venv/bin:$PATH" # Python
 export PATH="$HOME/.bun/bin:$PATH" # bun
 export PATH="$PNPM_HOME:$PATH"
 
@@ -30,7 +29,8 @@ export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/usr/local/lib:$LD_LIBRARY_PATH"
 # Vite+ (https://viteplus.dev)
 [[ -f "$HOME/.vite-plus/env" ]] && . "$HOME/.vite-plus/env"
 
-# 非対話shellではshim経由でmiseのtoolを解決する (対話shellは ~/.zshrc の mise activate)
 if [[ ! -o interactive ]] && command -v mise >/dev/null 2>&1; then
     eval "$(mise activate zsh --shims)"
 fi
+
+export PATH="$HOME/.venv/bin:$PATH"
