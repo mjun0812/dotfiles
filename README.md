@@ -281,7 +281,7 @@ mise use aqua:google-antigravity/antigravity-cli@latest
 ### mise bootstrap services
 
 - macOS: `headroom-proxy`, `cli-proxy-api`, and `codex-remote-control` as LaunchAgents
-- Linux: `codex-remote-control` as a systemd user service
+- Linux: `headroom-proxy`, `cli-proxy-api`, and `codex-remote-control` as systemd user services
 
 ```bash
 # macOS

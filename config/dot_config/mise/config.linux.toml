@@ -6,13 +6,31 @@
 "cargo:tree-sitter-cli" = "latest"
 "pipx:apm-cli" = { version = "latest" }
 # headroom-ai は Python >= 3.10 を要求するが、uv は system の python3 (Rocky 9 では 3.9) を優先するため Python 要件を明示する
-"pipx:headroom-ai" = { version = "latest", extras = "proxy,code" }
-"github:router-for-me/CLIProxyAPI" = "latest"
+"pipx:headroom-ai" = { version = "latest", extras = "proxy,code", postinstall = '''
+    systemctl --user restart dev.mise.headroom-proxy.service 2>/dev/null || true
+''' }
+"github:router-for-me/CLIProxyAPI" = { version = "latest", postinstall = '''
+    systemctl --user restart dev.mise.cli-proxy-api.service 2>/dev/null || true
+''' }
 "aqua:imagemagick" = "latest"
+
+[bootstrap.linux.systemd.units.headroom-proxy]
+description = "Start the Headroom proxy"
+exec_start = "~/.local/share/mise/shims/headroom proxy --host 127.0.0.1 --port 8787 --mode token --no-telemetry --disable-kompress --lossless --code-aware --no-rate-limit"
+restart = "always"
+restart_sec = "5s"
+
+[bootstrap.linux.systemd.units.cli-proxy-api]
+description = "Start CLIProxyAPI"
+exec_start = "~/.local/share/mise/shims/cli-proxy-api"
+working_directory = "~/.config/cli-proxy-api"
+restart = "always"
+restart_sec = "5s"
 
 [bootstrap.linux.systemd.units.codex-remote-control]
 description = "Start the Codex Remote Control daemon"
-type = "oneshot"
-remain_after_exit = true
-exec_start = "~/.codex/packages/standalone/current/codex app-server daemon start"
-exec_stop = "~/.codex/packages/standalone/current/codex app-server daemon stop"
+type = "exec"
+exec_start = '"~/.codex/packages/standalone/current/codex" app-server --remote-control --listen unix://'
+restart = "always"
+restart_sec = "5s"
+environment = { PATH = "%h/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin" }
