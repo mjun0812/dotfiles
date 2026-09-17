@@ -1,4 +1,4 @@
-theme = "tokyo-night"
+theme = "tokyo-night-vscode"
 mode = "auto"
 line_numbers = true
 wrap_lines = true
@@ -7,3 +7,34 @@ menu_bar = true
 agent_notes = true
 copy_decorations = false
 cursor_line = "row"
+watch = true
+transparent_background = true
+
+# Built-in "tokyo-night" derives UI colors from 5 base colors, so panels,
+# line numbers, and diff rows drift from the original. Override them with the
+# values from the VS Code "Tokyo Night" theme (enkia.tokyo-night).
+[themes.tokyo-night-vscode]
+base = "tokyo-night"
+label = "Tokyo Night (VS Code)"
+panel = "#16161e"
+panelAlt = "#202330"
+border = "#292e42"
+accent = "#7aa2f7"
+accentMuted = "#3d59a1"
+muted = "#787c99"
+lineNumberFg = "#363b54"
+addedBg = "#1f2c38"
+addedContentBg = "#243e4a"
+removedBg = "#34212b"
+removedContentBg = "#4a272f"
+selectedHunk = "#283457"
+badgeAdded = "#449dab"
+badgeRemoved = "#914c54"
+fileNew = "#449dab"
+fileUntracked = "#449dab"
+fileDeleted = "#914c54"
+fileModified = "#6183bb"
+fileRenamed = "#6183bb"
+noteBorder = "#3d59a1"
+noteBackground = "#16161e"
+noteTitleBackground = "#16161e"
