@@ -26,7 +26,7 @@ sourceの形からmodeを決める。
 2. Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経て **spec mode**
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
-spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (いずれも必須)、あれば `decisions.md` と `tasks.md` をReadする。`.mjun/adr/*.md` (あれば) も読み、taskに関係するADRをSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
+spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (いずれも必須)、あれば `decisions.md` と `tasks.md` をReadする。決定記録 (`docs/adr/*.md` があればそれ、無ければ `.mjun/adr/*.md`) も (あれば) 読み、taskに関係するADRをSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
 
 ### Issue番号の逆引き
 
@@ -204,16 +204,16 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 
 メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。commit messageやPR本文などの外部向け出力には、`.mjun/` 配下のパスや内部spec文書を含めない (外部へ見せるspecの参照はGitHub Issue番号だけを使う)。
 
-1. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正など)。残変更が無ければスキップする
-2. **baseへの再同期**: `git fetch` で `<base-branch>` を最新化し、作業branchをその上へ `git rebase` する (worktree作成後に並行する他のspecの成果がmergeされている場合に備える。`--no-pr` でも行う。remoteに同名branchが既にある場合はrebaseではなく `git merge` で取り込む)。conflictが出たら自動解決せず中止し、worktreeとbranchを残して衝突ファイルを報告する。再同期後に全taskの `CHECK_COMMANDS` とTEST / LINT / BUILD / SMOKE (宣言済みのもの) を再実行し、失敗があればPhase 3.2の差し戻しと同じ手順 (implementer → reviewer、合わせて最大2周) で修正して `git-commit` skillでcommitする。収束しなければ中止し、worktreeとbranchを残して報告する。Run Logの `feature:` 行に `base-sync=<CLEAN | FIXED | CONFLICT>` を追記する
-3. **`--no-pr` の場合**: ここで配送を終える。Phase 5へ進む
-4. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
+1. **ADRを投影する** (spec modeのみ): `decisions.md` の `Status: accepted` のdecisionのうち、覆しにくい・文脈なしでは不可解・本物のtrade-offがあった、の3条件をすべて満たすものを決定記録の `NNNN-<slug>.md` へ書く。置き場所は `docs/adr/` があればそれ (git管理下なのでworktree内のパスへ書き、次のcommitに含める)、無ければ `.mjun/adr/` (メインrepositoryの絶対パスへ書く)。`NNNN` は4桁連番 (既存の最大値 + 1)、本文は見出しと1〜3文 (文脈・決定・理由) とし、`由来: <slug> / D-NNN` を1行添える。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする。3条件を満たすdecisionが無ければ何も書かない
+2. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正、手順1のADRなど)。残変更が無ければスキップする
+3. **baseへの再同期**: `git fetch` で `<base-branch>` を最新化し、作業branchをその上へ `git rebase` する (worktree作成後に並行する他のspecの成果がmergeされている場合に備える。`--no-pr` でも行う。remoteに同名branchが既にある場合はrebaseではなく `git merge` で取り込む)。conflictが出たら自動解決せず中止し、worktreeとbranchを残して衝突ファイルを報告する。再同期後に全taskの `CHECK_COMMANDS` とTEST / LINT / BUILD / SMOKE (宣言済みのもの) を再実行し、失敗があればPhase 3.2の差し戻しと同じ手順 (implementer → reviewer、合わせて最大2周) で修正して `git-commit` skillでcommitする。収束しなければ中止し、worktreeとbranchを残して報告する。Run Logの `feature:` 行に `base-sync=<CLEAN | FIXED | CONFLICT>` を追記する
+4. **`--no-pr` の場合**: ここで配送を終える。Phase 5へ進む
+5. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
    - Phase 1で決めた出力言語を `language` として渡す
    - **specが `Source: #N` を持つ場合はそのIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。純Local specでは渡さない (specは内部文書であり、PR本文で言及しない。PRレビューでcontractを照合するときはLocal specのパスを `--spec` で直接渡す)
    - push、PRタイトルと本文の生成、PR作成はすべて連結先skillが行う。手順を再実装しない
-5. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
-6. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
-7. **ADRを投影する** (spec modeのみ): `decisions.md` の `Status: accepted` のdecisionのうち、覆しにくい・文脈なしでは不可解・本物のtrade-offがあった、の3条件をすべて満たすものを `.mjun/adr/NNNN-<slug>.md` へ書く。`NNNN` は4桁連番 (既存の最大値 + 1)、本文は見出しと1〜3文 (文脈・決定・理由) とし、`由来: <slug> / D-NNN` を1行添える。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする。3条件を満たすdecisionが無ければ何も書かない
+6. **結果を検証する**: 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
+7. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
 
 ### Phase 5: 結果の表示
 

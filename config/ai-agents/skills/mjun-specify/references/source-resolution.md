@@ -125,8 +125,8 @@ specをまたいで効く語彙と決定は、spec配下ではなく `.mjun/` �
 
 ```text
 .mjun/
-├── CONTEXT.md       # 用語集。用語が確定した時点で1件ずつ追記する
-├── adr/             # 決定記録。NNNN-<slug>.md (4桁連番、既存の最大値 + 1)
+├── CONTEXT.md       # 用語集。用語が確定した時点で1件ずつ追記する (repo直下に CONTEXT.md があればそちらが正)
+├── adr/             # 決定記録。NNNN-<slug>.md (4桁連番、既存の最大値 + 1) (docs/adr/ があればそちらが正)
 ├── specs/
 └── steering/
 ```
@@ -138,7 +138,7 @@ specをまたいで効く語彙と決定は、spec配下ではなく `.mjun/` �
 - 投影: 実装の配送完了時に、`decisions.md` の `Status: accepted` のdecisionから3条件を満たすものをADRへ書く。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする
 - 発掘: steeringの整備時に履歴 (merged PR、closed Issue、設計doc) から、理由が明文で書かれている決定と用語を追記する。コードからの推測はADRにせずsteeringの事実に留める
 - 追記専用: どのskillも既存の用語・ADRを書き換えたり削除したりしない。決定を覆すときは新しいADRを書き、旧ADRを `superseded by NNNN` にする
-- repoに `docs/adr/` があればそれを正とし、`.mjun/adr/` へ複製しない。読み込む側は両方を読む
+- 置き場所は存在で決める: 用語集はrepo直下に `CONTEXT.md` があればそれ、無ければ `.mjun/CONTEXT.md`。決定記録は `docs/adr/` があればそれ、無ければ `.mjun/adr/`。読み書きとも解決した1箇所だけを使い、両方を読んだり複製したりしない。どちらも無ければ `.mjun/` 側に作る (repo直下の `CONTEXT.md` と `docs/adr/` は自動で作らない。repoに含めたいときは人間が空のファイル / ディレクトリを作るか、既存の内容を移す)。repo直下の `CONTEXT.md` と `docs/adr/` はgit管理下にあり、worktreeにも存在する
 - 読み込み: spec・design・taskを作る側とレビューする側は、`CONTEXT.md` の語彙を使い、既存ADRと矛盾する要求・設計を衝突として扱う (spec側を直すか、Human-owned decisionとしてADRを覆すかを人間が決める)
 
 ### steering / CONTEXT.md / adr の住み分け
@@ -183,3 +183,4 @@ specをまたいで効く語彙と決定は、spec配下ではなく `.mjun/` �
 - specは**内部文書**である。PR本文・PRタイトル・commit messageなど外部向けの出力では、`.mjun/` 配下のパスやspecの存在に言及しない。外部へ見せるspecの参照はGitHub Issue (`Closes #N`) だけを使う
 - PRレビュー側は、contractを「`--spec` 引数で明示されたsource → PR本文の `Closes #N` が指すIssue」の順で解決する。どちらも無ければContract観点をスキップする (Issue本文は承認時点の投影であり、最新の正本はLocal specにある)
 - resumeとtask進捗の永続化は、`.mjun/` が残っている同一working tree上でのみ有効
+- 例外はrepo直下の `CONTEXT.md` と `docs/adr/` で、これらはgit管理下にありworktreeにも存在する。実装の配送時に `docs/adr/` へ書くADRはworktree側へ書いてPRのcommitに含める

@@ -5,7 +5,7 @@ description: >-
   調査で決まる論点はAgentが決め、人間の判断が必要な論点だけを1問ずつ確認して仕様を確定し、承認後にIssueへ投影する。
   ユーザーが「specを作って」「仕様を詰めて」「issueを磨いて」のように依頼したら使うこと。
   実装からPR作成まで進める依頼や、既にspecが承認済みの実装依頼には使わない。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grilling), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-spec-review), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), Skill(exhtml), Skill(mjun-grilling), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-spec-review), Skill(mjun-to-tasks)
 ---
 
 # mjun-specify
@@ -18,7 +18,7 @@ GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影
 規則は [references/source-resolution.md](references/source-resolution.md) に従う。
 
 意思決定の判断材料に `mjun-grilling` / `mjun-research` / `mjun-prototype` を、
-承認前のspec検査に `mjun-spec-review` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
+承認前のspec検査に `mjun-spec-review` を、承認時のHTML確認に `exhtml` (あれば) を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
 
 ## 委譲の境界
 
@@ -60,7 +60,7 @@ Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontm
 ### Phase 2: 調査とgap分析
 
 - `.mjun/steering/` (あれば) と関連コードを読み、原因、変更箇所、既存パターンを特定する
-- `.mjun/CONTEXT.md` と `.mjun/adr/*.md` (あれば) を読む。specの用語がCONTEXT.mdの定義と衝突していればspec側を定義に揃え (定義を変えたい場合はHuman-owned decisionにする)、既存ADRと矛盾する要求はHuman-owned decisionとして扱う ([references/source-resolution.md 用語集と決定記録](references/source-resolution.md#用語集と決定記録))
+- 用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) と決定記録 `adr/*.md` (`docs/adr/` があればそれ、無ければ `.mjun/adr/`) を (あれば) 読む。specの用語がCONTEXT.mdの定義と衝突していればspec側を定義に揃え (定義を変えたい場合はHuman-owned decisionにする)、既存ADRと矛盾する要求はHuman-owned decisionとして扱う ([references/source-resolution.md 用語集と決定記録](references/source-resolution.md#用語集と決定記録))
 - 対象以外のactiveなspec (source-resolution.mdの一覧手順で列挙) の `spec.md` のBoundariesと `design.md` のChange Outlineを読む。Ownsの重なり、Public Contracts Affectedが同じ公開interfaceを指す、Change Outlineのdirectoryの重なりがあれば、どちらのspecが所有するか (または分割・統合するか) をHuman-owned decisionとして扱う。対象specが他のactive specの成果に依存するなら、BoundariesのDependenciesに `spec: <slug>` と書く ([references/source-resolution.md spec間の依存と境界](references/source-resolution.md#spec間の依存と境界))
 - 現在のspecを [references/spec-template.md](references/spec-template.md) のcontract構成と突き合わせ、欠落セクション、曖昧な記述、実装者が追加調査を要する箇所を列挙する。取り込んだIssueコメントの合意事項は反映対象として扱う
 - スコープ外の問題を見つけた場合は本文に混ぜず、Out of Scopeへの記載と別spec化の提案に回す
@@ -77,7 +77,7 @@ frontierの論点を1つずつ解決し、確定するたびに**Localのspecと
 - **Human-owned**: `mjun-grilling` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
 - **Evidence-blocked**: 不足の種類に応じて `mjun-research` (外部事実) / `mjun-prototype` (UI、状態、ロジックの実物) / trial implementation (Phase 5へ) で証拠を集め、再分類して解決する
 - `--grill` 指定時は、Agent-ownedのdecisionもHuman-ownedと同様に1問ずつ確認する
-- decisionの解決で用語が確定したら、その場で `.mjun/CONTEXT.md` へ追記する (無ければ作る)
+- decisionの解決で用語が確定したら、その場でPhase 2で解決した `CONTEXT.md` へ追記する (どちらも無ければ `.mjun/CONTEXT.md` を作る)
 
 ### Phase 4.5: design.mdの作成
 
@@ -126,7 +126,8 @@ Phase 5.5のreviewerに機械的な指摘を残さないため、spec reviewを�
 ### Phase 6: contractの提示と承認
 
 - specのcontract全文、`design.md` の全文、変更点サマリ (追加または変更したセクションと理由。Phase 5.5の指摘を反映した箇所はその旨を添える)、Phase 5.7で解消したdecisionの一覧 (D番号と、証拠で昇格 / 人間の決定の別) を提示する。承認対象はcontractであり、design.mdは人間が目視する場所とする (気になる点があれば「修正して再提示」で戻す)
-- AskUserQuestionで「反映する / 修正して再提示 / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
+- AskUserQuestionで「反映する / 修正して再提示 / HTMLで内容を確認する / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
+- 「HTMLで内容を確認する」の場合は、contract全文と `design.md` の全文を1枚の自己完結HTMLにして `open` で開き、同じ承認質問に戻る。Skill toolに `exhtml` があればそれへ両文書を渡して作らせ、無ければskillを使わずその場でHTMLを書く (目次、見出しごとのセクション、表とコードブロックの体裁を整え、外部ファイルに依存しない)。保存先は `/tmp/YYYY-MM-DD-<slug>-spec.html` とし、spec配下には置かない
 - 「反映する」の場合は `spec.md` のfrontmatterを `approval: approved` へ更新してからPhase 7へ進む
 - 「キャンセル」の場合は以降のPhaseへ進まず、作成または更新済みのLocal specを削除するか `approval: pending` のまま残すかを確認する
 
