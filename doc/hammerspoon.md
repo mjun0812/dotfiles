@@ -6,13 +6,13 @@ This document describes the Hammerspoon configuration and URL schemes.
 
 ## Configuration Location
 
-| Path                                                    | Description                                                       |
-| ------------------------------------------------------- | ----------------------------------------------------------------- |
-| `config/dot/hammerspoon/init.lua` (source)              | Entry point. Enables IPC and `require`s the feature modules below |
-| `config/dot/hammerspoon/claude-wezterm-focus.lua`       | Return to the WezTerm window/pane from a Claude Code notification |
-| `config/dot/hammerspoon/aerospace-workspace-hud.lua`    | AeroSpace workspace number HUD                                    |
-| `config/dot/hammerspoon/chrome-vertical-tab-toggle.lua` | Chrome vertical tab sidebar toggle                                |
-| `~/.hammerspoon/` (deployed)                            | Symlinked from `config/dot/hammerspoon/` by `install.sh`          |
+| Path                                                    | Description                                                        |
+| ------------------------------------------------------- | ------------------------------------------------------------------ |
+| `config/dot/hammerspoon/init.lua` (source)              | Entry point. Enables IPC and `require`s the feature modules below  |
+| `config/dot/hammerspoon/wezterm-focus.lua`              | Return to the WezTerm window/pane from a coding agent notification |
+| `config/dot/hammerspoon/aerospace-workspace-hud.lua`    | AeroSpace workspace number HUD                                     |
+| `config/dot/hammerspoon/chrome-vertical-tab-toggle.lua` | Chrome vertical tab sidebar toggle                                 |
+| `~/.hammerspoon/` (deployed)                            | Symlinked from `config/dot/hammerspoon/` by `install.sh`           |
 
 Edit files under `config/dot/hammerspoon/` directly. Since `~/.hammerspoon` is a symlink to the source directory, changes are picked up without re-running `install.sh` — just reload the config from the Hammerspoon menu bar (or `hs.reload()` in the console).
 
@@ -20,11 +20,11 @@ Edit files under `config/dot/hammerspoon/` directly. Since `~/.hammerspoon` is a
 
 Hammerspoon registers URL handlers via `hs.urlevent.bind`. They can be invoked from any process with `open -g "hammerspoon://<handler>"`.
 
-| URL                                                           | Description                                                            |
-| ------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `hammerspoon://aerospace-workspace?ws=<num>`                  | Show a transient HUD with the AeroSpace workspace number               |
-| `hammerspoon://claude-wezterm-capture?session=<id>&pane=<id>` | Remember the focused WezTerm window and pane for a Claude Code session |
-| `hammerspoon://claude-wezterm-focus?session=<id>&pane=<id>`   | Bring back the WezTerm window and pane recorded for that session       |
+| URL                                                    | Description                                                             |
+| ------------------------------------------------------ | ----------------------------------------------------------------------- |
+| `hammerspoon://aerospace-workspace?ws=<num>`           | Show a transient HUD with the AeroSpace workspace number                |
+| `hammerspoon://wezterm-capture?session=<id>&pane=<id>` | Remember the focused WezTerm window and pane for a coding agent session |
+| `hammerspoon://wezterm-focus?session=<id>&pane=<id>`   | Bring back the WezTerm window and pane recorded for that session        |
 
 ### `hammerspoon://aerospace-workspace`
 
@@ -36,9 +36,9 @@ Example:
 open -g "hammerspoon://aerospace-workspace?ws=3"
 ```
 
-### `hammerspoon://claude-wezterm-capture` / `hammerspoon://claude-wezterm-focus`
+### `hammerspoon://wezterm-capture` / `hammerspoon://wezterm-focus`
 
-`claude-wezterm-capture` records the currently focused WezTerm window together with the `pane` id under the `session` key (re-captured when the recorded window is gone). `claude-wezterm-focus` activates the recorded window and pane. Both are called from the Claude Code hook scripts under `script/hooks/` and `script/notify/`, not by hand.
+`wezterm-capture` records the currently focused WezTerm window together with the `pane` id under the `session` key (re-captured when the recorded window is gone). `wezterm-focus` activates the recorded window and pane. Both are called from the Claude Code and Codex hook scripts under `script/hooks/` and `script/notify/`, not by hand.
 
 ## AeroSpace Integration
 

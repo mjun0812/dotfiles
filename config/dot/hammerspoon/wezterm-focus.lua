@@ -1,5 +1,5 @@
--- Claude Codeの通知クリックから、セッション開始時のWezTerm windowとpaneへ戻る。
-local claudeWeztermSessions = {}
+-- coding agent (Claude Code / Codex) の通知クリックから、セッション開始時のWezTerm windowとpaneへ戻る。
+local weztermSessions = {}
 
 local function isWeztermWindow(window)
   if not window then
@@ -90,7 +90,7 @@ local function activateWeztermPane(paneId)
     :start()
 end
 
-hs.urlevent.bind("claude-wezterm-capture", function(_, params)
+hs.urlevent.bind("wezterm-capture", function(_, params)
   local sessionId = params and params.session
   local paneId = params and params.pane
   if not sessionId or not sessionId:match("^[%w%-_]+$") then
@@ -101,26 +101,26 @@ hs.urlevent.bind("claude-wezterm-capture", function(_, params)
   end
   -- 記録済みでもウィンドウが失われていれば取り直す (長時間のセッション中にWezTermを
   -- 再起動すると、古い参照のままでは以後フォーカスできなくなる)。
-  local existing = claudeWeztermSessions[sessionId]
+  local existing = weztermSessions[sessionId]
   if existing and isLiveWindow(existing.window) then
     return
   end
 
   local window = currentWeztermWindow()
   if not window then
-    hs.printf("Claude Code WezTerm capture skipped: no focused WezTerm window")
+    hs.printf("WezTerm capture skipped: no focused WezTerm window")
     return
   end
 
-  claudeWeztermSessions[sessionId] = {
+  weztermSessions[sessionId] = {
     paneId = paneId,
     window = window,
     capturedAt = os.time(),
   }
-  hs.printf("Claude Code WezTerm captured: session=%s pane=%s window=%s", sessionId, paneId, window:id())
+  hs.printf("WezTerm captured: session=%s pane=%s window=%s", sessionId, paneId, window:id())
 end)
 
-hs.urlevent.bind("claude-wezterm-focus", function(_, params)
+hs.urlevent.bind("wezterm-focus", function(_, params)
   local sessionId = params and params.session
   local requestedPaneId = params and params.pane
   if not sessionId or not sessionId:match("^[%w%-_]+$") then
@@ -130,15 +130,15 @@ hs.urlevent.bind("claude-wezterm-focus", function(_, params)
     requestedPaneId = nil
   end
 
-  local session = claudeWeztermSessions[sessionId]
+  local session = weztermSessions[sessionId]
   local window = session and session.window
 
   -- 記録が無い、または記録したウィンドウが失われている場合は、通知時に渡された最新の
   -- pane IDでWezTermを前面に出してpaneを選ぶ。使えない記録は捨て、次の通知で取り直させる。
   if not isLiveWindow(window) then
-    claudeWeztermSessions[sessionId] = nil
+    weztermSessions[sessionId] = nil
     if not requestedPaneId then
-      hs.printf("Claude Code WezTerm focus skipped: no usable pane id: %s", sessionId)
+      hs.printf("WezTerm focus skipped: no usable pane id: %s", sessionId)
       return
     end
 
@@ -147,7 +147,7 @@ hs.urlevent.bind("claude-wezterm-focus", function(_, params)
       weztermApp:activate(false)
     end
     activateWeztermPane(requestedPaneId)
-    hs.printf("Claude Code WezTerm focus fallback: session=%s pane=%s", sessionId, requestedPaneId)
+    hs.printf("WezTerm focus fallback: session=%s pane=%s", sessionId, requestedPaneId)
     return
   end
 

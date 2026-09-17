@@ -19,5 +19,5 @@ fi
 
 [[ $PANE_ID =~ ^[0-9]+$ ]] || exit 0
 
-nohup open -g "hammerspoon://claude-wezterm-capture?session=${SESSION_ID}&pane=${PANE_ID}" \
+nohup open -g "hammerspoon://wezterm-capture?session=${SESSION_ID}&pane=${PANE_ID}" \
     >/dev/null 2>&1 </dev/null &

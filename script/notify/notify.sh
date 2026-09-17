@@ -134,7 +134,7 @@ mac)
     fi
 
     if [[ $PANE_ID =~ ^[0-9]+$ && $SESSION_ID =~ ^[[:alnum:]_-]+$ ]] && command -v open >/dev/null 2>&1; then
-        nohup open -g "hammerspoon://claude-wezterm-capture?session=${SESSION_ID}&pane=${PANE_ID}" \
+        nohup open -g "hammerspoon://wezterm-capture?session=${SESSION_ID}&pane=${PANE_ID}" \
             >/dev/null 2>&1 </dev/null &
     fi
 
