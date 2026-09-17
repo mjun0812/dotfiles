@@ -32,6 +32,7 @@ zoxide = "latest"
 delta = "latest"
 git-lfs = "latest"
 gh = "latest"
+hunk = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup_hunk.sh' }
 
 # Dev tool
 actionlint = "latest"

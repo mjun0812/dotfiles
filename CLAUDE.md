@@ -16,6 +16,7 @@ macOS / Linux 向けのdotfiles。`install.sh` がリポジトリ内のファイ
 zsh script/setup/setup_claude_code.sh   # Claude Code設定のsymlink・plugin
 zsh script/setup/setup_codex.sh         # Codex設定 (config.tomlはキー単位マージ、他はsymlink)
 bash script/setup/setup_herdr.sh        # herdr integration・plugin link (miseのpostinstallからも呼ばれる)
+bash script/setup/setup_hunk.sh         # hunk-gh extensionのinstall (miseのpostinstallからも呼ばれる)
 script/setup/update_completions.sh      # zsh補完の更新
 
 # ローカルのapp設定 (macOS app defaults・VSCode拡張リスト) をリポジトリへ逆同期
@@ -40,7 +41,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `config/dot/<name>`                                                                                       | `~/.<name>`                                                                   |
 | `config/dot_config/<name>`                                                                                | `~/.config/<name>`                                                            |
-| `config/dot_config/herdr/config.toml`, `config/dot_config/cli-proxy-api/config.yaml`                      | `~/.config/<name>/` 配下にファイル単位でsymlink (ディレクトリは実体)          |
+| `config/dot_config/{herdr,hunk}/config.toml`, `config/dot_config/cli-proxy-api/config.yaml`               | `~/.config/<name>/` 配下にファイル単位でsymlink (ディレクトリは実体)          |
 | `config/dot_config/herdr/plugins/<plugin>`                                                                | `herdr plugin link` で登録 (symlinkではない。`setup_herdr.sh` が実行)         |
 | `config/ai-agents/claude/{CLAUDE.md,settings.json,mcp.json,statusline.py,subagent_statusline.py,rules/*}` | `~/.claude/` 配下                                                             |
 | `config/ai-agents/skills/<skill>`                                                                         | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
