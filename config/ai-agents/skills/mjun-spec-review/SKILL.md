@@ -30,7 +30,7 @@ specを、それを書いた会話とは別のfresh contextで敵対的に検査
    - **PR番号**: `gh pr view N --json body` で本文を取得し、`Closes #N` / `Fixes #N` / `Resolves #N` からIssue番号を取り出してIssue番号として解決する (複数あれば一覧を提示して選んでもらう)。無ければ中止し、PRから検査対象のspecを特定できないことを報告する。PRのコード差分は読まない
    - **doc mode** (`.mjun/specs/` 外のMarkdown): ファイル内の要求・制約・スコープの記述をcontract、実装方針の記述を実装設計として扱う。どちらかが無ければその軸を省略し、SUMMARYに含める
    - **conversation mode** (source未指定): 会話中の設計・計画を、要求・制約・スコープ (contract) と設計本文に分けて書き起こし、reviewerへの入力にする (SubAgentは会話を読めない)。素材が無ければ中止する
-   - 共通: `.mjun/steering/*.md`、`.mjun/CONTEXT.md`、`.mjun/adr/*.md` があればパス一覧を集める (reviewerとverifierが自分で読む)。対象以外のactiveなspec (`.mjun/specs/*/spec.md` のうち `status: active` のもの) の `spec.md` と `design.md` のパス一覧も集める (spec間の境界衝突の検査に使う。他にactiveなspecが無ければcontract軸の観点8を省略し、その旨をSUMMARYに含める)
+   - 共通: `.mjun/steering/*.md`、用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`)、決定記録 `adr/*.md` (`docs/adr/` があればそれ、無ければ `.mjun/adr/`) があればパス一覧を集める (reviewerとverifierが自分で読む)。対象以外のactiveなspec (`.mjun/specs/*/spec.md` のうち `status: active` のもの) の `spec.md` と `design.md` のパス一覧も集める (spec間の境界衝突の検査に使う。他にactiveなspecが無ければcontract軸の観点8を省略し、その旨をSUMMARYに含める)
 3. `gh` が失敗した場合は中止し、エラーを報告する。パスは常にrepository rootからの絶対パスで渡す
 
 ### Phase 2: reviewerによる候補の発見

@@ -4,8 +4,8 @@ specをまたいで効く語彙と決定は、spec配下ではなく `.mjun/` �
 
 ```text
 .mjun/
-├── CONTEXT.md       # 用語集。用語が確定した時点で1件ずつ追記する
-├── adr/             # 決定記録。NNNN-<slug>.md (4桁連番、既存の最大値 + 1)
+├── CONTEXT.md       # 用語集。用語が確定した時点で1件ずつ追記する (repo直下に CONTEXT.md があればそちらが正)
+├── adr/             # 決定記録。NNNN-<slug>.md (4桁連番、既存の最大値 + 1) (docs/adr/ があればそちらが正)
 ├── specs/
 └── steering/
 ```
@@ -17,7 +17,7 @@ specをまたいで効く語彙と決定は、spec配下ではなく `.mjun/` �
 - ADRには由来 (出典) を必ず1行添える: 履歴から発掘したものは `由来: PR #N` / `Issue #N` / `docs/<path>`、specから投影されたものは `由来: <slug> / D-NNN`、会話中の決定は `由来: 会話 (YYYY-MM-DD)`。衝突時に人間が出典を見て判断できるようにする
 - ADRにするのは、**覆しにくい**・**文脈なしでは不可解**・**本物のtrade-offがあった**、の3条件をすべて満たす決定だけ
 - 追記専用: 既存の用語・ADRを書き換えたり削除したりしない。決定を覆すときは新しいADRを書き、旧ADRを `superseded by NNNN` にする
-- repoに `docs/adr/` があればそれを正とし、`.mjun/adr/` へ複製しない。読み込む側は両方を読む
+- 置き場所は存在で決める: 用語集はrepo直下に `CONTEXT.md` があればそれ、無ければ `.mjun/CONTEXT.md`。決定記録は `docs/adr/` があればそれ、無ければ `.mjun/adr/`。読み書きとも解決した1箇所だけを使い、両方を読んだり複製したりしない。どちらも無ければ `.mjun/` 側に作る (repo直下の `CONTEXT.md` と `docs/adr/` は自動で作らない。repoに含めたいときは人間が空のファイル / ディレクトリを作るか、既存の内容を移す)。repo直下の `CONTEXT.md` と `docs/adr/` はgit管理下にあり、worktreeにも存在する
 
 ## steering / CONTEXT.md / adr の住み分け
 
