@@ -280,6 +280,10 @@ show_agent_labels_on_pane_borders = true
 # distinct static glyphs for blocked, working, done, idle, and unknown states.
 # status_indicators = "dots"
 
+# Accent color for highlights, borders, and navigation UI.
+# Accepts: hex (#89b4fa), named colors (cyan, blue, magenta), or rgb(r,g,b)
+# accent = "cyan"
+
 # Expanded agent rows. Built-ins are state_icon, state_text, machine, workspace, tab,
 # pane, agent, terminal_title, and terminal_title_stripped.
 # Custom values reported through pane metadata use a $name token.
@@ -315,10 +319,6 @@ rows = [
     "git_status",
   ],
 ]
-
-# Accent color for highlights, borders, and navigation UI.
-# Accepts: hex (#89b4fa), named colors (cyan, blue, magenta), or rgb(r,g,b)
-# accent = "cyan"
 
 # Background notification popup delivery
 [ui.toast]
@@ -390,7 +390,7 @@ switch_ascii_input_source_in_prefix = true
 # If the list contains no valid names, the reveal does not apply.
 # Accepted: pi, claude, codex, gemini, cursor, devin, cline, opencode,
 # copilot, kimi, kiro, droid, amp, grok, hermes, kilo, qodercli, qoder, qwen,
-# qwen-code, maki.
+# qwen-code, letta, letta-code, maki.
 # cjk_ime_agents = []
 # Cursor shape rendered when reveal_hidden_cursor_for_cjk_ime is true.
 # Values: block, steady_block (default), underline, steady_underline, bar, steady_bar.
