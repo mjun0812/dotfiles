@@ -5,7 +5,7 @@ description: >-
   調査で決まる論点はAgentが決め、人間の判断が必要な論点だけを1問ずつ確認して仕様を確定し、承認後にIssueへ投影する。
   ユーザーが「specを作って」「仕様を詰めて」「issueを磨いて」のように依頼したら使うこと。
   実装からPR作成まで進める依頼や、既にspecが承認済みの実装依頼には使わない。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Skill(mjun-grilling), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-spec-review), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), Skill(exhtml), Skill(mjun-grilling), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-spec-review), Skill(mjun-to-tasks)
 ---
 
 # mjun-specify
@@ -18,7 +18,7 @@ GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影
 規則は [references/source-resolution.md](references/source-resolution.md) に従う。
 
 意思決定の判断材料に `mjun-grilling` / `mjun-research` / `mjun-prototype` を、
-承認前のspec検査に `mjun-spec-review` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
+承認前のspec検査に `mjun-spec-review` を、承認時のHTML確認に `exhtml` (あれば) を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
 
 ## 委譲の境界
 
@@ -126,7 +126,8 @@ Phase 5.5のreviewerに機械的な指摘を残さないため、spec reviewを�
 ### Phase 6: contractの提示と承認
 
 - specのcontract全文、`design.md` の全文、変更点サマリ (追加または変更したセクションと理由。Phase 5.5の指摘を反映した箇所はその旨を添える)、Phase 5.7で解消したdecisionの一覧 (D番号と、証拠で昇格 / 人間の決定の別) を提示する。承認対象はcontractであり、design.mdは人間が目視する場所とする (気になる点があれば「修正して再提示」で戻す)
-- AskUserQuestionで「反映する / 修正して再提示 / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
+- AskUserQuestionで「反映する / 修正して再提示 / HTMLで内容を確認する / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
+- 「HTMLで内容を確認する」の場合は、contract全文と `design.md` の全文を1枚の自己完結HTMLにして `open` で開き、同じ承認質問に戻る。Skill toolに `exhtml` があればそれへ両文書を渡して作らせ、無ければskillを使わずその場でHTMLを書く (目次、見出しごとのセクション、表とコードブロックの体裁を整え、外部ファイルに依存しない)。保存先は `/tmp/YYYY-MM-DD-<slug>-spec.html` とし、spec配下には置かない
 - 「反映する」の場合は `spec.md` のfrontmatterを `approval: approved` へ更新してからPhase 7へ進む
 - 「キャンセル」の場合は以降のPhaseへ進まず、作成または更新済みのLocal specを削除するか `approval: pending` のまま残すかを確認する
 

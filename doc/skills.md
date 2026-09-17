@@ -136,6 +136,7 @@ graph LR
     mjun-specify --> mjun-prototype
     mjun-specify --> mjun-spec-review
     mjun-specify --> mjun-to-tasks
+    mjun-specify -. review as HTML .-> exhtml
 
     mjun-implement --> git-commit
     mjun-implement --> github-pr-create
@@ -155,6 +156,7 @@ graph LR
 | `mjun-specify`     | `mjun-grilling`, `mjun-research`, `mjun-prototype`               | When a human-owned / evidence-blocked decision needs resolving, or a tentative decision remains before approval |
 | `mjun-specify`     | `mjun-spec-review`                                               | Phase 5.5 (before approval) reviews the contract and design.md; only valid findings are applied                 |
 | `mjun-specify`     | `mjun-to-tasks`                                                  | Auto-chained after contract approval for multi-task specs, or to re-decompose an existing tasks.md              |
+| `mjun-specify`     | `exhtml`                                                         | Phase 6 when the human picks "review as HTML"; without the skill, the HTML is written ad hoc                    |
 | `mjun-implement`   | `git-commit`, `github-pr-create`                                 | Phase 4 commits the worktree changes; PR only with `--pr`                                                       |
 | `mjun-orchestrate` | `herdr`                                                          | Read first for Herdr CLI syntax, IDs, and lifecycle states; the skill adds only the worker protocol on top      |
 | `github-pr-fix`    | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | Each callee runs only if the corresponding problem is detected                                                  |

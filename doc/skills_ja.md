@@ -136,6 +136,7 @@ graph LR
     mjun-specify --> mjun-prototype
     mjun-specify --> mjun-spec-review
     mjun-specify --> mjun-to-tasks
+    mjun-specify -. HTMLで確認 .-> exhtml
 
     mjun-implement --> git-commit
     mjun-implement --> github-pr-create
@@ -155,6 +156,7 @@ graph LR
 | `mjun-specify`     | `mjun-grilling`, `mjun-research`, `mjun-prototype`               | Human-owned / Evidence-blockedなdecisionの解決と、承認前に残ったtentativeの解消が必要な場合  |
 | `mjun-specify`     | `mjun-spec-review`                                               | Phase 5.5 (承認前) でcontractとdesign.mdを検査し、妥当な指摘だけを反映                       |
 | `mjun-specify`     | `mjun-to-tasks`                                                  | contract承認後、複数task規模の場合と既存tasks.mdの再分解が必要な場合に自動連結               |
+| `mjun-specify`     | `exhtml`                                                         | Phase 6で「HTMLで内容を確認する」が選ばれた場合。skillが無ければその場でHTMLを書く           |
 | `mjun-implement`   | `git-commit`, `github-pr-create`                                 | Phase 4でworktreeの変更をcommitし、`--pr` 時にPRを作成                                       |
 | `mjun-orchestrate` | `herdr`                                                          | Herdr CLIの構文・ID・lifecycle stateの正として最初に読む。skill側はworker protocolだけを追加 |
 | `github-pr-fix`    | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment` | 対応する問題が検出された場合のみ各calleeを実行                                               |
