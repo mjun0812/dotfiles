@@ -40,6 +40,13 @@ for d in "$DOTPATH"/config/dot_config/*; do
         continue
     fi
 
+    if [ "$app" = "hunk" ]; then
+        mkdir -p "$CONFIG_DIR/$app"
+        rm -rf "$CONFIG_DIR/$app/config.toml"
+        ln -snfv "$d/config.toml" "$CONFIG_DIR/$app/config.toml"
+        continue
+    fi
+
     cp -aLf "$CONFIG_DIR/$app" "$DOTPATH/.backup/$app" 2>/dev/null || true
     rm -rf "$CONFIG_DIR/$app"
     ln -snfv "$d" "$CONFIG_DIR/$app"
@@ -181,6 +188,10 @@ zsh "$DOTPATH/script/setup/setup_codex.sh"
 ################ [herdr] ################
 log_section "Setting up herdr..."
 bash "$DOTPATH/script/setup/setup_herdr.sh"
+
+################ [hunk] ################
+log_section "Setting up hunk..."
+bash "$DOTPATH/script/setup/setup_hunk.sh"
 
 ################ [Antigravity CLI] ################
 log_section "Setting up Antigravity CLI..."
