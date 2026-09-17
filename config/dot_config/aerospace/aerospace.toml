@@ -164,17 +164,7 @@ alt-shift-semicolon = 'mode service'
 [mode.service.binding]
 esc = ['reload-config', 'mode main']
 r = ['flatten-workspace-tree', 'mode main'] # reset layout
-# f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
-f = [
-  'layout floating tiling',
-  '''exec-and-forget
-    layout="$(aerospace list-windows --focused --format "%{window-layout}" | tr -d "[:space:]")"
-    if [ "$layout" = "floating" ]; then
-        open -g "hammerspoon://center"
-    fi
-    ''',
-  'mode main',
-]
+f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
 
 alt-shift-h = ['join-with left', 'mode main']
 alt-shift-j = ['join-with down', 'mode main']

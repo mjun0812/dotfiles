@@ -19,7 +19,6 @@ Hammerspoon is used for window management features that AeroSpace cannot handle 
 
 Currently configured features:
 
-- Center window on screen via URL scheme (`hammerspoon://center`)
 - AeroSpace workspace HUD via URL scheme (`hammerspoon://aerospace-workspace?ws=<num>`)
 - Toggle Chrome's native vertical tab sidebar via `Cmd+Shift+B` and left-edge hover
 
@@ -42,13 +41,13 @@ See [Raycast Script Commands](https://manual.raycast.com/script-commands) for th
 
 ### Available Scripts
 
-| Script                      | Description                                |
-| --------------------------- | ------------------------------------------ |
-| `toggle_aerospace.sh`       | Toggle AeroSpace ON/OFF                    |
-| `toggle_aerospace_float.sh` | Make focused window floating and center it |
-| `new_chrome.sh`             | Open new Chrome window in current space    |
-| `new_safari.sh`             | Open new Safari window in current space    |
-| `new_wezterm.sh`            | Open new WezTerm window                    |
+| Script                      | Description                             |
+| --------------------------- | --------------------------------------- |
+| `toggle_aerospace.sh`       | Toggle AeroSpace ON/OFF                 |
+| `toggle_aerospace_float.sh` | Make focused window floating            |
+| `new_chrome.sh`             | Open new Chrome window in current space |
+| `new_safari.sh`             | Open new Safari window in current space |
+| `new_wezterm.sh`            | Open new WezTerm window                 |
 
 ## launchd
 

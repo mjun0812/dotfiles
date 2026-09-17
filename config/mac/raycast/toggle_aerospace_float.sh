@@ -26,9 +26,7 @@ if [[ -z ${layout:-} ]]; then
     exit 1
 fi
 
-# floating でなければ floating にする（ここは「トグル」ではなく「寄せる前に floating 化」）
+# floating でなければ floating にする
 if [[ $layout != "floating" ]]; then
     aerospace layout floating
 fi
-
-open -g "hammerspoon://center"

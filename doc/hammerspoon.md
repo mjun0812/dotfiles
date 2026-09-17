@@ -2,7 +2,7 @@
 
 This document describes the Hammerspoon configuration and URL schemes.
 
-[Hammerspoon](https://www.hammerspoon.org/) is a macOS automation tool that bridges the operating system and a Lua scripting engine. In this dotfiles setup, Hammerspoon supplements [AeroSpace](https://github.com/nikitabobko/AeroSpace) with window management features that AeroSpace cannot handle natively (centering floating windows, displaying a workspace HUD), and adds a toggle for Chrome's native vertical-tab sidebar.
+[Hammerspoon](https://www.hammerspoon.org/) is a macOS automation tool that bridges the operating system and a Lua scripting engine. In this dotfiles setup, Hammerspoon supplements [AeroSpace](https://github.com/nikitabobko/AeroSpace) with a window management feature that AeroSpace cannot handle natively (displaying a workspace HUD), and adds a toggle for Chrome's native vertical-tab sidebar.
 
 ## Configuration Location
 
@@ -10,7 +10,6 @@ This document describes the Hammerspoon configuration and URL schemes.
 | ------------------------------------------------------- | ----------------------------------------------------------------- |
 | `config/dot/hammerspoon/init.lua` (source)              | Entry point. Enables IPC and `require`s the feature modules below |
 | `config/dot/hammerspoon/claude-wezterm-focus.lua`       | Return to the WezTerm window/pane from a Claude Code notification |
-| `config/dot/hammerspoon/center-window.lua`              | Center the focused window (`hammerspoon://center`)                |
 | `config/dot/hammerspoon/aerospace-workspace-hud.lua`    | AeroSpace workspace number HUD                                    |
 | `config/dot/hammerspoon/chrome-vertical-tab-toggle.lua` | Chrome vertical tab sidebar toggle                                |
 | `~/.hammerspoon/` (deployed)                            | Symlinked from `config/dot/hammerspoon/` by `install.sh`          |
@@ -23,20 +22,9 @@ Hammerspoon registers URL handlers via `hs.urlevent.bind`. They can be invoked f
 
 | URL                                                           | Description                                                            |
 | ------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `hammerspoon://center`                                        | Center the focused window on the current screen                        |
 | `hammerspoon://aerospace-workspace?ws=<num>`                  | Show a transient HUD with the AeroSpace workspace number               |
 | `hammerspoon://claude-wezterm-capture?session=<id>&pane=<id>` | Remember the focused WezTerm window and pane for a Claude Code session |
 | `hammerspoon://claude-wezterm-focus?session=<id>&pane=<id>`   | Bring back the WezTerm window and pane recorded for that session       |
-
-### `hammerspoon://center`
-
-Centers the focused window with `hs.window.focusedWindow():centerOnScreen(nil, true)`. The second argument (`true`) keeps the window from being placed under the Dock or off-screen.
-
-Example:
-
-```bash
-open -g "hammerspoon://center"
-```
 
 ### `hammerspoon://aerospace-workspace`
 
@@ -54,14 +42,11 @@ open -g "hammerspoon://aerospace-workspace?ws=3"
 
 ## AeroSpace Integration
 
-The AeroSpace configuration (`config/dot_config/aerospace/aerospace.toml`) calls into Hammerspoon at two points:
+The AeroSpace configuration (`config/dot_config/aerospace/aerospace.toml`) calls into Hammerspoon at one point:
 
-| Trigger                                | URL invoked                                  | Purpose                                                     |
-| -------------------------------------- | -------------------------------------------- | ----------------------------------------------------------- |
-| `exec-on-workspace-change`             | `hammerspoon://aerospace-workspace?ws=<num>` | Display workspace HUD on every workspace switch             |
-| Service mode `F` key (toggle floating) | `hammerspoon://center`                       | Re-center the window when it transitions to floating layout |
-
-The Raycast script `config/mac/raycast/toggle_aerospace_float.sh` also calls `hammerspoon://center` after switching the focused window to the floating layout.
+| Trigger                    | URL invoked                                  | Purpose                                         |
+| -------------------------- | -------------------------------------------- | ----------------------------------------------- |
+| `exec-on-workspace-change` | `hammerspoon://aerospace-workspace?ws=<num>` | Display workspace HUD on every workspace switch |
 
 ## Workspace HUD Customization
 
