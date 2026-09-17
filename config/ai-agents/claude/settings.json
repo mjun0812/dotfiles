@@ -114,7 +114,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/capture-claude-wezterm-hook.sh"
+            "command": "~/.dotfiles/script/hooks/capture-wezterm-pane-hook.sh"
           }
         ]
       },

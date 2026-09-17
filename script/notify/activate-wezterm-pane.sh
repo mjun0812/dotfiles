@@ -7,7 +7,7 @@ SESSION_ID="${2:-}"
 [[ $PANE_ID =~ ^[0-9]+$ ]] || exit 0
 
 if [[ $SESSION_ID =~ ^[[:alnum:]_-]+$ ]]; then
-    open -g "hammerspoon://claude-wezterm-focus?session=${SESSION_ID}&pane=${PANE_ID}" \
+    open -g "hammerspoon://wezterm-focus?session=${SESSION_ID}&pane=${PANE_ID}" \
         >/dev/null 2>&1 || true
 else
     WEZTERM_BIN="$(command -v wezterm || true)"
