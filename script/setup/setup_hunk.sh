@@ -16,3 +16,14 @@ if hunk extension list 2>/dev/null | grep -q '^hunk-gh'; then
 else
     hunk extension install modem-dev/hunk-gh --yes
 fi
+
+# hunk 同梱の agent skill (hunk-review) を各 agent の skills ディレクトリへ symlink する。
+# リンク先はバージョン入りのパスだが、本スクリプトは hunk 更新時の postinstall でも
+# 走るので、そのたびに新バージョンへ張り直される。
+# フレッシュ環境の mise install 中は skills ディレクトリがまだ無いので mkdir -p する
+# (install.sh 側の mkdir -p と同じディレクトリで衝突しない)。
+skill_dir=$(dirname "$(hunk skill path)")
+for skills_root in "$HOME/.claude/skills" "$HOME/.agents/skills" "$HOME/.gemini/antigravity-cli/skills"; do
+    mkdir -p "$skills_root"
+    ln -snfv "$skill_dir" "$skills_root/hunk-review"
+done

@@ -45,6 +45,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/dot_config/herdr/plugins/<plugin>`                                                                | `herdr plugin link` で登録 (symlinkではない。`setup_herdr.sh` が実行)         |
 | `config/ai-agents/claude/{CLAUDE.md,settings.json,mcp.json,statusline.py,subagent_statusline.py,rules/*}` | `~/.claude/` 配下                                                             |
 | `config/ai-agents/skills/<skill>`                                                                         | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
+| hunk同梱の `hunk-review` skill (`hunk skill path` の親ディレクトリ)                                       | 上記3箇所へ `hunk-review` としてsymlink (`setup_hunk.sh` が実行)              |
 | `config/ai-agents/codex/hooks.json`                                                                       | `~/.codex/hooks.json`                                                         |
 | `config/ai-agents/AGENTS_global.md`                                                                       | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                   |
 | `config/ai-agents/gemini/antigravity-cli/settings.json`                                                   | `~/.gemini/antigravity-cli/settings.json`                                     |
