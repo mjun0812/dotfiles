@@ -105,11 +105,12 @@ Source: #123
 
 ## 投影 (spec → Issue)
 
-`Source:` を持つspecは、contract承認後にIssue本文へ投影する。
+`Source:` を持つspecは、contract承認後にIssue本文へ投影する。取り込んだIssueの元の本文は消さず、その下へ追記する。
 
 - 投影範囲: contract (Context〜Out of Scope) + `## Decision Log` (採用decisionの要約表) + 必要なら `## Design Notes` + `tasks.md` があれば `## Tasks` (taskタイトルのチェックボックス一覧)
 - Dependenciesの `spec: <slug>` は、そのspecに `Source: #M` があれば `#M` に置き換え、無ければ投影しない (specは内部文書)
 - **task進捗は投影しない**。進捗は内部 (tasks.md) だけで管理し、外部からはPRで見える。実装はIssueへ一切書き込まない (Issueの `## Tasks` は承認時点のスナップショット)
+- 本文の構成: 元の本文 → 区切り行 `<!-- projected-spec -->` → 投影範囲。本文に区切り行が無ければ本文全体を元の本文として残し、あれば区切り行より上を残して下だけを置き換える (再投影で元の本文が増えない)。投影時に作成したIssueは元の本文が無いため、区切り行から始める。Issueのタイトルは変更しない
 - 書き換えは一時ファイル経由の一括更新 (`gh issue edit --body-file`) + 変更サマリの1コメント (body編集はwatcherに通知されないため)
 - 却下案・検討経緯はIssueコメントへ記録する
 - 純Local specは投影しない
@@ -117,7 +118,7 @@ Source: #123
 ## 同期規則
 
 - 投影の直前に `gh issue view` で最新のIssueを取得する。取り込み後に付いた新しいコメントがあれば内容を提示し、specへ取り込むかを確認する
-- 外部でIssue本文が編集されていても、投影は承認済みのLocal contractで上書きする (正本はLocal)。上書き内容は承認フローで提示済みのため、そこで差分に気付ける
+- 区切り行より下が外部で編集されていても、投影は承認済みのLocal contractで上書きする (正本はLocal)。上書き内容は承認フローで提示済みのため、そこで差分に気付ける。区切り行より上 (元の本文) は上書きしない
 
 ## 用語集と決定記録
 

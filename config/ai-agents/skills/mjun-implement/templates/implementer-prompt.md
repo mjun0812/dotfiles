@@ -12,6 +12,7 @@
 - 実装設計 (`design.md`: Modules / Interfaces & Seams / Data Flow / Test Strategy / Change Outline。Local specの場合)
 - 関係するADR (決定記録。あれば。決定に反する実装をしない)
 - verifierの `TASK_BRIEF`、`CHECK_FILES` (変更禁止)、`CHECK_COMMANDS`
+- 検査の無いtask (`REVIEW_ONLY`。あれば): verifierが検査化できなかったtask。Acceptance Criteriaをそのまま成功の定義とし、各criterionの充足を示すコードパスを `EVIDENCE` に書く (reviewerがcriterionごとに照合する)
 - 担当groupの各task: ID、説明、Boundary、Done when (完了時に観察できること)、Seam、Blocked by。親が決めた実装方針
 - 親が洗い出した検証コマンドのうちgroupに関係するもの
 - 過去taskのImplementation Notes (あれば)
@@ -26,7 +27,7 @@
 
 ### 2. 実装
 
-- taskを依存順 (Blocked by) に進め、検査を1つずつgreenにする。1つの検査 → 最小の実装 → その検査と関係するテストの実行、の順で進め、全体のテストスイートは最後に1回だけ実行する
+- taskを依存順 (Blocked by) に進め、検査を1つずつgreenにする。1つの検査 → 最小の実装 → その検査と関係するテストの実行、の順で進める。全体のテストスイートは実行しない (親がfeature単位の検証で実行する)
 - 変更のたびにlintと型検査 (あれば) を実行する
 - 実装設計と設計制約に従う。変更は担当タスクに閉じ、スコープを広げない
 - 追加の単体テストを書いてよいが、`CHECK_FILES` は変更しない
@@ -50,6 +51,8 @@
 
 - SubAgentを起動せず、担当作業を別Agentへ再移譲しない。自分で完了できない場合は、定められた構造化結果で親へ返す
 - 親へ途中経過のmessageを送らない。結果は最終応答の構造化ブロックだけで返す (途中のmessageは親を起こして待機を中断させる)
+- 検証コマンドをbackgroundで実行しない。前面で完了まで待ち、sleepやログのtailで完了を待つpollingをしない。toolのtimeoutに収まらない場合は対象 (package、テスト名) を絞って分割実行する (background実行のまま応答を終えると、結果が親に届かない)
+- repositoryに残るもの (テスト名、関数名、ファイル名、fixture名、コメント、ログ、エラーメッセージ) に、task ID (`T-NNN`)、`AC-n`、decision番号 (`D-NNN`)、Requirement番号、`spec.md` / `tasks.md`、「specによると」のようなspecへの言及を書かない (specは内部文書でrepositoryに存在せず、番号は再分解で変わる)。テスト名とコメントは、検証する振る舞いで書く。言語はrepositoryの規約に従い、規約が無ければ既存ファイルに合わせる
 - commit、push、PR作成を行わない
 - `CHECK_FILES` を変更しない。誤りだと考える場合は `CHECK_DISPUTE` で報告する
 - 担当group外へスコープを広げない
@@ -59,7 +62,7 @@
 
 ## Status Report
 
-応答の最後に、次の構造化ブロックを必ず1つだけ出力する。親は `- STATUS:` 行だけをパースする。見出しの変更、値の同義語への置き換え、ブロック後の追記をしない。補足説明は各フィールドの中に書く。
+応答の最後に、次の構造化ブロックを必ず1つだけ出力する。実行環境が親への結果返却に専用のtoolを要求する場合は、このブロックをそのままそのtoolの引数に入れて返す。親は `- STATUS:` 行だけをパースする。見出しの変更、値の同義語への置き換え、ブロック後の追記をしない。補足説明は各フィールドの中に書く。
 
 ```
 ## Status Report

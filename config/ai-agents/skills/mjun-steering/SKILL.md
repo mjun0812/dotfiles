@@ -1,11 +1,7 @@
 ---
 name: mjun-steering
 description: >-
-  `.mjun/steering/` をプロジェクトの永続メモリ (project memory) として作成・維持するSkill。
-  core 3ファイル (product.md, tech.md, structure.md) が欠けていればコードベースを分析して生成し (Bootstrap)、
-  揃っていればsteeringとコードのdriftを検出して追記更新する (Sync)。
-  どちらのモードでも、コード内に証拠のあるドメイン (API規約、testing、securityなど) のcustom steeringを自動作成し、
-  履歴 (merged PR、closed Issue、設計doc) から用語集 `CONTEXT.md` と根拠が明文の決定記録 `adr/` (repo直下の `CONTEXT.md` と `docs/adr/` があればそれ、無ければ `.mjun/` 配下) を発掘して追記する (追記専用)。
+  `.mjun/steering/` のプロジェクトメモリ (product.md、tech.md、structure.md、ドメイン別のcustom steering) と、用語集 `CONTEXT.md`・決定記録 `adr/` を、コードベースと履歴から作成・更新するSkill。
   ユーザーが「steeringを作って」「steeringを更新して」「プロジェクトメモリを整備して」のように依頼したら使うこと。
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls:*), Bash(find:*), Bash(rg:*), Bash(git:*), Bash(cat:*), Bash(head:*), Bash(tail:*), Bash(wc:*), Bash(tree:*), Bash(mkdir:*), Bash(gh pr list:*), Bash(gh pr view:*), Bash(gh issue list:*), Bash(gh issue view:*)
 ---

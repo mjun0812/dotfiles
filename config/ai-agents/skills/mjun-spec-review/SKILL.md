@@ -41,9 +41,9 @@ contract軸は [templates/contract-reviewer-prompt.md](templates/contract-review
 
 ### Phase 3: verifierによる反証
 
-候補1件ごとに [templates/verifier-prompt.md](templates/verifier-prompt.md) に候補とPhase 1の材料を合成し、SubAgentを起動する。候補間に依存は無いので並列に起動してよい。verifierにはrepository内の読み取りと `git` の読み取り系コマンドだけを許可し、コードを変更させない。
+候補を、対象セクションが同じもの同士で最大3件ずつに束ね、束ごとに [templates/verifier-prompt.md](templates/verifier-prompt.md) に候補とPhase 1の材料を合成してSubAgentを起動する (候補ごとに起動すると、全員が同じ文書を読み直す)。束の間に依存は無いので並列に起動してよい。候補が多くても、親が自分で候補を検証してverifierの代わりにしない (承認前検査として呼ばれた場合、親は書き手と同じcontextを持つ)。verifierにはrepository内の読み取りと `git` の読み取り系コマンドだけを許可し、コードを変更させない。
 
-verdictが `confirmed` の候補だけを確定指摘とし、`refuted` と `uncertain` は捨てる。確定指摘の根拠に `file:line` があれば、親がその行をReadして引用が存在し主張と一致するかを確かめ、無い、または食い違うものは捨てる (verifierの報告を実在確認の代わりにしない)。
+各出力の `## Verdict` を `CANDIDATE` で候補に対応づける。verdictが `confirmed` の候補だけを確定指摘とし、`refuted` と `uncertain` は捨てる。確定指摘の根拠に `file:line` があれば、親がその行をReadして引用が存在し主張と一致するかを確かめ、無い、または食い違うものは捨てる (verifierの報告を実在確認の代わりにしない)。
 
 ### Phase 4: 出力
 
