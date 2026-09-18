@@ -42,7 +42,6 @@ gitleaks = "latest"
 herdr = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup_herdr.sh' }
 kubectl = "latest"
 stylua = "latest"
-pre-commit = "latest"
 prek = "latest"
 sheldon = "latest"
 shellcheck = "latest"
@@ -52,6 +51,7 @@ taplo = "latest"
 "github:WGUNDERWOOD/tex-fmt" = "latest"
 "github:runpod/runpodctl" = "latest"
 "github:rtk-ai/rtk" = "latest"
+duckdb = "latest"
 
 # npm packages
 "npm:@mermaid-js/mermaid-cli" = "latest"
@@ -86,7 +86,6 @@ opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = "latest"
 
 # Python CLI tools
-"cargo:nb-cli" = "latest"
 "pipx:ruff" = "latest"
 "pipx:glances" = "latest"
 "pipx:nvitop" = "latest"

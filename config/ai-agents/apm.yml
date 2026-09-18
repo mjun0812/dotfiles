@@ -42,6 +42,15 @@ dependencies:
       skills:
         - agent-browser
     - herdrdev/herdr/skills/herdr#>=0.8.0
+    - duckdb/duckdb-skills/skills/read-file
+    - duckdb/duckdb-skills/skills/query
+    - duckdb/duckdb-skills/skills/convert-file
+    - duckdb/duckdb-skills/skills/duckdb-docs
+    - duckdb/duckdb-skills/skills/s3-explore
+    - git: duckdb/duckdb-skills
+      path: skills/read-memories
+      targets:
+        - claude
   mcp: []
 includes: auto
 scripts: {}
