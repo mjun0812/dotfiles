@@ -126,8 +126,11 @@ nvim --headless -c "lua require('nvim-treesitter').install(require('config.trees
 nvim --headless -c "lua require('config.mason-preinstall')()" +qa
 
 ################ [Node] ################
-log_section "Setting up Vite plus..."
-$DOTPATH/script/setup/install_vp.sh || echo "vp install/upgrade failed (ignored)"
+# macOS installs vp with mise bootstrap (brew:vite-plus)
+if [ "$(uname -s)" != "Darwin" ]; then
+    log_section "Setting up Vite plus..."
+    $DOTPATH/script/setup/install_vp.sh || echo "vp install/upgrade failed (ignored)"
+fi
 
 ################ [VSCode] ################
 log_section "Setting up VSCode..."

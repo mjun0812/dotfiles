@@ -42,6 +42,7 @@ container system kernel set --recommended --force
 "brew:subversion" = "latest"
 "brew:swiftlint" = "latest"
 "brew:tree" = "latest"
+"brew:vite-plus" = "latest"
 "brew:wget" = "latest"
 "brew:watch" = "latest"
 "brew-cask:alt-tab" = "latest"
