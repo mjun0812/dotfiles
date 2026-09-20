@@ -25,6 +25,9 @@ export CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1
 # uv/cargo-dist 系インストーラに rc ファイルを書き換えさせない
 export INSTALLER_NO_MODIFY_PATH=1
 
+# Vite+ のsetupにrcファイルへ追記させない
+# $HOME/.vite-plus/env $HOME/.config/vite-plus/env
+
 # Apple Container で他platformのimageを使わない
 [[ "$OSTYPE" == darwin* ]] && export CONTAINER_DEFAULT_PLATFORM=linux/arm64
 

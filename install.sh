@@ -58,6 +58,8 @@ $DOTPATH/script/setup/install_mise.sh
 source "$HOME/.zprofile"
 mise install
 mise reshim
+# Replace shims in PATH with real tool paths; mise evaluates third-party casks in a sandbox where the ruby shim cannot resolve a version
+eval "$(mise activate zsh)"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     log_section "Applying mise bootstrap..."
@@ -124,8 +126,11 @@ nvim --headless -c "lua require('nvim-treesitter').install(require('config.trees
 nvim --headless -c "lua require('config.mason-preinstall')()" +qa
 
 ################ [Node] ################
-log_section "Setting up Vite plus..."
-$DOTPATH/script/setup/install_vp.sh || echo "vp install/upgrade failed (ignored)"
+# macOS installs vp with mise bootstrap (brew:vite-plus)
+if [ "$(uname -s)" != "Darwin" ]; then
+    log_section "Setting up Vite plus..."
+    $DOTPATH/script/setup/install_vp.sh || echo "vp install/upgrade failed (ignored)"
+fi
 
 ################ [VSCode] ################
 log_section "Setting up VSCode..."
@@ -200,7 +205,7 @@ for link in "$HOME/.gemini/skills"/*(@N) "$HOME/.gemini/antigravity-cli/skills"/
     [ -e "$link" ] || rm -f "$link"
 done
 cp -aLf "$HOME/.gemini/GEMINI.md" "$DOTPATH/.backup/GEMINI.md" && rm -rf "$HOME/.gemini/GEMINI.md"
-cp -aLf "$HOME/.gemini/skills" "$DOTPATH/.backup/gemini_skills" && rm -rf "$HOME/.gemini/skills"
+cp -aLf "$HOME/.gemini/skills" "$DOTPATH/.backup/gemini_skills" 2>/dev/null && rm -rf "$HOME/.gemini/skills"
 cp -aLf "$HOME/.gemini/antigravity-cli/settings.json" "$DOTPATH/.backup/antigravity_cli_settings.json" && rm -rf "$HOME/.gemini/antigravity-cli/settings.json"
 cp -aLf "$HOME/.gemini/antigravity-cli/skills" "$DOTPATH/.backup/antigravity_cli_skills" 2>/dev/null || true
 mkdir -p "$HOME/.gemini/antigravity-cli"
