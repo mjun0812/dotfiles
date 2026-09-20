@@ -26,8 +26,9 @@ export PATH="$PNPM_HOME:$PATH"
 
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/usr/local/lib:$LD_LIBRARY_PATH"
 
-# Vite+ (https://viteplus.dev)
+# Vite+ (https://viteplus.dev)。既存の導入は ~/.vite-plus、新規の導入は ~/.config/vite-plus にenvを置く
 [[ -f "$HOME/.vite-plus/env" ]] && . "$HOME/.vite-plus/env"
+[[ -f "$HOME/.config/vite-plus/env" ]] && . "$HOME/.config/vite-plus/env"
 
 if [[ ! -o interactive ]] && command -v mise >/dev/null 2>&1; then
     eval "$(mise activate zsh --shims)"

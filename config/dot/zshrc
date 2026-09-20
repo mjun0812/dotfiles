@@ -15,3 +15,6 @@ export PATH="$HOME/.venv/bin:$PATH"
 for f in ~/.config/zsh/profiles/*.zsh(N); do
     zsh-defer source "$f"
 done
+
+# Vite+ のsetupにrcファイルへ追記させない (読み込みはzprofileで行う)。
+# vpは、対象ファイルに次のパス文字列があれば追記をスキップする: $HOME/.vite-plus/env $HOME/.config/vite-plus/env
