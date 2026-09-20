@@ -9,12 +9,9 @@ export PATH="$HOME/.venv/bin:$PATH"
 
 [[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local
 
-# マシン固有の設定 (このrepoでは管理しない)。ディレクトリが無ければ何もしない。
-# sheldonの遅延読み込み (functions.zsh, aliases.zsh) より後に評価させるため zsh-defer に積む。
-# これにより profiles 側で同名の関数や alias を定義し直せば、その定義が最終的に有効になる
 for f in ~/.config/zsh/profiles/*.zsh(N); do
     zsh-defer source "$f"
 done
 
-# Vite+ のsetupにrcファイルへ追記させない (読み込みはzprofileで行う)。
-# vpは、対象ファイルに次のパス文字列があれば追記をスキップする: $HOME/.vite-plus/env $HOME/.config/vite-plus/env
+# Vite+ のsetupにrcファイルへ追記させない
+# $HOME/.vite-plus/env $HOME/.config/vite-plus/env
