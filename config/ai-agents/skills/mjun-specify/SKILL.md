@@ -62,7 +62,7 @@ Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontm
 ### Phase 2: 調査とgap分析
 
 - `.mjun/steering/` (あれば) と関連コードを読み、原因、変更箇所、既存パターンを特定する
-- 用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) と共通の決定記録 `.mjun/steering/decisions.md` を (あれば) 読む。specの用語がCONTEXT.mdの定義と衝突していればspec側を定義に揃え (定義を変えたい場合はHuman-owned decisionにする)、適用対象のacceptedな判断と矛盾する要求はHuman-owned decisionとして扱う ([references/source-resolution.md 用語集と決定記録](references/source-resolution.md#用語集と決定記録))
+- 用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) と共通の決定記録 `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) を (あれば) 読む。specの用語がCONTEXT.mdの定義と衝突していればspec側を定義に揃え (定義を変えたい場合はHuman-owned decisionにする)、適用対象のacceptedな判断と矛盾する要求はHuman-owned decisionとして扱う ([references/source-resolution.md 用語集と決定記録](references/source-resolution.md#用語集と決定記録))
 - 対象以外のactiveなspec (source-resolution.mdの一覧手順で列挙) の `spec.md` のBoundariesと `design.md` のChange Outlineを読む。Ownsの重なり、Public Contracts Affectedが同じ公開interfaceを指す、Change Outlineのdirectoryの重なりがあれば、どちらのspecが所有するか (または分割・統合するか) をHuman-owned decisionとして扱う。対象specが他のactive specの成果に依存するなら、BoundariesのDependenciesに `spec: <slug>` と書く ([references/source-resolution.md spec間の依存と境界](references/source-resolution.md#spec間の依存と境界))
 - 現在のspecを [references/spec-template.md](references/spec-template.md) のcontract構成と突き合わせ、欠落セクション、曖昧な記述、実装者が追加調査を要する箇所を列挙する。取り込んだIssueコメントの合意事項は反映対象として扱う
 - スコープ外の問題を見つけた場合は本文に混ぜず、Out of Scopeへの記載と別spec化の提案に回す
@@ -75,7 +75,7 @@ gapから意思決定の論点を洗い出し、[references/decision-authority.m
 
 ### Phase 4: decisionの解決
 
-frontierの論点を1つずつ解決し、確定するたびに**Localのspecと `.mjun/steering/decisions.md` へ逐次**反映する。対象specの `Decisions:` 行へIDを追加する。decision logのentry形式は [references/decisions-template.md](references/decisions-template.md) に従う。
+frontierの論点を1つずつ解決し、確定するたびに**Localのspecと `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) へ逐次**反映する。対象specの `Decisions:` 行へIDを追加する。decision logのentry形式は [references/decisions-template.md](references/decisions-template.md) に従う。
 
 - **Agent-owned**: decision-authority.mdの自己問答 (論点 → 調査 → 推奨案 → 反論 → 採択 + 確信度) で解決する。確信度lowは `Status: tentative` (要確認) として記録し、Phase 5.7で解消する
 - **Human-owned**: `mjun-grilling` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
@@ -103,7 +103,7 @@ Phase 5.5のreviewerに機械的な指摘を残さないため、spec reviewを�
 
 1. **AC 1件 = 1コマンド**: Acceptance Criteriaの各項目が1つの検査コマンドに落ちるか。複数の観察 (複数のシナリオ、バージョン、dispatch) を1件に束ねていれば分割する
 2. **Requirement ↔ ACの対応**: Requirements 1件ごとに、それを観察するACが1つ以上あるか。1件のRequirementが複数の振る舞いを述べていれば、振る舞いごとに対応を見る。無ければACを追加する (対応表は会話内に保持し、specへは書かない)。件数や回数を問うRequirement (「1件につき1行」など) のACは、存在確認ではなく件数で書く
-3. **Evidenceの実在確認**: `.mjun/steering/decisions.md` の対象specが参照するentryのEvidenceにある `file:line`、引用、件数を、その場でファイルを読み直す、またはコマンドを再実行して照合する。食い違いは訂正entryを追記し、旧entryをsupersededにしてspecの参照を更新する。contractとdesignに書いた外部の固有名 (環境変数名、URL、package名、CLI option) は、一次資料 (公式ドキュメント、upstreamのソース) で綴りを確かめる。確かめられないものはEvidence-blockedとしてPhase 4へ戻す
+3. **Evidenceの実在確認**: `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) の対象specが参照するentryのEvidenceにある `file:line`、引用、件数を、その場でファイルを読み直す、またはコマンドを再実行して照合する。食い違いは訂正entryを追記し、旧entryをsupersededにしてspecの参照を更新する。contractとdesignに書いた外部の固有名 (環境変数名、URL、package名、CLI option) は、一次資料 (公式ドキュメント、upstreamのソース) で綴りを確かめる。確かめられないものはEvidence-blockedとしてPhase 4へ戻す
 4. **ACのbaseline確認**: 各ACの検査に使えるコマンドが既にあるもの (既存のテスト、lint、CLI呼び出し、`grep`) は、現在のtreeで実行する。新規または変更する振る舞いのACが変更前から成立している場合は、要求した差分を観察できているかを確認し、観察できていなければその差分を捉えるACへ書き直す。完了済みtaskの意味を変えないACと、既存の振る舞いを維持する回帰防止のACは、変更前に通っていても維持する。Boundariesの外にある既存の失敗のために成立させられないAC (repository全体のlint成功など) は、観察の範囲を変更箇所へ絞る
 
 ### Phase 5.5: spec review
@@ -118,12 +118,12 @@ Phase 5.5のreviewerに機械的な指摘を残さないため、spec reviewを�
 結果ブロック `## Spec Review` の合否は `- VERDICT:` フィールドで判定する。修正対象は `FINDINGS`、人間への再確認が必要なdecisionは `HUMAN_DECISION_CONFLICTS` から読み取る。必要な構造化値が無い、または曖昧な場合は1回だけ再要求する。
 
 - `PASS` → Phase 5.7へ進む
-- `NEEDS_FIXES` → 各指摘を読み、contractの明文とコードの事実に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は `.mjun/steering/decisions.md` にentryを追記し、旧entryをsupersededにして対象specの参照を更新する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)
+- `NEEDS_FIXES` → 各指摘を読み、contractの明文とコードの事実に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) にentryを追記し、旧entryをsupersededにして対象specの参照を更新する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)
 - `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grilling` の単一decisionモードで再解決し、`design.md` を更新してからPhase 5.7へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
 
 ### Phase 5.7: tentativeの解消
 
-承認を求める前に、`.mjun/steering/decisions.md` のうち対象specの `Decisions:` が参照する `Status: tentative` のdecisionをすべて解消し、対象specの承認時点でtentativeを0件にする。Phase 4の途中でAgent-ownedの論点を人間に投げない代わりに、ここで証拠を集め、証拠で決まらなかったものだけを人間に確認する。
+承認を求める前に、`decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) のうち対象specの `Decisions:` が参照する `Status: tentative` のdecisionをすべて解消し、対象specの承認時点でtentativeを0件にする。Phase 4の途中でAgent-ownedの論点を人間に投げない代わりに、ここで証拠を集め、証拠で決まらなかったものだけを人間に確認する。
 
 1. **証拠による昇格**: 確信度が低い原因が証拠の不足なら、Evidence-blockedと同じ経路で証拠を集めて再判定する (外部事実は `mjun-research`、UI・状態・ロジックの実物は `mjun-prototype`、現行codeでの実現可能性はPhase 5の手順によるtrial implementation。`--skip-trial` 指定時はtrial implementationを使わない)。確信度がhigh / mediumになれば `Status: accepted` へ更新し、Evidenceに根拠を追記する
 2. **人間の確認**: 証拠で上がらなかったものは、Human-ownedと同じく `mjun-grilling` の単一decisionモードへ論点、選択肢、agentの採択案 (推奨として)、調査結果を渡して1問ずつ解決する。人間の決定がagentの採択と同じなら、entryの `Status` を `accepted`、`Owner` を `human` に更新し、Evidenceへ確認日と根拠を追記する。異なるなら旧entryを `Status: superseded by D-NNN` にして `Owner: human` の新entryを追加してDecisionsの参照を更新し、`spec.md` と `design.md` の該当箇所を更新する

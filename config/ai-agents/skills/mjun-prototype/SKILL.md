@@ -35,4 +35,4 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion
    - 原則: 試作品は削除する。残すのは手順5の記録だけ
    - 例外: 試作品そのものがdecisionの一次資料になる場合 (操作可能な状態機械、UI比較、schema検証器など、記録の文章より雄弁な場合) だけ、成果物のコピーを `.mjun/specs/<slug>/prototype/` へ保存し、記録から参照する
    - **一時worktree・一時ディレクトリは、成功・中断を問わず必ず削除する** (`git worktree remove --force` → `git branch -D` / `rm -rf`)。削除に失敗した場合はユーザーに警告する
-7. 検証結果を呼び出し元へ返す。`spec` が指定されていれば、共通の `.mjun/steering/decisions.md` / Local specのdesign.mdまたはIssueコメントへの記録は呼び出し元が行う
+7. 検証結果を呼び出し元へ返す。`spec` が指定されていれば、共通の `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) / Local specのdesign.mdまたはIssueコメントへの記録は呼び出し元が行う

@@ -25,12 +25,12 @@ specを、それを書いた会話とは別のfresh contextで敵対的に検査
 
 1. repository rootを `git rev-parse --show-toplevel` で特定する。Git repositoryでなければ現在のディレクトリを使い、コードベースとの整合検査が限定的になる旨をPhase 4のSUMMARYに含める
 2. sourceの形からmodeを決め、reviewerに渡す材料を集める。出力言語はsourceの言語に合わせる
-   - **spec mode** (`.mjun/specs/<slug>`): `spec.md` をcontract、`design.md` を実装設計、共通の `.mjun/steering/decisions.md` から対象specの `Decisions:` が参照するentryを決定の経緯として渡す。`design.md` が無ければdesign軸を省略し、その旨をSUMMARYに含める。参照entryのうちsupersededではない `Owner: human` のdecision (D番号とタイトル) をHuman-owned decisionの一覧にする。`spec.md` のH1直下に `Source: #N` があれば `gh issue view N --json title,body,comments` で本文とコメントを取得し、sourceの原文とする
+   - **spec mode** (`.mjun/specs/<slug>`): `spec.md` をcontract、`design.md` を実装設計、共通の `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) から対象specの `Decisions:` が参照するentryを決定の経緯として渡す。`design.md` が無ければdesign軸を省略し、その旨をSUMMARYに含める。参照entryのうちsupersededではない `Owner: human` のdecision (D番号とタイトル) をHuman-owned decisionの一覧にする。`spec.md` のH1直下に `Source: #N` があれば `gh issue view N --json title,body,comments` で本文とコメントを取得し、sourceの原文とする
    - **Issue番号**: `status: active` のspecの `spec.md` から `Source: #N` を検索し、無ければ `status: done` のspecも検索する。見つかればそのspecをspec modeで扱う (複数ヒットした場合は一覧を提示して選んでもらう)。見つからなければ **issue mode**: `gh issue view N --json title,body,comments` で取得し、本文のContext〜Out of Scopeをcontract、`## Design Notes` があれば実装設計 (無ければdesign軸を省略)、`## Decision Log` があれば決定の経緯、コメントをsourceの原文として扱う。Human-owned decisionの一覧は無いものとして渡す
    - **PR番号**: `gh pr view N --json body` で本文を取得し、`Closes #N` / `Fixes #N` / `Resolves #N` からIssue番号を取り出してIssue番号として解決する (複数あれば一覧を提示して選んでもらう)。無ければ中止し、PRから検査対象のspecを特定できないことを報告する。PRのコード差分は読まない
    - **doc mode** (`.mjun/specs/` 外のMarkdown): ファイル内の要求・制約・スコープの記述をcontract、実装方針の記述を実装設計として扱う。どちらかが無ければその軸を省略し、SUMMARYに含める
    - **conversation mode** (source未指定): 会話中の設計・計画を、要求・制約・スコープ (contract) と設計本文に分けて書き起こし、reviewerへの入力にする (SubAgentは会話を読めない)。素材が無ければ中止する
-   - 共通: `.mjun/steering/*.md`、用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`)、共通の決定記録 `.mjun/steering/decisions.md` があればパス一覧を集める (reviewerとverifierが自分で読む)。対象以外のactiveなspec (`.mjun/specs/*/spec.md` のうち `status: active` のもの) の `spec.md` と `design.md` のパス一覧も集める (spec間の境界衝突の検査に使う。他にactiveなspecが無ければcontract軸の観点8を省略し、その旨をSUMMARYに含める)
+   - 共通: `.mjun/steering/*.md`、用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`)、共通の決定記録 `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) があればパス一覧を集める (reviewerとverifierが自分で読む)。対象以外のactiveなspec (`.mjun/specs/*/spec.md` のうち `status: active` のもの) の `spec.md` と `design.md` のパス一覧も集める (spec間の境界衝突の検査に使う。他にactiveなspecが無ければcontract軸の観点8を省略し、その旨をSUMMARYに含める)
    - 決定のStatusとScopeは [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って読む。tentativeとsupersededを確定規約にせず、他specの判断を対象specへ自動適用しない。参照先が欠落している場合はSUMMARYへ明記する。
 3. `gh` が失敗した場合は中止し、エラーを報告する。パスは常にrepository rootからの絶対パスで渡す
 

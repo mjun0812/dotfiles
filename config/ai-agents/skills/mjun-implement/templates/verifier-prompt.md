@@ -97,3 +97,5 @@ groupの各taskについて判定する。次のいずれかに当たるtaskは�
 - SPLIT_PROPOSAL: <TOO_LARGEのtaskごと。各taskの説明、Acceptance Criteria、Boundary、Done when、Seam、Blocked byを含む分割案>
 - MISSING: <CANNOT_VERIFYのtaskごと。どんな検証手段や情報があれば検査にできるか>
 ```
+
+Git管理へ移行済みの `docs/adr/decisions.md` 自体は、D番号・Scope・Source・supersededの履歴を保持する文書なので、上記の内部識別子禁止からその記録に必要な項目だけを除外する。製品コードやテストへ内部specの識別子を埋め込むことは引き続き禁止する。

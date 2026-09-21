@@ -21,6 +21,15 @@ for spec in "$specs_dir"/*/spec.md; do
     remaining=0 branch="" tasks="" blocked="" local_branch="" worktree=""
     decision_refs=$(sed -n 's/^Decisions: *//p' "$spec" | head -1)
     decision_log="$root/.mjun/steering/decisions.md"
+    record_issues=""
+    if [[ -f "$root/docs/adr/decisions.md" ]]; then
+        [[ -f $decision_log ]] && record_issues="decisions migration incomplete;"
+        decision_log="$root/docs/adr/decisions.md"
+        git -C "$root" ls-files --error-unmatch -- docs/adr/decisions.md >/dev/null 2>&1 || record_issues+="decisions destination untracked;"
+    fi
+    if [[ -f "$root/CONTEXT.md" && -f "$root/.mjun/CONTEXT.md" ]]; then
+        record_issues+="glossary migration incomplete;"
+    fi
     [[ -f $decision_log ]] || decision_log=/dev/null
     decision_report=$(awk -v refs="$decision_refs" '
         BEGIN { gsub(/,/, " ", refs); count=split(refs, wanted, /[[:space:]]+/) }
@@ -77,6 +86,7 @@ for spec in "$specs_dir"/*/spec.md; do
 - research: $([[ -d "$dir/research" ]] && echo yes || echo no)
 - prototype: $([[ -d "$dir/prototype" ]] && echo yes || echo no)
 $decision_report
+- record_issues: ${record_issues:-none}
 - branch: ${branch:-none}
 - local_branch: ${local_branch:-n/a}
 - worktree: ${worktree:-none}

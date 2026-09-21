@@ -72,9 +72,11 @@
 ## Glossary and ADR
 
 - リポジトリに用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) が存在する場合は読み込み、定義された語彙を使うこと。ユーザーが定義と衝突する語を使ったら、その場で指摘して確認する。
-- 決定記録とADRは `.mjun/steering/decisions.md` に集約し、存在すれば読み込む。StatusとScopeを確認し、tentative・supersededや他specだけの判断を現在の共通規約として適用しない。適用対象のacceptedな決定に反する変更は実装前にユーザーへ確認する。
+- 決定記録とADRは `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) に集約し、存在すれば読み込む。StatusとScopeを確認し、tentative・supersededや他specだけの判断を現在の共通規約として適用しない。適用対象のacceptedな決定に反する変更は実装前にユーザーへ確認する。
 - 用語が確定したら上記で解決した `CONTEXT.md` へ `**用語**: 定義 (1〜2文)` と `_Avoid_: 使わない言い換え` の形で追記する。実装詳細は書かない。
-- 非自明な判断は `.mjun/steering/decisions.md` に追記する。存在しなければ親ディレクトリとともに作成する。D番号、Date、Scope、Kind、Source、Owner、Status、Decision、Alternatives、Rationale、Evidenceを記録する。「覆しにくい」「文脈なしでは不可解」「本物のtrade-offがあった」の3条件をすべて満たすものは `Kind: adr`、それ以外は `Kind: decision` とする。spec配下や別のadrディレクトリへ分散・転記しない。判断本文は保持し、覆すときは新entryを追記して旧entryのStatusだけを `superseded by D-NNN` にする。tentativeの確定時のStatus / Owner更新とEvidence追記は許可する。
+- 非自明な判断は `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) に追記する。存在しなければ親ディレクトリとともに作成する。D番号、Date、Scope、Kind、Source、Owner、Status、Decision、Alternatives、Rationale、Evidenceを記録する。「覆しにくい」「文脈なしでは不可解」「本物のtrade-offがあった」の3条件をすべて満たすものは `Kind: adr`、それ以外は `Kind: decision` とする。spec配下やADRごとのファイルへ分散・複製しない。判断本文は保持し、覆すときは新entryを追記して旧entryのStatusだけを `superseded by D-NNN` にする。tentativeの確定時のStatus / Owner更新とEvidence追記は許可する。
+
+- Git管理へ移す場合は `.mjun/CONTEXT.md` をrepo直下の `CONTEXT.md` へ、`.mjun/steering/decisions.md` を `docs/adr/decisions.md` へ全内容を移す。Git管理対象であること、内容と参照の欠落がないことを確認してから移行元を削除する。以後は移行先だけを読み書きし、`.mjun/` 側を再作成・同期しない。移行手順は `mjun-steering` の共通記録規則に従う。
 
 ## Versioning
 

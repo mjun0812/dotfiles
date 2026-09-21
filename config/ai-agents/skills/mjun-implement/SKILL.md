@@ -27,7 +27,7 @@ sourceの形からmodeを決める。
 2. Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経て **spec mode**
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
-spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (いずれも必須)、あれば `tasks.md` をReadする。共通の `.mjun/steering/decisions.md` からspec.mdの `Decisions:` が参照するentryとprojectのacceptedな判断を読む。StatusとScopeは [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従い、参照先の欠落・重複ID・supersededの参照はspecの修正へ戻す。taskに関係する判断の内容をSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
+spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (いずれも必須)、あれば `tasks.md` をReadする。共通の `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) からspec.mdの `Decisions:` が参照するentryとprojectのacceptedな判断を読む。StatusとScopeは [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従い、参照先の欠落・重複ID・supersededの参照はspecの修正へ戻す。taskに関係する判断の内容をSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
 
 doc modeでも共通の決定記録があればprojectのacceptedな判断を読み、関係する内容をSubAgentへ渡す。判断記録が存在せず参照も無い場合は、読み取りだけのために空ファイルを作らない。
 

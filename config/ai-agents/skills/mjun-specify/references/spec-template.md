@@ -2,7 +2,7 @@
 
 人間が承認するcontract。frontmatterにはライフサイクル状態 (`status: active | done`) とcontract承認状態 (`approval: pending | approved`) を持つ。
 
-`Decisions:` 行は `.mjun/steering/decisions.md` の関連するD番号をカンマ区切りで参照する。判断が無ければ省略し、判断本文はspecに保存しない。
+`Decisions:` 行は `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) の関連するD番号をカンマ区切りで参照する。判断が無ければ省略し、判断本文はspecに保存しない。
 
 `Source:` 行は投影先のGitHub Issueがある場合だけ書く (純Localのspecでは省略する)。調査しても埋まらないセクションは省略する (空セクションやプレースホルダーを残さない)。小規模な修正ではBoundariesを丸ごと省略してよい。RequirementsとAcceptance Criteriaは省略しない。
 

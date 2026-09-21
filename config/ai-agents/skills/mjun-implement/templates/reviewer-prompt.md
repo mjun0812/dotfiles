@@ -96,3 +96,5 @@ worktree内の未commitの変更 (`git diff` とuntracked file) を読む。こ�
 - NOTES: <verdictに影響しない指摘。無ければ none>
 - SUMMARY: <1文の要約>
 ```
+
+Git管理へ移行済みの `docs/adr/decisions.md` 自体は、D番号・Scope・Source・supersededの履歴を保持する文書なので、上記の内部識別子禁止からその記録に必要な項目だけを除外する。製品コードやテストへ内部specの識別子を埋め込むことは引き続き禁止する。

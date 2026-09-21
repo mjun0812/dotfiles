@@ -66,7 +66,7 @@ specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化する
 
 ## 手順
 
-1. source解決に従って対象specを確定し、`spec.md` と `design.md` を読む。共通の `.mjun/steering/decisions.md` があれば、対象specの `Decisions:` が参照するentryとprojectのacceptedを [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って読む。tentativeやsupersededを確定した設計制約として扱わない
+1. source解決に従って対象specを確定し、`spec.md` と `design.md` を読む。共通の `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) があれば、対象specの `Decisions:` が参照するentryとprojectのacceptedを [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って読む。tentativeやsupersededを確定した設計制約として扱わない
 2. 分解規則に従ってtask一覧のdraftを作る
 3. 依存グラフ (Blocked by) を確認し、実装順に並べる
 4. **coverage検査**: draftに対して次の対応表を内部生成し、未カバーと重複をdraftの修正で解消する (修正と再検査は最大2周)。対応表はtasks.mdへ書かない

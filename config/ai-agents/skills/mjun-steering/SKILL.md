@@ -1,7 +1,7 @@
 ---
 name: mjun-steering
 description: >-
-  `.mjun/steering/` のプロジェクトメモリ (product.md、tech.md、structure.md、ドメイン別のcustom steering) と、用語集 `CONTEXT.md`・共通の決定記録 `.mjun/steering/decisions.md` を、コードベースと履歴から作成・更新するSkill。
+  `.mjun/steering/` のプロジェクトメモリ (product.md、tech.md、structure.md、ドメイン別のcustom steering) と、用語集 `CONTEXT.md`・共通の決定記録 `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) を、コードベースと履歴から作成・更新するSkill。
   ユーザーが「steeringを作って」「steeringを更新して」「プロジェクトメモリを整備して」のように依頼したら使うこと。
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls:*), Bash(find:*), Bash(rg:*), Bash(git:*), Bash(cat:*), Bash(head:*), Bash(tail:*), Bash(wc:*), Bash(tree:*), Bash(mkdir:*), Bash(gh pr list:*), Bash(gh pr view:*), Bash(gh issue list:*), Bash(gh issue view:*)
 ---
@@ -14,7 +14,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls:*), Bash(find:*), Bash(rg:
 
 - **Bootstrap**: 初回にコードベースを分析してcore steeringを生成し、続けて証拠のあるドメインのcustom steeringを生成する
 - **Sync**: steeringとコードベースの整合を保ち、新たに証拠が揃ったドメインのcustom steeringを追加する
-- **Mine**: 履歴 (merged PR、closed Issue、設計doc) から用語と根拠が明文の決定を発掘し、用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) と決定記録 `.mjun/steering/decisions.md` へ追記する (追記専用。既存項目を書き換えない)
+- **Mine**: 履歴 (merged PR、closed Issue、設計doc) から用語と根拠が明文の決定を発掘し、用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) と決定記録 `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) へ追記する (追記専用。既存項目を書き換えない)
 - **Preserve**: ユーザーのカスタマイズは神聖。更新は追記で行い、置換しない
 
 成功条件:
@@ -25,9 +25,13 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls:*), Bash(find:*), Bash(rg:
 - customファイルはすべて、根拠となる実在のコードパターンに基づいている
 - `CONTEXT.md` と `decisions.md` への追記は、すべて由来 (出典) を持つ
 
+## Git管理への移行
+
+用語集や判断記録をGit管理へ移す依頼では、[共通記録規則の移行手順](references/glossary_and_adr.md#git管理へ移す場合) を適用する。全内容と参照を移して検証し、移行先をGit管理対象にした後で `.mjun/` 側の元ファイルを削除する。これは追記・削除禁止の保存先移行に限った例外である。以後は移行先だけを使う。
+
 ## 決定の追記
 
-spec作成や会話中に判断を記録する場合は [共通記録規則](references/glossary_and_adr.md) だけを適用する。`.mjun/steering/decisions.md` が無ければ親ディレクトリとともに作り、暫定案も状態付きで追記する。この操作だけでは以下のBootstrap / Syncを開始しない。decisions.mdはcustom作成基準の対象外である。
+spec作成や会話中に判断を記録する場合は [共通記録規則](references/glossary_and_adr.md) だけを適用する。`decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) が無ければ親ディレクトリとともに作り、暫定案も状態付きで追記する。Git管理へ移行済みならそこへ追記し、旧ファイルは再作成しない。この操作だけでは以下のBootstrap / Syncを開始しない。decisions.mdはcustom作成基準の対象外である。
 
 ## モード判定
 
@@ -80,7 +84,7 @@ core / custom steeringは「コードに証拠がある事実」を書く場所�
    - README・docs配下の設計記述、既存の `docs/adr/`
    - `gh` が使えない (GitHubリポジトリでない) 場合は、docsとcommit message (`git log`) だけを対象にする
 10. **用語集**: コードの識別子 (型名、module名、テーブル名など) をcanonical nameとし、Issue・PR・docsで同じ概念に使われている別の呼び名を `_Avoid_` に集めて `CONTEXT.md` へ追記する (どちらも無ければ `.mjun/CONTEXT.md` を作る)。プロジェクト固有の概念だけを対象にし、一般的なプログラミング用語と実装詳細は書かない。既存の用語は触らない
-11. **決定記録**: 理由が明文の非自明な判断を `.mjun/steering/decisions.md` に追記する。3条件 (覆しにくい・文脈なしでは不可解・本物のtrade-offがあった) をすべて満たすものは `Kind: adr`、それ以外は `Kind: decision` とする。Sourceと判断内容で重複を確認し、Scopeを証拠から特定する。コードから推測した理由は記録しない。形式と状態変更は [共通記録規則](references/glossary_and_adr.md) に従う。
+11. **決定記録**: 理由が明文の非自明な判断を `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) に追記する。3条件 (覆しにくい・文脈なしでは不可解・本物のtrade-offがあった) をすべて満たすものは `Kind: adr`、それ以外は `Kind: decision` とする。Sourceと判断内容で重複を確認し、Scopeを証拠から特定する。コードから推測した理由は記録しない。形式と状態変更は [共通記録規則](references/glossary_and_adr.md) に従う。
 12. サマリに追加した用語と判断のD番号を由来付きで列挙する (誤りの訂正も履歴として残す)
 
 ## Sync Flow
@@ -93,7 +97,7 @@ core / custom steeringは「コードに証拠がある事実」を書く場所�
    - **Customファイル**: 内容がまだ有効か確認する
 4. 更新を提案する (追記主義。ユーザーが書いた内容は保持する)
 5. [作成基準](#customファイルの作成基準) を新たに満たしたドメインがあれば、その場で `.mjun/steering/<domain>.md` を作成する (候補の提示や推奨で止めない)
-6. 用語集と決定記録を追記する: 共通記録のSourceと判断内容に重複しないmerged PRとclosed Issueを対象に、Bootstrap Phase 3と同じ基準で発掘して `CONTEXT.md` と `.mjun/steering/decisions.md` へ追記する。既存項目は書き換えない。コードが適用対象のacceptedな判断に反していれば、対象specの承認・実装状態を確認し、実装済みならCode Driftとして報告する
+6. 用語集と決定記録を追記する: 共通記録のSourceと判断内容に重複しないmerged PRとclosed Issueを対象に、Bootstrap Phase 3と同じ基準で発掘して `CONTEXT.md` と `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) へ追記する。既存項目は書き換えない。コードが適用対象のacceptedな判断に反していれば、対象specの承認・実装状態を確認し、実装済みならCode Driftとして報告する
 7. 報告する: 更新内容、新規作成したcustomファイル、追記した用語とADR、警告
 
 **Update Philosophy**: 置換せず追記する。ユーザーが書いたセクションは保持する。
@@ -203,4 +207,4 @@ Steering Updated
 - パターンを書き、カタログを書かない
 - **Golden Rule**: 既存パターンに従う新コードのためにsteeringの更新が必要になってはいけない
 - agent固有のツールディレクトリ (`.claude/`, `.codex/`, `.gemini/` など) や `.mjun/` 配下のメタ情報のカタログはcore / customに書かない。decisions.mdのSource / Evidenceには判断をたどるためのspecパスを記録してよい
-- `CONTEXT.md` と `.mjun/steering/decisions.md` の本文は追記で保持する。決定のStatus / Owner更新とEvidence追記の例外は共通記録規則に従う。コードから再生成しない
+- `CONTEXT.md` と `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) の本文は追記で保持する。決定のStatus / Owner更新とEvidence追記の例外は共通記録規則に従う。コードから再生成しない

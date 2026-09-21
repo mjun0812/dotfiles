@@ -19,7 +19,7 @@ description: >-
 ## Guidelines
 
 - **factsを集めるのはagentの仕事であり、調べれば分かることをユーザーに聞かない。** ユーザーに渡すのは、価値判断・スコープ・trade-offなど、調査では決まらないdecisionだけとする
-- 質問の前に、コードベース・既存の規約・ドキュメント・`.mjun/steering/`・用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`)・共通の決定記録 `.mjun/steering/decisions.md` の関連箇所を調べる。共通記録はStatusとScopeを確認し、tentative / supersededを確定規約としない。用語の衝突と適用対象のacceptedな決定との矛盾は、そのまま質問の論点にする
+- 質問の前に、コードベース・既存の規約・ドキュメント・`.mjun/steering/`・用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`)・共通の決定記録 `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) の関連箇所を調べる。共通記録はStatusとScopeを確認し、tentative / supersededを確定規約としない。用語の衝突と適用対象のacceptedな決定との矛盾は、そのまま質問の論点にする
 - 質問には、推奨回答とその理由を必ず添える
 - ユーザーへの質問には AskUserQuestion / ask_question / request_user_input などのユーザーに選択を促すツールを使用する。いずれも使えない環境では、Templateの形式で質問と番号付きの選択肢を提示し、ユーザーの返信を待つ
 - 前提が未解決の質問を先に出さない。解決済みの前提の上に立つ質問だけを扱う

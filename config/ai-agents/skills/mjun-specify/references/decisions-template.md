@@ -1,6 +1,6 @@
 # decisions.md Template
 
-プロジェクト共通の判断履歴 `.mjun/steering/decisions.md` に、1決定 = 1エントリで追記する。存在しなければ親ディレクトリとともに作る。現在有効なcontractはspec.mdが持ち、ここには経緯 (採用理由・却下案) を残す。保存先・更新規則は [用語集と決定記録](../../mjun-steering/references/glossary_and_adr.md) に従う。
+プロジェクト共通の判断履歴 `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) に、1決定 = 1エントリで追記する。存在しなければ親ディレクトリとともに作る。現在有効なcontractはspec.mdが持ち、ここには経緯 (採用理由・却下案) を残す。保存先・更新規則は [用語集と決定記録](../../mjun-steering/references/glossary_and_adr.md) に従う。
 
 - D番号はプロジェクト全体の最大値 + 1とし、specごとにリセットしない。追記直前に最新ファイルを読み、他の書き手が追記中なら直列化する。読み取り時の全文で上書きせず、自分のentryだけを追記する。
 - 対象specのH1直下に `Decisions: D-001, D-002` の形式で関連するD番号を記録する。判断本文はspecへ複製しない。共通の決定を再利用する場合もIDをここへ加える。
