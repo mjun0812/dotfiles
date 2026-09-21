@@ -49,7 +49,7 @@ contract軸は [templates/contract-reviewer-prompt.md](templates/contract-review
 
 結果をチャットへ出力する。ファイルへの保存はしない。確定指摘はcontract軸を先に観点番号順で、次にdesign軸を深刻度 `contract` → `boundary` → `structure` の順 (同じ深刻度は観点番号順) で並べる。verifierの検証過程、捨てた候補、内部の証拠は出力しない。
 
-応答の最後に、次の構造化ブロックを必ず1つだけ出力する。呼び出し元skillは `- VERDICT:` 行だけをパースする。見出しの変更、値の同義語への置き換え、ブロック後の追記をしない。補足説明は各フィールドの中に書く。
+応答の最後に、次の構造化ブロックを必ず1つだけ出力する。呼び出し元skillは合否を `- VERDICT:` で判定し、修正対象を `FINDINGS`、人間への再確認が必要なdecisionを `HUMAN_DECISION_CONFLICTS` から読み取る。見出しの変更、値の同義語への置き換え、ブロック後の追記をしない。補足説明は各フィールドの中に書く。
 
 ```
 ## Spec Review

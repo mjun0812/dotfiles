@@ -29,7 +29,7 @@
 ## チェックリスト
 
 1. **自己整合**: RequirementsとOut of Scopeの矛盾、BoundariesのOwns / Does Not Ownの重なり、Goalに対するRequirementsの過不足
-2. **Acceptance Criteriaの検証可能性**: 各criterionが「操作 → 観察できる結果」の形で書かれ、1件が1つの検査コマンド (テスト、スクリプト、CLI呼び出し) に落とせるか。「適切に」「十分に」「正しく」のような判定できない語と、複数の結果を1件に束ねたcriterionを拾う。変更前のrepositoryで既に成立しているcriterionと、Boundariesの外にある既存の失敗のために成立させられないcriterion (repository全体のlintやテストの成功を求めるものなど) も拾う (コマンドは実行せず、コードと設定を読んで判断する)
+2. **Acceptance Criteriaの検証可能性**: 各criterionが「操作 → 観察できる結果」の形で書かれ、1件が1つの検査コマンド (テスト、スクリプト、CLI呼び出し) に落とせるか。「適切に」「十分に」「正しく」のような判定できない語と、複数の結果を1件に束ねたcriterionを拾う。新規または変更する振る舞いのcriterionが変更前から成立し、要求した差分を観察できていない場合も拾う。完了済みtaskの意味を変えないcriterionと、既存の振る舞いを維持する回帰防止のcriterionは、変更前に通ることを理由に指摘しない。Boundariesの外にある既存の失敗のために成立させられないcriterion (repository全体のlintやテストの成功を求めるものなど) も拾う (コマンドは実行せず、コードと設定を読んで判断する)
 3. **sourceとの乖離** (sourceの原文がある場合): sourceに無い要求の混入 (scope creep) と、sourceの要求の取りこぼし。Issueコメントで合意された事項が反映されているか
 4. **decisionsとの整合** (決定の経緯がある場合): 本文がacceptedな決定と食い違っていないか、supersededの決定内容が本文に残っていないか、tentativeの決定が本文で確定として書かれていないか
 5. **Evidenceの実在** (決定の経緯がある場合): Evidence (`file:line`、`research/` のパス) が実在し、主張を支えているか

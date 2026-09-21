@@ -104,7 +104,7 @@ Phase 5.5のreviewerに機械的な指摘を残さないため、spec reviewを�
 1. **AC 1件 = 1コマンド**: Acceptance Criteriaの各項目が1つの検査コマンドに落ちるか。複数の観察 (複数のシナリオ、バージョン、dispatch) を1件に束ねていれば分割する
 2. **Requirement ↔ ACの対応**: Requirements 1件ごとに、それを観察するACが1つ以上あるか。1件のRequirementが複数の振る舞いを述べていれば、振る舞いごとに対応を見る。無ければACを追加する (対応表は会話内に保持し、specへは書かない)。件数や回数を問うRequirement (「1件につき1行」など) のACは、存在確認ではなく件数で書く
 3. **Evidenceの実在確認**: `decisions.md` のEvidenceにある `file:line`、引用、件数を、その場でファイルを読み直す、またはコマンドを再実行して照合する。食い違いは書き直す。contractとdesignに書いた外部の固有名 (環境変数名、URL、package名、CLI option) は、一次資料 (公式ドキュメント、upstreamのソース) で綴りを確かめる。確かめられないものはEvidence-blockedとしてPhase 4へ戻す
-4. **ACのbaseline確認**: 各ACの検査に使えるコマンドが既にあるもの (既存のテスト、lint、CLI呼び出し、`grep`) は、現在のtreeで実行する。変更前から成立しているACは、変更後にだけ成立する観察へ書き直す。Boundariesの外にある既存の失敗のために成立させられないAC (repository全体のlint成功など) は、観察の範囲を変更箇所へ絞る
+4. **ACのbaseline確認**: 各ACの検査に使えるコマンドが既にあるもの (既存のテスト、lint、CLI呼び出し、`grep`) は、現在のtreeで実行する。新規または変更する振る舞いのACが変更前から成立している場合は、要求した差分を観察できているかを確認し、観察できていなければその差分を捉えるACへ書き直す。完了済みtaskの意味を変えないACと、既存の振る舞いを維持する回帰防止のACは、変更前に通っていても維持する。Boundariesの外にある既存の失敗のために成立させられないAC (repository全体のlint成功など) は、観察の範囲を変更箇所へ絞る
 
 ### Phase 5.5: spec review
 
@@ -115,7 +115,7 @@ Phase 5.5のreviewerに機械的な指摘を残さないため、spec reviewを�
 - sourceの原文: Issueなら本文とコメント、Markdown取り込みなら元ファイルの内容、新規作成ならPhase 1の下書き素材
 - Human-ownedとして人間が決めたdecisionの一覧 (D番号とタイトル)
 
-結果ブロック `## Spec Review` の `- VERDICT:` フィールドだけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する。
+結果ブロック `## Spec Review` の合否は `- VERDICT:` フィールドで判定する。修正対象は `FINDINGS`、人間への再確認が必要なdecisionは `HUMAN_DECISION_CONFLICTS` から読み取る。必要な構造化値が無い、または曖昧な場合は1回だけ再要求する。
 
 - `PASS` → Phase 5.7へ進む
 - `NEEDS_FIXES` → 各指摘を読み、contractの明文とコードの事実に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は `decisions.md` にentryを追記する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)

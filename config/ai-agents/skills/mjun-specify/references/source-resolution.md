@@ -52,7 +52,7 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 specは増えていくため、堆積管理のためのライフサイクル状態をfrontmatterで持つ。
 
 - 作成・取り込み時に `status: active` を書き、配送の完了時に実装側が `status: done` へ更新する
-- **照合・逆引き・一覧の対象は `status: active` のspecだけ**とする。doneのspecも明示的にパスを渡せば読める
+- 通常の一覧と進行中spec間の照合は `status: active` のspecを対象とする。Issue番号からの逆引きはactiveを優先し、見つからなければdoneも検索する。明示的にパスを渡されたspecはstatusを問わず読める
 - 放棄したspecは手動でdoneにするか削除する
 - `status` は堆積管理であり承認ゲートではない。contract承認は別の `approval` で管理する
 

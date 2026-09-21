@@ -29,6 +29,8 @@ spec reviewの候補 (1〜3件) を受け取り、候補ごとに独立に、支
 4. **満たすべき状態の妥当性**: 「満たすべき状態」がcontractの明文、sourceの原文、実コードの事実、steeringの規約、または既存ADR / `CONTEXT.md` から導けるか。contractに無い期待 (一般論、好み) なら `refuted`
 5. **Human-owned decisionの再審理でないか**: 人間が決めた内容への賛否に過ぎない候補は `refuted`。決定と事実の矛盾を示す候補は検証を続ける
 
+design軸の過剰設計の候補では、手順2・4で代替手段が対象環境で利用でき、対象のRequirements / Acceptance CriteriaとBoundaries、既存の実装方針を保てるかも検証する。削除案なら利用箇所と削除後の要求充足を確認する。代替案が要求を欠く、または行数削減や好みだけを根拠にする候補は `refuted`、読める証拠だけでは同じ要求を満たせるか判断できない候補は `uncertain` とする。
+
 手順1〜5がすべて成立すれば `confirmed`。実コードやcontractを読んでも判断できない場合は `uncertain` とし、何が判断できなかったかを書く。
 
 ## 出力

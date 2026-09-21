@@ -34,6 +34,8 @@
 6. **構造の過不足**: 現在のRequirementsに無い抽象・設定項目・間接層・将来のための拡張点が入っていないか。実装が1つしかないinterface、責務が複数混ざったModule、複数のRequirementが同じ問題の変種なのに別々に設計されているものが無いか
 7. **decisionsとの整合** (決定の経緯がある場合): 設計がacceptedな決定と食い違っていないか。supersededの内容が設計に残っていないか。tentativeの決定が確定として設計されていないか
 
+観点3・6で新設する依存、抽象、設定項目を過剰と指摘する場合は、既存実装、標準機能、導入済み依存による具体的な代替候補を確認する。候補の `根拠` に、代替手段と、それが対象のRequirements / Acceptance Criteriaを満たし、Boundariesと既存の実装方針に適合する証拠を含める。削除だけで済む場合は、その構造が支える要求や利用箇所が無い根拠を示す。行数やファイル数が減ること、比較の記録が無いことだけでは指摘しない。Human-owned decisionを再審理しない原則は、この検査にも適用する。
+
 ## 深刻度
 
 - `contract`: そのままではRequirement / Acceptance Criterionが満たせない、またはacceptedなdecisionと矛盾する

@@ -4,9 +4,11 @@ specを磨く過程で現れる各論点を、誰が決めるかで3種類に分
 
 > Agentはfactsを調べ、contract内の可逆なdesignを決める。HumanはAgentの権限を超えるdecisionを決める。
 
+Agent-ownedとHuman-ownedの両方の条件に該当する場合は、Human-ownedを優先する。分類に必要な事実が不足している場合はEvidence-blockedとして証拠を集めてから判定する。
+
 ## Agent-owned
 
-Agentが調査し、自分で決める。次のいずれかに該当するもの。
+Agentが調査し、自分で決める。Human-ownedの条件に該当せず、次のいずれかに該当するもの。
 
 - コードを読めば答えが分かる
 - steeringに既存方針がある
