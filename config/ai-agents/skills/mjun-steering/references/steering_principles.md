@@ -2,6 +2,8 @@
 
 Steering files are **project memory**, not exhaustive specifications.
 
+The pattern and regeneration guidance below applies to core/custom files. `decisions.md` is the shared decision history: follow [the decision record rules](glossary_and_adr.md), preserve its entries, and never regenerate it from code. Source/Evidence may reference spec paths.
+
 ---
 
 ## Content Granularity
@@ -66,7 +68,7 @@ Never include:
 
 - **Single domain**: One topic per file
 - **Concrete examples**: Show patterns with code
-- **Explain rationale**: Why decisions were made
+- **Reference rationale**: Link to the relevant D-number in decisions.md instead of duplicating its history
 - **Maintainable size**: 100-200 lines typical
 
 ---

@@ -9,7 +9,7 @@
 - worktreeの絶対パス (ファイル操作とコマンド実行はすべてこの配下で行う)
 - specのタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)
 - 実装設計 (`design.md`。Local specの場合。Interfaces & Seams と Test Strategy を検査対象の特定に使う)
-- 関係するADR (決定記録。あれば)
+- 適用対象のacceptedな判断 (ADRを含む) (決定記録。あれば)
 - 担当group: 各taskのID、説明、Acceptance Criteria、Boundary、Done when、Seam、Blocked by
 - 親が洗い出した検証コマンド (TEST / LINT / BUILD) と、formatter・lintの実行コマンド
 - 過去taskのImplementation Notes (あれば)

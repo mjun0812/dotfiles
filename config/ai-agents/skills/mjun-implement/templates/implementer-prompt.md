@@ -10,7 +10,7 @@
 - base branch名と作業branch名
 - spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope。specにある場合)
 - 実装設計 (`design.md`: Modules / Interfaces & Seams / Data Flow / Test Strategy / Change Outline。Local specの場合)
-- 関係するADR (決定記録。あれば。決定に反する実装をしない)
+- 適用対象のacceptedな判断 (ADRを含む) (決定記録。あれば。決定に反する実装をしない)
 - verifierの `TASK_BRIEF`、`CHECK_FILES` (変更禁止)、`CHECK_COMMANDS`
 - 検査の無いtask (`REVIEW_ONLY`。あれば): verifierが検査化できなかったtask。Acceptance Criteriaをそのまま成功の定義とし、各criterionの充足を示すコードパスを `EVIDENCE` に書く (reviewerがcriterionごとに照合する)
 - 担当groupの各task: ID、説明、Boundary、Done when (完了時に観察できること)、Seam、Blocked by。親が決めた実装方針

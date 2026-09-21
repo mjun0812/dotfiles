@@ -14,7 +14,7 @@
 - 取り込み (Issue → spec)
 - 投影 (spec → Issue)
 - 同期規則
-- 用語集と決定記録 (steering / CONTEXT.md / adr の住み分けを含む)
+- 用語集と決定記録 (steering配下の共通記録とCONTEXT.md)
 - git管理と参照規則
 
 ## 原則: 正本は常にLocal、GitHubは投影
@@ -23,7 +23,7 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 
 ```text
 取り込み: Issue → .mjun/specs/<slug>/ へspec化
-作業:     spec作成・task分解・実装のどの段階でもLocalの4文書だけを読み書きする
+作業:     spec作成・task分解・実装のどの段階でもLocalのspec文書と共通の決定記録を読み書きする
 投影:     承認後、Localのcontractを Issue本文へ反映 (Sourceを持つspecのみ)
 配送:     worktreeで実装 → PR (SourceがあればCloses #N)
 ```
@@ -33,7 +33,6 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 ```text
 .mjun/specs/<slug>/
 ├── spec.md          # 必須。人間が承認するcontract
-├── decisions.md     # 非自明な意思決定が発生した場合だけ
 ├── design.md        # 必須。contract内の実装設計。承認前に書く
 ├── tasks.md         # taskと実装状態。実装開始後は単一taskでも持つ
 ├── prototype/       # artifact自体を一次資料として残す場合だけ
@@ -122,59 +121,11 @@ Source: #123
 
 ## 用語集と決定記録
 
-specをまたいで効く語彙と決定は、spec配下ではなく `.mjun/` 直下に置く。どちらもコードから再生成できない人間の決定であり、steering (コードに証拠がある事実) とは分けて扱う。
+判断履歴とADRは `.mjun/steering/decisions.md` に集約する。存在しなければ記録時に作成する。形式は [decisions-template.md](decisions-template.md)、Scope・状態・追記規則は [用語集と決定記録](../../mjun-steering/references/glossary_and_adr.md) に従う。
 
-```text
-.mjun/
-├── CONTEXT.md       # 用語集。用語が確定した時点で1件ずつ追記する (repo直下に CONTEXT.md があればそちらが正)
-├── adr/             # 決定記録。NNNN-<slug>.md (4桁連番、既存の最大値 + 1) (docs/adr/ があればそちらが正)
-├── specs/
-└── steering/
-```
+spec.mdのH1直下の `Decisions: D-001, D-002` が、そのspecの判断への参照である。本文は複製せず、承認前のtentative検査とIssueへのDecision Log投影はこの参照先に限定する。projectのacceptedは共通方針として読み、無関係なspecのtentativeは対象に含めない。
 
-- `CONTEXT.md` は用語集だけを持つ。実装詳細・spec・決定は書かない。形式は `**用語**: 定義 (1〜2文)` に `_Avoid_: 使わない言い換え` を添える。複数の呼び名があれば1つを選び、他は `_Avoid_` に入れる
-- ADRは見出しと1〜3文 (文脈・決定・理由) で書く。必要なときだけ `Status: proposed | accepted | deprecated | superseded by NNNN` のfrontmatter、Considered Options、Consequencesを足す
-- ADRには由来 (出典) を必ず1行添える: specから投影したものは `由来: <slug> / D-NNN`、履歴から発掘したものは `由来: PR #N` / `Issue #N` / `docs/<path>`、会話中の決定は `由来: 会話 (YYYY-MM-DD)`。衝突時に人間が出典を見て判断できるようにする
-- ADRにするのは、**覆しにくい**・**文脈なしでは不可解**・**本物のtrade-offがあった**、の3条件をすべて満たす決定だけ。1つでも欠ければ `decisions.md` に留める
-- 投影: 実装の配送完了時に、`decisions.md` の `Status: accepted` のdecisionから3条件を満たすものをADRへ書く。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする
-- 発掘: steeringの整備時に履歴 (merged PR、closed Issue、設計doc) から、理由が明文で書かれている決定と用語を追記する。コードからの推測はADRにせずsteeringの事実に留める
-- 追記専用: どのskillも既存の用語・ADRを書き換えたり削除したりしない。決定を覆すときは新しいADRを書き、旧ADRを `superseded by NNNN` にする
-- 置き場所は存在で決める: 用語集はrepo直下に `CONTEXT.md` があればそれ、無ければ `.mjun/CONTEXT.md`。決定記録は `docs/adr/` があればそれ、無ければ `.mjun/adr/`。読み書きとも解決した1箇所だけを使い、両方を読んだり複製したりしない。どちらも無ければ `.mjun/` 側に作る (repo直下の `CONTEXT.md` と `docs/adr/` は自動で作らない。repoに含めたいときは人間が空のファイル / ディレクトリを作るか、既存の内容を移す)。repo直下の `CONTEXT.md` と `docs/adr/` はgit管理下にあり、worktreeにも存在する
-- 読み込み: spec・design・taskを作る側とレビューする側は、`CONTEXT.md` の語彙を使い、既存ADRと矛盾する要求・設計を衝突として扱う (spec側を直すか、Human-owned decisionとしてADRを覆すかを人間が決める)
-
-### steering / CONTEXT.md / adr の住み分け
-
-事実はsteering、名前はCONTEXT.md、理由はADRに書く。置き場所は次の問いで決める。
-
-| 置き場所     | 答える問い                         | 中身                                                          | 判定テスト                                              |
-| ------------ | ---------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------- |
-| `steering/`  | 今どうなっているか (what / how)    | 技術スタック、構成、規約、従うべきパターン (ファイルパス付き) | この記述を消しても、コードを読めば復元できる            |
-| `CONTEXT.md` | この概念を何と呼ぶか (name)        | プロジェクト固有の概念の見出し語、1〜2文の定義、`_Avoid_`     | どちらの呼び名が正かはコードから決まらない (人間の選択) |
-| `adr/`       | なぜそうしたか、何を捨てたか (why) | 文脈・決定・理由 (+代替案)。3条件を満たすものだけ             | 将来の誰かがコードを見て「直そう」と思う                |
-
-重なりやすい箇所の扱い:
-
-- **tech.md / customの「決定」とADR**: steeringには決定の結果としての現在の規約だけを書き、理由と代替案を書かない。理由が必要な決定はADRに書き、steering側から `→ adr/NNNN` と参照する。有効なADRは必ずsteeringのどこかにパターンとして現れる (現れていなければコードで守られていない)。steeringのパターンすべてにADRは要らない
-- **product.md と CONTEXT.md**: product.mdは目的・価値・できることを文章で書き、用語を使うが定義しない。「Xとは〜のこと」と書きたくなったらCONTEXT.mdの行にする。CONTEXT.mdには技術用語と振る舞いの説明を入れない
-- **どれでもない決定** (一度きり、可逆、自明) は specの `decisions.md` に留めて外に出さない
-
-コードと食い違ったときにどちらを正とするかは3つで逆になる:
-
-| 置き場所     | コードと食い違ったら                              | 理由                                                |
-| ------------ | ------------------------------------------------- | --------------------------------------------------- |
-| `steering/`  | steeringをコードに合わせて更新する                | 事実の記述であり、コードが正                        |
-| `adr/`       | コードが決定に反していると報告する。ADRは直さない | 決定が正。覆すなら新ADR + 旧を `superseded by NNNN` |
-| `CONTEXT.md` | 呼び名がコードで変わったと報告し、人間に確認する  | 呼び名の変更は決定であり、自動で書き換えない        |
-
-ライフサイクルと書き手:
-
-| 置き場所     | 再生成                  | 更新方式                               | 書き手                                                         |
-| ------------ | ----------------------- | -------------------------------------- | -------------------------------------------------------------- |
-| `steering/`  | できる (Bootstrap)      | 追記主義だが、事実が変われば書き換える | steeringの整備だけ                                             |
-| `CONTEXT.md` | できない (seedはできる) | 追記専用                               | 用語を確定した側 (spec作成、会話中の作業) + 履歴からの発掘     |
-| `adr/`       | できない (seedはできる) | 追記専用 + superseded                  | 決定した側 (実装の配送時の投影、会話中の作業) + 履歴からの発掘 |
-
-「seedはできるが再生成はできない」がsteeringとの決定的な差であり、steeringの整備がCONTEXT.md / ADRに追記しかしないのはこのためである。
+用語集はrepo直下のCONTEXT.md、無ければ.mjun/CONTEXT.mdを使う。用語と既存のacceptedな判断に反する要求は、人間の判断で解決してからcontractへ反映する。
 
 ## git管理と参照規則
 
@@ -184,4 +135,4 @@ specをまたいで効く語彙と決定は、spec配下ではなく `.mjun/` �
 - specは**内部文書**である。PR本文・PRタイトル・commit messageなど外部向けの出力では、`.mjun/` 配下のパスやspecの存在に言及しない。外部へ見せるspecの参照はGitHub Issue (`Closes #N`) だけを使う
 - PRレビュー側は、contractを「`--spec` 引数で明示されたsource → PR本文の `Closes #N` が指すIssue」の順で解決する。どちらも無ければContract観点をスキップする (Issue本文は承認時点の投影であり、最新の正本はLocal specにある)
 - resumeとtask進捗の永続化は、`.mjun/` が残っている同一working tree上でのみ有効
-- 例外はrepo直下の `CONTEXT.md` と `docs/adr/` で、これらはgit管理下にありworktreeにも存在する。実装の配送時に `docs/adr/` へ書くADRはworktree側へ書いてPRのcommitに含める
+- repo直下の `CONTEXT.md` はgit管理下にありworktreeにも存在する。共通の決定記録はgit管理外なのでメインrepositoryの絶対パスを使う。配送時のADR転記は行わない

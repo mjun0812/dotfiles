@@ -69,14 +69,14 @@
 
 - リポジトリに `.mjun/steering/` が存在する場合、配下の `*.md` をすべてプロジェクトメモリとして読み込むこと。
 - coreファイルは `product.md` (目的・価値)、`tech.md` (技術スタック・規約)、`structure.md` (構成パターン)。ドメイン別のcustomファイルもcoreと同格に扱うこと。
-- steeringの作成・更新は `mjun-steering` skillで行うこと。手動で書き換えない。
+- core / custom steeringの作成・更新は `mjun-steering` skillで行うこと。決定記録 `decisions.md` は同skillの記録規則に従い、判断を行ったskillがその場で追記する。
 
 ## Glossary and ADR
 
 - リポジトリに用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) が存在する場合は読み込み、定義された語彙を使うこと。ユーザーが定義と衝突する語を使ったら、その場で指摘して確認する。
-- リポジトリに決定記録 `adr/` (`docs/adr/` があればそれ、無ければ `.mjun/adr/`) が存在する場合は配下の `*.md` を読み込み、決定に反する変更をしないこと。反する必要があるときは実装前にユーザーへ確認し、合意したら旧ADRを `superseded by NNNN` にして新しいADRを書く。
+- 決定記録とADRは `.mjun/steering/decisions.md` に集約し、存在すれば読み込む。StatusとScopeを確認し、tentative・supersededや他specだけの判断を現在の共通規約として適用しない。適用対象のacceptedな決定に反する変更は実装前にユーザーへ確認する。
 - 用語が確定したら上記で解決した `CONTEXT.md` へ `**用語**: 定義 (1〜2文)` と `_Avoid_: 使わない言い換え` の形で追記する。実装詳細は書かない。
-- 「覆しにくい」「文脈なしでは不可解」「本物のtrade-offがあった」の3条件をすべて満たす決定をしたら、上記で解決した `adr/NNNN-<slug>.md` に見出しと1〜3文 (文脈・決定・理由) と由来 (出典) で記録する。1つでも欠ける決定はADRにしない。既存の用語・ADRは書き換えない。
+- 非自明な判断は `.mjun/steering/decisions.md` に追記する。存在しなければ親ディレクトリとともに作成する。D番号、Date、Scope、Kind、Source、Owner、Status、Decision、Alternatives、Rationale、Evidenceを記録する。「覆しにくい」「文脈なしでは不可解」「本物のtrade-offがあった」の3条件をすべて満たすものは `Kind: adr`、それ以外は `Kind: decision` とする。spec配下や別のadrディレクトリへ分散・転記しない。判断本文は保持し、覆すときは新entryを追記して旧entryのStatusだけを `superseded by D-NNN` にする。tentativeの確定時のStatus / Owner更新とEvidence追記は許可する。
 
 ## Versioning
 

@@ -10,8 +10,9 @@ spec reviewの候補 (1〜3件) を受け取り、候補ごとに独立に、支
 - 検証対象の候補 (1〜3件。それぞれ全文。`軸: contract | design` を含む)
 - contract (spec.mdの全文、Issue本文のContext〜Out of Scope、設計Markdownの要求記述、または会話から書き起こした要求)
 - あれば実装設計 (design.mdの全文、Issue本文の `## Design Notes`、または設計本文)
-- あれば決定の経緯 (`decisions.md` の全文、またはIssue本文の `## Decision Log`)
+- あれば決定の経緯 (共通の `.mjun/steering/decisions.md` から対象specが参照するentry、またはIssue本文の `## Decision Log`)
 - あればsourceの原文 (Issue本文とコメント、取り込み元のMarkdown、または依頼の下書き素材)
+- 共通の判断記録はStatusとScopeで適用対象を区別する。projectのacceptedと対象specが参照するacceptedを制約として読み、tentative / superseded / 無関係なspecの判断を確定規約にしない。
 - steering・`CONTEXT.md` (用語集)・ADR (決定記録) のパス一覧 (あれば)
 
 ## 原則

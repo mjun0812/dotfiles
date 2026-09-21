@@ -32,8 +32,8 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 
 メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。commit messageやPR本文などの外部向け出力には、`.mjun/` 配下のパスや内部spec文書を含めない (外部へ見せるspecの参照はGitHub Issue番号だけを使う)。
 
-1. **ADRを投影する** (spec modeのみ): `decisions.md` の `Status: accepted` のdecisionのうち、覆しにくい・文脈なしでは不可解・本物のtrade-offがあった、の3条件をすべて満たすものを決定記録の `NNNN-<slug>.md` へ書く。置き場所は `docs/adr/` があればそれ (git管理下なのでworktree内のパスへ書き、次のcommitに含める)、無ければ `.mjun/adr/` (メインrepositoryの絶対パスへ書く)。`NNNN` は4桁連番 (既存の最大値 + 1)、本文は見出しと1〜3文 (文脈・決定・理由) とし、`由来: <slug> / D-NNN` を1行添える。既存ADRを覆すdecisionなら旧ADRを `superseded by NNNN` にする。3条件を満たすdecisionが無ければ何も書かない
-2. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正、手順1のADRなど)。残変更が無ければスキップする
+1. **判断記録を確認する**: 実装中に新たな非自明な判断が生じた場合は、[共通記録規則](../../mjun-steering/references/glossary_and_adr.md) に従ってメインrepositoryの `.mjun/steering/decisions.md` に追記し、spec modeではspec.mdの `Decisions:` にIDを加える。contractを変える判断は先にspecへ戻して再承認する。ADRは同じファイルのentryであり、配送時の転記や複製は行わない。
+2. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正など)。残変更が無ければスキップする
 3. **baseへの再同期**: `git fetch` で `<base-branch>` を最新化し、作業branchをその上へ `git rebase` する (worktree作成後に並行する他のspecの成果がmergeされている場合に備える。`--no-pr` と `--merge` でも行う。remoteが無いrepositoryではfetchを省き、localの `<base-branch>` を使う。remoteに同名branchが既にある場合はrebaseではなく `git merge` で取り込む)。conflictが出たら自動解決せず中止し、worktreeとbranchを残して衝突ファイルを報告する。再同期後に全taskの `CHECK_COMMANDS` とTEST / LINT / BUILD / SMOKE (宣言済みのもの) を再実行し、失敗があればPhase 3.2の差し戻しと同じ手順 (implementer → reviewer、合わせて最大2周) で修正して `git-commit` skillでcommitする。収束しなければ中止し、worktreeとbranchを残して報告する。Run Logの `feature:` 行に `base-sync=<CLEAN | FIXED | CONFLICT>` を追記する
 4. **`--no-pr` の場合**: ここで配送を終える。base branchへのmergeは行わない (選ばれていない配送をしない)。Phase 5へ進む
 5. **`--merge` の場合**: メインrepositoryのworking treeが `<base-branch>` をcheckoutしていて未commit変更が無いことを確かめ、そこで `git merge --ff-only <branch-name>` を実行する。満たさない、またはfast-forwardできない場合はmergeせず、worktreeとbranchを残して報告する。pushはしない。Phase 5へ進む
@@ -59,7 +59,7 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 - **Refactor**: Phase 3.3の結果 (DONE / SKIPPED / REJECTED。`PARTIAL` では「未実施」) と、見送ったNOTES
 - **Run Log**: 周回数と差し戻しの要約 (`tasks.md` の `## Run Log` から)
 - **Blocked Tasks**: task IDとタイトル、直接原因、再開条件、これに依存して未実行のtask。無ければ「なし」
-- **ADR**: 投影したADRのファイル名 (無ければ「なし」)
+- **ADR**: 共通記録に追記したADRのD番号 (無ければ「なし」)
 
 ## Phase 6: worktreeクリーンアップ
 
