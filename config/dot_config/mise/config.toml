@@ -86,13 +86,13 @@ opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = "latest"
 
 # Python CLI tools
-"pipx:ruff" = "latest"
-"pipx:glances" = "latest"
-"pipx:nvitop" = "latest"
-"pipx:ty" = "latest"
-"pipx:copier" = "latest"
-"pipx:huggingface_hub" = "latest"
-"pipx:danielrobbins/keychain" = { version = "latest" }
+"pypi:ruff" = "latest"
+"pypi:glances" = "latest"
+"pypi:nvitop" = "latest"
+"pypi:ty" = "latest"
+"pypi:copier" = "latest"
+"pypi:huggingface_hub" = "latest"
+"pypi:danielrobbins/keychain" = { version = "latest" }
 
 [env]
 # mise管理のPythonではなく、homeのvenvを使うようにする
@@ -101,7 +101,7 @@ _.path = ["~/.venv/bin"]
 [settings]
 upgrade.auto_prune = false
 idiomatic_version_file_enable_tools = []
-pipx.uvx = true
+pypi.uvx = true
 npm.package_manager = "bun"
 trusted_config_paths = ["/"]
 minimum_release_age = "24h"
