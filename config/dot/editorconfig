@@ -1,0 +1,23 @@
+# プロジェクト側に root = true の .editorconfig が無いときに効くglobalな既定値
+# charset・end_of_lineはShift_JISやCRLFの既存ファイルを保存時に変換してしまうため指定しない
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{js,jsx,mjs,cjs,ts,tsx,json,jsonc,yaml,yml,md,css,scss,html,toml,lua,tex,bib}]
+indent_size = 2
+
+# 行末の2スペースはMarkdownの改行になる
+[*.md]
+trim_trailing_whitespace = false
+
+# shfmt -s 相当
+[*.{sh,bash,zsh}]
+simplify = true
+
+[{Makefile,*.mk,*.go}]
+indent_style = tab
