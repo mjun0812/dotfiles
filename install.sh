@@ -58,8 +58,6 @@ $DOTPATH/script/setup/install_mise.sh
 source "$HOME/.zprofile"
 mise install
 mise reshim
-# Replace shims in PATH with real tool paths; mise evaluates third-party casks in a sandbox where the ruby shim cannot resolve a version
-eval "$(mise activate zsh)"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     log_section "Applying mise bootstrap..."
