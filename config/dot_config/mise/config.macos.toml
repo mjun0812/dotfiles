@@ -16,7 +16,7 @@ container system kernel set --recommended --force
 "github:router-for-me/CLIProxyAPI" = { version = "latest", postinstall = '''
     launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api 2>/dev/null || true
 ''' }
-"github:mjun0812/yobirin" = { version = "latest", asset_pattern = "yobirin", postinstall = '''
+"github:mjun0812/yobirin" = { version = "latest", minimum_release_age = "0s", asset_pattern = "yobirin", postinstall = '''
     yobirin install
     yobirin install --profile claude --icon ~/.dotfiles/assets/notify-claude.png
     yobirin install --profile codex --icon ~/.dotfiles/assets/notify-codex.png
@@ -110,7 +110,6 @@ keep_alive = true
 kickstart = true
 
 [bootstrap.macos.launchd.agents.codex-remote-control]
-# zshenv経由でPATH (mise shims) を、~/.zshrc.localからAPIキーなどの環境変数を受け継ぐ
 program = "/bin/zsh"
 args = [
   "-c",

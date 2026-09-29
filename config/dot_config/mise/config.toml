@@ -1,7 +1,7 @@
 #:schema https://mise.en.dev/schema/mise.json
 
 [tools]
-# Languages & Runtimes
+# Languages and Runtimes
 go = "latest"
 rust = "latest"
 node = "lts"
@@ -12,7 +12,7 @@ uv = "latest"
 python = "latest"
 ruby = "latest"
 
-# Shell & CLI utilities
+# Shell and CLI utilities
 dust = "latest"
 jq = "latest"
 starship = "latest"
@@ -20,13 +20,10 @@ tmux = "latest"
 usage = "latest"
 yq = "latest"
 zoxide = "latest"
-"aqua:sharkdp/bat" = "latest"
-"aqua:sharkdp/fd" = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:phiresky/ripgrep-all" = "latest"
-
-# Editor
-"aqua:neovim/neovim" = "latest"
+"aqua:sharkdp/bat" = "latest"
+"aqua:sharkdp/fd" = "latest"
 
 # Git
 delta = "latest"
@@ -37,9 +34,10 @@ hunk = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup
 # Dev tool
 actionlint = "latest"
 aqua = "latest"
+duckdb = "latest"
 fzf = "latest"
 gitleaks = "latest"
-herdr = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup_herdr.sh' }
+herdr = { version = "latest", minimum_release_age = "0s", postinstall = '"$HOME"/.dotfiles/script/setup/setup_herdr.sh' }
 kubectl = "latest"
 stylua = "latest"
 prek = "latest"
@@ -48,10 +46,10 @@ shellcheck = "latest"
 shfmt = "latest"
 taplo = "latest"
 "aqua:aws/aws-cli" = "latest"
-"github:WGUNDERWOOD/tex-fmt" = "latest"
-"github:runpod/runpodctl" = "latest"
+"aqua:neovim/neovim" = "latest"
 "github:rtk-ai/rtk" = "latest"
-duckdb = "latest"
+"github:runpod/runpodctl" = "latest"
+"github:WGUNDERWOOD/tex-fmt" = "latest"
 
 # npm packages
 "npm:@mermaid-js/mermaid-cli" = "latest"
@@ -66,8 +64,8 @@ duckdb = "latest"
 
 # AI coding agents
 "npm:agent-browser" = { version = "latest", postinstall = "agent-browser install || echo 'agent-browser browser install skipped'" }
-"aqua:anthropics/claude-code" = "latest"
-"aqua:openai/codex" = { version = "latest", postinstall = '''
+"aqua:anthropics/claude-code" = { version = "latest", minimum_release_age = "0s" }
+"aqua:openai/codex" = { version = "latest", minimum_release_age = "0s", postinstall = '''
 set -eu
 
 current="${CODEX_HOME:-$HOME/.codex}/packages/standalone/current"
@@ -83,7 +81,7 @@ esac
 "$current/codex" --version
 ''' }
 opencode = "latest"
-"aqua:google-antigravity/antigravity-cli" = "latest"
+"aqua:google-antigravity/antigravity-cli" = { version = "latest", minimum_release_age = "0s" }
 
 # Python CLI tools
 "pypi:ruff" = "latest"
@@ -105,13 +103,6 @@ pypi.uvx = true
 npm.package_manager = "bun"
 trusted_config_paths = ["/"]
 minimum_release_age = "24h"
-minimum_release_age_excludes = [
-  "aqua:anthropics/claude-code",
-  "aqua:openai/codex",
-  "aqua:google-antigravity/antigravity-cli",
-  "herdr",
-  "github:mjun0812/yobirin",
-]
 auto_env = true
 not_found_auto_install = false
 experimental = true
