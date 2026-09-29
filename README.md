@@ -82,21 +82,11 @@ To sync local app settings (macOS app defaults and the VS Code extension list) b
 ./update.sh
 ```
 
-It dumps the settings and shows the resulting `git status`; review and commit the diff yourself. iTerm2 is not part of the dump: it reads and writes its settings directly in `config/mac/iterm2/` via its custom preferences folder feature.
-
-### Agent Skills / Agents (apm)
-
-The shared agent skills and the code-reviewer agents are not managed in this repository. They are subscribed from [mjun0812/skills](https://github.com/mjun0812/skills) via [apm](https://github.com/microsoft/apm); the subscription is declared in `config/ai-agents/apm.yml` (symlinked to `~/.apm/apm.yml` and applied with `apm update -g -y` by `install.sh`) and tracks the `main` branch.
+Agent Skills / Agents (apm)
 
 ```bash
-# install.sh already runs this after linking apm.yml; run it again to
-# follow mjun0812/skills changes without re-running install.sh
 apm update -g
 ```
-
-`apm update -g` re-resolves `main`, deploys the changed skills/agents, and removes deleted ones automatically (lockfile-based cleanup). Since the subscription tracks a branch, `config/ai-agents/apm.yml` does not change on updates — there is usually nothing to commit here.
-
-Private skills (`mjun-*`, `self-review`) still live in `config/ai-agents/skills/` and are symlinked by `install.sh`.
 
 ## Tools
 
@@ -110,41 +100,73 @@ Private skills (`mjun-*`, `self-review`) still live in `config/ai-agents/skills/
 
 ### CLI
 
-| Name        | Description                            |
-| ----------- | -------------------------------------- |
-| actionlint  | GitHub Actions workflow linter         |
-| aqua        | Declarative CLI version manager        |
-| aws-cli     | AWS command-line interface             |
-| bat         | Modern `cat` with syntax highlighting  |
-| delta       | Git diff pager                         |
-| dust        | Modern `du`                            |
-| eza         | Modern `ls`                            |
-| fd          | Modern `find`                          |
-| fzf         | Fuzzy finder                           |
-| gcloud      | Google Cloud CLI                       |
-| gh          | GitHub CLI                             |
-| git-lfs     | Git Large File Storage                 |
-| gitleaks    | Secret scanner                         |
-| herdr       | Terminal multiplexer for coding agents |
-| jq          | JSON processor                         |
-| kubectl     | Kubernetes CLI                         |
-| pre-commit  | Git commit hooks manager               |
-| prek        | pre-commit runner in Rust              |
-| ripgrep     | Modern `grep`                          |
-| ripgrep-all | `ripgrep` for PDFs, archives, and docs |
-| sheldon     | Zsh plugin manager                     |
-| shellcheck  | Shell script linter                    |
-| shfmt       | Shell script formatter                 |
-| starship    | Cross-shell prompt                     |
-| stylua      | Lua formatter                          |
-| taplo       | TOML formatter                         |
-| tex-fmt     | LaTeX formatter                        |
-| tmux        | Terminal multiplexer                   |
-| tree-sitter | Parser generator tool                  |
-| uv          | Python package and tool manager        |
-| vp          | Vite Plus CLI                          |
-| yq          | YAML processor                         |
-| zoxide      | Smart `cd` command                     |
+| Name                       | Description                                           |
+| -------------------------- | ----------------------------------------------------- |
+| actionlint                 | GitHub Actions workflow linter                        |
+| agent-browser              | Browser automation CLI for AI agents                  |
+| apm                        | Agent package manager                                 |
+| aqua                       | Declarative CLI version manager                       |
+| aws-cli                    | AWS command-line interface                            |
+| bat                        | Modern `cat` with syntax highlighting                 |
+| CLIProxyAPI                | OpenAI/Gemini/Claude compatible API proxy for AI CLIs |
+| cmake                      | Build system generator                                |
+| container                  | Linux containers in lightweight VMs (macOS)           |
+| copier                     | Project template generator                            |
+| delta                      | Git diff pager                                        |
+| duckdb                     | In-process analytical SQL database                    |
+| dust                       | Modern `du`                                           |
+| eza                        | Modern `ls`                                           |
+| fd                         | Modern `find`                                         |
+| fzf                        | Fuzzy finder                                          |
+| gh                         | GitHub CLI                                            |
+| git-lfs                    | Git Large File Storage                                |
+| gitleaks                   | Secret scanner                                        |
+| glances                    | System monitor                                        |
+| headroom                   | Token-compressing proxy for coding agents             |
+| herdr                      | Terminal multiplexer for coding agents                |
+| huggingface_hub            | Hugging Face Hub CLI (`hf`)                           |
+| hunk                       | Review-first terminal diff viewer                     |
+| imagemagick                | Image processing                                      |
+| jq                         | JSON processor                                        |
+| keychain                   | ssh-agent / gpg-agent manager                         |
+| kubectl                    | Kubernetes CLI                                        |
+| mactop                     | Apple Silicon monitor (macOS)                         |
+| md-to-pdf                  | Markdown to PDF converter                             |
+| mermaid-cli                | Mermaid diagram renderer (`mmdc`)                     |
+| ninja                      | Build system                                          |
+| nvitop                     | NVIDIA GPU process viewer                             |
+| oxfmt                      | JS/TS/Markdown/JSON/YAML formatter                    |
+| oxlint                     | JS/TS linter                                          |
+| pnpm                       | Node.js package manager                               |
+| powershell                 | PowerShell (macOS)                                    |
+| prek                       | pre-commit runner in Rust                             |
+| prettier                   | Code formatter                                        |
+| pyright                    | Python type checker and language server               |
+| resvg                      | SVG renderer (macOS)                                  |
+| ripgrep                    | Modern `grep`                                         |
+| ripgrep-all                | `ripgrep` for PDFs, archives, and docs                |
+| rtk                        | Token-reducing CLI proxy for LLMs                     |
+| ruff                       | Python linter and formatter                           |
+| runpodctl                  | RunPod CLI                                            |
+| sheldon                    | Zsh plugin manager                                    |
+| shellcheck                 | Shell script linter                                   |
+| shfmt                      | Shell script formatter                                |
+| starship                   | Cross-shell prompt                                    |
+| stylua                     | Lua formatter                                         |
+| swiftlint                  | Swift linter (macOS)                                  |
+| taplo                      | TOML formatter                                        |
+| tex-fmt                    | LaTeX formatter                                       |
+| tmux                       | Terminal multiplexer                                  |
+| tree-sitter                | Parser generator tool                                 |
+| ty                         | Python type checker                                   |
+| typescript                 | TypeScript compiler                                   |
+| typescript-language-server | TypeScript language server                            |
+| usage                      | CLI specification tool                                |
+| uv                         | Python package and tool manager                       |
+| vp                         | Vite Plus CLI                                         |
+| yobirin                    | Interactive notification CLI (macOS)                  |
+| yq                         | YAML processor                                        |
+| zoxide                     | Smart `cd` command                                    |
 
 ### AI Agents
 
@@ -200,7 +222,6 @@ Details of configuration and keyboard shortcuts are documented in [doc/macOS.md]
 ## Design
 
 I prefer [Tokyo Night](https://github.com/tokyo-night) color scheme.
-It is used in Neovim, VS Code, Cursor.
 
 ### Terminal color schemes
 
@@ -235,7 +256,7 @@ nvs
 cc-commit # AIが生成したコミットメッセージでコミットする
 cc-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
 
-# Gemini-cli
+# Gemini-cli (agy-commit / agy-commit-ja の別名)
 gemini-commit # AIが生成したコミットメッセージでコミットする
 gemini-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
 
@@ -267,20 +288,9 @@ git aicommit-ja
 
 ## mise
 
-This dotfiles uses [mise](https://github.com/jdx/mise) as a package manager for CLI tools.  
-If you want to search and add a new tool, you can use below commands.
-
-```bash
-# Search for a tool in the mise registry
-mise registry | grep <tool-name>
-# Search for a tool in aqua registry
-aqua g
-mise use aqua:google-antigravity/antigravity-cli@latest
-```
+This dotfiles uses [mise](https://github.com/jdx/mise) as a package manager for CLI tools.
 
 ### mise bootstrap services
-
-`headroom-proxy`, `cli-proxy-api`, and `codex-remote-control` are declared once as user services in `config/dot_config/mise/config.toml`. mise generates LaunchAgents on macOS and systemd user services on Linux.
 
 ```bash
 mise bootstrap services status
