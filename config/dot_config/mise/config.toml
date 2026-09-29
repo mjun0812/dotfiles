@@ -41,10 +41,12 @@ herdr = { version = "latest", minimum_release_age = "0s", postinstall = '"$HOME"
 kubectl = "latest"
 stylua = "latest"
 prek = "latest"
+ruff = "latest"
 sheldon = "latest"
 shellcheck = "latest"
 shfmt = "latest"
 taplo = "latest"
+ty = "latest"
 "aqua:aws/aws-cli" = "latest"
 "aqua:neovim/neovim" = "latest"
 "github:rtk-ai/rtk" = "latest"
@@ -63,6 +65,7 @@ taplo = "latest"
 "npm:typescript-language-server" = "latest"
 
 # AI coding agents
+opencode = "latest"
 "npm:agent-browser" = { version = "latest", postinstall = "agent-browser install || echo 'agent-browser browser install skipped'" }
 "aqua:anthropics/claude-code" = { version = "latest", minimum_release_age = "0s" }
 "aqua:openai/codex" = { version = "latest", minimum_release_age = "0s", postinstall = '''
@@ -80,17 +83,14 @@ Linux) systemctl --user restart dev.mise.codex-remote-control.service 2>/dev/nul
 esac
 "$current/codex" --version
 ''' }
-opencode = "latest"
 "aqua:google-antigravity/antigravity-cli" = { version = "latest", minimum_release_age = "0s" }
 
 # Python CLI tools
-"pypi:ruff" = "latest"
-"pypi:glances" = "latest"
-"pypi:nvitop" = "latest"
-"pypi:ty" = "latest"
 "pypi:copier" = "latest"
-"pypi:huggingface_hub" = "latest"
 "pypi:danielrobbins/keychain" = { version = "latest" }
+"pypi:glances" = "latest"
+"pypi:huggingface_hub" = "latest"
+"pypi:nvitop" = "latest"
 
 [env]
 # mise管理のPythonではなく、homeのvenvを使うようにする
