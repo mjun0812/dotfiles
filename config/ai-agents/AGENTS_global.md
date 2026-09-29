@@ -108,6 +108,11 @@ GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPの
 ## Markdown
 
 - Formatterに`oxfmt`を使うこと
+- 英数字と日本語の間、および半角括弧 `()` の外側に半角スペースを入れないこと。inline codeの前後には入れてよい。コードブロックの中は対象外
+  - 良い例: MLflowサーバをECS(arm64)で動かす。`mlflow-server` のrepoを使う。
+  - 悪い例: MLflow サーバを ECS (arm64) で動かす。
+- 区切り線 `---` を多用しないこと。節の区切りは見出しで表す。文書の中で性質が大きく変わる境界(例: 現行の手順と旧構成の記録の間)にだけ使う
+- コマンドがbashとzshで異なる場合は、同じコードブロックに `# bash` と `# zsh` のコメントで分けて両方を書くこと。共通の部分は1つにまとめる
 
 ## ShellScript
 
