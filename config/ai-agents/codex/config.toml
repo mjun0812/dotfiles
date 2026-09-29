@@ -1,8 +1,5 @@
 #:schema https://developers.openai.com/codex/config-schema.json
 
-model = "gpt-5.6-sol"
-model_reasoning_effort = "high"
-
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 web_search = "live"
@@ -16,6 +13,9 @@ multi_agent = true
 hooks = true
 # plan mode以外でもユーザー入力を求められるようにする
 default_mode_request_user_input = true
+# 起動中のapp-server daemon (launchd / systemdで常駐) へ自動接続する。
+# 応答が無いときはCodexが自前のdaemonを起動する
+daemon_auto_start = true
 
 [features.multi_agent_v2]
 enabled = true
