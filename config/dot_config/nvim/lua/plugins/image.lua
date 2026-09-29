@@ -215,11 +215,11 @@ return {
           return
         end
 
-        local max_width = math.max(20, math.min(90, math.floor(vim.o.columns * 0.65)))
+        local max_width = math.max(20, math.floor(vim.o.columns * 0.8))
 
         local available_lines = vim.o.lines - vim.o.cmdheight - 2
 
-        local max_height = math.max(8, math.min(28, math.floor(available_lines * 0.55)))
+        local max_height = math.max(8, math.floor(available_lines * 0.65))
 
         local screen_row = vim.fn.screenrow()
         local screen_col = vim.fn.screencol()
@@ -376,7 +376,221 @@ return {
         )
       end
 
+      -- カーソル行にある ![](path) のpathを返す
+      local function find_image_url_at_cursor()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
+
+        local parser = vim.treesitter.get_parser(bufnr, "markdown")
+        parser:parse(true)
+
+        local inlines = parser:children().markdown_inline
+        if not inlines then
+          return nil
+        end
+
+        local query = vim.treesitter.query.parse("markdown_inline", "(image (link_destination) @url)")
+        local url = nil
+
+        inlines:for_each_tree(function(tree)
+          for _, node in query:iter_captures(tree:root(), bufnr) do
+            if not url and node:range() == cursor_row then
+              url = vim.treesitter.get_node_text(node, bufnr)
+            end
+          end
+        end)
+
+        return url
+      end
+
+      -- カーソル位置のMermaid(PNG)・画像のパスかURLを返す
+      local function resolve_image_at_cursor()
+        local current = find_mermaid_at_cursor()
+
+        if current then
+          local renderer = find_mermaid_renderer()
+          local result = renderer and renderer.render(current.source, mermaid_options)
+
+          if not result then
+            return nil
+          end
+
+          -- 未キャッシュならmmdcの完了を待つ
+          if result.job_id and vim.fn.jobwait({ result.job_id }, 10000)[1] ~= 0 then
+            vim.notify("Mermaidのレンダリングに失敗しました", vim.log.levels.WARN)
+            return nil
+          end
+
+          return result.file_path
+        end
+
+        local url = find_image_url_at_cursor()
+
+        if not url then
+          vim.notify("カーソル行に画像・Mermaidがありません", vim.log.levels.INFO)
+          return nil
+        end
+
+        if url:match("^https?://") then
+          return url
+        end
+
+        if not url:match("^[/~]") then
+          url = vim.fs.joinpath(vim.fs.dirname(vim.api.nvim_buf_get_name(0)), url)
+        end
+
+        return vim.fs.normalize(url)
+      end
+
+      -- カーソル位置のMermaid・画像を外部ビューアで開く
+      local function open_in_viewer()
+        local path = resolve_image_at_cursor()
+
+        if path then
+          vim.ui.open(path)
+        end
+      end
+
+      -- カーソル位置のMermaid・画像を画面いっぱいのfloatで表示する
+      local function open_fullscreen()
+        local file_path = resolve_image_at_cursor()
+
+        if not file_path then
+          return
+        end
+
+        if file_path:match("^https?://") then
+          vim.notify("リモート画像は <leader>io で開いてください", vim.log.levels.INFO)
+          return
+        end
+
+        if vim.fn.filereadable(file_path) ~= 1 then
+          vim.notify("画像が見つかりません: " .. file_path, vim.log.levels.WARN)
+          return
+        end
+
+        local term_size = image_utils.term.get_size()
+        if not term_size then
+          return
+        end
+
+        close_preview()
+
+        local bufnr = vim.api.nvim_create_buf(false, true)
+
+        vim.bo[bufnr].buftype = "nofile"
+        vim.bo[bufnr].bufhidden = "wipe"
+        vim.bo[bufnr].swapfile = false
+
+        -- 仮サイズで開き、画像の縦横比が分かってから調整する
+        local winid = vim.api.nvim_open_win(bufnr, true, {
+          relative = "editor",
+          row = 0,
+          col = 0,
+          width = 1,
+          height = 1,
+          style = "minimal",
+          border = "rounded",
+          zindex = 80,
+        })
+
+        local current_image = image_nvim.from_file(file_path, {
+          buffer = bufnr,
+          window = winid,
+          inline = true,
+          with_virtual_padding = true,
+          x = 0,
+          y = 0,
+        })
+
+        if not current_image then
+          pcall(vim.api.nvim_win_close, winid, true)
+          return
+        end
+
+        local function close()
+          pcall(function()
+            current_image:clear()
+          end)
+
+          if vim.api.nvim_win_is_valid(winid) then
+            pcall(vim.api.nvim_win_close, winid, true)
+          end
+        end
+
+        -- borderの分を除いた画面いっぱいに縦横比を保って収める
+        local max_width = vim.o.columns - 2
+        local max_height = vim.o.lines - vim.o.cmdheight - 2
+
+        local width, height = image_utils.math.adjust_to_aspect_ratio(
+          term_size,
+          current_image.image_width,
+          current_image.image_height,
+          max_width,
+          max_height
+        )
+
+        width = math.max(1, math.min(width, max_width))
+        height = math.max(1, math.min(height, max_height))
+
+        vim.api.nvim_win_set_config(winid, {
+          relative = "editor",
+          row = math.floor((max_height - height) / 2),
+          col = math.floor((max_width - width) / 2),
+          width = width,
+          height = height,
+        })
+
+        local empty_lines = {}
+        for _ = 1, height do
+          table.insert(empty_lines, "")
+        end
+
+        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, empty_lines)
+
+        current_image.ignore_global_max_size = true
+
+        for _, lhs in ipairs({ "q", "<Esc>" }) do
+          vim.keymap.set("n", lhs, close, {
+            buffer = bufnr,
+            nowait = true,
+            desc = "Close fullscreen image",
+          })
+        end
+
+        -- 他のwindowへ移ったら閉じる
+        vim.api.nvim_create_autocmd("WinLeave", {
+          buffer = bufnr,
+          once = true,
+          callback = function()
+            vim.schedule(close)
+          end,
+        })
+
+        current_image:render({
+          x = 0,
+          y = 0,
+          width = width,
+          height = height,
+        })
+      end
+
       local group = vim.api.nvim_create_augroup("mermaid-hover-popup", { clear = true })
+
+      vim.api.nvim_create_autocmd("FileType", {
+        group = group,
+        pattern = "markdown",
+        callback = function(args)
+          vim.keymap.set("n", "<leader>io", open_in_viewer, {
+            buffer = args.buf,
+            desc = "Open image/Mermaid in external viewer",
+          })
+          vim.keymap.set("n", "<leader>if", open_fullscreen, {
+            buffer = args.buf,
+            desc = "Show image/Mermaid in fullscreen float",
+          })
+        end,
+      })
 
       -- Mermaidブロック内でカーソルを止めると自動表示
       vim.api.nvim_create_autocmd("CursorHold", {
