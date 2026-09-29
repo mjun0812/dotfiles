@@ -39,6 +39,7 @@ fzf = "latest"
 gitleaks = "latest"
 herdr = { version = "latest", minimum_release_age = "0s", postinstall = '"$HOME"/.dotfiles/script/setup/setup_herdr.sh' }
 kubectl = "latest"
+ninja = "latest"
 stylua = "latest"
 prek = "latest"
 ruff = "latest"

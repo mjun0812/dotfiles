@@ -3,7 +3,11 @@
 [tools]
 apm = "latest"
 "cargo:eza" = "latest"
+"github:metaspartan/mactop" = "latest"
 imagemagick = "latest"
+powershell = "latest"
+resvg = "latest"
+swiftlint = "latest"
 tree-sitter = "latest"
 
 container = { version = "latest", postinstall = '''
@@ -32,14 +36,8 @@ container system kernel set --recommended --force
 "brew:librsvg" = "latest"
 "brew:lld" = "latest"
 "brew:llvm" = "latest"
-"brew:mactop" = "latest"
-"brew:mcat" = "latest"
 "brew:mysql" = "latest"
-"brew:ninja" = "latest"
-"brew:powershell" = "latest"
-"brew:resvg" = "latest"
 "brew:subversion" = "latest"
-"brew:swiftlint" = "latest"
 "brew:tree" = "latest"
 "brew:vite-plus" = "latest"
 "brew:wget" = "latest"
