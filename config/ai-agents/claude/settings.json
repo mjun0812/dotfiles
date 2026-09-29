@@ -95,7 +95,7 @@
       "/private/tmp"
     ]
   },
-  "model": "opus[1m]",
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -223,6 +223,9 @@
       "effortLevel": "high"
     },
     "claude-opus-5": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
       "effortLevel": "high"
     }
   },
