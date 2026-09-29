@@ -30,7 +30,7 @@ restart_sec = "5s"
 [bootstrap.linux.systemd.units.codex-remote-control]
 description = "Start the Codex Remote Control daemon"
 type = "exec"
-exec_start = '"~/.codex/packages/standalone/current/codex" app-server --remote-control --listen unix://'
+# zshenv経由でPATH (mise shims) を、~/.zshrc.localからAPIキーなどの環境変数を受け継ぐ
+exec_start = "/bin/zsh -c '[[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local; exec ~/.codex/packages/standalone/current/codex app-server --remote-control --listen unix://'"
 restart = "always"
 restart_sec = "5s"
-environment = { PATH = "%h/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin" }
