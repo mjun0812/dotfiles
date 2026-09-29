@@ -86,7 +86,6 @@ claudex() {
 }
 
 # Codex
-alias codex-remote='command codex -C "$PWD" --remote unix://'
 alias codex-full='command codex \
     -C "$PWD" \
     --remote unix:// \
