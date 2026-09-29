@@ -280,24 +280,11 @@ mise use aqua:google-antigravity/antigravity-cli@latest
 
 ### mise bootstrap services
 
-- macOS: `headroom-proxy`, `cli-proxy-api`, and `codex-remote-control` as LaunchAgents
-- Linux: `headroom-proxy`, `cli-proxy-api`, and `codex-remote-control` as systemd user services
+`headroom-proxy`, `cli-proxy-api`, and `codex-remote-control` are declared once as user services in `config/dot_config/mise/config.toml`. mise generates LaunchAgents on macOS and systemd user services on Linux.
 
 ```bash
-# macOS
-mise bootstrap macos launchd-agents status
-mise bootstrap macos launchd-agents apply --yes
-
-# Linux
-mise bootstrap linux systemd-units status
-mise bootstrap linux systemd-units apply --yes
-
-# Restart
-# macOS
-mise bootstrap macos launchd-agents apply --yes
-
-# Linux
-mise bootstrap linux systemd-units apply --yes
+mise bootstrap services status
+mise bootstrap services apply --yes
 ```
 
 ## Neovim

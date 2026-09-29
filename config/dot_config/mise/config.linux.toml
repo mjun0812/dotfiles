@@ -13,24 +13,3 @@
     systemctl --user restart dev.mise.cli-proxy-api.service 2>/dev/null || true
 ''' }
 "aqua:imagemagick" = "latest"
-
-[bootstrap.linux.systemd.units.headroom-proxy]
-description = "Start the Headroom proxy"
-exec_start = "~/.local/share/mise/shims/headroom proxy --host 127.0.0.1 --port 8787 --mode token --no-telemetry --disable-kompress --lossless --code-aware --no-rate-limit"
-restart = "always"
-restart_sec = "5s"
-
-[bootstrap.linux.systemd.units.cli-proxy-api]
-description = "Start CLIProxyAPI"
-exec_start = "~/.local/share/mise/shims/cli-proxy-api"
-working_directory = "~/.config/cli-proxy-api"
-restart = "always"
-restart_sec = "5s"
-
-[bootstrap.linux.systemd.units.codex-remote-control]
-description = "Start the Codex Remote Control daemon"
-type = "exec"
-# zshenv経由でPATH (mise shims) を、~/.zshrc.localからAPIキーなどの環境変数を受け継ぐ
-exec_start = "/bin/zsh -c '[[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local; exec ~/.codex/packages/standalone/current/codex app-server --remote-control --listen unix://'"
-restart = "always"
-restart_sec = "5s"

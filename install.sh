@@ -59,21 +59,18 @@ source "$HOME/.zprofile"
 mise install
 mise reshim
 
+log_section "Applying mise bootstrap..."
 if [ "$(uname -s)" = "Darwin" ]; then
-    log_section "Applying mise bootstrap..."
     if [ "${DOTFILES_SKIP_BOOTSTRAP_PACKAGES:-0}" != "1" ]; then
         mise bootstrap packages apply --yes
     fi
-    mise bootstrap launchd apply --yes
 
     # install Homebrew if not installed (for macOS)
     if ! command -v brew >/dev/null 2>&1; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
-elif [ "$(uname -s)" = "Linux" ]; then
-    log_section "Applying mise bootstrap..."
-    mise bootstrap systemd apply --yes
 fi
+mise bootstrap services apply --yes
 
 ################ [bat] ################
 log_section "Setting up bat themes..."

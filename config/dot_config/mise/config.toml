@@ -116,6 +116,26 @@ compile = false
 [settings.github]
 credential_command = "gh auth token"
 
+[bootstrap.services.headroom-proxy]
+scope = "user"
+description = "Start the Headroom proxy"
+command = "~/.local/share/mise/shims/headroom proxy --host 127.0.0.1 --port 8787 --mode token --no-telemetry --disable-kompress --lossless --code-aware --no-rate-limit"
+restart = "always"
+
+[bootstrap.services.cli-proxy-api]
+scope = "user"
+description = "Start CLIProxyAPI"
+command = "~/.local/share/mise/shims/cli-proxy-api"
+working_directory = "~/.config/cli-proxy-api"
+restart = "always"
+
+[bootstrap.services.codex-remote-control]
+scope = "user"
+description = "Start the Codex Remote Control daemon"
+# zshenv経由でPATH (mise shims) を、~/.zshrc.localからAPIキーなどの環境変数を受け継ぐ
+command = "/bin/zsh -c '[[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local; exec ~/.codex/packages/standalone/current/codex app-server --remote-control --listen unix://'"
+restart = "always"
+
 [tasks.headroom-proxy]
 description = "Start the Headroom proxy"
 run = """

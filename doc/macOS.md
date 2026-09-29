@@ -51,15 +51,15 @@ See [Raycast Script Commands](https://manual.raycast.com/script-commands) for th
 
 ## launchd
 
-User-level launchd agents are declared in `config/dot_config/mise/config.macos.toml` and managed by mise. mise generates the plist files under `~/Library/LaunchAgents/` and loads them with `launchctl`.
+User-level launchd agents are declared as user services (`[bootstrap.services]`) in `config/dot_config/mise/config.toml` and managed by mise. On macOS, mise generates the plist files under `~/Library/LaunchAgents/` and loads them with `launchctl`; on Linux, the same declarations become systemd user services.
 
 ### Installation
 
 ```sh
-mise bootstrap launchd apply --yes
+mise bootstrap services apply --yes
 ```
 
-`install.sh` runs this command automatically on macOS after installing Headroom.
+`install.sh` runs this command automatically after installing Headroom.
 
 ### Managed Agents
 
@@ -86,21 +86,21 @@ cli-proxy-api -config ~/.config/cli-proxy-api/config.yaml -codex-login
 launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api # reload the agent after logging in
 ```
 
-Note: the config symlink must exist before `mise bootstrap launchd apply`; without a config the binary exits immediately and `KeepAlive` respawns it in a loop. `install.sh` runs the steps in that order.
+Note: the config symlink must exist before `mise bootstrap services apply`; without a config the binary exits immediately and `KeepAlive` respawns it in a loop. `install.sh` runs the steps in that order.
 
 ### Manual Operations
 
 ```sh
 # Status
-mise bootstrap launchd status
+mise bootstrap services status
 launchctl print gui/$(id -u)/dev.mise.headroom-proxy
 
 # Apply changes
-mise bootstrap launchd apply --yes
+mise bootstrap services apply --yes
 
 # Stop / Start
 launchctl bootout gui/$(id -u)/dev.mise.headroom-proxy
-mise bootstrap launchd apply --yes
+mise bootstrap services apply --yes
 ```
 
 ### Viewing Logs
@@ -149,4 +149,4 @@ codex app-server daemon version
 
 Start a new Remote Control session with `codex --remote unix://`. Add `resume` or `fork` to the command to resume or fork a stored session.
 
-macOS starts the daemon with a LaunchAgent. Linux uses the systemd user service declared in `config/dot_config/mise/config.linux.toml`.
+The daemon is declared as a mise user service in `config/dot_config/mise/config.toml`: macOS starts it with a LaunchAgent and Linux with a systemd user service.
