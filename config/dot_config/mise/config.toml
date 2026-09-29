@@ -31,7 +31,7 @@ zoxide = "latest"
 # Git
 delta = "latest"
 git-lfs = "latest"
-gh = "latest"
+gh = { version = "latest", postinstall = "gh extension install github/gh-stack && gh extension upgrade gh-stack" }
 hunk = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup_hunk.sh' }
 
 # Dev tool
