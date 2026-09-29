@@ -28,7 +28,6 @@ container system kernel set --recommended --force
 "brew:curl" = "latest"
 "brew:ffmpeg" = "latest"
 "brew:git" = "latest"
-"brew:gitleaks" = "latest"
 "brew:htop" = "latest"
 "brew:librsvg" = "latest"
 "brew:lld" = "latest"
