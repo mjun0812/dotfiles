@@ -56,6 +56,7 @@ First output line, before any work: `RECEIPT {{worker_name}}: task received`
 - {{pr_instruction}}
 - Never run `git push --force`, never touch {{base_branch}}, never delete branches or worktrees.
 - If you cannot satisfy a criterion, or are stuck for more than 5 minutes, stop and report BLOCKED instead of guessing.
+- No human types into this pane. Never wait for user input; send every question to the orchestrator as BLOCKED.
 - Do not start sub-agents or delegate; you are a leaf worker.
 
 ## Pane label
