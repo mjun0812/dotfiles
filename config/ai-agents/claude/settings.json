@@ -229,13 +229,14 @@
       "effortLevel": "high"
     }
   },
-  "awaySummaryEnabled": false,
+  "askUserQuestionTimeout": "never",
   "plansDirectory": "./.claude/plans",
   "tui": "fullscreen",
   "timeFormat": "auto",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
   "autoCompactEnabled": true,
+  "autoContinueAtUsageLimit": true,
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
