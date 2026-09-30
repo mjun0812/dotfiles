@@ -67,6 +67,9 @@ jobs:
             if [[ "$name" = "hunk" ]]; then
               target="$target/config.toml"
             fi
+            if [[ "$name" = "omniwm" ]]; then
+              target="$target/settings.toml"
+            fi
             if [[ -L "$target" ]]; then
               echo "✓ .config/$name is a symlink"
             else
