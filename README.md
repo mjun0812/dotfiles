@@ -213,6 +213,7 @@ Details of configuration and keyboard shortcuts are documented in [doc/macOS.md]
 | Notion             | Notes and knowledge base          |
 | Obsidian           | Markdown knowledge base           |
 | Ollama             | Local LLM runtime                 |
+| OmniWM             | Tiling window manager             |
 | Raycast            | Launcher                          |
 | Thaw               | Menu bar manager                  |
 | Visual Studio Code | Code editor                       |

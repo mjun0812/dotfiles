@@ -37,20 +37,20 @@ script/tools/sync_vscode_extensions.sh --dry-run
 
 `install.sh` と `script/setup/setup_*.sh` が以下のように展開する。展開先を直接編集しても実体はこのリポジトリ内のファイルである。
 
-| リポジトリ内                                                                                              | 展開先                                                                        |
-| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `config/dot/<name>`                                                                                       | `~/.<name>`                                                                   |
-| `config/dot_config/<name>`                                                                                | `~/.config/<name>`                                                            |
-| `config/dot_config/{herdr,hunk}/config.toml`, `config/dot_config/cli-proxy-api/config.yaml`               | `~/.config/<name>/` 配下にファイル単位でsymlink (ディレクトリは実体)          |
-| `config/dot_config/herdr/plugins/<plugin>`                                                                | `herdr plugin link` で登録 (symlinkではない。`setup_herdr.sh` が実行)         |
-| `config/ai-agents/claude/{CLAUDE.md,settings.json,mcp.json,statusline.py,subagent_statusline.py,rules/*}` | `~/.claude/` 配下                                                             |
-| `config/ai-agents/skills/<skill>`                                                                         | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
-| hunk同梱の `hunk-review` skill (`hunk skill path` の親ディレクトリ)                                       | 上記3箇所へ `hunk-review` としてsymlink (`setup_hunk.sh` が実行)              |
-| `config/ai-agents/codex/hooks.json`                                                                       | `~/.codex/hooks.json`                                                         |
-| `config/ai-agents/AGENTS_global.md`                                                                       | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                   |
-| `config/ai-agents/gemini/antigravity-cli/settings.json`                                                   | `~/.gemini/antigravity-cli/settings.json`                                     |
-| `config/ai-agents/apm.yml`                                                                                | `~/.apm/apm.yml`                                                              |
-| `config/{vscode,cursor}/{settings.json,keybindings.json}`                                                 | 各アプリのUserディレクトリ (`extensions.txt` は展開されず参照専用)            |
+| リポジトリ内                                                                                                                          | 展開先                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `config/dot/<name>`                                                                                                                   | `~/.<name>`                                                                   |
+| `config/dot_config/<name>`                                                                                                            | `~/.config/<name>`                                                            |
+| `config/dot_config/{herdr,hunk}/config.toml`, `config/dot_config/cli-proxy-api/config.yaml`, `config/dot_config/omniwm/settings.toml` | `~/.config/<name>/` 配下にファイル単位でsymlink (ディレクトリは実体)          |
+| `config/dot_config/herdr/plugins/<plugin>`                                                                                            | `herdr plugin link` で登録 (symlinkではない。`setup_herdr.sh` が実行)         |
+| `config/ai-agents/claude/{CLAUDE.md,settings.json,mcp.json,statusline.py,subagent_statusline.py,rules/*}`                             | `~/.claude/` 配下                                                             |
+| `config/ai-agents/skills/<skill>`                                                                                                     | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
+| hunk同梱の `hunk-review` skill (`hunk skill path` の親ディレクトリ)                                                                   | 上記3箇所へ `hunk-review` としてsymlink (`setup_hunk.sh` が実行)              |
+| `config/ai-agents/codex/hooks.json`                                                                                                   | `~/.codex/hooks.json`                                                         |
+| `config/ai-agents/AGENTS_global.md`                                                                                                   | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                   |
+| `config/ai-agents/gemini/antigravity-cli/settings.json`                                                                               | `~/.gemini/antigravity-cli/settings.json`                                     |
+| `config/ai-agents/apm.yml`                                                                                                            | `~/.apm/apm.yml`                                                              |
+| `config/{vscode,cursor}/{settings.json,keybindings.json}`                                                                             | 各アプリのUserディレクトリ (`extensions.txt` は展開されず参照専用)            |
 
 上書き前の既存ファイルは `.backup/` に退避される。
 

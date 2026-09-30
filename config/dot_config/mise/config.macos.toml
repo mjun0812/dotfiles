@@ -73,6 +73,7 @@ container system kernel set --recommended --force
 "brew-cask:ci7lus/miraktest/miraktest" = "latest"
 "brew-cask:karabiner-elements" = "latest"
 "brew-cask:raycast" = "latest"
+"brew-cask:omniwm" = "latest"
 "brew-cask:xquartz" = "latest"
 
 [bootstrap.brew.taps]

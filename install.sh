@@ -47,6 +47,14 @@ for d in "$DOTPATH"/config/dot_config/*; do
         continue
     fi
 
+    # OmniWM writes recovery files (settings.toml.corrupt, settings.toml.pre-v3) next to settings.toml
+    if [ "$app" = "omniwm" ]; then
+        mkdir -p "$CONFIG_DIR/$app"
+        rm -rf "$CONFIG_DIR/$app/settings.toml"
+        ln -snfv "$d/settings.toml" "$CONFIG_DIR/$app/settings.toml"
+        continue
+    fi
+
     cp -aLf "$CONFIG_DIR/$app" "$DOTPATH/.backup/$app" 2>/dev/null || true
     rm -rf "$CONFIG_DIR/$app"
     ln -snfv "$d" "$CONFIG_DIR/$app"
