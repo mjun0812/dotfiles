@@ -35,11 +35,11 @@ splitWidthMultiplier = 1.0
 useGlobalGaps = true
 
 [focus]
-crossesMonitorAtEdge = false
+crossesMonitorAtEdge = true
 followsMouse = false
-followsWindowToMonitor = false
+followsWindowToMonitor = true
 lockModifier = "off"
-moveCrossesMonitorAtEdge = false
+moveCrossesMonitorAtEdge = true
 moveMouseToFocusedWindow = false
 raiseOnMouseFocus = false
 
@@ -55,7 +55,7 @@ top = 0.0
 
 [general]
 animationsEnabled = true
-defaultLayoutType = "niri"
+defaultLayoutType = "dwindle"
 hotkeysEnabled = true
 hyperKeyModifiers = "Control+Option+Shift+Command"
 ipcEnabled = false
@@ -501,19 +501,19 @@ binding = "Unassigned"
 id = "switchWorkspace.previous"
 
 [[hotkeys]]
-binding = "Option+Left Arrow"
+binding = "Control+Option+H"
 id = "focus.left"
 
 [[hotkeys]]
-binding = "Option+Down Arrow"
+binding = "Control+Option+J"
 id = "focus.down"
 
 [[hotkeys]]
-binding = "Option+Up Arrow"
+binding = "Control+Option+K"
 id = "focus.up"
 
 [[hotkeys]]
-binding = "Option+Right Arrow"
+binding = "Control+Option+L"
 id = "focus.right"
 
 [[hotkeys]]
@@ -613,19 +613,19 @@ binding = "Unassigned"
 id = "moveColumnToWorkspace.8"
 
 [[hotkeys]]
-binding = "Option+Shift+Left Arrow"
+binding = "Option+Shift+H"
 id = "move.left"
 
 [[hotkeys]]
-binding = "Option+Shift+Down Arrow"
+binding = "Option+Shift+J"
 id = "move.down"
 
 [[hotkeys]]
-binding = "Option+Shift+Up Arrow"
+binding = "Option+Shift+K"
 id = "move.up"
 
 [[hotkeys]]
-binding = "Option+Shift+Right Arrow"
+binding = "Option+Shift+L"
 id = "move.right"
 
 [[hotkeys]]
@@ -853,7 +853,7 @@ binding = "Option+Period"
 id = "cycleSizeForward"
 
 [[hotkeys]]
-binding = "Option+Comma"
+binding = "Unassigned"
 id = "cycleSizeBackward"
 
 [[hotkeys]]
@@ -885,11 +885,11 @@ binding = "Control+Option+R"
 id = "resetWindowSecondarySpan"
 
 [[hotkeys]]
-binding = "Option+Minus"
+binding = "Unassigned"
 id = "setContainerPrimarySpan.decrease10Percent"
 
 [[hotkeys]]
-binding = "Option+Equal"
+binding = "Unassigned"
 id = "setContainerPrimarySpan.increase10Percent"
 
 [[hotkeys]]
@@ -917,7 +917,7 @@ binding = "Unassigned"
 id = "moveToRoot"
 
 [[hotkeys]]
-binding = "Unassigned"
+binding = "Option+Slash"
 id = "toggleSplit"
 
 [[hotkeys]]
@@ -941,11 +941,11 @@ binding = "Unassigned"
 id = "resizeShrink.vertical"
 
 [[hotkeys]]
-binding = "Unassigned"
+binding = "Option+Equal"
 id = "resizeFocusedWindow.grow"
 
 [[hotkeys]]
-binding = "Unassigned"
+binding = "Option+Minus"
 id = "resizeFocusedWindow.shrink"
 
 [[hotkeys]]
@@ -1005,7 +1005,7 @@ binding = "Option+Grave"
 id = "toggleQuakeTerminal"
 
 [[hotkeys]]
-binding = "Option+Shift+L"
+binding = "Option+Comma"
 id = "toggleWorkspaceLayout"
 
 [[hotkeys]]
@@ -1018,7 +1018,7 @@ id = "toggleSystemStats"
 
 [[workspaces]]
 id = "AD36F001-C57E-41A5-AC1D-DF5249D007F0"
-layoutType = "niri"
+layoutType = "default"
 name = "1"
 
 [workspaces.monitorAssignment]
@@ -1026,7 +1026,7 @@ type = "main"
 
 [[workspaces]]
 id = "454CECD4-5E9D-4ED1-95D7-979D48817F5F"
-layoutType = "niri"
+layoutType = "default"
 name = "2"
 
 [workspaces.monitorAssignment]
@@ -1034,7 +1034,7 @@ type = "main"
 
 [[workspaces]]
 id = "BEB842B5-E894-4791-9FD1-397C3CDD3538"
-layoutType = "niri"
+layoutType = "default"
 name = "3"
 
 [workspaces.monitorAssignment]
@@ -1042,7 +1042,7 @@ type = "main"
 
 [[workspaces]]
 id = "248AA883-2261-4D45-943C-79C0E46A232B"
-layoutType = "niri"
+layoutType = "default"
 name = "4"
 
 [workspaces.monitorAssignment]
@@ -1050,7 +1050,7 @@ type = "main"
 
 [[workspaces]]
 id = "8B8C45D6-CE9E-41D9-BD50-BE4989D5E3DE"
-layoutType = "niri"
+layoutType = "default"
 name = "5"
 
 [workspaces.monitorAssignment]
@@ -1059,7 +1059,7 @@ type = "main"
 [[workspaces]]
 displayName = "❤️"
 id = "5953F2BF-A378-4266-91B2-287174C4FA4D"
-layoutType = "niri"
+layoutType = "default"
 name = "6"
 
 [workspaces.monitorAssignment]
@@ -1068,7 +1068,7 @@ type = "secondary"
 [[workspaces]]
 displayName = "🚀"
 id = "A7D5E104-6985-4516-8ED5-07F144F2A33D"
-layoutType = "niri"
+layoutType = "default"
 name = "7"
 
 [workspaces.monitorAssignment]
@@ -1076,16 +1076,16 @@ type = "secondary"
 
 [[workspaces]]
 id = "0E18F6B0-345A-4078-8B21-33641F07A861"
-layoutType = "niri"
+layoutType = "default"
 name = "8"
 
 [workspaces.monitorAssignment]
-type = "main"
+type = "secondary"
 
 [[workspaces]]
 id = "8D4D711C-2B2F-4FEC-86BF-FA952037738A"
-layoutType = "niri"
+layoutType = "default"
 name = "9"
 
 [workspaces.monitorAssignment]
-type = "main"
+type = "secondary"
