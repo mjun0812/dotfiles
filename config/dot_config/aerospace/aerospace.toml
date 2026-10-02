@@ -2,7 +2,7 @@ config-version = 2
 
 # You can use it to add commands that run after AeroSpace startup.
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
-after-startup-command = []
+after-startup-command = ['enable off']
 
 # ワークスペース切り替え時にHammerspoonへ番号を渡してHUDを表示する
 exec-on-workspace-change = [
