@@ -14,7 +14,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/rtk-hook.sh",
+            "command": "rtk hook codex",
             "statusMessage": "Rewriting Bash command with RTK",
             "timeout": 10,
             "type": "command"
