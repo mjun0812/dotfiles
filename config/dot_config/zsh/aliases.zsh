@@ -60,39 +60,39 @@ CLAUDE_COMMIT_MODEL="sonnet"
 alias claude="claude \
     --mcp-config=${HOME}/.claude/mcp.json \
     --allow-dangerously-skip-permissions"
-alias cc-commit='command claude \
+alias cc-commit='command \claude \
     --model="${CLAUDE_COMMIT_MODEL}" \
     --dangerously-skip-permissions \
     -p "/git-commit en"'
-alias cc-commit-ja='command claude \
+alias cc-commit-ja='command \claude \
     --model="${CLAUDE_COMMIT_MODEL}" \
     --dangerously-skip-permissions \
     -p "/git-commit ja"'
-claude-headroom() {
-    ANTHROPIC_BASE_URL=http://127.0.0.1:8787 command claude \
+claude-headroom() (
+    export ANTHROPIC_BASE_URL="http://127.0.0.1:8787"
+    command \claude \
         --mcp-config="${HOME}/.claude/mcp.json" --allow-dangerously-skip-permissions "$@"
-}
-claudex() {
-    env \
-        ANTHROPIC_BASE_URL="http://127.0.0.1:8317" \
-        ANTHROPIC_AUTH_TOKEN="$CLIPROXY_API_KEY" \
-        CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
-        CLAUDE_CODE_MAX_CONTEXT_TOKENS=900000 \
-        ANTHROPIC_DEFAULT_FABLE_MODEL="gpt-5.6-sol" \
-        ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-5.6-sol" \
-        ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-5.6-luna" \
-        ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-5.6-luna" \
-        command claude --mcp-config=${HOME}/.claude/mcp.json \
+)
+claudex() (
+    export ANTHROPIC_BASE_URL="http://127.0.0.1:8317"
+    export ANTHROPIC_AUTH_TOKEN="$CLIPROXY_API_KEY"
+    export CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1
+    export CLAUDE_CODE_MAX_CONTEXT_TOKENS=900000
+    export ANTHROPIC_DEFAULT_FABLE_MODEL="gpt-5.6-sol"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-5.6-sol"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-5.6-luna"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-5.6-luna"
+    command \claude --mcp-config="${HOME}/.claude/mcp.json" \
         --allow-dangerously-skip-permissions --model "gpt-5.6-luna" "$@"
-}
+)
 
 # Codex
-alias codex-full='command codex \
+alias codex-full='command \codex \
     --yolo \
     --dangerously-bypass-hook-trust'
 # headroomはapp-serverを経由しないようにする
 codex-headroom() {
-    command codex \
+    command \codex \
         -c model_provider=headroom \
         -c 'model_providers.headroom.name="headroom"' \
         -c 'model_providers.headroom.base_url="http://127.0.0.1:8787/v1"' \
@@ -102,13 +102,13 @@ codex-headroom-full() {
     codex-headroom --yolo --dangerously-bypass-hook-trust "$@"
 }
 CODEX_COMMIT_MODEL="gpt-6-luna"
-alias codex-commit='command codex exec \
+alias codex-commit='command \codex exec \
     --dangerously-bypass-approvals-and-sandbox \
     --dangerously-bypass-hook-trust \
     -m "${CODEX_COMMIT_MODEL}" \
     -c model_reasoning_effort=low \
     "git-commit skillを使って英語でコミットしてください。" 2>/dev/null'
-alias codex-commit-ja='command codex exec \
+alias codex-commit-ja='command \codex exec \
     --dangerously-bypass-approvals-and-sandbox \
     --dangerously-bypass-hook-trust \
     -m "${CODEX_COMMIT_MODEL}" \
@@ -117,11 +117,11 @@ alias codex-commit-ja='command codex exec \
 
 # Antigravity-cli (agy)
 AGY_COMMMIT_MODEL="gemini-3.8-flash-medium"
-alias agy-commit='command agy \
+alias agy-commit='command \agy \
     --dangerously-skip-permissions \
     --model="${AGY_COMMMIT_MODEL}" \
     -p "cd $(pwd) && git-commit skillを使って英語でコミットしてください。"'
-alias agy-commit-ja='command agy \
+alias agy-commit-ja='command \agy \
     --dangerously-skip-permissions \
     --model="${AGY_COMMMIT_MODEL}" \
     -p "cd $(pwd) && git-commit skillを使って日本語でコミットしてください。"'
