@@ -78,10 +78,10 @@ claudex() (
     export ANTHROPIC_AUTH_TOKEN="$CLIPROXY_API_KEY"
     export CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1
     export CLAUDE_CODE_MAX_CONTEXT_TOKENS=900000
-    export ANTHROPIC_DEFAULT_FABLE_MODEL="gpt-5.6-sol"
-    export ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-5.6-sol"
-    export ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-5.6-luna"
-    export ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-5.6-luna"
+    export ANTHROPIC_DEFAULT_FABLE_MODEL="gpt-6-astra"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-6.1-sol"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-6-luna"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-6-luna"
     command \claude --mcp-config="${HOME}/.claude/mcp.json" \
         --allow-dangerously-skip-permissions --model "gpt-5.6-luna" "$@"
 )
