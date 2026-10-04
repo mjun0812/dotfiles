@@ -216,6 +216,7 @@
   },
   "language": "japanese",
   "feedbackDrafts": "off",
+  "cleanupPeriodDays": 365,
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
   "modelSettings": {
