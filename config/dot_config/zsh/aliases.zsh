@@ -56,15 +56,16 @@ diff() {
 }
 
 # Claude Code
+CLAUDE_COMMIT_MODEL="sonnet"
 alias claude="claude \
     --mcp-config=${HOME}/.claude/mcp.json \
     --allow-dangerously-skip-permissions"
 alias cc-commit='command claude \
-    --model=haiku \
+    --model="${CLAUDE_COMMIT_MODEL}" \
     --dangerously-skip-permissions \
     -p "/git-commit en"'
 alias cc-commit-ja='command claude \
-    --model=haiku \
+    --model="${CLAUDE_COMMIT_MODEL}" \
     --dangerously-skip-permissions \
     -p "/git-commit ja"'
 claude-headroom() {
@@ -87,12 +88,9 @@ claudex() {
 
 # Codex
 alias codex-full='command codex \
-    -C "$PWD" \
-    --remote unix:// \
     --yolo \
     --dangerously-bypass-hook-trust'
-# headroomはapp-serverを経由しない。remote接続では-cオーバーライドが
-# daemonへ転送されず、model_provider指定が無視されるため。
+# headroomはapp-serverを経由しないようにする
 codex-headroom() {
     command codex \
         -c model_provider=headroom \
@@ -103,7 +101,7 @@ codex-headroom() {
 codex-headroom-full() {
     codex-headroom --yolo --dangerously-bypass-hook-trust "$@"
 }
-CODEX_COMMIT_MODEL="gpt-5.6-luna"
+CODEX_COMMIT_MODEL="gpt-6-luna"
 alias codex-commit='command codex exec \
     --dangerously-bypass-approvals-and-sandbox \
     --dangerously-bypass-hook-trust \
@@ -118,13 +116,14 @@ alias codex-commit-ja='command codex exec \
     "git-commit skillを使って日本語でコミットしてください。" 2>/dev/null'
 
 # Antigravity-cli (agy)
+AGY_COMMMIT_MODEL="gemini-3.8-flash-medium"
 alias agy-commit='command agy \
     --dangerously-skip-permissions \
-    --model="Gemini 3.5 Flash (Low)" \
+    --model="${AGY_COMMMIT_MODEL}" \
     -p "cd $(pwd) && git-commit skillを使って英語でコミットしてください。"'
 alias agy-commit-ja='command agy \
     --dangerously-skip-permissions \
-    --model="Gemini 3.5 Flash (Low)" \
+    --model="${AGY_COMMMIT_MODEL}" \
     -p "cd $(pwd) && git-commit skillを使って日本語でコミットしてください。"'
 alias gemini-commit='agy-commit'
 alias gemini-commit-ja='agy-commit-ja'
