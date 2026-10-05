@@ -56,11 +56,6 @@
 ## Tool
 
 - skillや指示に登場する `AskUserQuestion` は `request_user_input` に読み替えること。
-- ブラウザ操作には優先的に `agent-browser` skillを使うこと。通信解析・performance trace・heap snapshotなど、chrome-devtools MCPにしかない機能が必要なときだけ `chrome-devtools` MCPを使う。
-- pane/tab操作の依頼でツールが明示されていない場合、`HERDR_ENV=1` のセッションでは `herdr` skillを優先する。それ以外の環境ではtmuxとweztermのどちらを指すかをユーザーに確認する。ツール名が明示されたときはそれに従う。
-- `Web Search`:
-  - 可能な限り、最新の公式ドキュメントや一次情報源を優先して参照すること。
-  - 会話している言語に関わらず、英語・日本語の両方で検索を行ってください。
 
 ## Steering
 
@@ -70,25 +65,13 @@
 
 ## Glossary and ADR
 
-- リポジトリに用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) が存在する場合は読み込み、定義された語彙を使うこと。ユーザーが定義と衝突する語を使ったら、その場で指摘して確認する。
+- リポジトリに用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) が存在する場合は読み込み、定義された語彙を使うこと。
 - 決定記録とADRは `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) に集約し、存在すれば読み込む。StatusとScopeを確認し、tentative・supersededや他specだけの判断を現在の共通規約として適用しない。適用対象のacceptedな決定に反する変更は実装前にユーザーへ確認する。
-- 用語が確定したら上記で解決した `CONTEXT.md` へ `**用語**: 定義 (1〜2文)` と `_Avoid_: 使わない言い換え` の形で追記する。実装詳細は書かない。
-- 非自明な判断は `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) に追記する。存在しなければ親ディレクトリとともに作成する。D番号、Date、Scope、Kind、Source、Owner、Status、Decision、Alternatives、Rationale、Evidenceを記録する。「覆しにくい」「文脈なしでは不可解」「本物のtrade-offがあった」の3条件をすべて満たすものは `Kind: adr`、それ以外は `Kind: decision` とする。spec配下やADRごとのファイルへ分散・複製しない。判断本文は保持し、覆すときは新entryを追記して旧entryのStatusだけを `superseded by D-NNN` にする。tentativeの確定時のStatus / Owner更新とEvidence追記は許可する。
 
-- Git管理へ移す場合は `.mjun/CONTEXT.md` をrepo直下の `CONTEXT.md` へ、`.mjun/steering/decisions.md` を `docs/adr/decisions.md` へ全内容を移す。Git管理対象であること、内容と参照の欠落がないことを確認してから移行元を削除する。以後は移行先だけを読み書きし、`.mjun/` 側を再作成・同期しない。移行手順は `mjun-steering` の共通記録規則に従う。
+## Git
 
-## Versioning
+GitHub操作は必ず `git, gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
 
-- バージョン番号を扱う際は Semantic Versioning 2.0.0 に従うこと。
-
-## Git / GitHub
-
-GitHub操作は必ず `gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
-
-- コミットメッセージは常に Conventional Commits 形式に従うこと。
-- 2行目は必ず空行とし、コミットの説明は3行目から記述すること。
-- Gitタグを使用する際は "v1.0.0" や "v2.1.3" といったSemantic Versioningの形式を使用すること。
-- コミットメッセージは変更内容を具体的に記述すること。「レビュー対応」「修正」「更新」のような曖昧な表現は禁止。何を・なぜ変更したかが分かるメッセージにすること。
 - `gh` コマンドでCIやPRの完了などを長時間待機する場合は、Rate Limitの消費を抑えるため、適切な間隔を空けて明示的に状態を再取得すること。
 
 ## Python
