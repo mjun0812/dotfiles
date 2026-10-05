@@ -59,12 +59,12 @@
 
 - リポジトリに `.mjun/steering/` が存在する場合、配下の `*.md` をすべてプロジェクトメモリとして読み込むこと。
 - coreファイルは `product.md` (目的・価値)、`tech.md` (技術スタック・規約)、`structure.md` (構成パターン)。ドメイン別のcustomファイルもcoreと同格に扱うこと。
-- core / custom steeringの作成・更新は `mjun-steering` skillで行うこと。決定記録 `decisions.md` は同skillの記録規則に従い、判断を行ったskillがその場で追記する。
+- core / custom steeringの作成・更新は `mjun-steering` skillで行うこと。決定記録は同skillの記録規則に従い、判断を行ったskillがその場で1件1ファイルとして追加する。
 
 ## Glossary and ADR
 
 - リポジトリに用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) が存在する場合は読み込み、定義された語彙を使うこと。
-- 決定記録とADRは `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) に集約し、存在すれば読み込む。StatusとScopeを確認し、tentative・supersededや他specだけの判断を現在の共通規約として適用しない。適用対象のacceptedな決定に反する変更は実装前にユーザーへ確認する。
+- 決定記録とADRは1件1ファイル (`NNNN-<slug>.md`) としてGit管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/` に集約し、存在すれば読み込む。StatusとScopeを確認し、tentative・supersededや他specだけの判断を現在の共通規約として適用しない。適用対象のacceptedな決定に反する変更は実装前にユーザーへ確認する。
 
 ## Git
 

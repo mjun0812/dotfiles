@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Bash(zsh:*), Bash(git rev-parse:*), Bash(gh iss
 
 # mjun-status
 
-`.mjun/specs/<slug>/` 配下のファイル、共通の `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) と git の状態だけから、各specの現在地を導出して表示するSkill。索引ファイルや状態フィールドを新設せず、毎回内容から判定する。表示だけを行い、spec・tasks・git・GitHubのいずれにも書き込まない。
+`.mjun/specs/<slug>/` 配下のファイル、共通の決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) と git の状態だけから、各specの現在地を導出して表示するSkill。索引ファイルや状態フィールドを新設せず、毎回内容から判定する。表示だけを行い、spec・tasks・git・GitHubのいずれにも書き込まない。
 
 ## Arguments
 
@@ -39,12 +39,12 @@ scriptはspecごとに `## <slug>` ブロックを出力する。`status` / `app
 
 scriptが出さない次の項目だけを自分で読む。存在しないファイルは「なし」として扱い、エラーにしない。
 
-| 読むもの                                                                                                              | 取り出す項目                                                                                                                                                                                                                   |
-| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `spec.md`                                                                                                             | `## Boundaries` の Owns / Public Contracts Affected (spec間の警告に使う)。詳細表示では `### Revalidation Triggers` の本文                                                                                                      |
-| `design.md`                                                                                                           | `## Change Outline` のmodule / directory一覧 (spec間の警告に使う)                                                                                                                                                              |
-| `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) / `tasks.md` | 詳細表示のみ: 対象specが参照するdecisionの D番号 / タイトル / Status、全taskの T番号 / タイトル / Status / Blocked by                                                                                                          |
-| GitHub (任意)                                                                                                         | `Source: #N` があれば `gh issue view <N> --json state,url`、Implementation Branchがあれば `gh pr list --head <branch> --state all --json number,state,url --limit 1`。`gh` が失敗した場合は該当項目を `unknown` にして続行する |
+| 読むもの                                                                                    | 取り出す項目                                                                                                                                                                                                                   |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `spec.md`                                                                                   | `## Boundaries` の Owns / Public Contracts Affected (spec間の警告に使う)。詳細表示では `### Revalidation Triggers` の本文                                                                                                      |
+| `design.md`                                                                                 | `## Change Outline` のmodule / directory一覧 (spec間の警告に使う)                                                                                                                                                              |
+| 決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) / `tasks.md` | 詳細表示のみ: 対象specが参照するdecisionの D番号 / タイトル / Status、全taskの T番号 / タイトル / Status / Blocked by                                                                                                          |
+| GitHub (任意)                                                                               | `Source: #N` があれば `gh issue view <N> --json state,url`、Implementation Branchがあれば `gh pr list --head <branch> --state all --json number,state,url --limit 1`。`gh` が失敗した場合は該当項目を `unknown` にして続行する |
 
 ### 3. phaseの導出
 
@@ -97,7 +97,7 @@ spec間の警告は、`source` 指定時もactiveなspec全件の `spec.md` と 
 | add-status-skill | mjun-status skillの追加 | approved | implementing | 2/4 | feat/12-add-status-skill | 実装の再開 (残り2 task) |
 
 警告:
-- add-status-skill: tentative 1件 (D-003)
+- add-status-skill: tentative 1件 (D-0003)
 ```
 
 **詳細 (`source` あり)**: 上記1行に加えて次を出す。

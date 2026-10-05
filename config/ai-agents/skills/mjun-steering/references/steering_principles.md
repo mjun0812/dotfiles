@@ -2,7 +2,7 @@
 
 Steering files are **project memory**, not exhaustive specifications.
 
-The pattern and regeneration guidance below applies to core/custom files. `decisions.md` is the shared decision history: follow [the decision record rules](glossary_and_adr.md), preserve its entries, and never regenerate it from code. Source/Evidence may reference spec paths.
+The pattern and regeneration guidance below applies to core/custom files. The decision records (`adr/NNNN-<slug>.md`, one decision per file) are the shared decision history: follow [the decision record rules](glossary_and_adr.md), preserve their entries, and never regenerate them from code. Source/Evidence may reference spec paths.
 
 ---
 
@@ -68,7 +68,7 @@ Never include:
 
 - **Single domain**: One topic per file
 - **Concrete examples**: Show patterns with code
-- **Reference rationale**: Link to the relevant D-number in decisions.md instead of duplicating its history
+- **Reference rationale**: Link to the relevant decision record file instead of duplicating its history
 
 ---
 

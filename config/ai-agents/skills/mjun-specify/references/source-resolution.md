@@ -120,9 +120,9 @@ Source: #123
 
 ## 用語集と決定記録
 
-判断履歴とADRは `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) に集約する。存在しなければ記録時に作成する。形式は [decisions-template.md](decisions-template.md)、Scope・状態・追記規則は [用語集と決定記録](../../mjun-steering/references/glossary_and_adr.md) に従う。
+判断履歴とADRは決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) に1件1ファイルで集約する。存在しなければ記録時に作成する。形式は [decisions-template.md](decisions-template.md)、Scope・状態・追記規則は [用語集と決定記録](../../mjun-steering/references/glossary_and_adr.md) に従う。
 
-spec.mdのH1直下の `Decisions: D-001, D-002` が、そのspecの判断への参照である。本文は複製せず、承認前のtentative検査とIssueへのDecision Log投影はこの参照先に限定する。projectのacceptedは共通方針として読み、無関係なspecのtentativeは対象に含めない。
+spec.mdのH1直下の `Decisions: D-0001, D-0002` が、そのspecの判断への参照である。本文は複製せず、承認前のtentative検査とIssueへのDecision Log投影はこの参照先に限定する。projectのacceptedは共通方針として読み、無関係なspecのtentativeは対象に含めない。
 
 用語集はrepo直下のCONTEXT.md、無ければ.mjun/CONTEXT.mdを使う。用語と既存のacceptedな判断に反する要求は、人間の判断で解決してからcontractへ反映する。
 
@@ -134,4 +134,4 @@ spec.mdのH1直下の `Decisions: D-001, D-002` が、そのspecの判断への�
 - specは**内部文書**である。PR本文・PRタイトル・commit messageなど外部向けの出力では、`.mjun/` 配下のパスやspecの存在に言及しない。外部へ見せるspecの参照はGitHub Issue (`Closes #N`) だけを使う
 - PRレビュー側は、contractを「`--spec` 引数で明示されたsource → PR本文の `Closes #N` が指すIssue」の順で解決する。どちらも無ければContract観点をスキップする (Issue本文は承認時点の投影であり、最新の正本はLocal specにある)
 - resumeとtask進捗の永続化は、`.mjun/` が残っている同一working tree上でのみ有効
-- repo直下の `CONTEXT.md` はgit管理下にありworktreeにも存在する。判断記録もGit管理へ移行済みなら作業中のworktreeの `docs/adr/decisions.md` を使い、変更をcommitに含める。未移行の判断記録はメインrepositoryの絶対パスを使う。配送時のADR転記は行わない
+- repo直下の `CONTEXT.md` はgit管理下にありworktreeにも存在する。判断記録もGit管理へ移行済みなら作業中のworktreeの `docs/adr/` を使い、変更をcommitに含める。未移行の判断記録はメインrepositoryの絶対パスを使う。配送時のADR転記は行わない

@@ -73,7 +73,7 @@ groupの各taskについて判定する。次のいずれかに当たるtaskは�
 - SubAgentを起動せず、担当作業を別Agentへ再移譲しない。自分で完了できない場合は、定められた構造化結果で親へ返す
 - 親へ途中経過のmessageを送らない。結果は最終応答の構造化ブロックだけで返す (途中のmessageは親を起こして待機を中断させる)
 - 検証コマンドをbackgroundで実行しない。前面で完了まで待ち、sleepやログのtailで完了を待つpollingをしない。toolのtimeoutに収まらない場合は対象 (package、テスト名) を絞って分割実行する (background実行のまま応答を終えると、結果が親に届かない)
-- repositoryに残るもの (テスト名、関数名、ファイル名、fixture名、コメント、ログ、エラーメッセージ) に、task ID (`T-NNN`)、`AC-n`、decision番号 (`D-NNN`)、Requirement番号、`spec.md` / `tasks.md`、「specによると」のようなspecへの言及を書かない (specは内部文書でrepositoryに存在せず、番号は再分解で変わる)。テスト名とコメントは、検証する振る舞いで書く。言語はrepositoryの規約に従い、規約が無ければ既存ファイルに合わせる
+- repositoryに残るもの (テスト名、関数名、ファイル名、fixture名、コメント、ログ、エラーメッセージ) に、task ID (`T-NNN`)、`AC-n`、decision番号 (`D-NNNN`)、Requirement番号、`spec.md` / `tasks.md`、「specによると」のようなspecへの言及を書かない (specは内部文書でrepositoryに存在せず、番号は再分解で変わる)。テスト名とコメントは、検証する振る舞いで書く。言語はrepositoryの規約に従い、規約が無ければ既存ファイルに合わせる
 - 実装コードを残さない (足場は最小限に留める。検査の到達性を確かめる一時的な変更は、確認後に必ず戻す)
 - commitしない
 - specのDoes Not Own・Out of Scopeの領域に検査を置かない
@@ -101,4 +101,4 @@ groupの各taskについて判定する。次のいずれかに当たるtaskは�
 - MISSING: <CANNOT_VERIFYのtaskごと。どんな検証手段や情報があれば検査にできるか>
 ```
 
-Git管理へ移行済みの `docs/adr/decisions.md` 自体は、D番号・Scope・Source・supersededの履歴を保持する文書なので、上記の内部識別子禁止からその記録に必要な項目だけを除外する。製品コードやテストへ内部specの識別子を埋め込むことは引き続き禁止する。
+Git管理へ移行済みの `docs/adr/` の決定記録自体は、D番号・Scope・Source・supersededの履歴を保持する文書なので、上記の内部識別子禁止からその記録に必要な項目だけを除外する。製品コードやテストへ内部specの識別子を埋め込むことは引き続き禁止する。

@@ -9,7 +9,7 @@
 - repository rootの絶対パス
 - レビュー対象の実装設計 (design.mdの全文、Issue本文の `## Design Notes`、設計Markdownの全文、または会話から書き起こした設計)
 - contract (spec.mdの全文、Issue本文のContext〜Out of Scope、設計Markdownの要求記述、または会話から書き起こした要求)
-- あれば決定の経緯 (共通の `decisions.md` (Git管理へ移行済みなら `docs/adr/decisions.md`、それ以外は `.mjun/steering/decisions.md`) から対象specが参照するentry、またはIssue本文の `## Decision Log`)
+- あれば決定の経緯 (共通の決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) から対象specが参照するentry、またはIssue本文の `## Decision Log`)
 - 共通の判断記録はStatusとScopeで適用対象を区別する。projectのacceptedと対象specが参照するacceptedを制約として読み、tentative / superseded / 無関係なspecの判断を確定規約にしない。
 - steering・`CONTEXT.md` (用語集)・ADR (決定記録) のパス一覧 (あれば)
 - 人間が決めたdecision (Human-owned) の一覧 (あれば)
@@ -58,5 +58,5 @@
 - 問題: <何が問題か>
 - 根拠: <contractの引用 / file:line / steering / ADR / CONTEXT.mdの引用>
 - 満たすべき状態: <修正方針ではなく、満たすべき状態>
-- Human-owned decisionとの矛盾: <D-NNN、または none>
+- Human-owned decisionとの矛盾: <D-NNNN、または none>
 ```
