@@ -60,10 +60,10 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
    - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)。`Status: blocked` のtaskは `Resume when` が現在満たされたと確認できた場合だけ `ready` へ戻し、それ以外はblocked一覧へ残す
    - 採用したtaskのうちAcceptance Criteriaが4件以上のものは、verifierが `TOO_LARGE` と判定する基準に当たる。Phase 3.0を待たず、ここで下の分解規則により分割し、Phase 3.0の `TASK_TOO_LARGE` と同じ検査 (ACの和集合が元taskと等しい、BoundaryがOwns内、依存が循環しない) を通してからキューを置き換える (大きすぎるtaskをverifierへ渡すと、検査の作成に失敗してから分割することになる)。粒度の基準の免除をユーザーに求めて、そのまま進めない
    - 全taskが `done` の場合も終了せず、記録済みbranchからresumeしてPhase 3.2の最終検証とPhase 4の配送を再実行する
-   - spec modeで `tasks.md` が無い場合は、独立に検証可能な振る舞いが複数あれば1 task 1振る舞いのvertical sliceへ分解し、それ以外はspec全体を `T-001` とする。分解の判定は次の規則で行う: 各taskのAcceptance Criteriaを1つの失敗コマンドでredにできる (できなければ分割)、Boundaryは specのOwnsのうち1つ (2つ以上に触るなら `Boundary: <責務A>, <責務B> (integration)` と明示して先行taskの後に置く)、型・設定・配線などの前提は先行taskにしてBlocked byで結ぶ、各taskに `Done when:` (完了時に観察できること) と `Seam:` (検証する公開インターフェース) を1行ずつ付ける、ACが4件以上になるtaskは分割する。ここでは会話内に保持し、Phase 2のworktree作成後に `tasks.md` へ書く
+   - spec modeで `tasks.md` が無い場合は、独立に検証可能な振る舞いが複数あれば1 task 1振る舞いのvertical sliceへ分解し、それ以外はspec全体を `T-001` とする。分解の判定は次の規則で行う: 各taskのAcceptance Criteriaを1つの実行可能なコマンドで検証できる (実装前のREDは分解の条件にしない。検証できなければ分割)、Boundaryは specのOwnsのうち1つ (2つ以上に触るなら `Boundary: <責務A>, <責務B> (integration)` と明示して先行taskの後に置く)、型・設定・配線などの前提は先行taskにしてBlocked byで結ぶ、各taskに `Done when:` (完了時に観察できること) と `Seam:` (検証する公開インターフェース) を1行ずつ付ける、ACが4件以上になるtaskは分割する。ここでは会話内に保持し、Phase 2のworktree作成後に `tasks.md` へ書く
    - doc modeでは同じ基準で会話内のキューを作り、Local specの `tasks.md` は作らない
    - 各taskの受け入れ基準、Boundary (specにBoundariesがある場合)、Done when、Seamを確認し、依存順 (Blocked by) に並べる。`Blocked by` の全taskが `done` のtaskだけを実行可能とし、blocked taskに依存するtaskは実行せず依存待ち一覧へ残す
-   - **task groupへ区切る**: groupがPhase 3.0〜3.1の単位 (verifier、implementer、reviewer、commit) になる。依存順に並べたキューを先頭から走査し、現在のgroupのいずれかのtaskとspecのOwnsの同じ責務 (Boundary) に属するtaskは現在のgroupへ加え、属さなければ新しいgroupを始める (Boundariesが無い場合はSeamが同じ公開interfaceかで判定する)。1 groupはtask 5件・Acceptance Criteria合計12件を上限の目安とし、超える場合は依存順で区切る (verifierとimplementerが1つのfresh contextで扱える大きさ)。groupは依存順に直列で処理するため、先行groupのtaskは処理時点でdoneになっている。単一taskのgroupも同じ手順で扱う
+   - **task groupへ区切る**: groupがPhase 3.0〜3.1の単位 (implementer、reviewer、commit。必要なtaskだけverifierを先に使う) になる。依存順に並べたキューを先頭から走査し、現在のgroupのいずれかのtaskとspecのOwnsの同じ責務 (Boundary) に属するtaskは現在のgroupへ加え、属さなければ新しいgroupを始める (Boundariesが無い場合はSeamが同じ公開interfaceかで判定する)。1 groupはtask 5件・Acceptance Criteria合計12件を上限の目安とし、超える場合は依存順で区切る (implementerが1つのfresh contextで扱える大きさ)。groupは依存順に直列で処理するため、先行groupのtaskは処理時点でdoneになっている。単一taskのgroupも同じ手順で扱う
 5. `--pr` / `--no-pr` / `--merge` が未指定なら、ここでAskUserQuestionにより配送方法を確認する (使えない環境では選択肢をテキストで提示する)。手順1の `gh repo view` が失敗した (GitHub remoteが無い) 場合はPRを作れないため、`--no-pr` と `--merge` の2択で確認する
 6. 実装方針とtask一覧 (group区切り付き) を**簡潔に**提示し、確認を取らずPhase 2へ進む
 
@@ -87,9 +87,9 @@ verifier、reviewer、debugger、refactorerは毎回新規に起動する (fresh
 
 役割は5つある。
 
-- **verifier** ([templates/verifier-prompt.md](templates/verifier-prompt.md)): 実装の前に、groupの各taskのAcceptance Criteriaを「今は失敗する実行可能な検査」に落とし、検査ファイルをformatterとlintに通してから、Task Briefと一緒に `## Check Report` を返す。検査がimplementerの成功の定義になる
-- **implementer** ([templates/implementer-prompt.md](templates/implementer-prompt.md)): groupの全taskについてverifierの検査をgreenにする実装と検証を担い、`## Status Report` を返す
-- **reviewer** ([templates/reviewer-prompt.md](templates/reviewer-prompt.md)): 検査の実行結果、検査ファイルの不変、実在性、Boundaryを中心に敵対的に検証し、`## Review Verdict` を返す
+- **implementer** ([templates/implementer-prompt.md](templates/implementer-prompt.md)): groupの全taskの実装と必要な検査の作成・実行を担い、`## Status Report` を返す。通常は実装後に検証してよく、TDDを強制しない。バグ修正では修正前に再現テストを書いて失敗を確認し、修正後に通す
+- **reviewer** ([templates/reviewer-prompt.md](templates/reviewer-prompt.md)): 全Acceptance Criterionを実装と検査に照合し、検査の実行結果、保護された検査ファイルの不変、実在性、Boundaryを敵対的に検証して `## Review Verdict` を返す
+- **verifier** ([templates/verifier-prompt.md](templates/verifier-prompt.md)): 検査を先に独立して設計する必要があるtaskだけを担当する。ユーザー・specが独立した事前検査を指定しているか、期待値や検証手段を実装から独立に確定する必要について親が具体的な理由を示せる場合に使う。バグ修正や複雑なロジックという分類だけでは起動しない。対象taskの未充足の振る舞いはRED、回帰検査はGREENで採用し、種別・根拠・実行結果を記録する。検査ファイルをformatterとlintに通してから、Task Briefと一緒に `## Check Report` を返す
 - **debugger** ([templates/debugger-prompt.md](templates/debugger-prompt.md)): 差し戻しが収束しない、またはBLOCKEDのときに、fresh contextでroot causeを分類し `## Debug Report` を返す
 - **refactorer** ([templates/refactorer-prompt.md](templates/refactorer-prompt.md)): 全task完了後、reviewerのNOTESとtask間の重複を全検査greenのまま整理し、`## Refactor Report` を返す
 
@@ -97,7 +97,7 @@ verifier、reviewer、debugger、refactorerは毎回新規に起動する (fresh
 
 SubAgentのmodel選択は、環境のグローバル指示 (CLAUDE.md, AGENTS.md等) のモデル指針を最優先する。指針が無ければメイン会話と同等のモデルをデフォルトとし、定型的で機械的な作業に限りimplementerに軽量モデルを指定してよい。verifierとreviewerにはimplementerと同等以上のモデルを使う (出力が親の状態遷移に直接使われるため)。モデル指針が作業の性質でmodelを選ぶ形の場合は、role名ではなくgroupの作業の性質に当てはめ、すべてのroleを最上位のモデルに寄せない。
 
-実装を始める前に、リポジトリから正規の検証コマンドを洗い出し、`TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` / `SMOKE_COMMANDS` として保持する。探索順は `.mjun/steering/` の記述 → manifest類 → タスクランナー → CI設定 → README。リポジトリの自動化が既に使っているコマンドを優先する。`SMOKE_COMMANDS` (起動して最初の利用可能な状態に達することを確かめるコマンド) は宣言されているものだけを使い、無ければ空のままにしてPhase 3.2でverifierの検査から代用する。
+実装を始める前に、リポジトリから正規の検証コマンドを洗い出し、`TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` / `SMOKE_COMMANDS` として保持する。探索順は `.mjun/steering/` の記述 → manifest類 → タスクランナー → CI設定 → README。リポジトリの自動化が既に使っているコマンドを優先する。`SMOKE_COMMANDS` (起動して最初の利用可能な状態に達することを確かめるコマンド) は宣言されているものだけを使い、無ければ空のままにしてPhase 3.2で各taskの検査から代用する。
 
 Phase 3の間の制約:
 
@@ -107,7 +107,7 @@ Phase 3の間の制約:
 - SubAgentの完了主張を検証の代わりにしない。判定は構造化フィールドと、検査・reviewer・最終検証の実行結果だけで行う
 - 構造化値が無い、または曖昧なときの再要求は、作業したSubAgentを継続して行う (SendMessage等)。継続できない環境では、ブロックだけを別のSubAgentに求めず、そのroleを最初からやり直す (作業していないagentが返すブロックは捏造になる)
 - SubAgentの報告で `NOT_RUN` の項目は、親が該当コマンドを実行して埋める。推測で埋めない
-- verifierが書いた検査ファイル (`CHECK_FILES`) はverifier以外に変更させない。親は検査の作成直後にファイルのハッシュ (`shasum -a 256`) を記録し、reviewerがそれと照合する。検査を直す必要が生じた場合はverifierに作り直させ、ハッシュを更新する。後続groupの意図した変更で先行groupの検査が壊れた場合も同じ経路を使う: 壊れた検査と原因の変更を添えてverifierに該当検査だけを更新させ (期待値の根拠はAcceptance Criteriaのまま、前提だけを直す)、ハッシュを更新してRun Logに記録する。implementerには直させない
+- `CHECK_FILES` は採用した検査ファイル全体、`CHECK_COMMANDS` はAcceptance Criterionごとの検証コマンドとする。verifierが書いたファイルだけを `PROTECTED_CHECK_FILES` に登録し、verifier以外に変更させない。親はその作成直後にハッシュ (`shasum -a 256`) を記録し、reviewerが照合する。implementerは保護対象以外の検査を作成・修正でき、変更の妥当性はreviewerがAcceptance Criteriaから判定する。後続groupで検査を直す場合も、保護対象はverifier経由で更新してハッシュを記録し、それ以外はimplementerが直してreviewerが確認する。期待値を実装に合わせて弱めず、更新したファイル・コマンドと理由をRun Logに記録する
 - ユーザーの指示で手順の一部を変える場合も、role、テンプレート、構造化ブロック、回数の上限はそのまま使い、独自の役割名や報告形式を作らない。複数groupを同じworktreeで並列に実装しない (Phase 3.1)
 - 実行中にcontractに無い追加要求を受けた場合は、`spec.md` を直接書き換えて実装に入らない。現在のgroupを終えた時点で止め、specの磨き直し (承認を含む) が先に必要であることを案内する
 - CIのrunなど数分以上かかる外部の完了待ちは、完了まで戻らない待機コマンドを1本だけ実行して待つ。短い間隔の再確認や、時間切れごとの待機の張り直しを繰り返さない
@@ -116,7 +116,7 @@ Phase 3の間の制約:
 
 Phase 3以降の手順は、必要になった時点で次のファイルを読む。読んでいない手順を記憶で補わない。
 
-- [references/group-loop.md](references/group-loop.md): Phase 3.0 (検査の作成) とPhase 3.1 (実装とレビュー)、Run Logの形式。最初のgroupを始める前に読む
+- [references/group-loop.md](references/group-loop.md): Phase 3.0 (実装準備と必要な事前検査) とPhase 3.1 (実装とレビュー)、Run Logの形式。最初のgroupを始める前に読む
 - [references/recovery.md](references/recovery.md): taskの隔離とblocked、Phase 3.1' (debuggerによる原因調査)。implementerが `BLOCKED` を返した、差し戻しが2周に達した、taskをblockedへ移す、task計画を直す、のいずれかのときに読む
 - [references/validation-and-delivery.md](references/validation-and-delivery.md): Phase 3.2 (feature単位の検証)、Phase 3.3 (整理)、Phase 4 (commitと配送)、Phase 5 (結果の表示)、Phase 6 (worktreeクリーンアップ)。実行可能なtaskが尽きたときに読む
 

@@ -15,7 +15,7 @@
 
 - 検証コマンドがすべて成功し、全criterionが充足し、task間が整合し、boundary違反が無い → `GO`。Phase 3.3へ進む
 - 実行時検証が「未実施」、実行できなかった操作シナリオがある、またはreview-onlyのtaskがあり、他はすべて成功 → `MANUAL_VERIFY_REQUIRED`。Phase 3.3へ進むが、Phase 5の報告とPR本文の検証結果に未実施を明記する
-- 検証コマンドの失敗、criterionの未充足、task間の不整合、またはboundary違反 → 内容を添えてimplementerを新規に起動して差し戻す (合わせて最大2周。2周目は同じimplementerを継続する)。差し戻しは該当criterionを持つtaskの文脈で行い、全taskの `CHECK_COMMANDS` と `CHECK_FILES` のハッシュを渡す。**差し戻しで生じた修正は、Phase 3.1と同じreviewerの検査に合格してからPhase 3.3へ進む** (最終検証後の変更だけがboundary検査等を迂回する経路を作らない)。収束しなければ中止し、未充足のcriterionを明示して報告する
+- 検証コマンドの失敗、criterionの未充足、task間の不整合、またはboundary違反 → 内容を添えてimplementerを新規に起動して差し戻す (合わせて最大2周。2周目は同じimplementerを継続する)。差し戻しは該当criterionを持つtaskの文脈で行い、全taskの `CHECK_COMMANDS` / `CHECK_FILES` と `PROTECTED_CHECK_FILES` のハッシュを渡す。検査を直す場合はPhase 3の保護対象ごとの更新規則に従う。**修正後の検査一覧・報告をPhase 3.1の2と同じ手順で採用し、同じreviewerの検査に合格してからPhase 3.3へ進む** (最終検証後の変更だけがboundary検査等を迂回する経路を作らない)。収束しなければ中止し、未充足のcriterionを明示して報告する
 
 Run Logに `feature: validation=<GO | MANUAL_VERIFY_REQUIRED | NO-GO>` を記録する。
 
@@ -23,8 +23,8 @@ Run Logに `feature: validation=<GO | MANUAL_VERIFY_REQUIRED | NO-GO>` を記録
 
 Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `NOTES` が1件以上あるか、Phase 3.2でtask間の重複が見つかった場合に行う。どちらも無ければスキップする。
 
-1. **refactorerの起動**: テンプレートに、worktreeの絶対パス、contractのBoundariesとOut of Scope、全taskの `NOTES`、全 `CHECK_COMMANDS` と `CHECK_FILES`、検証コマンドを合成して起動する
-2. `## Refactor Report` の `- STATUS:` だけをパースする。`SKIPPED` なら何もしない。`DONE` ならreviewerを `ROUND: refactor` で起動し、全taskの `CHECK_COMMANDS` と `CHECK_FILES` のハッシュ、検証コマンド、contractのBoundariesを渡す (全検査の通過、検査ファイルの不変、Boundary、振る舞いの不変を検査する)
+1. **refactorerの起動**: 開始前に全 `CHECK_FILES` のハッシュを記録する。このpassでは検査の作成者によらず全検査ファイルを変更禁止とする。テンプレートに、worktreeの絶対パス、contractのBoundariesとOut of Scope、全taskの `NOTES`、全 `CHECK_COMMANDS` と `CHECK_FILES`、検証コマンドを合成して起動する
+2. `## Refactor Report` の `- STATUS:` だけをパースする。`SKIPPED` なら何もしない。`DONE` ならreviewerを `ROUND: refactor` で起動し、全taskの `CHECK_COMMANDS` / `CHECK_FILES` と、このpassの `PROTECTED_CHECK_FILES` として全 `CHECK_FILES` と開始前のハッシュ、検証コマンド、contractのBoundariesを渡す (全検査の通過、検査ファイルの不変、Boundary、振る舞いの不変を検査する)
 3. `APPROVED` → `refactor:` 種別のcommitを作る。`REJECTED` → refactorerの `FILES_CHANGED` だけを `git checkout -- <files>` で戻す (失うのは整理だけで、taskのcommitは影響を受けない)。再試行はしない
 4. Run Logの `feature:` 行に `refactor=<DONE | SKIPPED | REJECTED>` を追記する
 
@@ -52,7 +52,7 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 - **PR**: 作成したPRのURL (`--no-pr` の場合は「PRなし。branch `<name>` に成果があります」。`--merge` の場合は「PRなし。`<base-branch>` へfast-forward merge済み」。`PARTIAL` の場合は「未作成。branch `<name>` に完了taskのcommitがあります」)
 - **変更概要**: ファイル数、追加/削除行数 (`git diff --stat <base>..HEAD`)
 - **task進捗**: 完了task数と、スキップした完了済みtask数 (resume時)
-- **Checks**: groupごとの検査数 (task別の内訳付き) と結果 (Phase 3.0で作成した検査がすべて通ったか)。review-onlyのtaskがあれば、そのtask IDと検査化できなかった理由
+- **Checks**: groupごとの検査数 (task別の内訳付き) と結果 (implementerまたはverifierが用意した検査がすべて通ったか)。review-onlyのtaskがあれば、そのtask IDと自動検査で覆えなかった理由
 - **AC coverage**: Acceptance Criteriaの充足状況 (充足数 / 総数と、各criterionの判定、証明した検査)
 - **Validation**: Phase 3.2の判定 (GO / MANUAL_VERIFY_REQUIRED。`PARTIAL` では「未実施」)。実行時検証が未実施ならその旨と、手動で確かめる操作シナリオ
 - **Base sync**: Phase 4の再同期の結果 (CLEAN / FIXED と修正内容 / CONFLICT と衝突ファイル。`PARTIAL` では「未実施」)
@@ -68,5 +68,5 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 - **`--merge` で成功した場合**: worktreeを削除し、merge済みのlocal branchを `git branch -d <branch-name>` で削除する
 - **PR作成に失敗した場合、`--merge` でmergeできなかった場合、またはPhase 4の再同期でconflictした、もしくは再検査が収束しなかった場合**: worktreeとlocal branchを残して報告する (手動修復の余地を残す)
 - **`PARTIAL` の場合**: task隔離後にworktreeがcleanなら、この実行で新規作成したworktreeだけを削除してlocal branchは残す。resumeで採用した既存worktreeは残す。変更の所有を特定できずcleanにできない場合はworktreeとbranchを残して警告する
-- **Phase 2〜5の途中でエラーまたはユーザーの中止により中断した場合**: この実行で新規作成したworktreeを削除し、commitが存在するならbranchを残してその旨を報告する。commitが無ければbranchも削除する。resumeで採用した既存worktreeとbranchは削除しない。ユーザーが再開を前提に一時停止を指示した場合は、worktreeとbranchを残す (未commitの検査と変更を保持する)。未commitの検査 (Phase 3.0で作成し、taskがdoneに達していないもの) は失われ、resume時にPhase 3.0からやり直す
+- **Phase 2〜5の途中でエラーまたはユーザーの中止により中断した場合**: この実行で新規作成したworktreeを削除し、commitが存在するならbranchを残してその旨を報告する。commitが無ければbranchも削除する。resumeで採用した既存worktreeとbranchは削除しない。ユーザーが再開を前提に一時停止を指示した場合は、worktreeとbranchを残す (未commitの検査と変更を保持する)。未commitの検査 (Phase 3.0または3.1で作成し、taskがdoneに達していないもの) は失われ、resume時にPhase 3.0からやり直す
 - クリーンアップに失敗した場合はユーザーに警告する

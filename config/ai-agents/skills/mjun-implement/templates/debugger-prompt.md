@@ -10,7 +10,7 @@ fresh contextで動く原因調査SubAgent。それまでの試行の経緯は�
 - 失敗の内容: implementerの `BLOCKER`、または最後のreviewerの `FINDINGS` と `REMEDIATION`
 - 失敗したコマンドの生の出力
 - 現在の `git diff` (未commitの試行の実物)
-- verifierの `TASK_BRIEF` と `CHECK_COMMANDS`
+- `TASK_BRIEF`、採用済みの `CHECK_COMMANDS`、`PROTECTED_CHECK_FILES` (verifierを使っていなければ保護対象は空)
 - contractの該当箇所 (Requirements / Boundaries / Acceptance Criteria / Out of Scope)
 - Implementation Notes (あれば)
 

@@ -14,10 +14,10 @@ taskをblockedへ移すときの隔離と、差し戻しが収束しないとき
 
 BLOCKED、または差し戻し2周後のREJECTEDで起動する。debuggerはfresh contextで動かし、失敗した試行の経緯は渡さない。
 
-1. **debuggerの起動**: テンプレートに、失敗の内容 (`BLOCKER` または最後のreviewerの `FINDINGS` / `REMEDIATION`)、失敗したコマンドの生の出力、現在の `git diff`、verifierの `TASK_BRIEF` と `CHECK_COMMANDS`、contractの該当箇所、Implementation Notesを合成して起動する
+1. **debuggerの起動**: テンプレートに、失敗の内容 (`BLOCKER` または最後のreviewerの `FINDINGS` / `REMEDIATION`)、失敗したコマンドの生の出力、現在の `git diff`、`TASK_BRIEF`、採用済みの `CHECK_COMMANDS` と `PROTECTED_CHECK_FILES`、contractの該当箇所、Implementation Notesを合成して起動する
 2. **NEXT_ACTIONの処理**: `## Debug Report` の `- NEXT_ACTION:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
-   - `RETRY_TASK` → `FIX_PLAN` と `NOTES` を渡して新しいimplementerを起動し、Phase 3.1の3以降を1周だけ行う
-   - `FIX_CHECK` → 検査自体の誤り。`ROOT_CAUSE` を渡してverifierに作り直させ (RED確認とハッシュ更新を行う)、implementerを起動してPhase 3.1の3以降を1周だけ行う
+   - `RETRY_TASK` → `FIX_PLAN` と `NOTES` を渡して新しいimplementerを起動し、Phase 3.1の2で検査一覧と報告を採用してからレビューを1周だけ行う
+   - `FIX_CHECK` → 検査自体の誤り。対象が `PROTECTED_CHECK_FILES` またはverifierが指定した事前検査のコマンドなら `ROOT_CAUSE` を渡してverifierに作り直させ、Phase 3.0と同じ種別・根拠・実行結果の確認と、変更した保護ファイルのハッシュ更新を行う。それ以外はverifierを起動せず、implementerに `ROOT_CAUSE` と `FIX_PLAN` を渡して直させる。いずれも更新後の検査を使ってimplementerが検証し、Phase 3.1の2で検査一覧と報告を採用してからレビューを1周だけ行う
    - `RETURN_TO_TASKS` → `TASKS_CHANGE` を検査する。contractの意味を変えず、taskの分割・統合・順序・依存変更、またはcontract/designですでに要求されている前提taskの追加だけで解決できる場合はキューへ反映し、現在groupの変更をtask隔離の規則で戻し、groupを区切り直してPhase 3.0から続ける。既存ACの追加・削除・再解釈、BoundaryやOut of Scopeの変更、外部から観察できる振る舞いの変更が必要なら `RETURN_TO_SPEC` として中止する
    - `RETURN_TO_SPEC` → 中止し、contractと現実の矛盾箇所を報告して、specの磨き直しが必要であることを案内する (specは変更しない)
    - `STOP_FOR_HUMAN` → 中止し、`ROOT_CAUSE` と `HUMAN_QUESTION` (1問、選択肢付き) を報告する

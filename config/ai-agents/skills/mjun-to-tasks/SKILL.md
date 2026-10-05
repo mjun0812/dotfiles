@@ -30,7 +30,7 @@ specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化する
 
 - **vertical slice**: 各taskは、DB・API・UIのようなlayer別ではなく、単独で検証・デモできるend-to-end behaviorにする。horizontal layerのtaskを作らない
 - **大きさ**: 1 taskは1つのfresh contextで実装しきれる大きさにする。「収まるか」は次の条件で判定する
-  - **検証可能なdeliverableを1つ持つ**: taskのAcceptance Criteriaを、1つの失敗コマンド (テスト、スクリプト、CLI呼び出し) でredにできる。できなければ複数taskに分ける。これは検証可能性の条件であってサイズの上限ではない (巨大な機能も1本のE2Eテストでredにできる)
+  - **検証可能なdeliverableを1つ持つ**: taskのAcceptance Criteriaを、1つの実行可能なコマンド (テスト、スクリプト、CLI呼び出し) で検証できる。実装前のREDは分解の条件にしない。検証できなければ複数taskに分ける。これは検証可能性の条件であってサイズの上限ではない (巨大な機能も1本のE2Eテストで検証できる)
   - **変更が1 moduleに収まる**: そのコマンドをgreenにする変更が `design.md` のModulesのうち1つに収まる。複数moduleへ及ぶ場合は分割するか、統合taskとして明示する
   - **1つの責務に閉じる**: BoundaryはspecのOwnsのうち1つ。2つ以上に触るなら統合taskと明示し、触る責務の先行taskの後に置く
   - **前提を先行taskにする**: 型・設定・配線・整形 (prefactoring) が要るなら別taskにしてBlocked byで結ぶ。存在すると仮定しない
