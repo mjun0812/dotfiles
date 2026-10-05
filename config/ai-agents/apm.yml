@@ -46,6 +46,8 @@ dependencies:
     - github/gh-stack/skills/gh-stack#>=0.1.0
     - mizchi/skills/retrospective-codify#62f580819410cb1d398e4d7f234bbd0aad1c1a15
     - mizchi/skills/ast-grep-practice#62f580819410cb1d398e4d7f234bbd0aad1c1a15
+    - obra/superpowers/skills/writing-skills#v6.4.2
+    - obra/superpowers/skills/test-driven-development#v6.4.2
     - duckdb/duckdb-skills/skills/read-file
     - duckdb/duckdb-skills/skills/query
     - duckdb/duckdb-skills/skills/convert-file
