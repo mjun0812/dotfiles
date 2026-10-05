@@ -60,7 +60,7 @@ groupの各taskについて判定する。次のいずれかに当たるtaskは�
 
 - Acceptance Criteriaが4つ以上ある
 - 1つのcriterionが2つ以上のSeamにまたがる
-- 検査がBoundaryの2つ以上の責務に触れる
+- 検査がBoundaryの2つ以上の責務に触れる (Boundaryに `(integration)` と明示された統合taskを除く)
 
 分割案は、各taskに説明、Acceptance Criteria、Boundary、Done when、Seam、Blocked byを含める。元taskのAcceptance Criteriaを追加・削除・再解釈せず、各criterionをいずれか1つのtaskへ割り当てる。
 

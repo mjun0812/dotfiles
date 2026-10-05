@@ -58,7 +58,7 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
    5. **spec間依存** (spec modeのみ): BoundariesのDependenciesに `spec: <slug>` の行があれば `.mjun/specs/<slug>/spec.md` を読み、`status: done` を確認する。specが存在しない、またはdoneでない場合は中止し、先に該当specの配送が必要であることを案内する
 4. **taskキューを構築する**:
    - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)。`Status: blocked` のtaskは `Resume when` が現在満たされたと確認できた場合だけ `ready` へ戻し、それ以外はblocked一覧へ残す
-   - 採用したtaskのうちAcceptance Criteriaが4件以上のものは、verifierが `TOO_LARGE` と判定する基準に当たる。Phase 3.0を待たず、ここで下の分解規則により分割し、Phase 3.0の `TASK_TOO_LARGE` と同じ検査 (ACの和集合が元taskと等しい、BoundaryがOwns内、依存が循環しない) を通してからキューを置き換える (大きすぎるtaskをverifierへ渡すと、検査の作成に失敗してから分割することになる)。粒度の基準の免除をユーザーに求めて、そのまま進めない
+   - 採用したtaskのうちAcceptance Criteriaが4件以上のものは、verifierが `TOO_LARGE` と判定する基準に当たる。Phase 3.0を待たず、ここで下の分解規則により分割し、Phase 3.0の `TASK_TOO_LARGE` と同じ検査 (ACの和集合が元taskと等しい、BoundaryがOwns内、依存が循環しない) を通してからキューを置き換える (verifierを使うtaskでは検査の作成時に大きすぎると判定されて分割し直すことになるため、全taskに同じ粒度の基準を適用する)。粒度の基準の免除をユーザーに求めて、そのまま進めない
    - 全taskが `done` の場合も終了せず、記録済みbranchからresumeしてPhase 3.2の最終検証とPhase 4の配送を再実行する
    - spec modeで `tasks.md` が無い場合は、独立に検証可能な振る舞いが複数あれば1 task 1振る舞いのvertical sliceへ分解し、それ以外はspec全体を `T-001` とする。分解の判定は次の規則で行う: 各taskのAcceptance Criteriaを1つの実行可能なコマンドで検証できる (実装前のREDは分解の条件にしない。検証できなければ分割)、Boundaryは specのOwnsのうち1つ (2つ以上に触るなら `Boundary: <責務A>, <責務B> (integration)` と明示して先行taskの後に置く)、型・設定・配線などの前提は先行taskにしてBlocked byで結ぶ、各taskに `Done when:` (完了時に観察できること) と `Seam:` (検証する公開インターフェース) を1行ずつ付ける、ACが4件以上になるtaskは分割する。ここでは会話内に保持し、Phase 2のworktree作成後に `tasks.md` へ書く
    - doc modeでは同じ基準で会話内のキューを作り、Local specの `tasks.md` は作らない

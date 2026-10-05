@@ -21,7 +21,7 @@ specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化する
 ### source解決
 
 1. `.mjun/specs/<slug>` のパス → そのspecを対象にする
-2. Issue番号 → activeなspec (`status: active`) から `Source: #<number>` を逆引きする (複数ヒットした場合は一覧を提示して選んでもらう)。無ければ中止し、先にIssueをLocal specへ取り込む必要があることを案内する (取り込みはspec作成側の仕事で、このskillでは行わない)
+2. Issue番号 → activeなspec (`status: active`) から `Source: #<number>` を逆引きする (複数ヒットした場合は一覧を提示して選んでもらう)。activeに無ければdoneのspecからも検索し、見つかれば「実装済みのspec (`<path>`) がある。再分解する場合は `status` を `active` へ戻す」と案内して中止する。どちらにも無ければ中止し、先にIssueをLocal specへ取り込む必要があることを案内する (取り込みはspec作成側の仕事で、このskillでは行わない)
 3. 判定できない場合は中止してユーザーに確認する
 
 対象specのRequirements・Acceptance Criteriaを読み取れない場合、または `design.md` が無い場合は中止し、specの磨き上げが先に必要であることを案内する。
@@ -35,7 +35,7 @@ specをtaskへ分解し、`.mjun/specs/<slug>/tasks.md` として永続化する
   - **1つの責務に閉じる**: BoundaryはspecのOwnsのうち1つ。2つ以上に触るなら統合taskと明示し、触る責務の先行taskの後に置く
   - **前提を先行taskにする**: 型・設定・配線・整形 (prefactoring) が要るなら別taskにしてBlocked byで結ぶ。存在すると仮定しない
   - **他taskの前提を変える変更を先に置く**: 公開interfaceのシグネチャや型を変えるtaskには、既存の呼び出し側の追従を同じtaskに含める (途中のtaskの完了時点でビルドや型検査が壊れた状態を作らない)。共有のlayout、既定値、設定のように他taskの検査の前提を変えるtaskは、その前提に依存するtaskより先に置く
-  - **数の上限**: AC ≤ 3、触る責務 = 1。ACが4件以上のtaskは分割する (実装時の検査作成が同じ基準で大きすぎると判定するため、残しても実装の途中で分割し直すことになる)。変更ファイルが5〜6を超える見込みのtaskは、上限内でも分割候補として扱う
+  - **数の上限**: AC ≤ 3、触る責務 = 1。ACが4件以上のtaskは分割する (実装時にverifierを使うtaskは同じ基準で大きすぎると判定されるため、残すと実装の途中で分割し直すことになる)。変更ファイルが5〜6を超える見込みのtaskは、上限内でも分割候補として扱う
 - **分割と統合**: 独立に検証できる成果が2つ以上あるtaskは分割する。帳簿だけのtaskや単独で検証できないtaskは隣のtaskに統合する
 - **属性**: 各taskにBoundary (specのOwns内のどの責務か)、Blocked by (先に完了が必要なtask)、Done when (完了時に観察できることを1行)、Seam (検証する公開interfaceを1行。`design.md` の Interfaces & Seams から取る。CLI全体や1つのendpointのようなcompositeな境界でもよい。実装時にはここに対して検査が書かれる)、Acceptance Criteria (機械的に判定できるcheckbox) を付ける
 - **記述**: task本文にファイルパス、関数名、コード断片を書かない (実装の間に腐るため)。振る舞いとSeamで書く。Acceptance Criteriaは「操作 → 観察できる結果」の形で、1件が1つの検査コマンドに落とせるように書く

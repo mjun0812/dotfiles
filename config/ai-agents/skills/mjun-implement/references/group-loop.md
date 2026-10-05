@@ -9,8 +9,8 @@ Phase 3.0 (実装準備と必要な事前検査) とPhase 3.1 (実装とレビ�
 ```text
 - T-001: verifier=none | checks=IMPLEMENTER | rounds=1 | result=done
 - T-006: verifier=T-006 (期待値を独立して確定) | checks=READY (3) | rounds=2 | reject=[a, b] | debug=LOGIC_ERROR→RETRY_TASK | result=done
-- T-002,T-003,T-004: checks=READY (8) | rounds=1 | result=done
-- T-005: checks=REVIEW_ONLY (3) | rounds=1 | result=done
+- T-002,T-003,T-004: verifier=none | checks=IMPLEMENTER | rounds=1 | result=done
+- T-005: verifier=T-005 (ユーザーが事前検査を指定) | checks=REVIEW_ONLY (3) | rounds=1 | result=done
 - feature: validation=GO | refactor=DONE | base-sync=CLEAN
 ```
 

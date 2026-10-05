@@ -27,7 +27,7 @@
 1. **隠れた前提**: 各taskが暗黙に仮定している型・設定・配線・データのうち、先行taskの成果にも既存コードにも無いものを拾う
 2. **依存と順序**: Blocked byの欠落 (実際には先行成果が要るのにnone)、不要なBlocked by (並行可能なのに直列化している)、cycle。依存順に1 taskずつ完了させたとき、途中でビルドや型検査が壊れる順序 (あるtaskが変えた公開interfaceに、呼び出し側が後続taskまで追従しない) も拾う
 3. **境界の重なりと凝集**: 複数のtaskが同じ責務・同じ変更対象を触っていないか。1つの振る舞いが複数taskへ分散して単独では検証できなくなっていないか。統合taskの明示なしに2つ以上の責務へ触るtaskが無いか
-4. **大きすぎるtask**: 失敗コマンド1つでredにできても、greenにする変更がdesign.mdの複数Moduleへ及ぶ、または1つのfresh contextで実装しきれない見込みのtask
+4. **大きすぎるtask**: 1つの実行可能なコマンドで検証できても、そのコマンドを通す変更がdesign.mdの複数Moduleへ及ぶ、または1つのfresh contextで実装しきれない見込みのtask
 5. **integrationの配置**: design.mdのData Flowでmodule境界をまたぐ箇所が、統合taskでも単一taskでも検証されないままになっていないか。統合taskが、統合する責務の先行taskより後に置かれているか
 6. **検証可能性の実質**: Done when / Seam / Acceptance Criteriaが観察可能な振る舞いになっているか。帳簿だけのtaskや、ACが実装手順の言い換えにすぎないtaskが無いか。SeamはCLI全体や1つのendpointのようなcompositeな境界でもよく、interface単位でないことを理由に指摘しない
 

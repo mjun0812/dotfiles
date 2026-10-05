@@ -64,7 +64,7 @@ First output line, before any work: `RECEIPT {{worker_name}}: task received`
 Update your own pane label as your state changes (the leading emoji is the signal):
 - working: `herdr pane rename {{pane_id}} "🟡 {{slug}}"`
 - cannot proceed: `herdr pane rename {{pane_id}} "🔴 {{slug}} <next action>"`
-- finished and reported: `herdr pane rename {{pane_id}} "🟢 {{slug}} <short sha or PR number>"`
+After sending DONE, leave the label as it is. The orchestrator sets 🟢 only after it verifies and accepts the work.
 
 ## Report
 

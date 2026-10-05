@@ -50,13 +50,13 @@ scriptが出さない次の項目だけを自分で読む。存在しないフ�
 
 保存されたphaseは存在しないため、scriptが次の順に判定する (先に一致した行を採用する)。
 
-| phase          | 条件                                                                                                                                                  |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `done`         | `status: done`                                                                                                                                        |
-| `drafting`     | `approval: pending` (または `approval` 無し)                                                                                                          |
-| `approved`     | `approval: approved` かつ `tasks.md` に `Implementation Branch` が無い                                                                                |
-| `implementing` | `Implementation Branch` があり、`done` 以外のtaskが残っている                                                                                         |
-| `delivering`   | `Implementation Branch` があり、全taskが `done` (配送が完了していればspecは `done` になっているはずなので、PR作成失敗か `--no-pr` で止まっている状態) |
+| phase          | 条件                                                                                                                                                                  |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `done`         | `status: done`                                                                                                                                                        |
+| `drafting`     | `approval: pending` (または `approval` 無し)                                                                                                                          |
+| `approved`     | `approval: approved` かつ `tasks.md` に `Implementation Branch` が無い                                                                                                |
+| `implementing` | `Implementation Branch` があり、`done` 以外のtaskが残っている                                                                                                         |
+| `delivering`   | `Implementation Branch` があり、全taskが `done` (配送が完了していればspecは `done` になっているはずなので、PR作成・mergeの失敗、または配送前の中断で止まっている状態) |
 
 phaseに応じた「次に必要なこと」を1行で添える。skill名や手順ではなく、状態として書く。
 
@@ -79,9 +79,9 @@ phaseに応じた「次に必要なこと」を1行で添える。skill名や手
 - `Source: #N` のIssueが `CLOSED` なのに `status: active`
 - 同じ `Source: #N` を持つactiveなspecが複数ある
 - `spec.md` に `## Requirements` または `## Acceptance Criteria` が無い
-- `status: active` なのに `spec.md` が無い、またはfrontmatterに `status` が無い (壊れたspec)
+- `.mjun/specs/` 直下に `spec.md` の無いディレクトリがある、またはfrontmatterに `status` が無い (壊れたspec。scriptの既定の出力には現れないため、`.mjun/specs/*/` の一覧と `--all` の出力で `status:` が空のブロックから判定する)
 - 他のactiveなspecとOwnsが重なる、Public Contracts Affectedが同じ公開interfaceを指す、または `design.md` のChange Outlineのdirectoryが重なる (両方のspecに付ける)
-- Dependenciesの `spec: <slug>` が指すspecが存在しない、または `done` でない (実装を開始できない)
+- Dependenciesの `spec: <slug>` が指すspecが存在しない、または `done` でない (実装を開始できない。`done` のspecは既定の出力に現れないため、`--all` の出力で照合する)
 
 spec間の警告は、`source` 指定時もactiveなspec全件の `spec.md` と `design.md` を読んで判定する。
 

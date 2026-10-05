@@ -69,7 +69,6 @@ Never include:
 - **Single domain**: One topic per file
 - **Concrete examples**: Show patterns with code
 - **Reference rationale**: Link to the relevant D-number in decisions.md instead of duplicating its history
-- **Maintainable size**: 100-200 lines typical
 
 ---
 

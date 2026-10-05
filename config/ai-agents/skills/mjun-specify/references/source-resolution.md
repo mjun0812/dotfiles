@@ -10,11 +10,10 @@
 - Contract承認状態 (`approval`)
 - spec間の依存と境界
 - `Source:` 行
-- Context
 - 取り込み (Issue → spec)
 - 投影 (spec → Issue)
 - 同期規則
-- 用語集と決定記録 (steering配下の共通記録とCONTEXT.md)
+- 用語集と決定記録
 - git管理と参照規則
 
 ## 原則: 正本は常にLocal、GitHubは投影
@@ -131,7 +130,7 @@ spec.mdのH1直下の `Decisions: D-001, D-002` が、そのspecの判断への�
 
 `.mjun/` はグローバルgitignoreによりgit管理外である。したがって:
 
-- worktreeやPR checkoutには `.mjun/specs/` が**存在しない**。worktree内の作業からspec文書を参照・更新するときは、必ずメインrepositoryの絶対パスを使う。SubAgentへはspec内容をプロンプトに合成して渡し、worktree内のパスを読ませない
+- worktreeやPR checkoutは `.mjun/` を含まない (skillが作るworktreeには作成直後に `<repo-root>/.mjun` へのsymlinkを張るが、それ以外のcheckoutには無い)。worktree内の作業からspec文書を参照・更新するときは、メインrepositoryの絶対パスを使う。SubAgentへはspec内容をプロンプトに合成して渡し、worktree内のパスを読ませない
 - specは**内部文書**である。PR本文・PRタイトル・commit messageなど外部向けの出力では、`.mjun/` 配下のパスやspecの存在に言及しない。外部へ見せるspecの参照はGitHub Issue (`Closes #N`) だけを使う
 - PRレビュー側は、contractを「`--spec` 引数で明示されたsource → PR本文の `Closes #N` が指すIssue」の順で解決する。どちらも無ければContract観点をスキップする (Issue本文は承認時点の投影であり、最新の正本はLocal specにある)
 - resumeとtask進捗の永続化は、`.mjun/` が残っている同一working tree上でのみ有効
