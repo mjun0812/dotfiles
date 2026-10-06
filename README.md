@@ -126,6 +126,7 @@ apm update -g
 | herdr                      | Terminal multiplexer for coding agents                |
 | huggingface_hub            | Hugging Face Hub CLI (`hf`)                           |
 | hunk                       | Review-first terminal diff viewer                     |
+| hyperfine                  | Command-line benchmarking tool                        |
 | imagemagick                | Image processing                                      |
 | jq                         | JSON processor                                        |
 | keychain                   | ssh-agent / gpg-agent manager                         |
