@@ -5,7 +5,7 @@ description: >-
   ユーザーが「#Nを実装して」「このspecを実装して」「実装してPRまで」のように依頼したら使うこと。
   specの作成・磨き上げ・承認や、未取り込みIssueの取り込みには使わない。
   specも設計docも無く、会話の中で決めた小規模な変更にも使わない (直接実装する)。
-  呼び出し元からworktree・commit方針・報告形式を指定した作業指示を渡された実装担当としても使わない (その指示に従う)。
+  呼び出し元から作業指示を渡された実装担当 (SubAgentやorchestratorのworker) は、指示がこのSkillの実行を明示しているときだけ使い、それ以外はその指示に従う。
 allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create)
 ---
 
