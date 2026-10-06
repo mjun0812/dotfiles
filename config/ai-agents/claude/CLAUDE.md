@@ -56,10 +56,6 @@
 
 - skillや指示に登場する `request_user_input` は `AskUserQuestion` に読み替えること。
 - skillや指示に登場する `superpowers:<name>` は、APMで導入した `<name>` skillに読み替えること (例: `superpowers:writing-skills` → `writing-skills`)。
-- `retrospective-codify` skillの書き出し先は次に読み替えること。
-  - グローバルルール: `~/.dotfiles/config/ai-agents/claude/CLAUDE.md` と `~/.dotfiles/config/ai-agents/AGENTS_global.md` の両方
-  - 言語別ルール: `~/.dotfiles/config/ai-agents/claude/rules/` の該当ファイルと、`AGENTS_global.md` の同名の節の両方
-  - 新規skill: `mjun0812/skills` リポジトリ
 
 ## Steering
 
