@@ -55,7 +55,6 @@
 ## Tool
 
 - skillや指示に登場する `request_user_input` は `AskUserQuestion` に読み替えること。
-- skillや指示に登場する `superpowers:<name>` は、APMで導入した `<name>` skillに読み替えること (例: `superpowers:writing-skills` → `writing-skills`)。
 
 ## Steering
 
