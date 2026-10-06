@@ -34,6 +34,7 @@ hunk = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup
 # Dev tool
 actionlint = "latest"
 aqua = "latest"
+ast-grep = "latest"
 duckdb = "latest"
 fzf = "latest"
 gitleaks = "latest"
