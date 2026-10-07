@@ -46,10 +46,11 @@
 
 ## SubAgent
 
-- SubAgentはGPT-5.6のモデルを使用すること。
+- SubAgentは最新のModel Familyを使用すること。
 - SubAgentへ移譲する際は、タスクの性質に応じて呼び出し時にmodelを指定する
   - Luna: 決定的・機械的な定型作業や標準的な実装・調査。迷ったらこのモデルを使う。
   - Sol: 設計判断や曖昧な要件(アーキ設計、複数ファイル横断リファクタ、難しいデバッグ)を伴う作業。
+  - Astra: Solが達成できない、またはSolの判断が不十分な場合に使用する。人間の専門家の判断を必要とする作業。最初からこのモデルを使うのは避ける。SubAgentの結果が不十分な場合に、より高性能なモデルで再実行する。
 - SubAgentの完了を待つときは `wait_agent` をtimeout 10分以上で呼ぶ。`sleep` や `list_agents` の繰り返しでpollingしない。
 - 実行中のSubAgentへ進捗確認の `send_message` を送らない。結果はSubAgentの最終応答で受け取る。
 - SubAgentとして動くときは、親へ途中経過のmessageを送らず、結果は最終応答だけで返す。
