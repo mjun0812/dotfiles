@@ -92,22 +92,24 @@ def git_branch(cwd):
     return None
 
 
-model = data.get("model", {}).get("display_name", "Claude")
-effort = data.get("effort", {}).get("level")
+# Fields may be null (e.g. before the first API response), so coalesce with `or`.
+model = (data.get("model") or {}).get("display_name") or "Claude"
+effort = (data.get("effort") or {}).get("level")
 parts = [f"{model} {effort}" if effort else model]
 
-ctx = data.get("context_window", {}).get("used_percentage", 0)
+ctx = (data.get("context_window") or {}).get("used_percentage") or 0
 parts.append(fmt("ctx", ctx))
 
-five = data.get("rate_limits", {}).get("five_hour", {}).get("used_percentage")
+rate_limits = data.get("rate_limits") or {}
+five = (rate_limits.get("five_hour") or {}).get("used_percentage")
 if five is not None:
     parts.append(fmt("5h", five))
 
-week = data.get("rate_limits", {}).get("seven_day", {}).get("used_percentage")
+week = (rate_limits.get("seven_day") or {}).get("used_percentage")
 if week is not None:
     parts.append(fmt("7d", week))
 
-cwd = data.get("workspace", {}).get("current_dir") or data.get("cwd")
+cwd = (data.get("workspace") or {}).get("current_dir") or data.get("cwd")
 if cwd:
     parts.append(f"{DIM}{R} {short_path(cwd)}")
     branch = git_branch(cwd)
