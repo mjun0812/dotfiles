@@ -132,7 +132,7 @@ Phase 5.5のreviewerに機械的な指摘を残さないため、spec reviewを�
 
 - specのcontract全文、`design.md` の全文、変更点サマリ (追加または変更したセクションと理由。Phase 5.5の指摘を反映した箇所はその旨を添える)、Phase 5.7で解消したdecisionの一覧 (D番号と、証拠で昇格 / 人間の決定の別) を提示する。承認対象はcontractであり、design.mdは人間が目視する場所とする (気になる点があれば「修正して再提示」で戻す)
 - AskUserQuestionで「反映する / 修正して再提示 / HTMLで内容を確認する / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
-- 「HTMLで内容を確認する」の場合は、contract全文と `design.md` の全文を1枚の自己完結HTMLにして `open` で開き、同じ承認質問に戻る。Skill toolに `exhtml` があればそれへ両文書を渡して作らせ、無ければskillを使わずその場でHTMLを書く (目次、見出しごとのセクション、表とコードブロックの体裁を整え、外部ファイルに依存しない)。保存先は `/tmp/YYYY-MM-DD-<slug>-spec.html` とし、spec配下には置かない
+- 「HTMLで内容を確認する」の場合は、設計と実装の方針を図解で説明する1枚の自己完結HTMLを作って `open` で開き、同じ承認質問に戻る。contractとdesign.mdの転記ではなく、[references/approval-html.md](references/approval-html.md) の構成で説明する。Skill toolに `exhtml` があれば、approval-html.mdの内容と素材 (spec.md、design.md、参照するdecision、変更前のコード構造の調査結果) を渡して作らせる。無ければskillを使わずその場でHTMLを書く (図はインラインSVGで描き、外部ファイルに依存しない)。保存先は `/tmp/YYYY-MM-DD-<slug>-spec.html` とし、spec配下には置かない
 - 「反映する」の場合は `spec.md` のfrontmatterを `approval: approved` へ更新してからPhase 7へ進む
 - 「キャンセル」の場合は以降のPhaseへ進まず、作成または更新済みのLocal specを削除するか `approval: pending` のまま残すかを確認する
 
