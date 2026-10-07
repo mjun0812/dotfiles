@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import time
+import unicodedata
 
 data = json.load(sys.stdin)
 
@@ -16,6 +17,8 @@ CYAN = "\033[36m"
 GREEN = "\033[32m"
 RED = "\033[31m"
 SEP = f" {DIM}│{R} "
+ANSI = re.compile(r"\033\[[0-9;]*m")
+DESC_MAX_WIDTH = 40
 
 STATUS_GLYPHS = {
     "running": f"{CYAN}●{R}",
@@ -81,6 +84,24 @@ def shorten(model_id: str) -> str:
     return m.group(1) + (m.group(2) or "") if m else model_id
 
 
+def display_width(s: str) -> int:
+    """ANSIエスケープを除き、全角文字を2桁として数えた表示幅."""
+    return sum(2 if unicodedata.east_asian_width(c) in "WF" else 1 for c in ANSI.sub("", s))
+
+
+def truncate(s: str, max_width: int) -> str:
+    """表示幅がmax_widthを超える文字列を切り詰め、末尾に…を付ける."""
+    if display_width(s) <= max_width:
+        return s
+    out, w = "", 0
+    for c in s:
+        w += display_width(c)
+        if w > max_width - 1:
+            break
+        out += c
+    return out + "…"
+
+
 def humanize_tokens(count: int) -> str:
     """トークン数を短い表記にする(例: 12345 -> 12.3k)."""
     if count >= 1000:
@@ -88,6 +109,9 @@ def humanize_tokens(count: int) -> str:
     return str(count)
 
 
+# 列ごとの区切り。全taskの列幅を揃えるため、まずセルを集めてから描画する
+JOINERS = ["", "  ", SEP, SEP, SEP]
+rows = []
 for task in data.get("tasks") or []:
     task_id = task.get("id")
     model = task.get("model")
@@ -100,20 +124,16 @@ for task in data.get("tasks") or []:
     model_label = f"{shorten(model)} {effort}" if effort else shorten(model)
     name = task.get("name") or task.get("type")
     head = f"{name} {DIM}[{model_label}]{R}" if name else f"{DIM}[{model_label}]{R}"
-    glyph = STATUS_GLYPHS.get(task.get("status"))
-    if glyph:
-        head = f"{glyph} {head}"
-    description = task.get("description") or task.get("label")
-    parts = [f"{head}  {description}" if description else head]
+    glyph = STATUS_GLYPHS.get(task.get("status"), " ")
+    head = f"{glyph} {head}"
+    description = truncate(task.get("description") or task.get("label") or "", DESC_MAX_WIDTH)
 
     token_count = task.get("tokenCount") or 0
     window = task.get("contextWindowSize")
-    if window:
-        parts.append(fmt("ctx", token_count / window * 100))
+    ctx = fmt("ctx", token_count / window * 100) if window else ""
 
     cwd = task.get("cwd")
-    if cwd:
-        parts.append(f"{DIM}{R} {short_path(cwd)}")
+    cwd_cell = f"{DIM}{R} {short_path(cwd)}" if cwd else ""
 
     right_parts = []
     start_time = task.get("startTime")
@@ -122,7 +142,16 @@ for task in data.get("tasks") or []:
         right_parts.append(f"{secs // 60}m {secs % 60}s" if secs >= 60 else f"{secs}s")
     if token_count:
         right_parts.append(f"{humanize_tokens(token_count)} tokens")
-    if right_parts:
-        parts.append(f"{DIM}{' · '.join(right_parts)}{R}")
+    right = f"{DIM}{' · '.join(right_parts)}{R}" if right_parts else ""
 
-    print(json.dumps({"id": task_id, "content": SEP.join(parts)}, ensure_ascii=False))
+    rows.append((task_id, [head, description, ctx, cwd_cell, right]))
+
+widths = [max((display_width(cells[i]) for _, cells in rows), default=0) for i in range(len(JOINERS))]
+for task_id, cells in rows:
+    line = ""
+    for cell, width, joiner in zip(cells, widths, JOINERS):
+        if not width:
+            continue
+        # セルが無い行は区切りごと空白にして、後続の列位置を保つ
+        line += (joiner if cell else " " * display_width(joiner)) + cell + " " * (width - display_width(cell))
+    print(json.dumps({"id": task_id, "content": line.rstrip()}, ensure_ascii=False))
