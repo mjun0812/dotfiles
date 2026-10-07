@@ -5,7 +5,7 @@ description: >-
   ユーザーが「mjun-orchestrateで」「orchestration modeに入って」のように明示的に依頼したときだけ使うこと。
   agent自身の判断で使わない。1 taskをその場で実装する依頼や、Herdrの単一paneの操作だけの依頼には使わない。
   `HERDR_ENV=1` の会話セッションでのみ動く。
-allowed-tools: Read, Glob, Grep, Bash(herdr:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(printf:*), Bash(sleep:*), Bash(test:*), Bash(grep:*), Bash(sort:*), Bash(codex debug models:*), Bash(agy models:*), Bash(opencode models:*), AskUserQuestion, Skill(herdr)
+allowed-tools: Read, Glob, Grep, Bash(herdr:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(printf:*), Bash(sleep:*), Bash(test:*), Bash(grep:*), AskUserQuestion, Skill(herdr)
 disable-model-invocation: true
 ---
 
@@ -17,37 +17,28 @@ Herdr CLIの構文・ID・stateの意味は `herdr` skillに従う。
 
 ## Arguments
 
-引数はすべて任意で、mode中の設定になる。mode中にユーザーが変更を指示したら、以後に起動するworkerから新しい値を使う。
-
-- `tasks`: 最初に流すtaskの一覧。会話中の箇条書き、`.mjun/specs/<slug>/tasks.md` の `ready` task、または単発Markdownのパス。省略したらmodeに入ってユーザーの依頼を待つ
-- `--max-workers <N>`: 同時に動かすworker数の上限。既定は3
+- `tasks` (任意): 最初に流すtaskの一覧。会話中の箇条書き、`.mjun/specs/<slug>/tasks.md` の `ready` task、または単発Markdownのパス。省略したらmodeに入ってユーザーの依頼を待つ
 
 ## モデルの選択
 
-workerのagent種別とモデルは、Phase 1で取得した一覧からorchestratorが提案し、ユーザーが選ぶ。taskごとに変える場合はtask一覧に `[codex]` のように付記し、そのagent種別の推奨候補を使う。
+workerのagent種別はAskUserQuestionで選んでもらい、モデルはその後にユーザーが自由入力で決める。orchestratorはモデルの一覧を取得したり候補を提案したりしない。入力が空、または「既定」なら、モデルの指定を省いてCLIの既定モデルで起動する。taskごとに変える場合はtask一覧に `[codex]` や `[codex:<model>]` のように付記する。
 mode中は、ユーザーが変更を指示しない限り同じ値を使う。
 
-agent種別ごとの一覧の取り方と、`herdr agent start <name> --kind <agent種別> --pane <id> -- <argv>` の `<argv>` は次のとおり。
+`herdr agent start <name> --kind <agent種別> --pane <id> -- <argv>` の `<argv>` は次のとおり。モデルを省くときは `<model>` の部分 (`--model <model>` / `-m <model>`) ごと外す。
 
-- claude: 一覧を出すコマンドは無いため、常に最新モデルを指すalias `opus` / `sonnet` / `haiku` を候補にする (`fable` は候補にしない)。推奨は `sonnet`
-  - argv: `--model <model> --dangerously-skip-permissions`
-- codex: `codex debug models | jq -r '.models[] | select(.visibility=="list") | [.slug, (.supported_reasoning_levels|map(.effort)|join(","))] | @tsv'`。一覧の先頭ほど新しい。effortは `max` に対応していれば `max`、無ければ対応する最上位にする
-  - argv: `-m <model> -c model_reasoning_effort=<effort> --dangerously-bypass-approvals-and-sandbox`
-- agy: `agy models` の `gemini-` で始まる行だけを候補にする
-  - argv: `--model <model> --dangerously-skip-permissions`
-- opencode: `opencode models --verbose | grep -v '^[^ {}]' | jq -r 'select(.status=="active" and .capabilities.toolcall and .capabilities.reasoning) | [.release_date, .providerID+"/"+.id] | @tsv' | sort -r`。同じモデルの別region (`us.` / `global.` など) や `-fast` / `-flex` 版は1つにまとめ、`-free` やpreviewは推奨にしない
-  - argv: `-m <provider/model> --auto`
-
-提案はAskUserQuestionで行う。選択肢は新しく性能の高い順に最大3件とし、推奨を先頭に置いて `(Recommended)` を付ける。一覧の取得に失敗したら、失敗した出力を示してagent種別を選び直してもらう。
+- claude: `--model <model> --dangerously-skip-permissions`
+- codex: `-m <model> --dangerously-bypass-approvals-and-sandbox`。入力にeffortが添えられていれば (例: `gpt-5.5 high`) `-c model_reasoning_effort=<effort>` を足す
+- agy: `--model <model> --dangerously-skip-permissions`
+- opencode: `-m <provider/model> --auto`
 
 起動時のdialogで自動応答してよいのは、claudeの「Is this a project you created or one you trust?」だけとし、`herdr agent send-keys <worker> down enter` で「Yes, I trust」を選ぶ。認証・課金・破壊的操作の確認・外部送信を求めるdialogには答えず、画面内容を添えてユーザーに確認する。
 
-起動できない、usage limitに達した、認証が切れた場合は、選択したagent種別 → `claude` → `codex` → `opencode` の順に、失敗したagent種別を飛ばして起動し直す。切り替え先のモデルは、そのagent種別の一覧を取得して推奨候補を使う。3種類とも失敗したら中止し、ユーザーに報告する。
+起動できない、usage limitに達した、認証が切れた場合は、選択したagent種別 → `claude` → `codex` → `opencode` の順に、失敗したagent種別を飛ばして起動し直す。切り替え先ではモデルの指定を省き、CLIの既定モデルで起動したことをユーザーに伝える。3種類とも失敗したら中止し、ユーザーに報告する。
 
 ## 名前とlabel
 
 - orchestratorのagent名: `orch` (使用中なら `orch-2`, `orch-3`)。tab labelは `🧭 orch` にし、元のlabelは後で戻すために記録する
-- worker tab: `⚙️ workers` を1つだけ作る。workerが増えたらこのtab内でpaneを分割する。paneは4つまで。終わったtaskのpaneはすぐ閉じる
+- worker tab: `⚙️ workers` のpaneを分割してworkerを増やす。1 tabのpaneは4つまでとし、空きのあるworker tabが無ければ `⚙️ workers 2`, `⚙️ workers 3` と新しいtabを作る。同時に動かすworker数に上限は設けない。終わったtaskのpaneはすぐ閉じる
 - workerのagent名: `<orch名>-<slug>`。32文字以内、`[a-z][a-z0-9_-]*`
 - pane label: orchestratorが付け、先頭の絵文字で状態を示す
   - `🟡 <slug>`: 作業中
@@ -69,7 +60,7 @@ mode中はユーザーのmessageを次のように扱う:
 - 編集を伴わない作業依頼 (調査、比較検討、既存コードのレビューなど): orchestratorが自分で行うか、subagentに任せる
 - 質問や状況確認: orchestratorが読み取りだけで答える。状況確認には会話内の表とpane labelで答える
 - 実行中のworkerへの追加指示: 対象のworkerへそのまま送る。全員に関わる指示は影響するworker全員へ同じ文面で送る
-- 設定の変更 (agent種別、モデル、`--max-workers`): 設定を更新し、以後に起動するworkerから適用する。モデルを変える場合は一覧を取り直して提案する
+- 設定の変更 (agent種別、モデル): 設定を更新し、以後に起動するworkerから適用する
 - 終了の指示 (「orchestration終了」など): Phase 7とPhase 8を行い、modeを抜ける
 
 mode中はできるだけworkerを使う。編集を伴う作業 (実装、修正、文書作成、レビュー対応など) は、subagentに委譲したくなる規模でも、subagentではなくtaskとしてworkerへ流す。
@@ -86,9 +77,9 @@ mode中はできるだけworkerを使う。編集を伴う作業 (実装、修�
    - 現在のtab label: `herdr tab list --workspace "$HERDR_WORKSPACE_ID"`
    - リポジトリのroot: `git rev-parse --show-toplevel`
 3. workerのagent種別をAskUserQuestionで確認する。選択肢は `claude` (既定、先頭)、`codex`、`opencode`、`agy`
-4. 選ばれたagent種別のモデル一覧を取得し、「モデルの選択」に従ってworkerのモデルを確認する
+4. workerのモデル名をチャットで自由入力してもらう (選択肢は示さない)。入力を待ってから次へ進む
 5. 自分に名前を付ける: `herdr agent rename "$HERDR_PANE_ID" orch`、`herdr tab rename "$HERDR_TAB_ID" "🧭 orch"`
-6. modeに入ったことと設定 (agent種別、モデル、`--max-workers`) を簡潔に示す。`tasks` があればPhase 2へ進み、無ければユーザーの依頼を待つ
+6. modeに入ったことと設定 (agent種別、モデル) を簡潔に示す。`tasks` があればPhase 2へ進み、無ければユーザーの依頼を待つ
 
 ### Phase 2: taskの分解
 
@@ -101,9 +92,9 @@ mode中はできるだけworkerを使う。編集を伴う作業 (実装、修�
 
 ### Phase 3: worker paneの作成
 
-1. 起動できるtask (依存なし、または依存先が終わっている) を、実行中のworkerと合わせて `--max-workers` 件を超えない範囲で先頭から選ぶ
-2. **worker tabを作成する** (`⚙️ workers` tabが無いときだけ。あれば再利用する): `herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd <repo-root> --label "⚙️ workers" --no-focus`。応答の `.result.tab.tab_id` と `.result.root_pane.pane_id` を記録し、root paneを1つ目のworkerに使う
-3. **paneを分割する** (2つ目以降): `herdr pane split <pane-id> --direction right --cwd <repo-root> --no-focus`。分割方向は `right` と `down` を交互にする。応答の `.result.pane.pane_id` を記録する。paneが既に4つある場合は、どれかのtaskが終わってpaneが閉じるまで起動を待つ
+1. 起動できるtask (依存なし、または依存先が終わっている) をすべて選ぶ
+2. **worker tabを作成する** (paneが4つ未満のworker tabが無いときだけ。あれば再利用する): `herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd <repo-root> --label "<label>" --no-focus`。labelは1つ目が `⚙️ workers`、2つ目以降が `⚙️ workers 2`, `⚙️ workers 3`。応答の `.result.tab.tab_id` と `.result.root_pane.pane_id` を記録し、root paneをそのtabの1つ目のworkerに使う
+3. **paneを分割する** (tab内の2つ目以降): `herdr pane split <同じtabのpane-id> --direction right --cwd <repo-root> --no-focus`。分割方向は `right` と `down` を交互にする。応答の `.result.pane.pane_id` を記録する
 4. 各paneを `herdr pane rename <pane-id> "🟡 <slug>"` にする
 
 ### Phase 4: workerの起動とdispatch
@@ -112,7 +103,7 @@ workerごとに以下を行う。`herdr agent prompt` に `--wait` は付けな�
 
 1. **workerを起動する**: `herdr agent start <worker> --kind <agent種別> --pane <pane-id> --timeout 60000 -- <argv>`
    - `agent_not_ready` が返ったら `herdr agent read <worker> --source visible --lines 40` で画面を読む。自動応答してよいdialogなら答えて `herdr agent wait <worker> --until idle --timeout 60000` で待ち、それ以外のdialogはユーザーに確認する
-   - usage limit、認証、model不在の文言が見えたら `herdr agent send-keys <worker> ctrl+c ctrl+c` で終了し、`herdr pane read` でshellに戻ったことを確認してから次のagent種別で起動し直す
+   - usage limit、認証、model不在の文言が見えたら `herdr agent send-keys <worker> ctrl+c ctrl+c` で終了し、`herdr pane read` でshellに戻ったことを確認する。model不在ならユーザーにモデル名を入力し直してもらい、それ以外は次のagent種別で起動し直す
 2. **dispatchする**: `herdr agent get <worker>` の `state_change_seq` を記録してから、[templates/worker-prompt.md](templates/worker-prompt.md) に依頼文を埋めた本文をquoted heredocでshell変数に入れ、`herdr agent prompt <worker> "$task_prompt"` と1引数で送る
 3. **受領を確認する**: `herdr agent wait <worker> --until working --timeout 15000` が返り、`state_change_seq` が記録した値より進んでいれば受領とみなす。そうならなければ `herdr agent read <worker> --source visible --lines 40` で画面を読み、dialogなら答える、usage limitや認証ならagent種別を切り替えて同じ本文を再送する、変化が無ければ同じ本文を1回だけ再送する。再送後も受領しなければpaneを `🔴 <slug> 応答なし` にしてユーザーに報告する
 4. **waitを張る**: 受領したworkerごとに `herdr agent wait <worker> --timeout 1800000` をbackgroundで1本実行する (`--until` は付けない)。短い間隔で `agent get` を繰り返さない。backgroundで実行できない環境では、起動済みのworkerを順に待つ
@@ -130,7 +121,7 @@ waitが返ったworkerの `herdr agent get <worker>` と `herdr agent read <work
 ### Phase 6: 完了と次のtask
 
 1. `DONE` 報告とtranscriptの最後から、結果 (PR URL、branch、未解決の事項) を表に記録する。workerの報告をそのまま記録し、orchestratorが成果物を検証し直すことはしない
-2. **paneを閉じる**: `herdr pane close <pane-id>` でworkerのpaneを閉じる。`⚙️ workers` tabに残る最後のpaneなら、pane closeの代わりに `herdr tab close <tab-id>` でtabごと閉じ、記録したtab IDを消す
+2. **paneを閉じる**: `herdr pane close <pane-id>` でworkerのpaneを閉じる。そのworker tabに残る最後のpaneなら、pane closeの代わりに `herdr tab close <tab-id>` でtabごと閉じ、記録したtab IDを消す
 3. 依存が解消したtaskがあれば、空いた枠でPhase 3の2〜4とPhase 4を行う
 4. 全taskが完了か `🔴` になったらPhase 7の結果を表示し、modeを続けたままユーザーの次の依頼を待つ
 
@@ -147,7 +138,7 @@ waitが返ったworkerの `herdr agent get <worker>` と `herdr agent read <work
 
 ### Phase 8: 後始末とmodeの終了
 
-modeの終了時だけ行う。`⚙️ workers` tabが残っていれば、閉じるかをAskUserQuestionで1回だけ確認し、閉じる場合は `herdr pane close` → `herdr tab close` で閉じる。残す場合は、次回のmodeで既存の `⚙️ workers` tabを再利用する。worktreeとbranchはworkerとskillが管理するため、orchestratorは削除しない。
+modeの終了時だけ行う。worker tabが残っていれば、閉じるかをAskUserQuestionで1回だけ確認し、閉じる場合は `herdr pane close` → `herdr tab close` で閉じる。残す場合は、次回のmodeで既存のworker tabを再利用する。worktreeとbranchはworkerとskillが管理するため、orchestratorは削除しない。
 
 最後に `herdr tab rename "$HERDR_TAB_ID" "<記録した元のlabel>"` と `herdr agent rename "$HERDR_PANE_ID" --clear` で自分を元に戻し、modeを抜けたことをユーザーに伝える。以後のmessageは通常の会話として扱う。
 
