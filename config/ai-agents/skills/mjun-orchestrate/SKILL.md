@@ -56,14 +56,13 @@ workerの質問、skillが開くdialog、usage limitや認証の問題は、人�
 Phase 1を終えるとmodeに入り、ユーザーが終了を指示するまで続く。全taskが片付いてもmodeは終わらず、次の依頼を待つ。
 mode中はユーザーのmessageを次のように扱う:
 
-- 編集を伴う作業依頼: Phase 2から流す。orchestratorが自分で実装しない
-- 編集を伴わない作業依頼 (調査、比較検討、既存コードのレビューなど): orchestratorが自分で行うか、subagentに任せる
+- 作業依頼 (実装、修正、文書作成、調査、比較検討、既存コードのレビューなど): Phase 2から流す。orchestratorが自分で作業しない
 - 質問や状況確認: orchestratorが読み取りだけで答える。状況確認には会話内の表とpane labelで答える
 - 実行中のworkerへの追加指示: 対象のworkerへそのまま送る。全員に関わる指示は影響するworker全員へ同じ文面で送る
 - 設定の変更 (agent種別、モデル): 設定を更新し、以後に起動するworkerから適用する
 - 終了の指示 (「orchestration終了」など): Phase 7とPhase 8を行い、modeを抜ける
 
-mode中はできるだけworkerを使う。編集を伴う作業 (実装、修正、文書作成、レビュー対応など) は、subagentに委譲したくなる規模でも、subagentではなくtaskとしてworkerへ流す。
+mode中は作業をすべてworkerへ流す。編集を伴わない作業も、subagentに委譲したくなる規模の作業も、subagentではなくtaskとしてworkerへ流す。
 
 `DONE` で始まるmessageはworkerからの報告であり、ユーザーの依頼ではない。Phase 5で扱う。
 
@@ -120,7 +119,7 @@ waitが返ったworkerの `herdr agent get <worker>` と `herdr agent read <work
 
 ### Phase 6: 完了と次のtask
 
-1. `DONE` 報告とtranscriptの最後から、結果 (PR URL、branch、未解決の事項) を表に記録する。workerの報告をそのまま記録し、orchestratorが成果物を検証し直すことはしない
+1. `DONE` 報告とtranscriptの最後から、結果 (PR URL、branch、未解決の事項) を表に記録する。workerの報告をそのまま記録し、orchestratorが成果物を検証し直すことはしない。調査やレビューのように結果が回答そのもののtaskでは、paneを閉じる前にtranscriptから結果を読み、ユーザーへ伝える
 2. **paneを閉じる**: `herdr pane close <pane-id>` でworkerのpaneを閉じる。そのworker tabに残る最後のpaneなら、pane closeの代わりに `herdr tab close <tab-id>` でtabごと閉じ、記録したtab IDを消す
 3. 依存が解消したtaskがあれば、空いた枠でPhase 3の2〜4とPhase 4を行う
 4. 全taskが完了か `🔴` になったらPhase 7の結果を表示し、modeを続けたままユーザーの次の依頼を待つ

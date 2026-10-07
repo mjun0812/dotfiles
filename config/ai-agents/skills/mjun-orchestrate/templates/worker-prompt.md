@@ -17,7 +17,7 @@ orchestratorが下表のplaceholderを埋め、本文をquoted heredocでshell�
 {{request}}
 
 ---
-Other agents are working in this repository in parallel. If neither you nor the skill you run creates a git worktree, create one and work there instead of the main checkout.
+Other agents are working in this repository in parallel. If you change files and neither you nor the skill you run creates a git worktree, create one and work there instead of the main checkout.
 When everything is finished, send one line to Herdr agent {{orch_name}}:
 
     report="DONE {{worker_name}}: <one-line result, with the PR URL or branch if any>"
