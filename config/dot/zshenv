@@ -21,6 +21,7 @@ export PNPM_HOME="$HOME/.local/share/pnpm"
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME}/aquaproj-aqua/aqua.yaml"
 export CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1
+export AGENTSVIEW_TELEMETRY_ENABLED=0
 
 # uv/cargo-dist 系インストーラに rc ファイルを書き換えさせない
 export INSTALLER_NO_MODIFY_PATH=1

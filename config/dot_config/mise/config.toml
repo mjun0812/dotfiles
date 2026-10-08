@@ -87,6 +87,7 @@ esac
 "$current/codex" --version
 ''' }
 "aqua:google-antigravity/antigravity-cli" = { version = "latest", minimum_release_age = "0s" }
+"github:kenn-io/agentsview" = "latest"
 
 # Python CLI tools
 "pypi:copier" = "latest"
