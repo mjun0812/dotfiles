@@ -83,7 +83,7 @@ Phase 2以降では元のrepositoryを読まず，対象ファイルとコマン
 
 `<role>`と`<focus>`は次の組み合わせを使用する．
 
-- Finder 1: `Finder` / 期待される振る舞い，契約，不変条件，呼び出し経路，状態・データの流れ
+- Finder 1: `Finder` / 期待される振る舞い，契約，不変条件，呼び出し経路，状態・データの流れ，同時に更新すべきdiff外の箇所
 - Finder 2: `Finder` / 境界値，失敗，並行実行，互換性，信頼できない入力，回復不能な状態
 - Standards: `Standards` / 文書化された必須規約，機械的に未検出の違反，変更後への先送りが安全でないコードスメル
 - Contract (`--spec`指定時のみ): `Contract` / spec contractとの整合 (逸脱，未充足，boundary違反，scope creep)．`<additional-evidence>`にspec contract全文を含める
@@ -91,6 +91,8 @@ Phase 2以降では元のrepositoryを読まず，対象ファイルとコマン
 dirty modeでは`<target-kind>`を`Local uncommitted changes`，`<change-description>`をユーザー指定の目的または「現在の未commit変更」，`<change-history>`を`なし`とする．commit modeでは順に`Local commit`，commit message，commit SHA・first parent SHA・commit messageとする．その他のplaceholderはPhase 1のmetadataと対象差分から埋め，`<additional-evidence>`は`なし`とする (例外: Contract roleの起動時はspec contract全文とする)．
 
 FinderとStandardsにはsnapshotの検索と読み取りだけを許可し，コード，テスト，ビルド，lint，型チェック，package script，再現コードを実行させない．
+
+起動したSubAgentのいずれかが，同時実行数の上限などで起動できない，または結果を返さない場合は，diffを自分で読んで代わりにレビューしない．Phase 5のcleanupを実行し，レビューできなかったことと原因だけを報告して終了する．Phase 2.2〜2.4の`code-reviewer-verifier`も同じとする．
 
 #### Phase 2.2: Finder候補の検証
 
