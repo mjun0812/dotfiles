@@ -83,7 +83,7 @@ claudex() (
     export ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-6-luna"
     export ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-6-luna"
     command \claude --mcp-config="${HOME}/.claude/mcp.json" \
-        --allow-dangerously-skip-permissions --model "gpt-6-luna" "$@"
+        --allow-dangerously-skip-permissions "$@"
 )
 
 # Codex

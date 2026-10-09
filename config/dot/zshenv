@@ -20,7 +20,11 @@ export BUN_INSTALL_GLOBAL_DIR="$HOME/.bun/install/global"
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME}/aquaproj-aqua/aqua.yaml"
+
+# GCLOUD SDK の自動アップデートを無効化する
 export CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1
+
+# agentsview のテレメトリを無効化する
 export AGENTSVIEW_TELEMETRY_ENABLED=0
 
 # uv/cargo-dist 系インストーラに rc ファイルを書き換えさせない
