@@ -17,7 +17,7 @@ container system kernel set --recommended --force
 "pypi:headroom-ai" = { version = "latest", extras = "proxy,code", postinstall = '''
     launchctl kickstart -k gui/$(id -u)/dev.mise.headroom-proxy 2>/dev/null || true
 ''' }
-"github:router-for-me/CLIProxyAPI" = { version = "latest", postinstall = '''
+"github:router-for-me/CLIProxyAPI" = { version = "latest", minimum_release_age = "0s", postinstall = '''
     launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api 2>/dev/null || true
 ''' }
 "github:mjun0812/yobirin" = { version = "latest", minimum_release_age = "0s", asset_pattern = "yobirin", postinstall = '''

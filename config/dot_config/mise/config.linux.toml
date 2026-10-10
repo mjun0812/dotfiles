@@ -9,7 +9,7 @@
 "pypi:headroom-ai" = { version = "latest", extras = "proxy,code", postinstall = '''
     systemctl --user restart dev.mise.headroom-proxy.service 2>/dev/null || true
 ''' }
-"github:router-for-me/CLIProxyAPI" = { version = "latest", postinstall = '''
+"github:router-for-me/CLIProxyAPI" = { version = "latest", minimum_release_age = "0s", postinstall = '''
     systemctl --user restart dev.mise.cli-proxy-api.service 2>/dev/null || true
 ''' }
 "aqua:imagemagick" = "latest"
