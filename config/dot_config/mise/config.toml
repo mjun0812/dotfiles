@@ -9,7 +9,7 @@ bun = "latest"
 pnpm = "latest"
 cmake = "latest"
 uv = "latest"
-python = "latest"
+python = "3.14"
 ruby = "latest"
 
 # Shell and CLI utilities
