@@ -32,7 +32,6 @@ gh = { version = "latest", postinstall = "gh extension install github/gh-stack &
 hunk = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup_hunk.sh' }
 
 # Dev tool
-actionlint = "latest"
 aqua = "latest"
 ast-grep = "latest"
 duckdb = "latest"
@@ -40,6 +39,7 @@ fzf = "latest"
 gitleaks = "latest"
 herdr = { version = "latest", minimum_release_age = "0s", postinstall = '"$HOME"/.dotfiles/script/setup/setup_herdr.sh' }
 hyperfine = "latest"
+jactionlint = { version = "latest", minimum_release_age = "0s" }
 kubectl = "latest"
 ninja = "latest"
 stylua = "latest"

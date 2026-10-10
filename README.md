@@ -102,7 +102,6 @@ apm update -g
 
 | Name                       | Description                                           |
 | -------------------------- | ----------------------------------------------------- |
-| actionlint                 | GitHub Actions workflow linter                        |
 | agent-browser              | Browser automation CLI for AI agents                  |
 | agentsview                 | Session browser and usage analytics for AI agents     |
 | apm                        | Agent package manager                                 |
@@ -130,6 +129,7 @@ apm update -g
 | hunk                       | Review-first terminal diff viewer                     |
 | hyperfine                  | Command-line benchmarking tool                        |
 | imagemagick                | Image processing                                      |
+| jactionlint                | GitHub Actions workflow linter                        |
 | jq                         | JSON processor                                        |
 | keychain                   | ssh-agent / gpg-agent manager                         |
 | kubectl                    | Kubernetes CLI                                        |
