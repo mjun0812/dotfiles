@@ -19,6 +19,7 @@ jobs:
       NONINTERACTIVE: "1"
       CI: "true"
       GITHUB_TOKEN: ${{ github.token }}
+      MISE_USE_VERSIONS_HOST: "1"
       DOTFILES_SKIP_BOOTSTRAP_PACKAGES: "1"
 
     steps:

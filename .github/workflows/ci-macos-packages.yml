@@ -16,6 +16,7 @@ jobs:
       NONINTERACTIVE: "1"
       CI: "true"
       GITHUB_TOKEN: ${{ github.token }}
+      MISE_USE_VERSIONS_HOST: "1"
       MISE_CONFIG_DIR: ${{ github.workspace }}/config/dot_config/mise
 
     steps:
@@ -49,6 +50,7 @@ jobs:
       NONINTERACTIVE: "1"
       CI: "true"
       GITHUB_TOKEN: ${{ github.token }}
+      MISE_USE_VERSIONS_HOST: "1"
       MISE_CONFIG_DIR: ${{ github.workspace }}/config/dot_config/mise
 
     steps:

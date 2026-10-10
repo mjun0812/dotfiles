@@ -107,6 +107,7 @@ pypi.uvx = true
 npm.package_manager = "bun"
 trusted_config_paths = ["/"]
 minimum_release_age = "24h"
+use_versions_host = false
 auto_env = true
 not_found_auto_install = false
 experimental = true
