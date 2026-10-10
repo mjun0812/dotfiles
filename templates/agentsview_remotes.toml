@@ -1,0 +1,9 @@
+# agentsview serve の前に session を rsync で取得するリモートホスト (git管理外)。
+# script/tools/pull_agentsview_remotes.py が、このファイルが無いときだけ dotfiles の templates/ からコピーする。
+#
+# テーブル名は ssh の接続先 (~/.ssh/config のホスト名)。agents は claude / codex / gemini から選ぶ。
+# 取得先は ~/.agentsview/remote/<host>/<agent> で、対応する [[session_sources]] を
+# ~/.agentsview/config.toml へ自動で追記する。ホストやagentを外したときは、config.toml の該当entryを手で消す。
+#
+# [devbox1]
+# agents = ["claude", "codex"]
