@@ -2,8 +2,6 @@
 
 このドキュメントは、本リポジトリから使うAI agent skillと、それらの依存関係について説明します。skillの供給元は2つあります。
 
-私用skill (`mjun-*`, `self-review`) のソースは [`config/ai-agents/skills/`](../config/ai-agents/skills) 配下にあり、`install.sh` によって以下へsymlinkとしてデプロイされます。
-
 - `~/.agents/skills/<skill>` — 共有skillディレクトリ (Codexはこのディレクトリを直接読む)
 - `~/.claude/skills/<skill>` — Claude Code
 - `~/.gemini/antigravity-cli/skills/<skill>` — Antigravity CLI

@@ -272,22 +272,8 @@ codex-commit-ja # AIが生成した日本語のコミットメッセージでコ
 agy-commit # AIが生成したコミットメッセージでコミットする
 agy-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
 
-# zoxide + fzf
-# zoxideの履歴をfzfで選択してcdする
-# Ctrl+f でも同様の操作が可能
-fzf-zoxide-cd
-```
-
-### Git Commands
-
-```bash
 # Delete local branches that are deleted and merged
 git prune-branch
-
-# commit with AI generated commit message
-git aicommit
-# commit with AI generated commit message in Japanese
-git aicommit-ja
 ```
 
 ## mise
