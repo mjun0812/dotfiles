@@ -26,3 +26,7 @@ ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.codex/AGENTS.md"
 
 # Hooks
 ln -snfv "$DOTPATH/config/ai-agents/codex/hooks.json" "$HOME/.codex/hooks.json"
+
+# Rules
+mkdir -p "$HOME/.codex/rules"
+ln -snfv "$DOTPATH/config/ai-agents/codex/rules/manual-approval.rules" "$HOME/.codex/rules/manual-approval.rules"

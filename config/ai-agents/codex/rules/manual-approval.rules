@@ -1,0 +1,47 @@
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "prompt",
+    justification = "リモートへの反映にはユーザーの承認が必要",
+)
+
+prefix_rule(
+    pattern = ["gh", "pr", "merge"],
+    decision = "prompt",
+    justification = "PRのマージにはユーザーの承認が必要",
+)
+
+prefix_rule(
+    pattern = ["rm", "-rf", "/"],
+    decision = "prompt",
+    justification = "ルートディレクトリの再帰削除にはユーザーの承認が必要",
+)
+
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "prompt",
+    justification = "未コミット変更の破棄にはユーザーの承認が必要",
+)
+
+prefix_rule(
+    pattern = ["gh", ["repo", "release"], "delete"],
+    decision = "prompt",
+    justification = "GitHub上のリポジトリやリリースの削除にはユーザーの承認が必要",
+)
+
+prefix_rule(
+    pattern = ["kubectl", "delete"],
+    decision = "prompt",
+    justification = "Kubernetesリソースの削除にはユーザーの承認が必要",
+)
+
+prefix_rule(
+    pattern = ["aws", "s3", ["rm", "rb"]],
+    decision = "prompt",
+    justification = "S3オブジェクトやバケットの削除にはユーザーの承認が必要",
+)
+
+prefix_rule(
+    pattern = ["sudo"],
+    decision = "prompt",
+    justification = "管理者権限での実行にはユーザーの承認が必要",
+)

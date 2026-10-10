@@ -39,6 +39,7 @@ name = "tokyo-night"
 # panel_bg = "#1e1e2e"
 # text = "#cdd6f4"
 
+auto_switch = false
 [terminal]
 # Executable used for new interactive panes.
 # Empty means $SHELL, then /bin/sh.

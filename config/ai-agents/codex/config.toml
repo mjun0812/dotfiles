@@ -1,7 +1,8 @@
 #:schema https://developers.openai.com/codex/config-schema.json
 
 approval_policy = "on-request"
-sandbox_mode = "workspace-write"
+approvals_reviewer = "user"
+sandbox_mode = "danger-full-access"
 web_search = "live"
 allow_login_shell = true
 suppress_unstable_features_warning = true
@@ -11,10 +12,7 @@ service_tier = "default"
 shell_snapshot = true
 multi_agent = true
 hooks = true
-# plan mode以外でもユーザー入力を求められるようにする
 default_mode_request_user_input = true
-# 起動中のapp-server daemon (launchd / systemdで常駐) へ自動接続する。
-# 応答が無いときはCodexが自前のdaemonを起動する
 daemon_auto_start = true
 
 [features.multi_agent_v2]
@@ -26,12 +24,6 @@ max_wait_timeout_ms = 3600000
 [agents]
 max_concurrent_threads_per_session = 6
 
-[sandbox_workspace_write]
-writable_roots = ["~/.cache", "~/.local/share", "/tmp", "/private/tmp"]
-network_access = true
-exclude_tmpdir_env_var = false
-exclude_slash_tmp = false
-
 [shell_environment_policy]
 inherit = "all"
 experimental_use_profile = true
@@ -40,7 +32,8 @@ experimental_use_profile = true
 hide_rate_limit_model_nudge = true
 
 [tui]
-# 通知は hooks.json から notify-codex-hook.sh 経由で送るため、組み込み通知は使わない。
+resume_cwd = "session"
+terminal_title = ["spinner", "project"]
 notifications = false
 auto_recap = true
 status_line = [
