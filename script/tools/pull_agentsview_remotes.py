@@ -4,30 +4,30 @@
 
 aliases.zsh の agentsview() が `agentsview serve` の前に実行する。
 
-取得対象は ~/.agentsview/config.toml (git管理外) の [[session_sources]] のうち machine を持つ entry。
-machine を ssh の接続先として扱い、agent ごとに決まったリモートのパスを dir へ同期する。
-対応する agent は REMOTE_SOURCES のキー。host ごとに必要な agent の entry を書く。
+取得するホストと agent は ~/.agentsview/remotes.toml (git管理外) に書く。
+このファイルが無ければ templates/agentsview_remotes.toml の placeholder をコピーし、あれば上書きしない。
+agentsview は config.toml を書き換えるときにコメントを消すため、ホストの定義は別ファイルに置く。
 
-    [[session_sources]]
-    agent = "claude"
-    dir = "~/.agentsview/remote/devbox1/claude"
-    machine = "devbox1"
+    [devbox1]
+    agents = ["claude", "codex"]
 
-    [[session_sources]]
-    agent = "codex"
-    dir = "~/.agentsview/remote/devbox1/codex"
-    machine = "devbox1"
-
+テーブル名を ssh の接続先として扱い、agent ごとに決まったリモートのパスを
+~/.agentsview/remote/<host>/<agent> へ同期する。config.toml に同じ host と agent の
+[[session_sources]] が無ければ末尾へ追記し、あればその dir へ同期する。
 接続できない host は警告を出して飛ばす。
 """
 
 from __future__ import annotations
 
+import json
 import os
+import shutil
 import subprocess
 import sys
 import tomllib
 from pathlib import Path
+
+TEMPLATE = Path(__file__).resolve().parents[2] / "templates" / "agentsview_remotes.toml"
 
 # agent ごとの、リモートの home からのパスと rsync の filter
 REMOTE_SOURCES: dict[str, tuple[str, list[str]]] = {
@@ -50,28 +50,58 @@ REMOTE_SOURCES: dict[str, tuple[str, list[str]]] = {
 
 
 def main() -> None:
-    """config.toml の machine 付き session_sources を順に rsync で取得する。"""
+    """remotes.toml のホストから session を rsync で取得し、config.toml へ取得先を登録する。"""
     data_dir = Path(os.environ.get("AGENTSVIEW_DATA_DIR", Path.home() / ".agentsview"))
-    config = data_dir / "config.toml"
-    if not config.is_file():
-        return
-    with config.open("rb") as f:
-        sources = tomllib.load(f).get("session_sources", [])
+    remotes_file = data_dir / "remotes.toml"
+    if not remotes_file.exists():
+        data_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(TEMPLATE, remotes_file)
+        print(f"agentsview: created {remotes_file}")
+    with remotes_file.open("rb") as f:
+        remotes = tomllib.load(f)
 
-    for source in sources:
-        if "machine" not in source:
-            continue
-        agent, machine = source["agent"], source["machine"]
-        if agent not in REMOTE_SOURCES:
-            print(
-                f"agentsview: unsupported agent '{agent}' for {machine}, skipped",
-                file=sys.stderr,
-            )
-            continue
+    config = data_dir / "config.toml"
+    sources = []
+    if config.is_file():
+        with config.open("rb") as f:
+            sources = tomllib.load(f).get("session_sources", [])
+    registered = {
+        (s["agent"], s.get("machine")): Path(s["dir"]).expanduser() for s in sources
+    }
+
+    targets: list[tuple[str, str, Path]] = []
+    new_sources: list[tuple[str, str, Path]] = []
+    for host, remote in remotes.items():
+        for agent in remote.get("agents", []):
+            if agent not in REMOTE_SOURCES:
+                print(
+                    f"agentsview: unsupported agent '{agent}' for {host}, skipped",
+                    file=sys.stderr,
+                )
+                continue
+            dest = registered.get((agent, host))
+            if dest is None:
+                dest = data_dir / "remote" / host / agent
+                new_sources.append((host, agent, dest))
+            targets.append((host, agent, dest))
+
+    if new_sources:
+        # agentsview は既存の config.toml の権限を変えずに cursor_secret などを書き込む
+        config.touch(mode=0o600, exist_ok=True)
+        with config.open("a") as f:
+            for host, agent, dest in new_sources:
+                f.write(
+                    f"\n[[session_sources]]\nagent = {json.dumps(agent)}\n"
+                    f"dir = {json.dumps(str(dest))}\nmachine = {json.dumps(host)}\n"
+                )
+                print(
+                    f"agentsview: added session_sources for {agent} on {host} to {config}"
+                )
+
+    for host, agent, dest in targets:
         remote_path, rsync_filter = REMOTE_SOURCES[agent]
-        dest = Path(source["dir"]).expanduser()
         dest.mkdir(parents=True, exist_ok=True)
-        print(f"agentsview: {machine}:~/{remote_path} -> {dest}")
+        print(f"agentsview: {host}:~/{remote_path} -> {dest}")
         result = subprocess.run(
             [
                 "rsync",
@@ -82,14 +112,14 @@ def main() -> None:
                 "-e",
                 "ssh -o ConnectTimeout=10",
                 *rsync_filter,
-                f"{machine}:{remote_path}",
+                f"{host}:{remote_path}",
                 f"{dest}/",
             ],
             check=False,
         )
         if result.returncode != 0:
             print(
-                f"agentsview: failed to pull {agent} from {machine}, skipped",
+                f"agentsview: failed to pull {agent} from {host}, skipped",
                 file=sys.stderr,
             )
 

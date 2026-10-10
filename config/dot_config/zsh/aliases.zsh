@@ -87,7 +87,7 @@ claudex() (
 )
 
 # agentsview
-# serve の前に、~/.agentsview/config.toml に登録したリモートの session を取得する
+# serve の前に、~/.agentsview/remotes.toml に書いたリモートの session を取得する
 agentsview() {
     if [[ $1 == serve ]]; then
         python3 ~/.dotfiles/script/tools/pull_agentsview_remotes.py
