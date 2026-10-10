@@ -86,6 +86,15 @@ claudex() (
         --allow-dangerously-skip-permissions "$@"
 )
 
+# agentsview
+# serve の前に、~/.agentsview/config.toml に登録したリモートの session を取得する
+agentsview() {
+    if [[ $1 == serve ]]; then
+        python3 ~/.dotfiles/script/tools/pull_agentsview_remotes.py
+    fi
+    command agentsview "$@"
+}
+
 # Codex
 alias codex-full='command \codex \
     --yolo \
