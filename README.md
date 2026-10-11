@@ -61,18 +61,27 @@
 require git, zsh, curl
 
 ```bash
-git clone git@github.com:mjun0812/dotfiles.git ~/.dotfiles
+git clone https://github.com/mjun0812/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
+
+# Authenticate on each machine, including remote Herdr hosts
+gh auth login --hostname github.com --git-protocol https --web
+gh auth status --hostname github.com
 
 # First Install Only: Install VS Code extensions
 ./script/setup/install_vscode_extensions.sh
 # First Install Only: For macOS
 ./script/setup/setup_macos_apps.sh
-
-# Optional: Login to GitHub CLI
-gh auth login
 ```
+
+GitHub HTTPS authentication uses `gh` as the credential helper. The same login is used by Git, GitHub CLI, and mise. The helper resolves `gh` from `PATH`, so mise upgrades do not require updating an executable path in Git config. `gh auth setup-git` is unnecessary because the helper is already configured in these dotfiles.
+
+On a remote Herdr host, run the login command there and enter its device code in your local browser. GitHub authentication then works independently of the forwarded SSH agent, including after disconnecting from Herdr. No `ForwardAgent` setting is required for GitHub access.
+
+Credentials remain outside this repository, in the system credential store or `~/.config/gh/`. On headless Linux, `gh` may fall back to plaintext storage when no credential store is available; check the storage location with `gh auth status`.
+
+Git rewrites standard GitHub SSH URLs (`git@github.com:OWNER/REPO.git` and `ssh://git@github.com/OWNER/REPO.git`) to HTTPS for fetch and push, so existing remote URLs do not need to be changed. Account-specific SSH aliases such as `github_spic` keep using SSH.
 
 ## Update
 

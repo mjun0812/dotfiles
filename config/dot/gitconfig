@@ -23,6 +23,10 @@
   gpgsign = false
   verbose = true
 
+[credential "https://github.com"]
+  helper =
+  helper = !gh auth git-credential
+
 [fetch]
   all = true
   prune = true
@@ -80,6 +84,10 @@
   line-numbers = true
   hunk-header-style = line-number omit-code-fragment
   syntax-theme = tokyonight_night
+
+[url "https://github.com/"]
+  insteadOf = git@github.com:
+  insteadOf = ssh://git@github.com/
 
 [include]
   path = ~/.gitconfig.local
