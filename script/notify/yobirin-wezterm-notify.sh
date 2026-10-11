@@ -7,7 +7,7 @@ PANE_ID="${3:-}"
 SESSION_ID="${4:-}"
 PROFILE="${5:-}"
 
-[[ $PANE_ID =~ ^[0-9]+$ ]] || exit 0
+[[ $PANE_ID =~ ^[0-9]+$ || $SESSION_ID =~ ^[[:alnum:]_-]+$ ]] || exit 0
 [[ $PROFILE =~ ^[a-z0-9]*$ ]] || PROFILE=""
 
 # hook経由はPATHが薄いことがあるため、bundle symlinkとmise shimsへ明示的にfallbackする。

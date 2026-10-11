@@ -4,12 +4,10 @@ set -euo pipefail
 PANE_ID="${1:-}"
 SESSION_ID="${2:-}"
 
-[[ $PANE_ID =~ ^[0-9]+$ ]] || exit 0
-
-if [[ $SESSION_ID =~ ^[[:alnum:]_-]+$ ]]; then
+if [[ $PANE_ID =~ ^[0-9]+$ && $SESSION_ID =~ ^[[:alnum:]_-]+$ ]]; then
     open -g "hammerspoon://wezterm-focus?session=${SESSION_ID}&pane=${PANE_ID}" \
         >/dev/null 2>&1 || true
-else
+elif [[ $PANE_ID =~ ^[0-9]+$ ]]; then
     WEZTERM_BIN="$(command -v wezterm || true)"
     if [[ -z $WEZTERM_BIN ]]; then
         for candidate in /opt/homebrew/bin/wezterm /usr/local/bin/wezterm; do
@@ -24,6 +22,8 @@ else
     "$WEZTERM_BIN" cli activate-pane --pane-id "$PANE_ID" >/dev/null 2>&1 || true
     exit 0
 fi
+
+[[ $SESSION_ID =~ ^[[:alnum:]_-]+$ ]] || exit 0
 
 # herdr内のsessionなら、herdr側のworkspace/tab/paneも切り替える。
 # session ID → paneの対応はherdrのclaude/codex integrationがSessionStartで
