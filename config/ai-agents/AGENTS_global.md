@@ -58,6 +58,8 @@
 ## Tool
 
 - skillや指示に登場する `AskUserQuestion` は `request_user_input` に読み替えること。
+- 選択肢付きの質問には同期の `request_user_input` を使用し、`request_user_input_async` は使用しないこと。
+- 選択肢付きの質問後は、回答を受け取るまで作業を進めないこと。
 
 ## Steering
 
@@ -100,8 +102,11 @@ GitHub操作は必ず `git, gh` CLIで行うこと。GitHub connector/pluginやM
 
 - シェルスクリプトのフォーマットには `shfmt` を使用してください。
 - シェルスクリプトのリンターには `shellcheck` を使用してください。
+- `zsh`のフォーマット時は`shfmt -ln=zsh`を使用してください。v3.13.0以降で対応しています。
+- `zsh`のリンター時は`shellcheck -s bash`を使用してください。zshには対応していませんが、bashとして解析可能です。
 - シェルスクリプトは関数をあまり使用せず、シンプルで手続き型な構造にしてください。
 - 関数を使用する場合は、3回以上呼び出されるコードに対してのみ使用してください。
+- シェルスクリプト内に他の言語 (Python、JavaScriptなど) のコードをheredocや `-c` でべた書きしないでください。別ファイルのスクリプトにして呼び出してください。
 
 ## Lua
 
