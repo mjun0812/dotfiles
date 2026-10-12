@@ -13,7 +13,7 @@ jq -n '{
     hookSpecificOutput: {
         hookEventName: "PreToolUse",
         permissionDecision: "deny",
-        permissionDecisionReason: ".ipynbはraw JSONとして編集しないこと。Jupytextのpaired .pyがあればそちらを編集し、cell単位の操作にはnb-cliを使うこと。"
+        permissionDecisionReason: ".ipynbはraw JSONとして編集しないこと。nb-cli (nbコマンド) で編集し、nb-cliで行えない操作にだけJupytextを使うこと。"
     }
 }'
 exit 0
