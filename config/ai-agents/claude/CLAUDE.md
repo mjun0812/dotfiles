@@ -58,6 +58,7 @@
 
 - 選択肢付きの質問には `AskUserQuestion` を使用すること。
 - 選択肢付きの質問後は、回答を受け取るまで作業を進めないこと。
+- ブラウザ操作では、ログイン状態が必要な操作とユーザーのChromeでの操作には `playwriter` skillを、ログインが不要な操作には `agent-browser` skillを使うこと。
 
 ## Steering
 

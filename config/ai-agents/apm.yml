@@ -43,6 +43,7 @@ dependencies:
       ref: ">=0.36.0"
       skills:
         - agent-browser
+    - remorses/playwriter/skills/playwriter
     - herdrdev/herdr/skills/herdr#>=0.8.0
     - github/gh-stack/skills/gh-stack#>=0.1.0
     - duckdb/duckdb-skills/skills/read-file
