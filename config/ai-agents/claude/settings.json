@@ -88,7 +88,6 @@
       "Bash(wget * | sh *)",
       "Read(./secrets/**)",
       "Edit(//**/*.ipynb)",
-      "Write(//**/*.ipynb)",
       "mcp__claude_ai_GitHub_mcp"
     ],
     "ask": [],
@@ -119,6 +118,11 @@
             "type": "command",
             "command": "~/.dotfiles/script/hooks/gha-version-hook.sh",
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/hooks/format-hook.sh",
+            "timeout": 30
           }
         ]
       }
