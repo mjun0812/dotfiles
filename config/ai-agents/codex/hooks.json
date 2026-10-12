@@ -43,6 +43,16 @@
           }
         ],
         "matcher": "^apply_patch$"
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/script/hooks/codex-spawn-agent-guard-hook.sh",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "^spawn_agent$"
       }
     ],
     "SessionStart": [
