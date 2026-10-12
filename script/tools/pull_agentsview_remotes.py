@@ -46,6 +46,34 @@ REMOTE_SOURCES: dict[str, tuple[str, list[str]]] = {
             "--exclude=*",
         ],
     ),
+    # 認証トークンや実行ファイルを除き、agentsview が読む会話と project 対応表だけを取る
+    "antigravity-cli": (
+        ".gemini/antigravity-cli/",
+        [
+            "--include=/history.jsonl",
+            "--include=/cache/",
+            "--include=/cache/last_conversations.json",
+            "--include=/conversations/***",
+            "--include=/implicit/***",
+            "--include=/brain/***",
+            "--exclude=*",
+        ],
+    ),
+    # auth.json や snapshot を除き、session の SQLite と旧形式の storage だけを取る
+    "opencode": (
+        ".local/share/opencode/",
+        [
+            "--include=/opencode*.db",
+            "--include=/opencode*.db-wal",
+            "--include=/storage/",
+            "--include=/storage/project/***",
+            "--include=/storage/session/***",
+            "--include=/storage/message/***",
+            "--include=/storage/part/***",
+            "--exclude=*",
+        ],
+    ),
+    "pi": (".pi/agent/sessions/", []),
 }
 
 
