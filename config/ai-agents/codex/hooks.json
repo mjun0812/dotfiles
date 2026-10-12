@@ -12,7 +12,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "^apply_patch$",
+        "matcher": "^(apply_patch|Bash)$",
         "hooks": [
           {
             "type": "command",
@@ -42,7 +42,7 @@
             "type": "command"
           }
         ],
-        "matcher": "^apply_patch$"
+        "matcher": "^(apply_patch|Bash)$"
       },
       {
         "hooks": [
@@ -52,7 +52,7 @@
             "type": "command"
           }
         ],
-        "matcher": "^spawn_agent$"
+        "matcher": "spawn_agent$"
       }
     ],
     "SessionStart": [
