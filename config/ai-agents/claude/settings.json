@@ -88,6 +88,7 @@
       "Bash(wget * | sh *)",
       "Read(./secrets/**)",
       "Edit(//**/*.ipynb)",
+      "NotebookEdit",
       "mcp__claude_ai_GitHub_mcp"
     ],
     "ask": [],

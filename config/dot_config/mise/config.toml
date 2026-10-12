@@ -54,6 +54,7 @@ ty = "latest"
 "github:rtk-ai/rtk" = "latest"
 "github:runpod/runpodctl" = "latest"
 "github:WGUNDERWOOD/tex-fmt" = "latest"
+"github:jupyter-ai-contrib/nb-cli" = { version = "latest", bin = "nb" }
 
 # npm packages
 "npm:@mermaid-js/mermaid-cli" = "latest"
