@@ -109,6 +109,16 @@
             "command": "rtk hook claude"
           }
         ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/hooks/claude-agent-model-guard-hook.sh",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "PostToolUse": [
