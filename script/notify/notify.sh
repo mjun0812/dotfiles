@@ -6,6 +6,7 @@ set -euo pipefail
 #   - OSC 777: WezTerm, VSCode, Cursor
 #   - OSC 9: iTerm2
 # - Local sessions: OS-native notifications (macOS/Linux/Windows/WSL)
+#   - macOS: use yobirin, or AppleScript when yobirin is unavailable
 #
 # Usage:
 #   ./notify.sh "TITLE" "MESSAGE" [SESSION_ID] [PROFILE]
@@ -138,7 +139,7 @@ mac)
             >/dev/null 2>&1 </dev/null &
     fi
 
-    if [[ -n $SESSION_ID && -n $YOBIRIN_BIN ]]; then
+    if [[ -n $YOBIRIN_BIN ]]; then
         nohup "$HOME/.dotfiles/script/notify/yobirin-wezterm-notify.sh" "$TITLE" "$MESSAGE" "$PANE_ID" "$SESSION_ID" "$PROFILE" \
             >/dev/null 2>&1 </dev/null &
     else

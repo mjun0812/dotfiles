@@ -1,0 +1,8 @@
+# ~/.config/ruff/ruff.toml: ruff設定 (pyproject.tomlの[tool.ruff]・ruff.toml) を持たないプロジェクトにだけ適用される
+[lint]
+extend-select = ["UP", "ANN", "D"]
+# module・packageのdocstringは求めない
+ignore = ["D100", "D104"]
+
+[lint.pydocstyle]
+convention = "google"

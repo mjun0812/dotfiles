@@ -3,16 +3,17 @@ set -euo pipefail
 
 # notify-claude-hook.sh
 #
-# Claude Code の hook (UserPromptSubmit / Notification / Stop / StopFailure) から
+# Claude Code の hook (UserPromptSubmit / PermissionRequest / Notification / PreCompact /
+# Stop / StopFailure) から
 # stdin で渡される JSON を読み、リポジトリ名・セッションID短縮・実メッセージ/
 # エラー情報を含むリッチな通知を notify.sh 経由で送出する。
 #
 # Usage:
 #   notify-claude-hook.sh <event>
-#     event: turn_start | notification | stop | stop_failure
+#     event: turn_start | permission_request | notification | pre_compact | stop | stop_failure
 
 # 応答がこの秒数未満で終わったターンでは stop の通知を出さない。
-MIN_ELAPSED_SEC=180
+MIN_ELAPSED_SEC=120
 
 EVENT="${1:-notification}"
 INPUT="$(cat || true)"
@@ -31,6 +32,8 @@ CWD="$(jq_get '.cwd')"
 SESSION_ID="$(jq_get '.session_id')"
 MESSAGE="$(jq_get '.message')"
 NOTIFICATION_TYPE="$(jq_get '.notification_type')"
+TOOL_NAME="$(jq_get '.tool_name')"
+TRIGGER="$(jq_get '.trigger')"
 LAST_MESSAGE="$(jq_get '.last_assistant_message')"
 ERROR_TYPE="$(jq_get '.error_type')"
 ERROR_MESSAGE="$(jq_get '.error_message')"
@@ -60,11 +63,15 @@ if [[ $EVENT == "turn_start" ]]; then
 fi
 
 case "$EVENT" in
+permission_request)
+    TITLE="🔐 Claude Code [${REPO}]${SHORT_SID:+ #${SHORT_SID}}"
+    BODY="$(sanitize "${TOOL_NAME:+${TOOL_NAME} の}許可を待っています" 150)"
+    ;;
 notification)
     case "$NOTIFICATION_TYPE" in
-    permission_prompt)
-        ICON="🔐"
-        DEFAULT_BODY="許可を待っています"
+    idle_prompt)
+        ICON="💤"
+        DEFAULT_BODY="入力を待っています"
         ;;
     *)
         ICON="🔔"
@@ -74,6 +81,10 @@ notification)
     TITLE="${ICON} Claude Code [${REPO}]${SHORT_SID:+ #${SHORT_SID}}"
     BODY="$(sanitize "$MESSAGE" 150)"
     BODY="${BODY:-$DEFAULT_BODY}"
+    ;;
+pre_compact)
+    TITLE="🗜️ Claude Code [${REPO}]${SHORT_SID:+ #${SHORT_SID}}"
+    BODY="コンテキストを圧縮します${TRIGGER:+ (${TRIGGER})}"
     ;;
 stop)
     # 短時間で終わったターンは通知しない。開始時刻は turn_start が記録する。
