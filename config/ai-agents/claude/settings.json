@@ -151,13 +151,33 @@
         ]
       }
     ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh permission_request"
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
-        "matcher": "permission_prompt",
+        "matcher": "idle_prompt",
         "hooks": [
           {
             "type": "command",
             "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh notification"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh pre_compact"
           }
         ]
       }
@@ -215,6 +235,8 @@
   },
   "language": "japanese",
   "feedbackDrafts": "off",
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
   "cleanupPeriodDays": 365,
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
