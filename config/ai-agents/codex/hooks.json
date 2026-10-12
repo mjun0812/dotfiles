@@ -33,6 +33,16 @@
           }
         ],
         "matcher": "^Bash$"
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/script/hooks/codex-ipynb-guard-hook.sh",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "^apply_patch$"
       }
     ],
     "SessionStart": [
