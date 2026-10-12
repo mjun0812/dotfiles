@@ -13,3 +13,12 @@
     systemctl --user restart dev.mise.cli-proxy-api.service 2>/dev/null || true
 ''' }
 "aqua:imagemagick" = "latest"
+
+# Playwriter の拡張機能入りブラウザを ~/.playwriter/browser-profile で常駐させる。
+# 画面が無ければ headless で起動する
+[bootstrap.services.playwriter-browser]
+scope = "user"
+description = "Start the Playwriter browser"
+command = "~/.dotfiles/script/services/playwriter-browser.sh"
+restart = "always"
+requires_tools = true
