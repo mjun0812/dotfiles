@@ -61,14 +61,12 @@ GitHub操作は必ず `git, gh` CLIで行うこと。
 ## Python
 
 - 環境およびパッケージ管理には `uv` を使用すること。
-- コードのフォーマットには `uvx ruff format`を使ってください．
 - コードのリンターには`uvx ruff check --fix` を使用すること。
 - コードの型チェックには`uvx ty check` を使用すること。
 - SQLAlchemy ORM は **2.0 スタイル**の記法を使用してください。
 
 ## Markdown
 
-- Formatterに`oxfmt`を使うこと
 - 英数字と日本語の間、および半角括弧 `()` の外側に半角スペースを入れないこと。inline codeの前後には入れてよい。コードブロックの中は対象外
   - 良い例: MLflowサーバをECS(arm64)で動かす。`mlflow-server` のrepoを使う。
   - 悪い例: MLflow サーバを ECS (arm64) で動かす。
@@ -77,16 +75,11 @@ GitHub操作は必ず `git, gh` CLIで行うこと。
 
 ## ShellScript
 
-- シェルスクリプトのフォーマットには `shfmt` を使用してください。
 - シェルスクリプトのリンターには `shellcheck` を使用してください。
 - `zsh`のリンター時は`shellcheck -s bash`を使用してください。zshには対応していませんが、bashとして解析可能です。
 - シェルスクリプトは関数をあまり使用せず、シンプルで手続き型な構造にしてください。
 - 関数を使用する場合は、3回以上呼び出されるコードに対してのみ使用してください。
 - シェルスクリプト内に他の言語 (Python、JavaScriptなど) のコードをheredocや `-c` でべた書きしないでください。別ファイルのスクリプトにして呼び出してください。
-
-## Lua
-
-- コードのフォーマットには、オプションを付けずに `stylua` を実行すること。設定はリポジトリの `stylua.toml`・`.editorconfig`、無ければ `~/.editorconfig` から読まれる。
 
 ## Skill
 
