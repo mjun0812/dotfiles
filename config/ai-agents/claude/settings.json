@@ -86,7 +86,10 @@
       "Bash(rm -rf $HOME/**)",
       "Bash(curl * | sh *)",
       "Bash(wget * | sh *)",
-      "Read(./secrets/**)"
+      "Read(./secrets/**)",
+      "Edit(//**/*.ipynb)",
+      "Write(//**/*.ipynb)",
+      "mcp__claude_ai_GitHub_mcp"
     ],
     "ask": [],
     "defaultMode": "auto",

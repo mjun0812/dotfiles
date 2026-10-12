@@ -31,7 +31,7 @@
 
 ## SubAgent
 
-- SubAgentの完了を待つときは `wait_agent` をtimeout 10分以上で呼ぶ。`sleep` や `list_agents` の繰り返しでpollingしない。
+- SubAgentの完了は `wait_agent` で待つ。`sleep` や `list_agents` の繰り返しでpollingしない。
 - 実行中のSubAgentへ進捗確認の `send_message` を送らない。結果はSubAgentの最終応答で受け取る。
 - SubAgentとして動くときは、親へ途中経過のmessageを送らず、結果は最終応答だけで返す。
 - SubAgentへ移譲する際は、タスクの性質に応じて呼び出し時にmodelとthinking effortを指定する
@@ -54,7 +54,7 @@
 
 ## Git
 
-GitHub操作は必ず `git, gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+GitHub操作は必ず `git, gh` CLIで行うこと。
 
 - `gh` コマンドでCIやPRの完了などを長時間待機する場合は、Rate Limitの消費を抑えるため、適切な間隔を空けて明示的に状態を再取得すること。
 

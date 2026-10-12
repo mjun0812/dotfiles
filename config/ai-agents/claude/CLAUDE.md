@@ -50,6 +50,6 @@
 
 ## Git
 
-GitHub操作は必ず `git, gh` CLIで行うこと。GitHub connector/pluginやMCPのGitHubツールは使用しない。
+GitHub操作は必ず `git, gh` CLIで行うこと。
 
 - `gh` コマンドでCIやPRの完了などを長時間待機する場合は、Rate Limitの消費を抑えるため、適切な間隔を空けて明示的に状態を再取得すること。
