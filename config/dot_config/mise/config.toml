@@ -69,6 +69,7 @@ ty = "latest"
 # AI coding agents
 opencode = "latest"
 "npm:agent-browser" = { version = "latest", postinstall = "agent-browser install || echo 'agent-browser browser install skipped'" }
+"npm:playwriter" = { version = "latest", postinstall = "playwriter browser install || echo 'playwriter browser install skipped'" }
 "aqua:anthropics/claude-code" = { version = "latest", minimum_release_age = "0s" }
 "aqua:openai/codex" = { version = "latest", minimum_release_age = "0s", postinstall = '''
 set -eu

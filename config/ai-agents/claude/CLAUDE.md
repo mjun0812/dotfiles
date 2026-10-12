@@ -40,6 +40,7 @@
 ## Tool
 
 - 選択肢付きの質問には `AskUserQuestion` を使用すること。
+- ブラウザ操作では、ログイン状態が必要な操作とユーザーのChromeでの操作には `playwriter` skillを、ログインが不要な操作には `agent-browser` skillを使うこと。
 
 ## Glossary and ADR
 

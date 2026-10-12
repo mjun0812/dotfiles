@@ -44,6 +44,7 @@
 - skillや指示に登場する `AskUserQuestion` は `request_user_input` に読み替えること。
 - 選択肢付きの質問には同期の `request_user_input` を使用し、`request_user_input_async` は使用しないこと。
 - 選択肢付きの質問後は、回答を受け取るまで作業を進めないこと。
+- ブラウザ操作では、ログイン状態が必要な操作とユーザーのChromeでの操作には `playwriter` skillを、ログインが不要な操作には `agent-browser` skillを使うこと。
 
 ## Glossary and ADR
 

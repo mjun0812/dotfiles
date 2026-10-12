@@ -58,7 +58,7 @@
 
 ## Install
 
-require git, zsh, curl
+require git, zsh, curl, unzip
 
 ```bash
 git clone https://github.com/mjun0812/dotfiles.git ~/.dotfiles
@@ -73,6 +73,8 @@ gh auth status --hostname github.com
 ./script/setup/install_vscode_extensions.sh
 # First Install Only: For macOS
 ./script/setup/setup_macos_apps.sh
+# First Install Only: For macOS, install the Playwriter extension in Chrome
+# https://chromewebstore.google.com/detail/playwriter/jfeammnjpkecdekppnclgkkffahnhfhe
 ```
 
 GitHub HTTPS authentication uses `gh` as the credential helper. The same login is used by Git, GitHub CLI, and mise. The helper resolves `gh` from `PATH`, so mise upgrades do not require updating an executable path in Git config. `gh auth setup-git` is unnecessary because the helper is already configured in these dotfiles.
@@ -148,6 +150,7 @@ apm update -g
 | nvitop                     | NVIDIA GPU process viewer                             |
 | oxfmt                      | JS/TS/Markdown/JSON/YAML formatter                    |
 | oxlint                     | JS/TS linter                                          |
+| playwriter                 | Browser automation via an extension in your Chrome    |
 | pnpm                       | Node.js package manager                               |
 | powershell                 | PowerShell (macOS)                                    |
 | prek                       | pre-commit runner in Rust                             |
