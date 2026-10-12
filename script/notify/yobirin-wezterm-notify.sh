@@ -7,7 +7,6 @@ PANE_ID="${3:-}"
 SESSION_ID="${4:-}"
 PROFILE="${5:-}"
 
-[[ $PANE_ID =~ ^[0-9]+$ || $SESSION_ID =~ ^[[:alnum:]_-]+$ ]] || exit 0
 [[ $PROFILE =~ ^[a-z0-9]*$ ]] || PROFILE=""
 
 # hook経由はPATHが薄いことがあるため、bundle symlinkとmise shimsへ明示的にfallbackする。
@@ -32,7 +31,7 @@ if [[ -n $PROFILE ]] && command -v jq >/dev/null 2>&1; then
     fi
 fi
 
-GROUP_ID="${SESSION_ID:-pane-${PANE_ID}}"
+GROUP_ID="${SESSION_ID:-${PANE_ID:+pane-${PANE_ID}}}"
 
 # yobirin は --timeout 省略時に無期限待機するため、hook からは必ず明示指定する。
 # $( ) はyobirinの遅延exit (結果出力後約1秒の再起動防御) までwaitpidで待ってしまい、
@@ -46,7 +45,7 @@ read -r RESULT_TYPE < <(
         ${PROFILE:+--profile "$PROFILE"} \
         --title "$TITLE" \
         --message "$MESSAGE" \
-        --group "dotfiles-wezterm-${GROUP_ID}" \
+        ${GROUP_ID:+--group "dotfiles-wezterm-${GROUP_ID}"} \
         --timeout 300 \
         --print result \
         2>/dev/null
