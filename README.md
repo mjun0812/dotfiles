@@ -58,7 +58,7 @@
 
 ## Install
 
-require git, zsh, curl
+require git, zsh, curl, unzip
 
 ```bash
 git clone https://github.com/mjun0812/dotfiles.git ~/.dotfiles
