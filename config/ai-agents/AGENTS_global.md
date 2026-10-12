@@ -50,7 +50,7 @@
 
 - リポジトリに `.mjun/steering/` が存在する場合、配下の `*.md` をすべてプロジェクトメモリとして読み込むこと。
 - steeringの作成・更新は `mjun-steering` skillで行うこと。
-- リポジトリに用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) が存在する場合は読み込み、定義された語彙を使うこと。
+- 用語集 `CONTEXT.md` はセッション開始時にcontextへ注入される。注入された場合は、定義された語彙を使うこと。
 
 ## Git
 
