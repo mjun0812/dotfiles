@@ -1,8 +1,10 @@
 # ~/.config/ruff/ruff.toml: ruff設定 (pyproject.tomlの[tool.ruff]・ruff.toml) を持たないプロジェクトにだけ適用される
 [lint]
 extend-select = ["UP", "ANN", "D"]
-# module・packageのdocstringは求めない
-ignore = ["D100", "D104"]
+# D100, D104: module・packageのdocstringは求めない
+# D107: __init__の引数はclassのdocstringに書く (Google style)
+# D415: 日本語のdocstringは「。」で終わる
+ignore = ["D100", "D104", "D107", "D415"]
 
 [lint.pydocstyle]
 convention = "google"
