@@ -298,6 +298,8 @@ mise bootstrap services status
 mise bootstrap services apply --yes
 ```
 
+On Linux, `playwriter-browser` keeps a Playwriter browser running with the profile `~/.playwriter/browser-profile` (headless when there is no display). To keep user services running without a login session, enable lingering once with `sudo loginctl enable-linger $USER`. To log in to sites on a machine with a display, stop the service, run `playwriter browser start --headed`, log in, close the browser, and start the service again.
+
 ## Neovim
 
 See [doc/nvim.md](doc/nvim.md) for Neovim configuration and keyboard shortcuts.
