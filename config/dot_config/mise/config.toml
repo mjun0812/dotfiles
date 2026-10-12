@@ -32,7 +32,6 @@ gh = { version = "latest", postinstall = "gh extension install github/gh-stack &
 hunk = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup_hunk.sh' }
 
 # Dev tool
-aqua = "latest"
 ast-grep = "latest"
 duckdb = "latest"
 fzf = "latest"

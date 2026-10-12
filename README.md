@@ -114,7 +114,6 @@ apm update -g
 | agent-browser              | Browser automation CLI for AI agents                  |
 | agentsview                 | Session browser and usage analytics for AI agents     |
 | apm                        | Agent package manager                                 |
-| aqua                       | Declarative CLI version manager                       |
 | ast-grep                   | Structural code search and lint                       |
 | aws-cli                    | AWS command-line interface                            |
 | bat                        | Modern `cat` with syntax highlighting                 |
