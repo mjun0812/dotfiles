@@ -4,7 +4,8 @@
 #
 # 編集されたファイルの受け取り方:
 #   Claude Code (Edit|Write): tool_input.file_path
-#   Codex (apply_patch):      tool_input.command のpatch本文にある "*** Update File: <path>" などの行
+#   Codex (apply_patch|Bash): tool_input.command のpatch本文にある "*** Update File: <path>" などの行
+#                             (shellのheredocでapply_patchを実行するとBashとして届き、commandにpatch本文が含まれる)
 #
 # formatterが無い・失敗した場合もagentを止めないよう、常にexit 0で終える。
 

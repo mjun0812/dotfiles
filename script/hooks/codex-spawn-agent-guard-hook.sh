@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # SubAgentのmodelとreasoning effortの指定を強制するCodexのPreToolUse hook (spawn_agent)。
+# hookに届くtool名には名前空間が付く (例: collaborationspawn_agent) ため、matcherは末尾一致にする。
 # modelはLuna・Sol・Astraのいずれか (例: gpt-5.6-sol) に限る。
 # fork (fork_turnsが "none" 以外) は親の状態を引き継ぐため検査しない。
 

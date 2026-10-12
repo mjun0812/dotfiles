@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
-# .ipynb を書き換えるapply_patchを拒否するCodexのPreToolUse hook。
+# .ipynb を書き換えるapply_patchを拒否するCodexのPreToolUse hook (apply_patch|Bash)。
+# shellのheredocでapply_patchを実行した場合はBashとして届くため、commandのpatch本文を同じように検査する。
 # Claude Codeでは settings.json のdeny (Edit(//**/*.ipynb)、NotebookEdit) が同じ制限をかけている。
 
 set -u
