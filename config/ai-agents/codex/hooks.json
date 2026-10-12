@@ -37,7 +37,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/codex-ipynb-guard-hook.sh",
+            "command": "~/.dotfiles/script/hooks/codex-patch-guard-hook.sh",
             "timeout": 10,
             "type": "command"
           }
