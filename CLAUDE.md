@@ -82,7 +82,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
   - `script/hooks/format-hook.sh`: formatterと自動修正だけをかけ、指摘はagentへ返さない。Markdownには `textlint --fix` (`textlintrc.fix.json`: 全角括弧、英数字と日本語の間のスペース) をかけてから `oxfmt` を通す。
   - `script/hooks/textlint-report-hook.sh`: Markdownの今回変わった行 (git追跡中ならHEADとの差分、それ以外は全行) にある自動修正できない指摘 (`textlintrc.report.json`: `preset-ai-words-ja`、`@textlint-ja/preset-ai-writing`) を、exit 2でagentへ返す。
   - textlintのルールと設定は `config/ai-agents/textlint/` にあり、`script/tools/textlint.sh <fix|report>` 経由で実行する。本体とルールは `install.sh` が `bun install` で同ディレクトリの `node_modules` に入れる。`--fix` で直せるルールはfix側、直せないルールはreport側に置く。
-  - 人が手で使う `textlint` も同じ本体とルールを使う。`~/.local/bin/textlint` は `node_modules/.bin/textlint` へのsymlinkで、ルールは本体と同じ `node_modules` から解決される。設定の `~/.textlintrc.js` (`textlintrc.js`) はfix側とreport側のルールをまとめたもので、textlintが設定をカレントディレクトリから親へ探すため、自前の設定を持たないホーム配下のディレクトリでだけ使われる。
+  - 人が手で使う `textlint` も同じ本体とルールを使う。`~/.local/bin/textlint` は `node_modules/.bin/textlint` へのsymlinkで、ルールは本体と同じ `node_modules` から解決される。設定の `~/.textlintrc.js` (`textlintrc.js`) はfix側とreport側のルールをまとめたもので、textlintが設定をカレントディレクトリから親へ探すため、自前の設定を持たないホーム配下のディレクトリから実行したときだけ使われる (対象のファイルはホームの外でもよい)。`--config` には渡せない (rc-config-loaderが拡張子付きのJSをYAMLとして読む)。
 - `templates/` にはMarkdownのPDF出力用CSSと設定、`repo: local` のpre-commit設定テンプレート、agentsviewのリモートホスト定義 (`~/.agentsview/remotes.toml`) のplaceholderがある。PDF用ファイルはVS Code・Cursorの設定と `md-to-pdf` のaliasから参照される。commit・PR・Issue・レビュー用テンプレートは各skillに同梱される。
 
 ## 規約
