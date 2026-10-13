@@ -1,0 +1,10 @@
+{
+  "name": "agent-textlint",
+  "private": true,
+  "dependencies": {
+    "textlint": "^15.8.0",
+    "textlint-rule-ja-space-between-half-and-full-width": "^3.0.3",
+    "textlint-rule-preset-ai-words-ja": "^1.2.1",
+    "textlint-rule-prh": "^6.1.0"
+  }
+}

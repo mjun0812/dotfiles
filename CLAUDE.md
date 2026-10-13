@@ -25,6 +25,9 @@ script/setup/update_completions.sh      # zsh補完の更新
 # フォーマット (pre-commit hookでも実行される)
 prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt + stylua (lua)
 
+# agent用textlintの依存を入れ直す (package.json変更後)
+bun install --frozen-lockfile --cwd config/ai-agents/textlint
+
 # VSCode拡張をextensions.txtと完全同期 (--dry-runで差分確認)
 script/tools/sync_vscode_extensions.sh --dry-run
 ```
@@ -74,6 +77,10 @@ script/tools/sync_vscode_extensions.sh --dry-run
 - skillの一覧と依存関係は `doc/skills.md` (英語) と `doc/skills_ja.md` に記載されている。skillを追加・変更したらここも更新する (`doc-sync` skillがこの同期を担う)。
 - Codexの `~/.codex/config.toml` だけはsymlinkではなく、`script/setup/rewrite_config.py` (tomlkit) がテンプレート (`config/ai-agents/codex/config.toml`) 側のキーだけを既存ファイルへマージする方式。Codexが自動生成する `[projects.*]` や `[hooks.state]` などのローカル状態を温存するため。キーの上書きのみでキーの削除はできない点に注意。
 - Codexのhookは `config/ai-agents/codex/hooks.json` で管理され、`~/.codex/hooks.json` へsymlinkされる。hook定義を変更すると `[hooks.state]` の `trusted_hash` が無効になり、TUIの `/hooks` で再承認が必要になる。そのため通知の条件や文言はhooks.jsonではなくシェルスクリプト側に置く。
+- agentが編集したファイルには、Claude Code・Codex共通のPostToolUse hookが2つかかる (編集されたファイルの取り出しは `script/hooks/edited-files.sh` で共通)。両hookは並列に起動される。
+  - `script/hooks/format-hook.sh`: formatterと自動修正だけをかけ、指摘はagentへ返さない。Markdownには `textlint --fix` (`textlintrc.fix.json`: 全角括弧、英数字と日本語の間のスペース) をかけてから `oxfmt` を通す。
+  - `script/hooks/textlint-report-hook.sh`: Markdownの今回変わった行 (git追跡中ならHEADとの差分、それ以外は全行) にある自動修正できない指摘 (`textlintrc.report.json`: `preset-ai-words-ja`) を、exit 2でagentへ返す。
+  - textlintのルールと設定は `config/ai-agents/textlint/` にあり、`script/tools/textlint.sh <fix|report>` 経由で実行する。本体とルールは `install.sh` が `bun install` で同ディレクトリの `node_modules` に入れる。`--fix` で直せるルールはfix側、直せないルールはreport側に置く。
 - `templates/` にはMarkdownのPDF出力用CSSと設定、`repo: local` のpre-commit設定テンプレート、agentsviewのリモートホスト定義 (`~/.agentsview/remotes.toml`) のplaceholderがある。PDF用ファイルはVS Code・Cursorの設定と `md-to-pdf` のaliasから参照される。commit・PR・Issue・レビュー用テンプレートは各skillに同梱される。
 
 ## 規約

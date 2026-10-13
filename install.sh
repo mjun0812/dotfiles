@@ -80,6 +80,11 @@ if [ "$(uname -s)" = "Darwin" ]; then
 fi
 mise bootstrap services apply --yes
 
+################ [textlint] ################
+# agentが編集したMarkdownへformat-hook.shが自動修正をかけるためのtextlint本体とルール
+log_section "Setting up textlint..."
+bun install --frozen-lockfile --cwd "$DOTPATH/config/ai-agents/textlint"
+
 ################ [bat] ################
 log_section "Setting up bat themes..."
 bat cache --build

@@ -167,6 +167,18 @@ jobs:
           bun --version
           echo "✓ bun is installed"
 
+      - name: Verify textlint
+        run: |
+          echo "=== Checking textlint ==="
+          out=$(printf 'MLflow サーバ（x）\n' | ~/.dotfiles/script/tools/textlint.sh fix --stdin --stdin-filename t.md || true)
+          echo "$out"
+          echo "$out" | grep -q ja-space-between-half-and-full-width
+          echo "$out" | grep -q prh
+          out=$(printf '土台を作る。\n' | ~/.dotfiles/script/tools/textlint.sh report --stdin --stdin-filename t.md || true)
+          echo "$out"
+          echo "$out" | grep -q ai-words-ja/no-ai-words
+          echo "✓ textlint rules are loaded"
+
       - name: Verify Python virtual environment
         run: |
           echo "=== Checking Python venv ==="
