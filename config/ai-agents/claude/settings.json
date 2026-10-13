@@ -250,8 +250,6 @@
   },
   "language": "japanese",
   "feedbackDrafts": "off",
-  "inputNeededNotifEnabled": true,
-  "agentPushNotifEnabled": true,
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
   "modelSettings": {
