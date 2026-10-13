@@ -27,7 +27,6 @@ jobs:
       # python3 は asdf:mise-plugins/mise-gcloud が gcloud CLI の hard requirement として要求する。
       # 22.04 は git-core PPA 用の software-properties-common が、26.04 は他 package の依存が
       # python3 を引き込むが、24.04 はどちらにも該当せず明示しないと入らない。
-      # unzip は playwriter browser install が Chrome for Testing の展開に使う
       - name: Install prerequisites
         run: |
           apt-get update
@@ -38,8 +37,7 @@ jobs:
             sudo \
             ca-certificates \
             build-essential \
-            python3 \
-            unzip
+            python3
 
       # 22.04 標準の git 2.34 は gitconfig の merge.conflictStyle = zdiff3 (git 2.35+) を解釈できず、
       # lazy.nvim の git checkout がすべて失敗するため git-core PPA の git を使う
