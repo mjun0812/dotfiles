@@ -83,6 +83,9 @@ mise bootstrap services apply --yes
 ################ [textlint] ################
 log_section "Setting up textlint..."
 bun install --frozen-lockfile --cwd "$DOTPATH/config/ai-agents/textlint"
+# Expose textlint on PATH via a symlink so rules resolve from the same node_modules as the binary
+ln -snfv "$DOTPATH/config/ai-agents/textlint/node_modules/.bin/textlint" "$HOME/.local/bin/textlint"
+ln -snfv "$DOTPATH/config/ai-agents/textlint/textlintrc.js" "$HOME/.textlintrc.js"
 
 ################ [bat] ################
 log_section "Setting up bat themes..."
