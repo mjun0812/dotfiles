@@ -30,7 +30,7 @@ for file in "${files[@]}"; do
         ruff format --force-exclude --quiet "$file"
         ;;
     *.md)
-        # 全角括弧と、英数字と日本語の間のスペースを直す (ルールは config/ai-agents/textlint)
+        # 全角括弧と、英数字と日本語の間のスペースを直す (ルールは config/textlint)
         "$DOTPATH/script/tools/textlint.sh" fix --fix "$file"
         oxfmt "$file"
         ;;

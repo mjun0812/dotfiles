@@ -1,5 +1,5 @@
 {
-  "name": "agent-textlint",
+  "name": "dotfiles-textlint",
   "private": true,
   "dependencies": {
     "@textlint-ja/textlint-rule-preset-ai-writing": "^1.7.0",

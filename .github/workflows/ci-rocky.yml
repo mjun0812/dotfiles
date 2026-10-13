@@ -196,6 +196,11 @@ jobs:
           echo "$out" | grep -q ai-words-ja/no-ai-words
           echo "$out" | grep -q @textlint-ja/ai-writing/no-ai-hype-expressions
           echo "✓ textlint rules are loaded"
+          out=$(su - testuser -c "source ~/.zshrc && cd ~ && printf 'MLflow サーバ（x）\\n\\n土台を完全に作る。\\n' | textlint --stdin --stdin-filename t.md" || true)
+          echo "$out"
+          echo "$out" | grep -q prh
+          echo "$out" | grep -q ai-words-ja/no-ai-words
+          echo "✓ global textlint loads ~/.textlintrc.js"
 
       - name: Verify Python virtual environment
         run: |
