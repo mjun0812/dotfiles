@@ -60,11 +60,11 @@ CLAUDE_COMMIT_MODEL="sonnet"
 alias claude="claude \
     --mcp-config=${HOME}/.claude/mcp.json \
     --allow-dangerously-skip-permissions"
-alias cc-commit='command \claude \
+alias commit-cc='command \claude \
     --model="${CLAUDE_COMMIT_MODEL}" \
     --dangerously-skip-permissions \
     -p "/git-commit en"'
-alias cc-commit-ja='command \claude \
+alias commit-cc-ja='command \claude \
     --model="${CLAUDE_COMMIT_MODEL}" \
     --dangerously-skip-permissions \
     -p "/git-commit ja"'
@@ -111,13 +111,13 @@ codex-headroom-full() {
     codex-headroom --yolo --dangerously-bypass-hook-trust "$@"
 }
 CODEX_COMMIT_MODEL="gpt-6-luna"
-alias codex-commit='command \codex exec \
+alias commit-codex='command \codex exec \
     --dangerously-bypass-approvals-and-sandbox \
     --dangerously-bypass-hook-trust \
     -m "${CODEX_COMMIT_MODEL}" \
     -c model_reasoning_effort=low \
     "git-commit skillを使って英語でコミットしてください。" 2>/dev/null'
-alias codex-commit-ja='command \codex exec \
+alias commit-codex-ja='command \codex exec \
     --dangerously-bypass-approvals-and-sandbox \
     --dangerously-bypass-hook-trust \
     -m "${CODEX_COMMIT_MODEL}" \
@@ -126,13 +126,13 @@ alias codex-commit-ja='command \codex exec \
 
 # Antigravity-cli (agy)
 AGY_COMMMIT_MODEL="gemini-3.8-flash-medium"
-alias agy-commit='command \agy \
+alias commit-agy='command \agy \
     --dangerously-skip-permissions \
     --model="${AGY_COMMMIT_MODEL}" \
     -p "cd $(pwd) && git-commit skillを使って英語でコミットしてください。"'
-alias agy-commit-ja='command \agy \
+alias commit-agy-ja='command \agy \
     --dangerously-skip-permissions \
     --model="${AGY_COMMMIT_MODEL}" \
     -p "cd $(pwd) && git-commit skillを使って日本語でコミットしてください。"'
-alias gemini-commit='agy-commit'
-alias gemini-commit-ja='agy-commit-ja'
+alias commit-gemini='commit-agy'
+alias commit-gemini-ja='commit-agy-ja'
