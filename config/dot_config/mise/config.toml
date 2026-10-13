@@ -71,7 +71,10 @@ ty = "latest"
 opencode = "latest"
 "npm:agent-browser" = { version = "latest", postinstall = "agent-browser install || echo 'agent-browser browser install skipped'" }
 "npm:playwriter" = { version = "latest", postinstall = '''
-playwriter browser install || echo 'playwriter browser install skipped'
+# agent-browser install が入れた Chrome for Testing を共有する
+mkdir -p ~/.playwriter
+rm -rf ~/.playwriter/browsers
+ln -s ~/.agent-browser/browsers ~/.playwriter/browsers
 # Linux の常駐ブラウザが旧バージョンの拡張機能を読み込んだままにならないよう再起動する
 systemctl --user try-restart dev.mise.playwriter-browser.service 2>/dev/null || true
 ''' }
