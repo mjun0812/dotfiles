@@ -64,7 +64,7 @@ done
 log_section "Setting up mise..."
 $DOTPATH/script/setup/install_mise.sh
 source "$HOME/.zprofile"
-mise install
+MISE_USE_VERSIONS_HOST=1 mise install
 mise reshim
 
 log_section "Applying mise bootstrap..."
