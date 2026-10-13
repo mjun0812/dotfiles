@@ -159,6 +159,14 @@ navigate_pane_up = "up"
 # width = "80%"
 # height = "80%"
 
+# フォーカス中のpane IDをコピーする (AIにpaneを指定するため)。
+# custom commandはpaneのあるserverで動くため、SSH先のpaneでは手元のclipboardに届かない。
+[[keys.command]]
+key = "prefix+y"
+type = "shell"
+command = "printf %s \"$HERDR_ACTIVE_PANE_ID\" | pbcopy"
+description = "copy focused pane id"
+
 # Legacy indexed shortcut config is still parsed for compatibility.
 # Prefer switch_tab, switch_workspace, and focus_agent for new configs.
 # [keys.indexed]
