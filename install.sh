@@ -81,7 +81,6 @@ fi
 mise bootstrap services apply --yes
 
 ################ [textlint] ################
-# agentが編集したMarkdownへformat-hook.shが自動修正をかけるためのtextlint本体とルール
 log_section "Setting up textlint..."
 bun install --frozen-lockfile --cwd "$DOTPATH/config/ai-agents/textlint"
 
