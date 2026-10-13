@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "Interrupt": [
+      {
+        "hooks": [
+          {
+            "command": "bash '/Users/mjun/.codex/herdr-agent-state.sh' idle",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
     "PermissionRequest": [
       {
         "hooks": [
@@ -12,19 +23,19 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "^(apply_patch|Bash)$",
         "hooks": [
           {
-            "type": "command",
             "command": "~/.dotfiles/script/hooks/format-hook.sh",
-            "timeout": 30
+            "timeout": 30,
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "~/.dotfiles/script/hooks/textlint-report-hook.sh",
-            "timeout": 30
+            "timeout": 30,
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "^(apply_patch|Bash)$"
       }
     ],
     "PreToolUse": [
@@ -96,6 +107,15 @@
             "type": "command"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash '/Users/mjun/.codex/herdr-agent-state.sh' idle",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
@@ -103,6 +123,15 @@
         "hooks": [
           {
             "command": "~/.dotfiles/script/hooks/notify-codex-hook.sh turn_start",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash '/Users/mjun/.codex/herdr-agent-state.sh' working",
+            "timeout": 10,
             "type": "command"
           }
         ]
