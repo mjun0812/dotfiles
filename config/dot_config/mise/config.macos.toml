@@ -2,7 +2,7 @@
 
 [tools]
 apm = "latest"
-"cargo:eza" = "latest"
+"conda:eza" = "latest"
 "github:metaspartan/mactop" = "latest"
 imagemagick = "latest"
 powershell = "latest"

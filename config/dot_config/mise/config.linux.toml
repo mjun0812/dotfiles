@@ -2,8 +2,7 @@
 
 [tools]
 "github:eza-community/eza" = "latest"
-# tree-sitter の prebuilt binary は glibc 2.39 を要求し musl build も無いため、Linux ではソースからビルドする
-"cargo:tree-sitter-cli" = "latest"
+"conda:tree-sitter-cli" = "latest"
 "pypi:apm-cli" = { version = "latest" }
 # headroom-ai は Python >= 3.10 を要求するが、uv は system の python3 (Rocky 9 では 3.9) を優先するため Python 要件を明示する
 "pypi:headroom-ai" = { version = "latest", extras = "proxy,code", postinstall = '''
