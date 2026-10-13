@@ -1,5 +1,13 @@
 {
   "rules": {
-    "preset-ai-words-ja": true
+    "preset-ai-words-ja": true,
+    "@textlint-ja/preset-ai-writing": {
+      "ai-tech-writing-guideline": {
+        "enableDocumentAnalysis": false
+      },
+      "no-ai-list-formatting": {
+        "allows": ["/^\\s*(?:[-*+]|\\d+[.)])\\s+\\*\\*[^*]+\\*\\*\\s*[:：]/"]
+      }
+    }
   }
 }
