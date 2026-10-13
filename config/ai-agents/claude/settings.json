@@ -134,6 +134,11 @@
             "type": "command",
             "command": "~/.dotfiles/script/hooks/format-hook.sh",
             "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "~/.dotfiles/script/hooks/textlint-report-hook.sh",
+            "timeout": 30
           }
         ]
       }
