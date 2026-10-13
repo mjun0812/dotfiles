@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # agentが編集したMarkdownのうち、今回変わった行にある自動修正できない指摘 (AIっぽい語など) をagentへ返すPostToolUse hook。
-# 自動修正できるルールは format-hook.sh が直す。ルールは config/ai-agents/textlint/textlintrc.report.json。
+# 自動修正できるルールは format-hook.sh が直す。ルールは config/textlint/textlintrc.report.json。
 #
 # 変わった行: gitで追跡中のファイルはHEADとの差分で追加・変更された行。追跡外・git管理外のファイルは全行。
 # 既存の文書にある古い表現まで返すと、頼んでいない書き換えや直し続けるループが起きるため、変わった行に絞る。
