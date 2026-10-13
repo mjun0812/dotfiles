@@ -65,25 +65,13 @@ git clone https://github.com/mjun0812/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
 
-# Authenticate on each machine, including remote Herdr hosts
-gh auth login --hostname github.com --git-protocol https --web
-gh auth status --hostname github.com
+gh auth login
 
 # First Install Only: Install VS Code extensions
 ./script/setup/install_vscode_extensions.sh
 # First Install Only: For macOS
 ./script/setup/setup_macos_apps.sh
-# First Install Only: For macOS, install the Playwriter extension in Chrome
-# https://chromewebstore.google.com/detail/playwriter/jfeammnjpkecdekppnclgkkffahnhfhe
 ```
-
-GitHub HTTPS authentication uses `gh` as the credential helper. The same login is used by Git, GitHub CLI, and mise. The helper resolves `gh` from `PATH`, so mise upgrades do not require updating an executable path in Git config. `gh auth setup-git` is unnecessary because the helper is already configured in these dotfiles.
-
-On a remote Herdr host, run the login command there and enter its device code in your local browser. GitHub authentication then works independently of the forwarded SSH agent, including after disconnecting from Herdr. No `ForwardAgent` setting is required for GitHub access.
-
-Credentials remain outside this repository, in the system credential store or `~/.config/gh/`. On headless Linux, `gh` may fall back to plaintext storage when no credential store is available; check the storage location with `gh auth status`.
-
-Git rewrites standard GitHub SSH URLs (`git@github.com:OWNER/REPO.git` and `ssh://git@github.com/OWNER/REPO.git`) to HTTPS for fetch and push, so existing remote URLs do not need to be changed. Account-specific SSH aliases such as `github_spic` keep using SSH.
 
 ## Update
 
@@ -297,8 +285,6 @@ This dotfiles uses [mise](https://github.com/jdx/mise) as a package manager for 
 mise bootstrap services status
 mise bootstrap services apply --yes
 ```
-
-On Linux, `playwriter-browser` keeps a Playwriter browser running with the profile `~/.playwriter/browser-profile` (headless when there is no display). To keep user services running without a login session, enable lingering once with `sudo loginctl enable-linger $USER`. To log in to sites on a machine with a display, stop the service, run `playwriter browser start --headed`, log in, close the browser, and start the service again.
 
 ## Neovim
 
