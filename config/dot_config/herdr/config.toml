@@ -319,6 +319,7 @@ rows = [
   [
     "branch",
     "git_status",
+    { token = "state_text", dim = true },
   ],
 ]
 
