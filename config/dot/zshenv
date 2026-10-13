@@ -26,6 +26,9 @@ export CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1
 # agentsview のテレメトリを無効化する
 export AGENTSVIEW_TELEMETRY_ENABLED=0
 
+# Playwriter のテレメトリを無効化する (relay daemon が起動時に読むため、変更後は `playwriter serve restart`)
+export PLAYWRITER_TELEMETRY=0
+
 # uv/cargo-dist 系インストーラに rc ファイルを書き換えさせない
 export INSTALLER_NO_MODIFY_PATH=1
 
