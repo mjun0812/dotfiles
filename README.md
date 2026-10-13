@@ -268,20 +268,20 @@ I prefer [Tokyo Night](https://github.com/tokyo-night) color scheme.
 nvs
 
 # Claude Code
-cc-commit # AIが生成したコミットメッセージでコミットする
-cc-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
+commit-cc # AIが生成したコミットメッセージでコミットする
+commit-cc-ja # AIが生成した日本語のコミットメッセージでコミットする
 
-# Gemini-cli (agy-commit / agy-commit-ja の別名)
-gemini-commit # AIが生成したコミットメッセージでコミットする
-gemini-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
+# Gemini-cli (commit-agy / commit-agy-ja の別名)
+commit-gemini # AIが生成したコミットメッセージでコミットする
+commit-gemini-ja # AIが生成した日本語のコミットメッセージでコミットする
 
 # Codex
-codex-commit # AIが生成したコミットメッセージでコミットする
-codex-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
+commit-codex # AIが生成したコミットメッセージでコミットする
+commit-codex-ja # AIが生成した日本語のコミットメッセージでコミットする
 
 # Antigravity-cli
-agy-commit # AIが生成したコミットメッセージでコミットする
-agy-commit-ja # AIが生成した日本語のコミットメッセージでコミットする
+commit-agy # AIが生成したコミットメッセージでコミットする
+commit-agy-ja # AIが生成した日本語のコミットメッセージでコミットする
 
 # Delete local branches that are deleted and merged
 git prune-branch
