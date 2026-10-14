@@ -12,7 +12,7 @@ taskをblockedへ移すときの隔離と、差し戻しが収束しないとき
 
 ## Phase 3.1': 原因調査 (収束しないとき)
 
-BLOCKED、または差し戻し2周後のREJECTEDで起動する。debuggerはfresh contextで動かし、失敗した試行の経緯は渡さない。
+BLOCKED、差し戻し2周後のREJECTED、同じ指摘や同じ失敗出力の繰り返し、reviewerの指摘が検査やspecの誤りを示すとき ([group-loop.md](group-loop.md) のPhase 3.1)、またはadvisorの `ESCALATE` で起動する。debuggerはfresh contextで動かし、失敗した試行の経緯は渡さない。
 
 1. **debuggerの起動**: テンプレートに、失敗の内容 (`BLOCKER` または最後のreviewerの `FINDINGS` / `REMEDIATION`)、失敗したコマンドの生の出力、現在の `git diff`、`TASK_BRIEF`、採用済みの `CHECK_COMMANDS` と `PROTECTED_CHECK_FILES`、contractの該当箇所、Implementation Notesを合成して起動する
 2. **NEXT_ACTIONの処理**: `## Debug Report` の `- NEXT_ACTION:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
@@ -21,5 +21,5 @@ BLOCKED、または差し戻し2周後のREJECTEDで起動する。debuggerはfr
    - `RETURN_TO_TASKS` → `TASKS_CHANGE` の中身を確かめる。contractの意味を変えず、taskの分割・統合・順序・依存変更、またはcontract/designですでに要求されている前提taskの追加だけで解決できる場合は、現在groupの変更をtask隔離の規則で戻してから、「自律継続とtaskの隔離」の規則で `TASKS_CHANGE` をtaskへ反映し (spec modeでは `mjun-to-tasks` に `TASKS_CHANGE` と `ROOT_CAUSE` を渡す)、Phase 1の手順4でキューとgroupを組み直してPhase 3.0から続ける。既存ACの追加・削除・再解釈、BoundaryやOut of Scopeの変更、外部から観察できる振る舞いの変更が必要なら `RETURN_TO_SPEC` として中止する
    - `RETURN_TO_SPEC` → 中止し、contractと現実の矛盾箇所を報告して、specの磨き直しが必要であることを案内する (specは変更しない)
    - `STOP_FOR_HUMAN` → 中止し、`ROOT_CAUSE` と `HUMAN_QUESTION` (1問、選択肢付き) を報告する
-3. debuggerは同一groupで**最大2回**まで起動する。2回目の後も解決しなければgroupをblockedへ移し (`ROOT_CAUSE` が特定のtaskに閉じている場合はそのtaskと依存taskだけをblockedにしてgroupを続行する)、キューを再評価して独立taskを続ける。blockedへ移した後にユーザーが続行を指示した場合は、そのgroupの差し戻しとdebuggerの回数を0に戻し、Phase 3.0から通常の手順で再開する
+3. advisorとdebuggerの起動は、同一groupで**合計3回**までとする。debuggerの2回目は、1回目の `## Debug Report` を渡し、1回目の後に新しい証拠 (新しい失敗出力や別の指摘) がある場合だけ起動する。上限に達した、または新しい証拠が無いまま解決しなければgroupをblockedへ移し (`ROOT_CAUSE` が特定のtaskに閉じている場合はそのtaskと依存taskだけをblockedにしてgroupを続行する)、キューを再評価して独立taskを続ける。blockedへ移した後にユーザーが続行を指示した場合は、そのgroupの差し戻しとadvisor・debuggerの回数を0に戻し、Phase 3.0から通常の手順で再開する
 4. `CATEGORY` と `NEXT_ACTION` をRun Logに、次のgroupにも効く知見をImplementation Notesに記録する

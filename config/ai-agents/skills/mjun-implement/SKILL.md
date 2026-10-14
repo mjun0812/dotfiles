@@ -103,17 +103,18 @@ verifier、reviewer、debugger、refactorerは毎回新規に起動する (fresh
 - **reviewer** ([templates/reviewer-prompt.md](templates/reviewer-prompt.md)): 全Acceptance Criterionを実装と検査に照合し、検査の実行結果、保護された検査ファイルの不変、実在性、Boundaryを敵対的に検証して `## Review Verdict` を返す
 - **verifier** ([templates/verifier-prompt.md](templates/verifier-prompt.md)): 検査を先に独立して設計する必要があるtaskだけを担当する。ユーザー・specが独立した事前検査を指定しているか、期待値や検証手段を実装から独立に確定する必要について親が具体的な理由を示せる場合に使う。バグ修正や複雑なロジックという分類だけでは起動しない。対象taskの未充足の振る舞いはRED、回帰検査はGREENで採用し、種別・根拠・実行結果を記録する。検査ファイルをformatterとlintに通してから、Task Briefと一緒に `## Check Report` を返す
 - **debugger** ([templates/debugger-prompt.md](templates/debugger-prompt.md)): 差し戻しが収束しない、またはBLOCKEDのときに、fresh contextでroot causeを分類し `## Debug Report` を返す
+- **advisor** ([templates/advisor-prompt.md](templates/advisor-prompt.md)): implementerが `NEEDS_ADVICE` を返したときだけ起動し、同じcontractと検査のままどう実装するかを上位modelで助言して `## Advice` を返す。検査・task分解・spec・環境の見直しが要る場合は `ESCALATE` でdebuggerへ回す。advisorとdebuggerの起動は1 groupあたり合計3回まで
 - **refactorer** ([templates/refactorer-prompt.md](templates/refactorer-prompt.md)): 全task完了後、reviewerのNOTESとtask間の重複を全検査greenのまま整理し、`## Refactor Report` を返す
 
 `design.md` は、groupに関係する部分だけをSubAgentへ渡す (全文を毎回渡すと、後半のgroupでSubAgentのcontextを圧迫する)。groupのtaskのBoundaryに対応するModules、Seamに対応するInterfaces & Seams、それらを通るData Flow、Test Strategy、Change Outlineの全体を含め、対応を判断できないセクションは全文を渡す。以下ではこれを「`design.md` の該当部分」と呼ぶ。
 
-SubAgentのmodel選択は、環境のグローバル指示 (CLAUDE.md, AGENTS.md等) のモデル指針を最優先する。指針が無ければメイン会話と同等のモデルをデフォルトとし、定型的で機械的な作業に限りimplementerに軽量モデルを指定してよい。verifierとreviewerにはimplementerと同等以上のモデルを使う (出力が親の状態遷移に直接使われるため)。モデル指針が作業の性質でmodelを選ぶ形の場合は、role名ではなくgroupの作業の性質に当てはめ、すべてのroleを最上位のモデルに寄せない。
+SubAgentを起動するたびに、roleに応じたmodelとeffortを [references/subagent.md](references/subagent.md) に従って指定する。この指定は環境のグローバル指示のモデル指針より優先する。
 
 実装を始める前に、リポジトリから正規の検証コマンドを洗い出し、`TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` / `SMOKE_COMMANDS` として保持する。探索順は `.mjun/steering/` の記述 → manifest類 → タスクランナー → CI設定 → README。リポジトリの自動化が既に使っているコマンドを優先する。`SMOKE_COMMANDS` (起動して最初の利用可能な状態に達することを確かめるコマンド) は宣言されているものだけを使い、無ければ空のままにしてPhase 3.2で各taskの検査から代用する。
 
 Phase 3の間の制約:
 
-- verifier、implementer、reviewer、debugger、refactorerはleaf roleとし、SubAgentを起動せず、担当作業を別Agentへ再移譲しない。自分で完了できない場合はrole固有の構造化結果で親へ返し、追加の委譲は親だけが判断する
+- verifier、implementer、reviewer、advisor、debugger、refactorerはleaf roleとし、SubAgentを起動せず、担当作業を別Agentへ再移譲しない。自分で完了できない場合はrole固有の構造化結果で親へ返し、追加の委譲は親だけが判断する
 - ループ内で `git reset --hard` 等の破壊的リセットを行わない (例外はPhase 3.3で整理の変更だけを戻す場合のみ)
 - pushとPR作成はPhase 4まで行わない。commitはgroup承認ごとにメイン会話が行う (Phase 3.1)。SubAgentにはcommitさせない
 - SubAgentの完了主張を検証の代わりにしない。判定は構造化フィールドと、検査・reviewer・最終検証の実行結果だけで行う
@@ -128,6 +129,7 @@ Phase 3の間の制約:
 
 Phase 3以降の手順は、必要になった時点で次のファイルを読む。読んでいない手順を記憶で補わない。
 
+- [references/subagent.md](references/subagent.md): roleごとのSubAgentのmodelとeffort、implementerの昇格条件。最初のSubAgentを起動する前に読む
 - [references/group-loop.md](references/group-loop.md): Phase 3.0 (実装準備と必要な事前検査) とPhase 3.1 (実装とレビュー)、Run Logの形式。最初のgroupを始める前に読む
 - [references/recovery.md](references/recovery.md): taskの隔離とblocked、Phase 3.1' (debuggerによる原因調査)。implementerが `BLOCKED` を返した、差し戻しが2周に達した、taskをblockedへ移す、task計画を直す、のいずれかのときに読む
 - [references/validation-and-delivery.md](references/validation-and-delivery.md): Phase 3.2 (feature単位の検証)、Phase 3.3 (整理)、Phase 4 (commitと配送)、Phase 5 (結果の表示)、Phase 6 (worktreeクリーンアップ)。実行可能なtaskが尽きたときに読む
