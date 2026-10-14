@@ -16,6 +16,7 @@ dependencies:
       skills:
         - claude
         - codex
+        - cognitive-rhythm-writing
         - deep-research
         - doc-sync
         - exhtml
@@ -34,6 +35,7 @@ dependencies:
         - japanese-tech-writing
         - chat-note
         - resume-other-agent
+        - rule-lint
         - self-review
         - skill-review
         - stop-ai-slop-jp
