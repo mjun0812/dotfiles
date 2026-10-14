@@ -59,6 +59,7 @@ contractを作成・更新する前に `spec.md` のfrontmatterを `approval: pe
 - 対象以外のactiveなspecとの境界の重なりと依存を、source-resolution.mdの「spec間の依存と境界」に従って扱う
 - 現在のspecを [references/spec-template.md](references/spec-template.md) のcontract構成と比べ、欠落セクション、曖昧な記述、実装者が追加調査を要する箇所 (gap) を列挙する。取り込んだIssueコメントの合意事項も反映対象とする
 - スコープ外の問題は本文に混ぜず、Out of Scopeへの記載と別spec化の提案に回す
+- specの大きさを見積もる。Requirementsが10件を超える、または `design.md` のModulesが4つ以上に及ぶ見込みなら、独立に配送できる単位へのspecの分割をHuman-owned decisionとして提案する (1本のspecが大きいと、taskの切り方によらず実装が長時間になる)。分割したspecどうしは、Dependenciesの `spec: <slug>` で依存を結ぶ
 - 依頼の解釈が複数成立し、どれを取るかで論点の大半が変わる場合 (例: 既存の仕組みへ載せるのか、別の単純な処理を足すのか) は、その方向だけを先にHuman-owned decisionとして解決する
 - gapから論点を洗い出し、[references/decision-authority.md](references/decision-authority.md) に従ってAgent-owned / Human-owned / Evidence-blockedへ分類する。前提が解決済みの論点 (frontier) だけを扱い、依存する論点は前提の解決後に分類し直す
 

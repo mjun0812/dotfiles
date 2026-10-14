@@ -62,11 +62,11 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
    5. **spec間依存** (spec modeのみ): BoundariesのDependenciesに `spec: <slug>` の行があれば `.mjun/specs/<slug>/spec.md` を読み、`status: done` を確認する。specが存在しない、またはdoneでない場合は中止し、先に該当specの配送が必要であることを案内する
 4. **taskキューを構築する**:
    - spec modeでは `tasks.md` をキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)。`Status: blocked` のtaskは `Resume when` が現在満たされたと確認できた場合だけ `ready` へ戻し、それ以外はblocked一覧へ残す
-   - 採用したtaskのうちAcceptance Criteriaが4件以上のものは、`mjun-to-tasks` の粒度の基準 (AC ≤ 3) を外れている。Phase 3.0を待たず、該当taskのIDを文脈として `mjun-to-tasks` を連結して `tasks.md` を再分解させ、再分解後の `tasks.md` をキューとして読み直す。粒度の基準の免除をユーザーに求めて、そのまま進めない
+   - 採用したtaskのうちAcceptance Criteriaが8件を超えるものは、`mjun-to-tasks` の粒度の基準を外れている。Phase 3.0を待たず、該当taskのIDを文脈として `mjun-to-tasks` を連結して `tasks.md` を再分解させ、再分解後の `tasks.md` をキューとして読み直す。粒度の基準の免除をユーザーに求めて、そのまま進めない
    - 全taskが `done` の場合も終了せず、記録済みbranchからresumeしてPhase 3.2の最終検証とPhase 4の配送を再実行する
    - doc modeでは [mjun-to-tasks の分解規則](../mjun-to-tasks/SKILL.md#分解規則) とTask形式に従って会話内のキューを作り、Local specの `tasks.md` は作らない
    - 各taskの受け入れ基準、Boundary (specにBoundariesがある場合)、Done when、Seamを確認し、依存順 (Blocked by) に並べる。`Blocked by` の全taskが `done` のtaskだけを実行可能とし、blocked taskに依存するtaskは実行せず依存待ち一覧へ残す
-   - **task groupへ区切る**: groupがPhase 3.0〜3.1の単位 (implementer、reviewer、commit。必要なtaskだけverifierを先に使う) になる。依存順に並べたキューを先頭から走査し、現在のgroupのいずれかのtaskとspecのOwnsの同じ責務 (Boundary) に属するtaskは現在のgroupへ加え、属さなければ新しいgroupを始める (Boundariesが無い場合はSeamが同じ公開interfaceかで判定する)。1 groupはtask 5件・Acceptance Criteria合計12件を上限の目安とし、超える場合は依存順で区切る (implementerが1つのfresh contextで扱える大きさ)。groupは依存順に直列で処理するため、先行groupのtaskは処理時点でdoneになっている。単一taskのgroupも同じ手順で扱う
+   - **task groupへ区切る**: groupがPhase 3.0〜3.1の単位 (implementer、reviewer、commit。必要なtaskだけverifierを先に使う) になる。依存順に並べたキューを先頭から走査し、現在のgroupのいずれかのtaskと、specのOwnsの同じ責務 (Boundary) または `design.md` の同じModuleに属するtaskは現在のgroupへ加え、どちらにも属さなければ新しいgroupを始める (Boundariesが無い場合はSeamが同じ公開interfaceかで判定する)。groupごとにverifier・implementer・reviewer・検証・commitの固定コストがかかるため、groupは大きく取る。1 groupはtask 8件・Acceptance Criteria合計24件を上限の目安とし、超える場合は依存順で区切る (implementerが1つのfresh contextで扱える大きさ)。groupは依存順に直列で処理するため、先行groupのtaskは処理時点でdoneになっている。単一taskのgroupも同じ手順で扱う
 5. `--pr` / `--no-pr` / `--merge` が未指定なら、ここでAskUserQuestionにより配送方法を確認する (使えない環境では選択肢をテキストで提示する)。手順1の `gh repo view` が失敗した (GitHub remoteが無い) 場合はPRを作れないため、`--no-pr` と `--merge` の2択で確認する
 6. 実装方針とtask一覧 (group区切り付き) を**簡潔に**提示し、確認を取らずPhase 2へ進む
 

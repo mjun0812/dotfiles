@@ -58,7 +58,7 @@
 
 groupの各taskについて判定する。次のいずれかに当たるtaskは検査を書かず `TOO_LARGE` とし、分割案を返す。groupの他のtaskの検査は通常どおり書く。
 
-- Acceptance Criteriaが4つ以上ある
+- Acceptance Criteriaが8つを超える
 - 1つのcriterionが2つ以上のSeamにまたがる
 - 検査がBoundaryの2つ以上の責務に触れる (Boundaryに `(integration)` と明示された統合taskを除く)
 
