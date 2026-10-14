@@ -30,7 +30,7 @@ sourceの形からmodeを決める。
 2. Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経て **spec mode**
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
-spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tasks.md` (いずれも必須) をReadする。specの判断は `design.md` の `## Decisions` にある。ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) があれば [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って有効なものを読む。`## Decisions` に `ADR: 要作成 (ADR-NNNN を覆す)` の判断があれば、覆されるADRは有効なADRとして扱わない (supersededの追記は配送時に行う)。taskに関係する判断の内容をSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
+spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tasks.md` (いずれも必須) をReadする。specの判断は `design.md` の `## Decisions` にある。ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) があれば [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って有効なものを読む。`## Decisions` に `ADR: 要作成 (ADR-NNNN を覆す)` の判断があれば、覆されるADRは有効なADRとして扱わない (supersededの追記は最終検証の前に行う)。taskに関係する判断の内容をSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
 
 doc modeでもADRがあれば有効なものを読み、関係する内容をSubAgentへ渡す。
 

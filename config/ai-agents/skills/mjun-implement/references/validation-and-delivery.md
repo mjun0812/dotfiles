@@ -4,12 +4,13 @@
 
 ## Phase 3.2: feature単位の検証
 
-キュー再評価の結果、全taskがdoneの場合だけ行う。実行可能taskが尽きた時点でdoneでないtaskが残る場合は、Phase 3.2、3.3、4をスキップし、specをactiveのまま `PARTIAL` としてPhase 5へ進む。検証コマンドの実行 (手順1) は親が自分で行い、SubAgentの報告で代えない。判断を要する手順2〜4はSubAgentに依頼してよいが、判定は親が結果に基づいて行う。
+キュー再評価の結果、全taskがdoneの場合だけ行う。実行可能taskが尽きた時点でdoneでないtaskが残る場合は、Phase 3.2、3.3、4をスキップし、specをactiveのまま `PARTIAL` としてPhase 5へ進む。検証コマンドの実行 (手順2) は親が自分で行い、SubAgentの報告で代えない。判断を要する手順3〜5はSubAgentに依頼してよいが、判定は親が結果に基づいて行う。
 
-1. **検証コマンドの実行**: TEST / LINT / BUILD全体と `SMOKE_COMMANDS`。SMOKEが宣言されていない場合は、各taskの `CHECK_COMMANDS` のうちend-to-endに最も近いものを代用する。どちらも無ければ「実行時検証: 未実施」として扱う。`design.md` のTest Strategyに実機の操作シナリオがある場合は、親が実行できる手段でシナリオを実行して結果を記録し、実行できなかったシナリオはPhase 5で手動確認の手順として提示する
-2. **Acceptance Criteriaの照合**: specのAcceptance Criteria 1件ごとに、それを証明する検査 (`CHECK_COMMANDS`) と実装を対応づける。証明する検査が無いcriterionは、実装と検証結果から充足を判定し、判定できなければ未充足とする。specにAcceptance Criteriaが無いdoc modeでも、taskキューのAcceptance Criteriaは照合する
-3. **task間の整合**: task同士が共有するinterface、データ形、エラー形式、設定が一致しているかをコードから確認する
-4. **contract境界の照合**: branch全体の変更 (`git diff <base>..HEAD`) がspecのBoundaries (Owns / Does Not Own) とOut of Scopeに収まっているかを照合する。spec modeでは `git diff --name-only <base>..HEAD` の全パスが `design.md` のChange Outlineのdirectory配下にあるかも確かめる (`CHECK_FILES` は除く)。specにBoundariesもOut of Scopeも無い場合はスキップする
+1. **ADRを書く**: 検証の前に、spec modeでは `design.md` の `## Decisions` のうち `ADR: 要作成` の判断を、どのmodeでも実装中に生じた [ADRにする基準](../../mjun-steering/references/glossary_and_adr.md#adrにする基準) の3条件を満たす判断を、ADR (Git管理へ移行済みなら作業中のworktreeの `docs/adr/`、未移行ならメインrepositoryの `.mjun/steering/adr/`) として書く。既存ADRを覆す判断なら旧ADRに `Status: superseded by ADR-NNNN` を足す。spec modeでは、書いたADRの番号で `design.md` (メインrepositoryの絶対パス) の `ADR:` 行を置き換える。contractを変える判断は先にspecへ戻して再承認する。 ADRの存在や内容を観察するAcceptance Criteriaも、この後のACの確認で確かめる。差し戻しやPhase 3.3で新たに3条件を満たす判断が生じた場合も、検証をやり直す前に同じ手順で書く
+2. **検証コマンドの実行**: TEST / LINT / BUILD全体と `SMOKE_COMMANDS`。SMOKEが宣言されていない場合は、各taskの `CHECK_COMMANDS` のうちend-to-endに最も近いものを代用する。どちらも無ければ「実行時検証: 未実施」として扱う。`design.md` のTest Strategyに実機の操作シナリオがある場合は、親が実行できる手段でシナリオを実行して結果を記録し、実行できなかったシナリオはPhase 5で手動確認の手順として提示する
+3. **Acceptance Criteriaの照合**: specのAcceptance Criteria 1件ごとに、それを証明する検査 (`CHECK_COMMANDS`) と実装を対応づける。証明する検査が無いcriterionは、実装と検証結果から充足を判定し、判定できなければ未充足とする。specにAcceptance Criteriaが無いdoc modeでも、taskキューのAcceptance Criteriaは照合する
+4. **task間の整合**: task同士が共有するinterface、データ形、エラー形式、設定が一致しているかをコードから確認する
+5. **contract境界の照合**: branch全体の変更 (`git diff <base>..HEAD`) がspecのBoundaries (Owns / Does Not Own) とOut of Scopeに収まっているかを照合する。spec modeでは `git diff --name-only <base>..HEAD` の全パスが `design.md` のChange Outlineのdirectory配下にあるかも確かめる (`CHECK_FILES` は除く)。specにBoundariesもOut of Scopeも無い場合はスキップする
 
 判定:
 
@@ -32,18 +33,17 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 
 メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。commit messageやPR本文などの外部向け出力には、`.mjun/` 配下のパス、内部spec文書、spec内部の識別子を含めない (外部へ見せるspecの参照はGitHub Issue番号だけを使う)。
 
-1. **ADRを書く**: spec modeでは `design.md` の `## Decisions` のうち `ADR: 要作成` の判断を、どのmodeでも実装中に生じた [ADRにする基準](../../mjun-steering/references/glossary_and_adr.md#adrにする基準) の3条件を満たす判断を、ADR (Git管理へ移行済みなら作業中のworktreeの `docs/adr/`、未移行ならメインrepositoryの `.mjun/steering/adr/`) として書く。既存ADRを覆す判断なら旧ADRに `Status: superseded by ADR-NNNN` を足す。spec modeでは、書いたADRの番号で `design.md` (メインrepositoryの絶対パス) の `ADR:` 行を置き換える。contractを変える判断は先にspecへ戻して再承認する。
-2. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正、Git管理側のADRの追記など)。残変更が無ければスキップする。commitしたらID検査を `log HEAD~1..HEAD` で実行し、検出されたら `git commit --amend` でmessageを書き直す
-3. **baseへの再同期**: `git fetch` で `<base-branch>` を最新化し、作業branchをその上へ `git rebase` する (worktree作成後に並行する他のspecの成果がmergeされている場合に備える。`--no-pr` と `--merge` でも行う。remoteが無いrepositoryではfetchを省き、localの `<base-branch>` を使う。remoteに同名branchが既にある場合はrebaseではなく `git merge` で取り込む)。conflictが出たら自動解決せず中止し、worktreeとbranchを残して衝突ファイルを報告する。再同期後に全taskの `CHECK_COMMANDS` とTEST / LINT / BUILD / SMOKE (宣言済みのもの) を再実行し、失敗があればPhase 3.2の差し戻しと同じ手順 (implementer → reviewer、合わせて最大2周) で修正して `git-commit` skillでcommitする。収束しなければ中止し、worktreeとbranchを残して報告する。Run Logの `feature:` 行に `base-sync=<CLEAN | FIXED | CONFLICT>` を追記する
-4. **branch全体のID検査**: ID検査を `diff <base-branch>` と `log <base-branch>..HEAD` で実行する。コードの検出は直して `git-commit` skillでcommitし、commit messageの検出は該当commitを書き直す (pushしていないcommitに限る。push済みなら報告に残す)
-5. **`--no-pr` の場合**: ここで配送を終える。base branchへのmergeは行わない (選ばれていない配送をしない)。Phase 5へ進む
-6. **`--merge` の場合**: メインrepositoryのworking treeが `<base-branch>` をcheckoutしていて未commit変更が無いことを確かめ、そこで `git merge --ff-only <branch-name>` を実行する。満たさない、またはfast-forwardできない場合はmergeせず、worktreeとbranchを残して報告する。pushはしない。Phase 5へ進む
-7. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
+1. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正、Git管理側のADRの追記など)。残変更が無ければスキップする。commitしたらID検査を `log HEAD~1..HEAD` で実行し、検出されたら `git commit --amend` でmessageを書き直す
+2. **baseへの再同期**: `git fetch` で `<base-branch>` を最新化し、作業branchをその上へ `git rebase` する (worktree作成後に並行する他のspecの成果がmergeされている場合に備える。`--no-pr` と `--merge` でも行う。remoteが無いrepositoryではfetchを省き、localの `<base-branch>` を使う。remoteに同名branchが既にある場合はrebaseではなく `git merge` で取り込む)。conflictが出たら自動解決せず中止し、worktreeとbranchを残して衝突ファイルを報告する。再同期後に全taskの `CHECK_COMMANDS` とTEST / LINT / BUILD / SMOKE (宣言済みのもの) を再実行し、失敗があればPhase 3.2の差し戻しと同じ手順 (implementer → reviewer、合わせて最大2周) で修正して `git-commit` skillでcommitする。収束しなければ中止し、worktreeとbranchを残して報告する。Run Logの `feature:` 行に `base-sync=<CLEAN | FIXED | CONFLICT>` を追記する
+3. **branch全体のID検査**: ID検査を `diff <base-branch>` と `log <base-branch>..HEAD` で実行する。コードの検出は直して `git-commit` skillでcommitし、commit messageの検出は該当commitを書き直す (pushしていないcommitに限る。push済みなら報告に残す)
+4. **`--no-pr` の場合**: ここで配送を終える。base branchへのmergeは行わない (選ばれていない配送をしない)。Phase 5へ進む
+5. **`--merge` の場合**: メインrepositoryのworking treeが `<base-branch>` をcheckoutしていて未commit変更が無いことを確かめ、そこで `git merge --ff-only <branch-name>` を実行する。満たさない、またはfast-forwardできない場合はmergeせず、worktreeとbranchを残して報告する。pushはしない。Phase 5へ進む
+6. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
    - Phase 1で決めた出力言語を `language` として渡す
    - **specが `Source: #N` を持つ場合はそのIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。純Local specでは渡さない (specは内部文書であり、PR本文で言及しない。PRレビューでcontractを照合するときはLocal specのパスを `--spec` で直接渡す)
    - push、PRタイトルと本文の生成、PR作成はすべて連結先skillが行う。手順を再実装しない
-8. **結果を検証する** (`--pr` のみ): 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PRのタイトルと本文にID検査を `text` で実行し (`gh pr view <url> --json title,body` の値を渡す)、検出されたら `gh pr edit` で書き直す。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
-9. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後、`--merge` はmerge成功後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
+7. **結果を検証する** (`--pr` のみ): 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PRのタイトルと本文にID検査を `text` で実行し (`gh pr view <url> --json title,body` の値を渡す)、検出されたら `gh pr edit` で書き直す。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
+8. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後、`--merge` はmerge成功後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
 
 ## Phase 5: 結果の表示
 

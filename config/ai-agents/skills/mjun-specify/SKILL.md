@@ -65,7 +65,7 @@ contractを作成・更新する前に `spec.md` のfrontmatterを `approval: pe
 
 ### Phase 3: decisionの解決と設計
 
-frontierの論点を1つずつ解決し、確定するたびにspecと `design.md` の `## Decisions` ([references/design-template.md](references/design-template.md) の形式) へ反映する。ADRの3条件を満たす判断には `ADR: 要作成` を付ける (ADRは配送時に `mjun-implement` が書く)。用語が確定したら用語集へ追記する (無ければ `.mjun/CONTEXT.md` を作る)。
+frontierの論点を1つずつ解決し、確定するたびにspecと `design.md` の `## Decisions` ([references/design-template.md](references/design-template.md) の形式) へ反映する。ADRの3条件を満たす判断には `ADR: 要作成` を付ける (ADRは実装の最終検証の前に `mjun-implement` が書く)。用語が確定したら用語集へ追記する (無ければ `.mjun/CONTEXT.md` を作る)。
 
 - **Agent-owned**: decision-authority.mdの自己問答で解決する。確信度lowは `Status: tentative` として記録し、Phase 4で解消する
 - **Human-owned**: `mjun-grilling` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
@@ -112,6 +112,8 @@ spec reviewに機械的な指摘を残さないため、次を確かめて欠け
 ### Phase 5: contractの提示と承認
 
 contract全文、`design.md` 全文、変更点サマリ (追加・変更したセクションと理由。spec reviewの指摘を反映した箇所はその旨)、4-3で解消したdecision (見出しと、証拠で昇格 / 人間の決定の別) を提示し、「反映する / 修正して再提示 / HTMLで内容を確認する / キャンセル」で承認を取る。承認対象はcontractで、design.mdは目視用である。
+
+`spec.md` と `design.md` の合計が200行を超える場合は、全文の代わりに要点 (Goal、Requirementsの見出し、ACの件数、Boundaries、Out of Scope、人間が決めたdecision、`ADR: 要作成` のdecision) と両ファイルのパスを提示し、承認の選択肢では「HTMLで内容を確認する」を先頭に推奨として置く。
 
 - **反映する**: `approval: approved` へ更新してPhase 6へ進む
 - **修正して再提示**: 指摘を反映してこのPhaseをやり直す

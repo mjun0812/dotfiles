@@ -31,7 +31,7 @@
 2. **Boundariesとの整合**: ModulesがOwnsの範囲に収まっているか。Does Not Ownの領域を変更する設計になっていないか。Dependenciesに無い依存を導入していないか。Public Contracts Affectedに無い公開interfaceの変更が含まれていないか
 3. **コードベースとの整合**: Change Outlineの対象が実在するか。新設Moduleと同じ責務のものが既に無いか (あれば新設ではなく利用・拡張になるべき)。Interfaces & Seamsが既存の呼び出し規約・レイヤの依存方向・steeringの規約・既存ADRと食い違っていないか
 4. **失敗経路と状態**: Data Flowの各段が失敗したときの扱い (部分的成功、再実行、並行実行、不正入力、回復不能な状態) のうち、Requirements / Acceptance Criteriaに関わるものが設計で決まっているか
-5. **観測点**: 各Acceptance Criterionを検査できる観測点 (関数、endpoint、CLI出力などの公開interface。CLI全体のようなcompositeな境界でもよい) が設計にあるか。検査に必要なのに差し替えられない外部依存が無いか。Interfaces & Seamsに列挙が無いことだけを理由に指摘せず、検査できるかどうかで判断する
+5. **観測点**: 各Acceptance Criterionを確かめられる観測点 (関数、endpoint、CLI出力などの公開interface。CLI全体のようなcompositeな境界でもよい) が設計にあるか。確認に必要なのに差し替えられない外部依存が無いか。Interfaces & Seamsに列挙が無いことだけを理由に指摘せず、確かめられるかどうかで判断する。逆向きに、Data Flowの各段 (特にmoduleやprocessの境界をまたぐ段) について、その段を通った結果を観察するAcceptance Criterionがあるかも見る。どのACも観察しない段は、そのRequirementが実装されても確かめられないので、Requirementを引用して指摘する
 6. **構造の過不足**: 現在のRequirementsに無い抽象・設定項目・間接層・将来のための拡張点が入っていないか。実装が1つしかないinterface、責務が複数混ざったModule、複数のRequirementが同じ問題の変種なのに別々に設計されているものが無いか
 7. **decisionsとの整合** (決定の経緯がある場合): 設計が採択した決定と食い違っていないか。覆された決定の内容が設計に残っていないか。tentativeの決定が確定として設計されていないか
 
