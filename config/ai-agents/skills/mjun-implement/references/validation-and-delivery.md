@@ -6,7 +6,7 @@
 
 キュー再評価の結果、全taskがdoneの場合だけ行う。実行可能taskが尽きた時点でdoneでないtaskが残る場合は、Phase 3.2、3.3、4をスキップし、specをactiveのまま `PARTIAL` としてPhase 5へ進む。検証コマンドの実行 (手順1) は親が自分で行い、SubAgentの報告で代えない。判断を要する手順2〜4はSubAgentに依頼してよいが、判定は親が結果に基づいて行う。
 
-1. **検証コマンドの実行**: TEST / LINT / BUILD 全体と `SMOKE_COMMANDS`。SMOKEが宣言されていない場合は、各taskの `CHECK_COMMANDS` のうちend-to-endに最も近いものを代用する。どちらも無ければ「実行時検証: 未実施」として扱う。`design.md` のTest Strategyに実機の操作シナリオがある場合は、親が実行できる手段でシナリオを実行して結果を記録し、実行できなかったシナリオはPhase 5で手動確認の手順として提示する
+1. **検証コマンドの実行**: TEST / LINT / BUILD全体と `SMOKE_COMMANDS`。SMOKEが宣言されていない場合は、各taskの `CHECK_COMMANDS` のうちend-to-endに最も近いものを代用する。どちらも無ければ「実行時検証: 未実施」として扱う。`design.md` のTest Strategyに実機の操作シナリオがある場合は、親が実行できる手段でシナリオを実行して結果を記録し、実行できなかったシナリオはPhase 5で手動確認の手順として提示する
 2. **Acceptance Criteriaの照合**: specのAcceptance Criteria 1件ごとに、それを証明する検査 (`CHECK_COMMANDS`) と実装を対応づける。証明する検査が無いcriterionは、実装と検証結果から充足を判定し、判定できなければ未充足とする。specにAcceptance Criteriaが無いdoc modeでも、taskキューのAcceptance Criteriaは照合する
 3. **task間の整合**: task同士が共有するinterface、データ形、エラー形式、設定が一致しているかをコードから確認する
 4. **contract境界の照合**: branch全体の変更 (`git diff <base>..HEAD`) がspecのBoundaries (Owns / Does Not Own) とOut of Scopeに収まっているかを照合する。spec modeでは `git diff --name-only <base>..HEAD` の全パスが `design.md` のChange Outlineのdirectory配下にあるかも確かめる (`CHECK_FILES` は除く)。specにBoundariesもOut of Scopeも無い場合はスキップする
@@ -55,13 +55,15 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 - **Checks**: groupごとの検査数 (task別の内訳付き) と結果 (implementerまたはverifierが用意した検査がすべて通ったか)。review-onlyのtaskがあれば、そのtask IDと自動検査で覆えなかった理由
 - **AC coverage**: Acceptance Criteriaの充足状況 (充足数 / 総数と、各criterionの判定、証明した検査)
 - **Validation**: Phase 3.2の判定 (GO / MANUAL_VERIFY_REQUIRED。`PARTIAL` では「未実施」)。実行時検証が未実施ならその旨と、手動で確かめる操作シナリオ
-- **Base sync**: Phase 4の再同期の結果 (CLEAN / FIXED と修正内容 / CONFLICT と衝突ファイル。`PARTIAL` では「未実施」)
+- **Base sync**: Phase 4の再同期の結果 (CLEAN / FIXEDと修正内容 / CONFLICTと衝突ファイル。`PARTIAL` では「未実施」)
 - **Refactor**: Phase 3.3の結果 (DONE / SKIPPED / REJECTED。`PARTIAL` では「未実施」) と、見送ったNOTES
 - **Run Log**: 周回数と差し戻しの要約 (`tasks.md` の `## Run Log` から)
 - **Blocked Tasks**: task IDとタイトル、直接原因、再開条件、これに依存して未実行のtask。無ければ「なし」
 - **ADR**: 共通記録に追記したADRのD番号 (無ければ「なし」)
 
 ## Phase 6: worktreeクリーンアップ
+
+Phase 2で起動場所のworktreeを採用した場合は、結果や配送方法にかかわらず、worktreeもlocal branchも削除しない (用意した呼び出し元が片付ける)。以下はこの実行でworktreeを作成またはresumeで採用した場合の規則。
 
 - **`--pr` で成功した場合**: `git worktree remove --force <worktree-path>` → `git branch -D <branch-name>` (remote branchはPRのheadとして残る)
 - **`--no-pr` で成功した場合**: worktreeだけを削除し、**local branchは削除しない**。merge / pushの判断はユーザーに委ねる
