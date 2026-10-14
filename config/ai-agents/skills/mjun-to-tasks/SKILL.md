@@ -3,7 +3,7 @@ name: mjun-to-tasks
 description: >-
   spec (`.mjun/specs/` のLocal spec、またはGitHub Issue) を、単独で検証可能なvertical sliceのtaskへ分解し、
   `.mjun/specs/` 配下の `tasks.md` へ永続化するSkill。
-  通常はspecの承認後に自動で呼び出される。ユーザーが「taskに分解して」「分解をやり直して」と依頼したときや、
+  通常はspecの承認後と、実装中にtaskの再分解が必要になったときに自動で呼び出される。ユーザーが「taskに分解して」「分解をやり直して」と依頼したときや、
   specの変更後に再分解したいときに単体で使うこと。実装そのもの、およびspec本文の作成・修正には使わない。
 allowed-tools: Read, Write, Edit, Glob, Grep, Task, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(cat:*), Bash(ls:*), Bash(mkdir:*)
 ---

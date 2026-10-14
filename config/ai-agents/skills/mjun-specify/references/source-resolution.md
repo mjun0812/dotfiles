@@ -33,7 +33,7 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 .mjun/specs/<slug>/
 ├── spec.md          # 必須。人間が承認するcontract
 ├── design.md        # 必須。contract内の実装設計。承認前に書く
-├── tasks.md         # taskと実装状態。実装開始後は単一taskでも持つ
+├── tasks.md         # taskと実装状態。承認後に作り、単一taskでも持つ
 ├── prototype/       # artifact自体を一次資料として残す場合だけ
 └── research/        # 外部調査が発生した場合だけ
 ```
@@ -42,7 +42,7 @@ specの正本 (source of truth) は常に `.mjun/specs/<slug>/` である。GitH
 - 最初からすべては作らない。`spec.md` だけから開始できる
 - frontmatterにはライフサイクル状態 `status: active | done` とcontract承認状態 `approval: pending | approved` を持つ。実装の対象になるのは `approval: approved` のspecだけである
 - decision確定ごとの更新は常にLocalファイルへ逐次行う。task進捗は `tasks.md` の `Status`、resume先は同ファイルの `Implementation Branch` で管理する
-- task分解は単一taskでも `tasks.md` を作る。分解を省略した単一taskでは、実装側がworktree作成後に同じ形式で作る
+- task分解は承認後に `mjun-to-tasks` で行い、単一taskでも `tasks.md` を作る。実装側はtaskを自分で分解せず、`tasks.md` が無ければ着手しない
 - `Implementation Branch` があり、そのlocal branchが存在すればtaskのstatusにかかわらずそのbranchからresumeする。branchが存在しない場合は記録を破棄して新規branchで続行する。done taskのAcceptance Criteriaが変わった場合は `ready` に戻し、再実装・再検証の対象にする
 
 ## ライフサイクル状態 (`status`)
@@ -99,7 +99,7 @@ Source: #123
 ## 取り込み (Issue → spec)
 
 - Issue本文とコメントを読み、spec.mdのcontract構成へ構造化する (slugはIssueタイトルから)。**取り込みを行うのはこのskillだけ**である
-- **入口は常にこのskill**: task分解や実装に未取り込みのIssue番号が渡された場合、それらは中止してこのskillでの取り込みを案内する。Issueが直行で実装できる品質かの判断を取り込み側で肩代わりしない (trivialな依頼はPhase 1の「spec化が過剰なら直接実装を提示」で振り分ける)
+- **Issueを最初に扱うのは常にこのskill**: task分解や実装に未取り込みのIssue番号が渡された場合、それらは中止してこのskillでの取り込みを案内する。Issueが直行で実装できる品質かの判断を取り込み側で肩代わりしない (specが不要な依頼はPhase 0の振り分けで直接実装へ回す)
 
 ## 投影 (spec → Issue)
 

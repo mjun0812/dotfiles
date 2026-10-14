@@ -40,14 +40,24 @@ GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影
 
 ## Task
 
-### Phase 0: source解決と前提取得
+### Phase 0: source解決と振り分け
 
-sourceから対象を判別する。出力言語はsourceまたは依頼の言語に合わせて決める。
+sourceから対象を判別し、specを作るかどうかを振り分ける。出力言語はsourceまたは依頼の言語に合わせて決める。
 
-1. Issue番号またはGitHub URL → **取り込み**。`gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。activeなspec (`status: active`) に `Source: #<number>` を持つ既存specがあれば取り込み済みとして、それを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)。activeに無ければ `status: done` のspecからも `Source: #<number>` を検索し、見つかれば実装済みの可能性を警告して、`active` へ戻して磨き直すか中止するかを確認する (同じIssueを正本とするspecを複数作らない)
+#### source解決
+
+1. Issue番号またはGitHub URL → `gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。activeなspec (`status: active`) に `Source: #<number>` を持つ既存specがあれば取り込み済みとして、それを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)。activeに無ければ `status: done` のspecからも `Source: #<number>` を検索し、見つかれば実装済みの可能性を警告して、`active` へ戻して磨き直すか中止するかを確認する (同じIssueを元にするspecを複数作らない)。どちらにも無ければ振り分けへ進む
 2. `.mjun/specs/<slug>` のパス → 既存specを対象にする (配下の全mdをRead)
-3. `.mjun/specs/` 外のMarkdownパス → **取り込み**。内容を `.mjun/specs/<slug>/spec.md` へ構造化し、以降それを正本として磨く (元ファイルは変更しない)
-4. sourceなし → **新規作成**。ただし作成の前に、activeなspecの一覧 (H1タイトルと `Source:` 行。source-resolution.mdの一覧手順で導出する) と依頼を突き合わせ、既存specの拡張や重複と判断できる場合は新規を作らず、そのspecをsourceとして磨き直す (重複specを作らない)。追加の質問はしない
+3. `.mjun/specs/` 外のMarkdownパス → ファイル内容を読み、振り分けへ進む
+4. sourceなし → 会話の依頼内容を素材として振り分けへ進む。内容がまったく無い場合のみ自由テキストで概要を受け取る
+
+#### 振り分け
+
+既存specを対象にした場合 (1で取り込み済みspecが見つかった、または2) は省略する。それ以外は、依頼内容とactiveなspecの一覧 (H1タイトルと `Source:` 行。source-resolution.mdの一覧手順で導出する) を比べ、判定に必要な範囲だけ関連コードを確認して、次の順に最初に当てはまるものを選ぶ。
+
+1. **既存specの拡張**: 依頼が既存のactiveなspecの境界内の拡張、修正、または重複である。sourceなしとMarkdownでは新規を作らず、依頼内容を素材としてそのspecを磨き直す (重複specを作らない。追加の質問はしない)。Issueは `Source:` を1つしか持てないため統合せず新規specとして取り込み、境界の重なりはPhase 2の所有の判断に回す
+2. **spec不要**: 人間の判断を要する論点 (振る舞い、ドメインの意味、スコープ) が無く、変更が局所的で、完了条件が自明である (typo修正、設定値の変更、振る舞いを変えないリファクタリングなど)。判定理由を1行添えて、「直接実装してPRを作る / 直接実装してcommitまで / specを作る」をAskUserQuestionで確認する (使えない環境では選択肢をテキストで提示する。`gh repo view` が失敗する (GitHub remoteが無い) 場合はPRの選択肢を出さない)。直接実装が選ばれたら、specのファイルを作らずにこのskillを終え、同じ会話のまま直接実装へ移る。commitは `git-commit` で作り、PRを選んだ場合は続けて `github-pr-create` で作る (sourceがIssueなら、Issue番号を `spec` として渡し、`Closes #N` を付ける)
+3. **新規spec**: 上のどちらにも当たらない。Phase 1で取り込みまたは新規作成する
 
 ### Phase 1: sourceの確保
 
@@ -55,8 +65,8 @@ Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontm
 
 実装が進んでいるspec (`tasks.md` に `done` のtaskがある) を拡張する場合は追記型で扱う。既存のRequirementsとAcceptance Criteriaの意味を変えず、増分を新しいRequirement / Acceptance Criterionとして足す (`done` のtaskを再検証へ戻すのは、そのAcceptance Criteriaの意味を変える場合だけとし、その必要があるかはHuman-owned decisionとして確認する)。`status: done` のspecへの追加要求も、`active` へ戻してこのskillの手順 (セルフ検査、spec review、承認) を通す。
 
-- **取り込み** (Issue番号または `.mjun/specs/` 外のMarkdown、未取り込みの場合): Issueは本文とコメントを、Markdownはファイル内容を `.mjun/specs/<slug>/spec.md` へ構造化する (slugはタイトルの英語kebab-case)。frontmatterに `status: active` と `approval: pending` を記録し、Issue由来はH1直下に `Source: #<number>` を書く (Markdown由来は書かず純Local扱いとし、元ファイルは変更しない)。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
-- **新規作成**: 会話の依頼内容を下書き素材とする。内容がまったく無い場合のみ自由テキストで概要を受け取る。spec化が過剰な依頼 (単発のtypo修正など) では、specを作らず直接実装する選択肢を提示し、選ばれたら終了する
+- **取り込み** (振り分けで新規specになったIssueまたは `.mjun/specs/` 外のMarkdown): Issueは本文とコメントを、Markdownはファイル内容を `.mjun/specs/<slug>/spec.md` へ構造化する (slugはタイトルの英語kebab-case)。frontmatterに `status: active` と `approval: pending` を記録し、Issue由来はH1直下に `Source: #<number>` を書く (Markdown由来は書かず純Local扱いとし、元ファイルは変更しない)。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
+- **新規作成** (振り分けで新規specになったsourceなしの依頼): Phase 0で得た依頼内容を下書き素材とする
   - `.mjun/specs/<slug>/spec.md` を [references/spec-template.md](references/spec-template.md) の骨子で作成する (frontmatterは `status: active` と `approval: pending`)
 
 ### Phase 2: 調査とgap分析
@@ -138,10 +148,7 @@ Phase 5.5のreviewerに機械的な指摘を残さないため、spec reviewを�
 
 ### Phase 7: task分解
 
-specの規模を判定する。
-
-- 独立に検証可能な振る舞いが複数あり、1つのfresh contextに収まらない規模なら、`mjun-to-tasks` を連結して分解する。調査済みの文脈 (requirements、boundary、変更対象の見当) をプロンプトで渡す。task分解はAgent-ownedのため承認は取らない
-- 単一task規模でも、既存の `tasks.md` があれば `mjun-to-tasks` を連結して最新contractへ再分解する (contractから消えたtaskがキューに残らない)。`tasks.md` が無ければ何もしない
+`mjun-to-tasks` を連結して、承認済みcontractを `tasks.md` へ分解する。単一task規模でも省略しない (taskの決定はspec作成側が持ち、実装側は `tasks.md` が無ければ着手しない)。既存の `tasks.md` があれば最新contractへ再分解する (contractから消えたtaskがキューに残らない)。調査済みの文脈 (requirements、boundary、変更対象の見当) をプロンプトで渡す。task分解はAgent-ownedのため承認は取らない。
 
 ### Phase 8: Issueへの記帳
 

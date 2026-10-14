@@ -6,13 +6,14 @@ description: >-
   specの作成・磨き上げ・承認や、未取り込みIssueの取り込みには使わない。
   specも設計docも無く、会話の中で決めた小規模な変更にも使わない (直接実装する)。
   呼び出し元から作業指示を渡された実装担当 (SubAgentやorchestratorのworker) は、指示がこのSkillの実行を明示しているときだけ使い、それ以外はその指示に従う。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(mjun-to-tasks)
 ---
 
 # mjun-implement
 
 specを起点に、内容検査 → 実装 → commit → (必要なら) PR作成までを進めるSkill。
 メイン会話が担うのは、検査、worktree作成、SubAgentへの引き継ぎ、進捗の永続化、結果検証、クリーンアップであり、**実装 (Phase 3) はSubAgentに委譲し、commitとPR作成 (Phase 4) は `git-commit` skillと `github-pr-create` skillに連結する**。
+spec modeのtaskはspec作成側が `tasks.md` に決めたものを実行し、実装中に分かった事実で再分解が必要になった場合も `mjun-to-tasks` に連結する (分解規則をこのskillに持たない)。
 
 ## Arguments
 
@@ -27,7 +28,7 @@ sourceの形からmodeを決める。
 2. Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経て **spec mode**
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
-spec modeでは、specディレクトリ配下の `spec.md` と `design.md` (いずれも必須)、あれば `tasks.md` をReadする。共通の決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) からspec.mdの `Decisions:` が参照するentryとprojectのacceptedな判断を読む。StatusとScopeは [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従い、参照先の欠落・重複ID・supersededの参照はspecの修正へ戻す。taskに関係する判断の内容をSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
+spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tasks.md` (いずれも必須) をReadする。共通の決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) からspec.mdの `Decisions:` が参照するentryとprojectのacceptedな判断を読む。StatusとScopeは [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従い、参照先の欠落・重複ID・supersededの参照はspecの修正へ戻す。taskに関係する判断の内容をSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
 
 doc modeでも共通の決定記録があればprojectのacceptedな判断を読み、関係する内容をSubAgentへ渡す。判断記録が存在せず参照も無い場合は、読み取りだけのために空ファイルを作らない。
 
@@ -52,17 +53,16 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
    - メインrepositoryのroot (`<repo-root>`): `git rev-parse --path-format=absolute --git-common-dir` の親ディレクトリ。起動場所がworktreeの中でもメインのcheckoutを指す
 2. 出力言語をrepositoryの慣習から決める: 既存のPR・commit message・READMEの言語に合わせ、判別できなければ英語とする。specや依頼の言語には合わせない。コメント、commit、PR作成に使う
 3. **内容検査**:
-   1. **contract承認とdesign.md** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、contractの承認が先に必要であることを案内する。実装依頼そのものをcontract承認の代わりにしない。`design.md` が無い場合も中止し、実装設計の作成が先に必要であることを案内する
-   2. **情報の充足**: Goal、受け入れ基準、実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、specを詰め直す必要があることを案内する。方針を推測で補って実装に進まない
+   1. **contract承認とdesign.md** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、contractの承認が先に必要であることを案内する。実装依頼そのものをcontract承認の代わりにしない。`design.md` が無い場合も中止し、実装設計の作成が先に必要であることを案内する。`tasks.md` が無い場合も中止し、`mjun-to-tasks` でtaskへ分解する必要があることを案内する (このskillでは分解しない)
+   2. **情報の充足** (doc modeのみ): Goal、受け入れ基準、実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、specを詰め直す必要があることを案内する。方針を推測で補って実装に進まない。spec modeではcontractの十分性をspec作成側のレビューと承認で確定済みとし、ここで判定し直さない
    3. **要確認の残留**: 共通記録のうち対象specの `Decisions:` が参照するentry (doc modeでは本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。spec作成側が承認前にtentativeを解消するため、ここで残っているのは承認後に共通記録の参照entryが編集された場合などに限る。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` を `accepted`、`Owner:` を `human` へ更新し、Evidenceに確認日と根拠を追記してから進む (確認済みの決定として記録し、再実行時に同じtentativeで止まらない)
    4. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込みと投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する。反映する場合は `approval: pending` へ戻してから反映し、更新後のcontractを提示して承認を得て `approved` へ更新してから進む。承認されなければ中止し、specの磨き直しが必要であることを案内する
    5. **spec間依存** (spec modeのみ): BoundariesのDependenciesに `spec: <slug>` の行があれば `.mjun/specs/<slug>/spec.md` を読み、`status: done` を確認する。specが存在しない、またはdoneでない場合は中止し、先に該当specの配送が必要であることを案内する
 4. **taskキューを構築する**:
-   - specに `tasks.md` がある場合は、それをキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)。`Status: blocked` のtaskは `Resume when` が現在満たされたと確認できた場合だけ `ready` へ戻し、それ以外はblocked一覧へ残す
-   - 採用したtaskのうちAcceptance Criteriaが4件以上のものは、verifierが `TOO_LARGE` と判定する基準に当たる。Phase 3.0を待たず、ここで下の分解規則により分割し、Phase 3.0の `TASK_TOO_LARGE` と同じ検査 (ACの和集合が元taskと等しい、BoundaryがOwns内、依存が循環しない) を通してからキューを置き換える (verifierを使うtaskでは検査の作成時に大きすぎると判定されて分割し直すことになるため、全taskに同じ粒度の基準を適用する)。粒度の基準の免除をユーザーに求めて、そのまま進めない
+   - spec modeでは `tasks.md` をキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)。`Status: blocked` のtaskは `Resume when` が現在満たされたと確認できた場合だけ `ready` へ戻し、それ以外はblocked一覧へ残す
+   - 採用したtaskのうちAcceptance Criteriaが4件以上のものは、`mjun-to-tasks` の粒度の基準 (AC ≤ 3) を外れている。Phase 3.0を待たず、該当taskのIDを文脈として `mjun-to-tasks` を連結して `tasks.md` を再分解させ、再分解後の `tasks.md` をキューとして読み直す。粒度の基準の免除をユーザーに求めて、そのまま進めない
    - 全taskが `done` の場合も終了せず、記録済みbranchからresumeしてPhase 3.2の最終検証とPhase 4の配送を再実行する
-   - spec modeで `tasks.md` が無い場合は、独立に検証可能な振る舞いが複数あれば1 task 1振る舞いのvertical sliceへ分解し、それ以外はspec全体を `T-001` とする。分解の判定は次の規則で行う: 各taskのAcceptance Criteriaを1つの実行可能なコマンドで検証できる (実装前のREDは分解の条件にしない。検証できなければ分割)、BoundaryはspecのOwnsのうち1つ (2つ以上に触るなら `Boundary: <責務A>, <責務B> (integration)` と明示して先行taskの後に置く)、型・設定・配線などの前提は先行taskにしてBlocked byで結ぶ、各taskに `Done when:` (完了時に観察できること) と `Seam:` (検証する公開インターフェース) を1行ずつ付ける、ACが4件以上になるtaskは分割する。ここでは会話内に保持し、Phase 2のworktree作成後に `tasks.md` へ書く
-   - doc modeでは同じ基準で会話内のキューを作り、Local specの `tasks.md` は作らない
+   - doc modeでは [mjun-to-tasks の分解規則](../mjun-to-tasks/SKILL.md#分解規則) とTask形式に従って会話内のキューを作り、Local specの `tasks.md` は作らない
    - 各taskの受け入れ基準、Boundary (specにBoundariesがある場合)、Done when、Seamを確認し、依存順 (Blocked by) に並べる。`Blocked by` の全taskが `done` のtaskだけを実行可能とし、blocked taskに依存するtaskは実行せず依存待ち一覧へ残す
    - **task groupへ区切る**: groupがPhase 3.0〜3.1の単位 (implementer、reviewer、commit。必要なtaskだけverifierを先に使う) になる。依存順に並べたキューを先頭から走査し、現在のgroupのいずれかのtaskとspecのOwnsの同じ責務 (Boundary) に属するtaskは現在のgroupへ加え、属さなければ新しいgroupを始める (Boundariesが無い場合はSeamが同じ公開interfaceかで判定する)。1 groupはtask 5件・Acceptance Criteria合計12件を上限の目安とし、超える場合は依存順で区切る (implementerが1つのfresh contextで扱える大きさ)。groupは依存順に直列で処理するため、先行groupのtaskは処理時点でdoneになっている。単一taskのgroupも同じ手順で扱う
 5. `--pr` / `--no-pr` / `--merge` が未指定なら、ここでAskUserQuestionにより配送方法を確認する (使えない環境では選択肢をテキストで提示する)。手順1の `gh repo view` が失敗した (GitHub remoteが無い) 場合はPRを作れないため、`--no-pr` と `--merge` の2択で確認する
@@ -87,7 +87,7 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
    - 新規の場合は `git worktree add -b <branch-name> <worktree-path> <base-branch>` (`<base-branch>` は最新のdefault branch)
    - 作成失敗時は中止してエラーを伝える
    - 作成後 (resumeで既存worktreeを採用した場合も)、`<worktree-path>/.mjun` が無ければ `ln -s <repo-root>/.mjun <worktree-path>/.mjun` を張る。`.mjun/` はgit管理外でworktreeに無いため、symlinkが無いとworktree内のcwdから相対パスで行った `tasks.md` などの更新が失われる
-5. 新規実行のspec modeでは、worktree作成成功後にPhase 1のtaskキューを `tasks.md` へ書き、先頭へ `Implementation Branch: <branch-name>`、末尾へ `## Implementation Notes` と `## Run Log` を置く。既存の `tasks.md` がある場合はtask内容を変えず、先頭の `Implementation Branch:` を設定し、`## Run Log` が無ければ末尾に追加する
+5. spec modeでは、worktree作成成功後に `tasks.md` のtask内容を変えず、先頭の `Implementation Branch: <branch-name>` を設定し、`## Implementation Notes` と `## Run Log` が無ければ末尾に追加する
 6. branch名、worktreeパス、base branch名を記録する (クリーンアップで使う)
 
 ### Phase 3: 実装
