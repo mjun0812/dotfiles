@@ -56,5 +56,5 @@ GitHub操作は必ず `git, gh` CLIで行うこと。
 
 ## Japanese Writing
 
-- ファイルを経由せずに送る日本語は、送る前に `printf '%s\n' "<本文>" | textlint --stdin --stdin-filename body.md` にかけ、指摘箇所を文意を保ったまま書き直すこと。`--stdin` と `--fix` は併用しない (`--stdin-filename` の名前でファイルが書き出される)。
+- チャットの応答にはtextlintをかけない。ファイルを経由せずに外部へ送る日本語 (PR本文、Issue、コメント、commitメッセージなど) だけ、送る前に `printf '%s\n' "<本文>" | textlint --stdin --stdin-filename body.md` にかけ、指摘箇所を文意を保ったまま書き直すこと。`--stdin` と `--fix` は併用しない (`--stdin-filename` の名前でファイルが書き出される)。
 - Markdownファイルはhookが自動でtextlintにかけるので、手動で実行しなくてよい。既存ファイル全体への実行は、ユーザーに頼まれたときだけ行うこと。
