@@ -31,6 +31,7 @@ else
 fi
 
 normalize() {
+    # canonical は dotfiles 側が所有する ~ 形式の command の接頭辞 (引数は含まない)。
     local file="$1" canonical="$2"
     [ -f "$file" ] || return 0
     if ! command -v jq >/dev/null 2>&1; then
@@ -42,13 +43,13 @@ normalize() {
     local tmp
     tmp="$(mktemp)"
     jq --arg canonical "$canonical" '
-        .hooks.SessionStart |= (
+        .hooks |= with_entries(.value |= (
             map(.hooks |= map(select(
                 (.command | test("herdr-agent-state\\.sh") | not)
-                or .command == $canonical
+                or (.command | startswith($canonical))
             )))
             | map(select(.hooks | length > 0))
-        )
+        ))
     ' "$file" >"$tmp"
     # file は dotfiles への symlink なので、mv で置き換えず中身だけ書き戻す
     cat "$tmp" >"$file"
@@ -57,8 +58,8 @@ normalize() {
 
 # herdr plugin link は herdr server が古い (protocol mismatch) と失敗して
 # set -e で終了するため、integration install の後始末である正規化を先に行う。
-normalize "$HOME/.claude/settings.json" 'bash ~/.claude/hooks/herdr-agent-state.sh session'
-normalize "$HOME/.codex/hooks.json" 'bash ~/.codex/herdr-agent-state.sh session'
+normalize "$HOME/.claude/settings.json" 'bash ~/.claude/hooks/herdr-agent-state.sh '
+normalize "$HOME/.codex/hooks.json" 'bash ~/.codex/herdr-agent-state.sh '
 
 # dotfiles 管理の herdr plugin をすべて link する (link は冪等)。
 # 実体は config/dot_config/herdr/plugins/ にあり、編集はそのまま反映される。

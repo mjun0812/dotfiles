@@ -4,7 +4,7 @@
       {
         "hooks": [
           {
-            "command": "bash '/Users/mjun/.codex/herdr-agent-state.sh' idle",
+            "command": "bash ~/.codex/herdr-agent-state.sh idle",
             "timeout": 10,
             "type": "command"
           }
@@ -111,7 +111,7 @@
       {
         "hooks": [
           {
-            "command": "bash '/Users/mjun/.codex/herdr-agent-state.sh' idle",
+            "command": "bash ~/.codex/herdr-agent-state.sh idle",
             "timeout": 10,
             "type": "command"
           }
@@ -130,7 +130,7 @@
       {
         "hooks": [
           {
-            "command": "bash '/Users/mjun/.codex/herdr-agent-state.sh' working",
+            "command": "bash ~/.codex/herdr-agent-state.sh working",
             "timeout": 10,
             "type": "command"
           }
