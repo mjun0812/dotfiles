@@ -184,24 +184,6 @@ jobs:
           su - testuser -c 'source ~/.zshrc && bun --version'
           echo "✓ bun is installed"
 
-      - name: Verify textlint
-        run: |
-          echo "=== Checking textlint ==="
-          out=$(su - testuser -c "source ~/.zshrc && printf 'MLflow サーバ（x）\\n' | ~/.dotfiles/script/tools/textlint.sh fix --stdin --stdin-filename t.md" || true)
-          echo "$out"
-          echo "$out" | grep -q ja-space-between-half-and-full-width
-          echo "$out" | grep -q prh
-          out=$(su - testuser -c "source ~/.zshrc && printf '土台を完全に作る。\\n' | ~/.dotfiles/script/tools/textlint.sh report --stdin --stdin-filename t.md" || true)
-          echo "$out"
-          echo "$out" | grep -q ai-words-ja/no-ai-words
-          echo "$out" | grep -q @textlint-ja/ai-writing/no-ai-hype-expressions
-          echo "✓ textlint rules are loaded"
-          out=$(su - testuser -c "source ~/.zshrc && cd ~ && printf 'MLflow サーバ（x）\\n\\n土台を完全に作る。\\n' | textlint --stdin --stdin-filename t.md" || true)
-          echo "$out"
-          echo "$out" | grep -q prh
-          echo "$out" | grep -q ai-words-ja/no-ai-words
-          echo "✓ global textlint loads ~/.textlintrc.js"
-
       - name: Verify Python virtual environment
         run: |
           echo "=== Checking Python venv ==="

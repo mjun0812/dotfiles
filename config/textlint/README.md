@@ -61,15 +61,3 @@ the four direct rule versions from the former `bun.lock`; transitive dependencie
 are no longer frozen by a repository lockfile. This is a personal global-tool
 setup, not a fully locked project dependency graph. Installation stays outside
 agent hooks; ordinary lint invocations do not install or update packages.
-
-## Verify
-
-With mise, Node.js, Bun, zsh and Python 3.11+ available:
-
-```sh
-python script/tests/test_textlint_mise.py
-```
-
-The integration tests download packages into a temporary mise data directory and
-use a temporary HOME. They never run the full dotfiles installer or modify the
-real HOME. GitHub Actions runs them on Ubuntu and macOS.

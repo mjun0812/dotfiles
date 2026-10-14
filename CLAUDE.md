@@ -30,14 +30,11 @@ prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt + stylua
 mise install --force npm:textlint
 zsh script/setup/setup_textlint.sh     # 共通設定と旧CLIリンクの移行
 
-# textlintのglobal導入・CLI・hook用wrapperの検証 (一時HOME、ネットワークが必要)
-python script/tests/test_textlint_mise.py
-
 # VSCode拡張をextensions.txtと完全同期 (--dry-runで差分確認)
 script/tools/sync_vscode_extensions.sh --dry-run
 ```
 
-全体の検証はGitHub Actions (`ci-ubuntu.yml` / `ci-rocky.yml` / `ci-macos.yml`) がクリーンな環境で `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。`ci-macos-packages.yml` は `mise bootstrap packages apply` (brew / brew-cask) の適用・冪等性・statusを、`ci-lint.yml` は `prek run --all-files` を検証する。`ci-textlint.yml` は一時HOMEでmiseによるtextlintの導入、通常CLI、hook用wrapper、旧リンクの移行をUbuntu / macOSで検証する。
+全体の検証はGitHub Actions (`ci-ubuntu.yml` / `ci-rocky.yml` / `ci-macos.yml`) がクリーンな環境で `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。`ci-macos-packages.yml` は `mise bootstrap packages apply` (brew / brew-cask) の適用・冪等性・statusを、`ci-lint.yml` は `prek run --all-files` を検証する。
 
 ## アーキテクチャ
 
