@@ -4,7 +4,7 @@ description: >-
   アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できる仕様へ磨き上げるSkill。
   調査で決まる論点はAgentが決め、人間の判断が必要な論点だけを1問ずつ確認して仕様を確定し、承認後にspec ファイルを作成する。
   ユーザーが「specを作って」「仕様を作成して」のように依頼したら使うこと。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), Skill(exhtml), Skill(mjun-grilling), Skill(mjun-research), Skill(mjun-spec-review), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), WebSearch, WebFetch, Skill(exhtml), Skill(mjun-grilling), Skill(mjun-spec-review), Skill(mjun-to-tasks)
 ---
 
 # mjun-specify
@@ -69,7 +69,7 @@ frontierの論点を1つずつ解決し、確定するたびにspecと `design.m
 
 - **Agent-owned**: decision-authority.mdの自己問答で解決する。確信度lowは `Status: tentative` として記録し、Phase 4で解消する
 - **Human-owned**: `mjun-grilling` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
-- **Evidence-blocked**: `mjun-research` (外部事実) か、[references/prototyping.md](references/prototyping.md) の試作 (UI、状態、ロジックの実物) / 最小実装 (現行codeでの実現可能性) で証拠を集め、再分類して解決する
+- **Evidence-blocked**: [references/research.md](references/research.md) の一次資料の調査 (外部事実) か、[references/prototyping.md](references/prototyping.md) の試作 (UI、状態、ロジックの実物) / 最小実装 (現行codeでの実現可能性) で証拠を集め、再分類して解決する
 
 frontierがすべて解決したら、採択した設計で `design.md` の残りのセクションを書く (既存なら更新する。省略しない)。
 

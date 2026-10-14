@@ -53,7 +53,7 @@ Agentが調査し、自分で決める。Human-ownedの条件に該当せず、�
 
 | 不足しているもの         | 解消手段                                    |
 | ------------------------ | ------------------------------------------- |
-| 外部仕様・外部事実       | research (一次資料調査)                     |
+| 外部仕様・外部事実       | 一次資料の調査 ([research.md](research.md)) |
 | UI・状態・ロジックの実物 | 試作 ([prototyping.md](prototyping.md))     |
 | 現行codeでの実現可能性   | 最小実装 ([prototyping.md](prototyping.md)) |
 
