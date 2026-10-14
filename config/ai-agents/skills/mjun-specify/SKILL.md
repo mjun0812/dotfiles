@@ -1,35 +1,28 @@
 ---
 name: mjun-specify
 description: >-
-  アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できる仕様 (contract) へ磨き上げるSkill。
-  調査で決まる論点はAgentが決め、人間の判断が必要な論点だけを1問ずつ確認して仕様を確定し、承認後にIssueへ投影する。
-  ユーザーが「specを作って」「仕様を詰めて」「issueを磨いて」のように依頼したら使うこと。
-  実装からPR作成まで進める依頼や、既にspecが承認済みの実装依頼には使わない。
+  アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できる仕様へ磨き上げるSkill。
+  調査で決まる論点はAgentが決め、人間の判断が必要な論点だけを1問ずつ確認して仕様を確定し、承認後にspec ファイルを作成する。
+  ユーザーが「specを作って」「仕様を作成して」のように依頼したら使うこと。
 allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), Skill(exhtml), Skill(mjun-grilling), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-spec-review), Skill(mjun-to-tasks)
 ---
 
 # mjun-specify
 
-アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できるcontractへ磨き上げるSkill。
-自明な部分はAgentが自身で判断し、非自明な部分は人間との対話によって判断し、Agentと人間が協力して仕様を決定する。
+アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できる仕様書へ磨き上げるSkill。
+自明な部分はAgentが自身で判断し、非自明な部分や選択肢がある部分は人間との対話によって判断し、Agentと人間が協力して仕様を決定する。
 
 正本は常に `.mjun/specs/<slug>/` のLocal specとする。
 GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影)であり、作業はすべてLocalファイル上で行う。
 規則は [references/source-resolution.md](references/source-resolution.md) に従う。
 
 意思決定の判断材料に `mjun-grilling` / `mjun-research` / `mjun-prototype` を、
-承認前のspec検査に `mjun-spec-review` を、承認時のHTML確認に `exhtml` (あれば) を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
-
-## 委譲の境界
-
-- `mjun-specify` workflow直下の委譲を判断するorchestratorは本体だけとする
-- SubAgentを直接起動する場合は、次のleaf contractをpromptに含める: 「SubAgentを起動せず、担当作業を別Agentへ再移譲しない。自分で完了できない場合は結果またはblockerを親へ返し、追加の委譲は親だけが判断する」
-- Skill toolで呼び出したcallee skillはleaf roleとして扱わず、そのskill内部の委譲はcallee自身の規則に従う
+承認前のspec検査に `mjun-spec-review` を、承認時のHTML確認に `exhtml` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
 
 ## Arguments
 
 - `source` (任意): GitHub Issue番号 (`#123` / `123`)、GitHub URL、`.mjun/specs/<slug>`、またはMarkdownパス。
-  未指定の場合は会話内容を下書き素材として新規specを作る
+  未指定の場合は会話内容を下書きとして新規specを作る
 - `--grill` (任意): Human-firstモード。すべてのdecisionを1問ずつ人間と決める
 - `--skip-trial` (任意): trial implementation (Phase 5) を省略する
 
@@ -71,7 +64,7 @@ Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontm
 
 ### Phase 2: 調査とgap分析
 
-- `.mjun/steering/` (あれば) と関連コードを読み、原因、変更箇所、既存パターンを特定する
+- `.mjun/steering/`と関連コードを読み、原因、変更箇所、既存パターンを特定する
 - 用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) と共通の決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) を (あれば) 読む。specの用語がCONTEXT.mdの定義と衝突していればspec側を定義に揃え (定義を変えたい場合はHuman-owned decisionにする)、適用対象のacceptedな判断と矛盾する要求はHuman-owned decisionとして扱う ([references/source-resolution.md 用語集と決定記録](references/source-resolution.md#用語集と決定記録))
 - 対象以外のactiveなspec (source-resolution.mdの一覧手順で列挙) の `spec.md` のBoundariesと `design.md` のChange Outlineを読む。Ownsの重なり、Public Contracts Affectedが同じ公開interfaceを指す、Change Outlineのdirectoryの重なりがあれば、どちらのspecが所有するか (または分割・統合するか) をHuman-owned decisionとして扱う。対象specが他のactive specの成果に依存するなら、BoundariesのDependenciesに `spec: <slug>` と書く ([references/source-resolution.md spec間の依存と境界](references/source-resolution.md#spec間の依存と境界))
 - 現在のspecを [references/spec-template.md](references/spec-template.md) のcontract構成と突き合わせ、欠落セクション、曖昧な記述、実装者が追加調査を要する箇所を列挙する。取り込んだIssueコメントの合意事項は反映対象として扱う
