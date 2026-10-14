@@ -1,16 +1,24 @@
 #!/usr/bin/env zsh
-# config/textlint の設定とルールでtextlintを実行する。
+# config/textlint の設定と、miseが管理する本体・ルールでtextlintを実行する。
 # 使い方: textlint.sh <fix|report> [textlintの引数...]
 #   fix:    自動修正できるルール (textlintrc.fix.json)
 #   report: 自動修正できず、agentへ指摘を返すルール (textlintrc.report.json)
-# 本体とルールは install.sh が bun install でこのディレクトリに入れる。
+
+set -eu
+
+if (($# == 0)) || [[ $1 != fix && $1 != report ]]; then
+    print -u2 -- "Usage: $0 <fix|report> [textlint options...]"
+    exit 2
+fi
 
 DOTPATH=${0:A:h:h:h}
-textlint_dir="$DOTPATH/config/textlint"
-config="$textlint_dir/textlintrc.$1.json"
+config="$DOTPATH/config/textlint/textlintrc.$1.json"
 shift
 
-exec "$textlint_dir/node_modules/.bin/textlint" \
+# 呼び出し元のprojectではなく、dotfilesのglobal tool構成から解決する。
+textlint_prefix=$(cd "$DOTPATH" && mise where npm:textlint) || exit 2
+
+exec "$textlint_prefix/bin/textlint" \
     --config "$config" \
-    --rules-base-directory "$textlint_dir/node_modules" \
+    --rules-base-directory "$textlint_prefix/node_modules" \
     "$@"

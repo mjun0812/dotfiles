@@ -85,10 +85,7 @@ zsh "$DOTPATH/script/setup/setup_codex_daemon.sh" pin
 
 ################ [textlint] ################
 log_section "Setting up textlint..."
-bun install --frozen-lockfile --cwd "$DOTPATH/config/textlint"
-# Expose textlint on PATH via a symlink so rules resolve from the same node_modules as the binary
-ln -snfv "$DOTPATH/config/textlint/node_modules/.bin/textlint" "$HOME/.local/bin/textlint"
-ln -snfv "$DOTPATH/config/textlint/textlintrc.js" "$HOME/.textlintrc.js"
+zsh "$DOTPATH/script/setup/setup_textlint.sh" || exit 1
 
 ################ [bat] ################
 log_section "Setting up bat themes..."

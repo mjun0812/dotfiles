@@ -26,14 +26,18 @@ script/setup/update_completions.sh      # zsh補完の更新
 # フォーマット (pre-commit hookでも実行される)
 prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt + stylua (lua)
 
-# textlintの依存を入れ直す (package.json変更後)
-bun install --frozen-lockfile --cwd config/textlint
+# textlintのルールを入れ直す (miseのbun_args変更後)
+mise install --force npm:textlint
+zsh script/setup/setup_textlint.sh     # 共通設定と旧CLIリンクの移行
+
+# textlintのglobal導入・CLI・hook用wrapperの検証 (一時HOME、ネットワークが必要)
+python script/tests/test_textlint_mise.py
 
 # VSCode拡張をextensions.txtと完全同期 (--dry-runで差分確認)
 script/tools/sync_vscode_extensions.sh --dry-run
 ```
 
-テストスイートは無い。検証はGitHub Actions (`ci-ubuntu.yml` / `ci-rocky.yml` / `ci-macos.yml`) がクリーンな環境で `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。`ci-macos-packages.yml` は `mise bootstrap packages apply` (brew / brew-cask) の適用・冪等性・statusを、`ci-lint.yml` は `prek run --all-files` を検証する。
+全体の検証はGitHub Actions (`ci-ubuntu.yml` / `ci-rocky.yml` / `ci-macos.yml`) がクリーンな環境で `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。`ci-macos-packages.yml` は `mise bootstrap packages apply` (brew / brew-cask) の適用・冪等性・statusを、`ci-lint.yml` は `prek run --all-files` を検証する。`ci-textlint.yml` は一時HOMEでmiseによるtextlintの導入、通常CLI、hook用wrapper、旧リンクの移行をUbuntu / macOSで検証する。
 
 ## アーキテクチャ
 
@@ -54,7 +58,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/ai-agents/AGENTS_global.md`                                                                                                   | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                   |
 | `config/ai-agents/gemini/antigravity-cli/settings.json`                                                                               | `~/.gemini/antigravity-cli/settings.json`                                     |
 | `config/ai-agents/apm.yml`                                                                                                            | `~/.apm/apm.yml`                                                              |
-| `config/textlint/node_modules/.bin/textlint`, `config/textlint/textlintrc.js`                                                         | `~/.local/bin/textlint`, `~/.textlintrc.js`                                   |
+| `config/textlint/textlintrc.js`                                                                                                       | `~/.textlintrc.js` (CLIはmiseのPATH / shimから公開)                           |
 | `config/{vscode,cursor}/{settings.json,keybindings.json}`                                                                             | 各アプリのUserディレクトリ (`extensions.txt` は展開されず参照専用)            |
 
 上書き前の既存ファイルは `.backup/` に退避される。
@@ -82,8 +86,9 @@ script/tools/sync_vscode_extensions.sh --dry-run
 - agentが編集したファイルには、Claude Code・Codex共通のPostToolUse hookが2つかかる (編集されたファイルの取り出しは `script/hooks/edited-files.sh` で共通)。両hookは並列に起動される。
   - `script/hooks/format-hook.sh`: formatterと自動修正だけをかけ、指摘はagentへ返さない。Markdownには `textlint --fix` (`textlintrc.fix.json`: 全角括弧、英数字と日本語の間のスペース) をかけてから `oxfmt` を通す。
   - `script/hooks/textlint-report-hook.sh`: Markdownの今回変わった行 (git追跡中ならHEADとの差分、それ以外は全行) にある自動修正できない指摘 (`textlintrc.report.json`: `preset-ai-words-ja`、`@textlint-ja/preset-ai-writing`) を、exit 2でagentへ返す。
-  - textlintのルールと設定は `config/textlint/` にあり、`script/tools/textlint.sh <fix|report>` 経由で実行する。本体とルールは `install.sh` が `bun install` で同ディレクトリの `node_modules` に入れる。`--fix` で直せるルールはfix側、直せないルールはreport側に置く。
-  - 人が手で使う `textlint` も同じ本体とルールを使う。`~/.local/bin/textlint` は `node_modules/.bin/textlint` へのsymlinkで、ルールは本体と同じ `node_modules` から解決される。設定の `~/.textlintrc.js` (`textlintrc.js`) はfix側とreport側のルールをまとめたもので、textlintが設定をカレントディレクトリから親へ探すため、自前の設定を持たないホーム配下のディレクトリから実行したときだけ使われる (対象のファイルはホームの外でもよい)。`--config` には渡せない (rc-config-loaderが拡張子付きのJSをYAMLとして読む)。
+  - textlintの設定と辞書は `config/textlint/` にあり、`script/tools/textlint.sh <fix|report>` 経由で実行する。本体とルールはmiseの `npm:textlint` と `bun_args` で同じBun prefixに導入する。wrapperはdotfilesのディレクトリから `mise where npm:textlint` で解決し、呼び出し元projectの別バージョンを使わない。`--fix` で直せるルールはfix側、直せないルールはreport側に置く。
+  - 人が手で使う `textlint` も同じ本体とルールを使う。CLIはmiseのPATH / shimから公開され、ルールは同じinstall先の `node_modules` から解決される。`setup_textlint.sh` はdotfilesが作った旧 `~/.local/bin/textlint` のsymlinkだけを撤去する。設定の `~/.textlintrc.js` (`textlintrc.js`) はfix側とreport側のルールをまとめたもので、textlintが設定をカレントディレクトリから親へ探すため、自前の設定を持たないホーム配下のディレクトリから実行したときだけ使われる (対象のファイルはホームの外でもよい)。`--config` には渡せない (rc-config-loaderが拡張子付きのJSをYAMLとして読む)。
+- textlintの導入・更新手順とBun backendへの依存は `config/textlint/README.md` に記載する。ルールは `bun_args` の固定版を明示的に変更する。旧 `package.json` / `bun.lock` は使わず、推移依存の完全固定は行わない。
 - `templates/` にはMarkdownのPDF出力用CSSと設定、`repo: local` のpre-commit設定テンプレート、agentsviewのリモートホスト定義 (`~/.agentsview/remotes.toml`) のplaceholderがある。PDF用ファイルはVS Code・Cursorの設定と `md-to-pdf` のaliasから参照される。commit・PR・Issue・レビュー用テンプレートは各skillに同梱される。
 
 ## 規約
