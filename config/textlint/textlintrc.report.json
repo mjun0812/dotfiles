@@ -13,7 +13,13 @@
       "sentence-length": false
     },
     "preset-ja-technical-writing": {
-      "sentence-length": false
+      "sentence-length": false,
+      "no-mix-dearu-desumasu": {
+        "preferInHeader": "",
+        "preferInBody": "",
+        "preferInList": "",
+        "strict": false
+      }
     }
   }
 }
