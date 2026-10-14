@@ -9,161 +9,127 @@ allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*),
 
 # mjun-specify
 
-アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できる仕様書へ磨き上げるSkill。
-自明な部分はAgentが自身で判断し、非自明な部分や選択肢がある部分は人間との対話によって判断し、Agentと人間が協力して仕様を決定する。
-
-正本は常に `.mjun/specs/<slug>/` のLocal specとする。
-GitHub Issueが関わる場合も、Issueは入口(取り込み)と出口(投影)であり、作業はすべてLocalファイル上で行う。
-規則は [references/source-resolution.md](references/source-resolution.md) に従う。
-
-意思決定の判断材料に `mjun-grilling` / `mjun-research` / `mjun-prototype` を、
-承認前のspec検査に `mjun-spec-review` を、承認時のHTML確認に `exhtml` を、承認後のtask分解に `mjun-to-tasks` をSkill toolで呼び出す。
+specの実体は常に `.mjun/specs/<slug>/` のLocal specとし、GitHub Issueは取り込みと投影にだけ使う。spec・Issue・状態の規則は [references/source-resolution.md](references/source-resolution.md) に従う。
 
 ## Arguments
 
-- `source` (任意): GitHub Issue番号 (`#123` / `123`)、GitHub URL、`.mjun/specs/<slug>`、またはMarkdownパス。
-  未指定の場合は会話内容を下書きとして新規specを作る
-- `--grill` (任意): Human-firstモード。すべてのdecisionを1問ずつ人間と決める
-- `--skip-trial` (任意): trial implementation (Phase 5) を省略する
+- `source` (任意): GitHub Issue番号 (`#123` / `123`)、GitHub URL、`.mjun/specs/<slug>`、またはMarkdownパス。未指定なら会話内容を下書きとして新規specを作る
+- `--grill` (任意): Human-firstモード。Agent-ownedを含むすべてのdecisionを1問ずつ人間と決める (factsの調査はAgentが行う)。未指定時はAgent-firstで、Agent-ownedはAgentが決め、Human-ownedと判断に迷うものだけを人間と決める
+- `--skip-trial` (任意): trial implementationを行わない
 
-## 2つのモード
+## 共通規則
 
-- **Agent-first (default)**: 調査して決定できるdecision (Agent-owned) はAgentが自動で決め、人間の判断が必要なもの (Human-owned) と判断に迷うものだけを1問ずつ人間と決める
-- **Human-first (`--grill`)**: factsの調査はAgentが行い、意思決定はAgent-ownedを含むすべてを1問ずつ人間との対話で決める。決定はその場でspecへ反映する。
+- **決定記録**: Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`。entryの形式は [references/decisions-template.md](references/decisions-template.md) に従う。採択済みのentryの内容 (決定またはEvidence) を変えるときは訂正の新entryを追記し、旧entryを `Status: superseded by D-NNNN` にして、対象specの `Decisions:` 行の参照を更新する
+- **用語集**: repo直下の `CONTEXT.md`、無ければ `.mjun/CONTEXT.md`
+- **選択肢の確認**: AskUserQuestionで行う。使えない環境では同じ選択肢をテキストで提示する
+- **GitHub remote**: `gh repo view` が失敗する場合はGitHub remoteが無いものとして扱い、PRやIssue作成の選択肢を出さない
+- 出力言語はsourceまたは依頼の言語に合わせる
 
 ## Task
 
 ### Phase 0: source解決と振り分け
 
-sourceから対象を判別し、specを作るかどうかを振り分ける。出力言語はsourceまたは依頼の言語に合わせて決める。
-
 #### source解決
 
-1. Issue番号またはGitHub URL → `gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。activeなspec (`status: active`) に `Source: #<number>` を持つ既存specがあれば取り込み済みとして、それを対象にする (複数ヒットした場合は一覧を提示して選んでもらう)。activeに無ければ `status: done` のspecからも `Source: #<number>` を検索し、見つかれば実装済みの可能性を警告して、`active` へ戻して磨き直すか中止するかを確認する (同じIssueを元にするspecを複数作らない)。どちらにも無ければ振り分けへ進む
+1. Issue番号またはGitHub URL → `gh auth status` を確認し (失敗時は停止して認証を案内)、`gh issue view <number> --json number,state,title,body,labels,comments,url` で取得する。`state: CLOSED` なら中止して報告する。`Source:` 行の逆引きで既存specが見つかればそれを対象にする (doneのspecなら、`active` へ戻して磨き直すか中止するかを確認する)。無ければ振り分けへ進む
 2. `.mjun/specs/<slug>` のパス → 既存specを対象にする (配下の全mdをRead)
 3. `.mjun/specs/` 外のMarkdownパス → ファイル内容を読み、振り分けへ進む
 4. sourceなし → 会話の依頼内容を素材として振り分けへ進む。内容がまったく無い場合のみ自由テキストで概要を受け取る
 
 #### 振り分け
 
-既存specを対象にした場合 (1で取り込み済みspecが見つかった、または2) は省略する。それ以外は、依頼内容とactiveなspecの一覧 (H1タイトルと `Source:` 行。source-resolution.mdの一覧手順で導出する) を比べ、判定に必要な範囲だけ関連コードを確認して、次の順に最初に当てはまるものを選ぶ。
+既存specを対象にした場合は省略する。それ以外は、依頼内容とactiveなspecの一覧 (H1タイトルと `Source:` 行) を比べ、判定に必要な範囲だけ関連コードを確認して、最初に当てはまるものを選ぶ。
 
-1. **既存specの拡張**: 依頼が既存のactiveなspecの境界内の拡張、修正、または重複である。sourceなしとMarkdownでは新規を作らず、依頼内容を素材としてそのspecを磨き直す (重複specを作らない。追加の質問はしない)。Issueは `Source:` を1つしか持てないため統合せず新規specとして取り込み、境界の重なりはPhase 2の所有の判断に回す
-2. **spec不要**: 人間の判断を要する論点 (振る舞い、ドメインの意味、スコープ) が無く、変更が局所的で、完了条件が自明である (typo修正、設定値の変更、振る舞いを変えないリファクタリングなど)。判定理由を1行添えて、「直接実装してPRを作る / 直接実装してcommitまで / specを作る」をAskUserQuestionで確認する (使えない環境では選択肢をテキストで提示する。`gh repo view` が失敗する (GitHub remoteが無い) 場合はPRの選択肢を出さない)。直接実装が選ばれたら、specのファイルを作らずにこのskillを終え、同じ会話のまま直接実装へ移る。commitは `git-commit` で作り、PRを選んだ場合は続けて `github-pr-create` で作る (sourceがIssueなら、Issue番号を `spec` として渡し、`Closes #N` を付ける)
-3. **新規spec**: 上のどちらにも当たらない。Phase 1で取り込みまたは新規作成する
+1. **既存specの拡張**: 依頼が既存のactiveなspecの境界内の拡張、修正、または重複である。sourceなしとMarkdownでは、追加の質問をせず依頼内容を素材としてそのspecを磨き直す。Issueは `Source:` を1つしか持てないため新規specとして取り込み、境界の重なりはPhase 2で扱う
+2. **spec不要**: 人間の判断を要する論点 (振る舞い、ドメインの意味、スコープ) が無く、変更が局所的で、完了条件が自明である (typo修正、設定値の変更、振る舞いを変えないリファクタリングなど)。判定理由を1行添えて「直接実装してPRを作る / 直接実装してcommitまで / specを作る」を確認する。直接実装なら、specを作らずにこのskillを終えて同じ会話で実装し、commitは `git-commit`、PRは続けて `github-pr-create` で作る (sourceがIssueならIssue番号を `spec` として渡し、`Closes #N` を付ける)
+3. **新規spec**: 上のどちらにも当たらない
 
-### Phase 1: sourceの確保
+### Phase 1: Local specの確保
 
-Phase 2以降でcontractを作成または更新する前に `spec.md` のfrontmatterを `approval: pending` にする。既存specを磨き直す場合も、最初の変更より先に `approved` から `pending` へ戻す。承認前にsessionが中断しても、未承認contractが実装されないためのgateである。
+contractを作成・更新する前に `spec.md` のfrontmatterを `approval: pending` にする (既存specが `approved` なら最初の変更より先に戻す)。
 
-実装が進んでいるspec (`tasks.md` に `done` のtaskがある) を拡張する場合は追記型で扱う。既存のRequirementsとAcceptance Criteriaの意味を変えず、増分を新しいRequirement / Acceptance Criterionとして足す (`done` のtaskを再検証へ戻すのは、そのAcceptance Criteriaの意味を変える場合だけとし、その必要があるかはHuman-owned decisionとして確認する)。`status: done` のspecへの追加要求も、`active` へ戻してこのskillの手順 (セルフ検査、spec review、承認) を通す。
+- **取り込み** (新規specになったIssueまたは `.mjun/specs/` 外のMarkdown): Issueは本文とコメントを、Markdownはファイル内容を `.mjun/specs/<slug>/spec.md` へ機械的に構造化する (slugはタイトルの英語kebab-case、frontmatterは `status: active` と `approval: pending`)。Issue由来はH1直下に `Source: #<number>` を書く。Markdown由来は純Localとし、元ファイルは変更しない
+- **新規作成** (sourceなし): 依頼内容を下書き素材として、[references/spec-template.md](references/spec-template.md) の骨子で `spec.md` を作る
+- **追記型**: `tasks.md` に `done` のtaskがあるspecを拡張する場合は、既存のRequirementsとAcceptance Criteriaの意味を変えず、増分を新しい項目として足す。`done` のtaskを再検証へ戻す (そのACの意味を変える) かはHuman-owned decisionとする。`status: done` のspecへの追加要求も、`active` へ戻してこのskillの手順を通す
 
-- **取り込み** (振り分けで新規specになったIssueまたは `.mjun/specs/` 外のMarkdown): Issueは本文とコメントを、Markdownはファイル内容を `.mjun/specs/<slug>/spec.md` へ構造化する (slugはタイトルの英語kebab-case)。frontmatterに `status: active` と `approval: pending` を記録し、Issue由来はH1直下に `Source: #<number>` を書く (Markdown由来は書かず純Local扱いとし、元ファイルは変更しない)。この時点では機械的な構造化に留め、磨き上げはPhase 2以降で行う
-- **新規作成** (振り分けで新規specになったsourceなしの依頼): Phase 0で得た依頼内容を下書き素材とする
-  - `.mjun/specs/<slug>/spec.md` を [references/spec-template.md](references/spec-template.md) の骨子で作成する (frontmatterは `status: active` と `approval: pending`)
+### Phase 2: 調査と論点整理
 
-### Phase 2: 調査とgap分析
+- `.mjun/steering/` と関連コードを読み、原因、変更箇所、既存パターンを特定する
+- 用語集と決定記録を (あれば) 読む。specの用語が用語集と衝突すればspec側を定義に揃え、定義を変えたい場合や、適用対象のacceptedな判断と矛盾する要求はHuman-owned decisionとする
+- 対象以外のactiveなspecとの境界の重なりと依存を、source-resolution.mdの「spec間の依存と境界」に従って扱う
+- 現在のspecを [references/spec-template.md](references/spec-template.md) のcontract構成と比べ、欠落セクション、曖昧な記述、実装者が追加調査を要する箇所 (gap) を列挙する。取り込んだIssueコメントの合意事項も反映対象とする
+- スコープ外の問題は本文に混ぜず、Out of Scopeへの記載と別spec化の提案に回す
+- 依頼の解釈が複数成立し、どれを取るかで論点の大半が変わる場合 (例: 既存の仕組みへ載せるのか、別の単純な処理を足すのか) は、その方向だけを先にHuman-owned decisionとして解決する
+- gapから論点を洗い出し、[references/decision-authority.md](references/decision-authority.md) に従ってAgent-owned / Human-owned / Evidence-blockedへ分類する。前提が解決済みの論点 (frontier) だけを扱い、依存する論点は前提の解決後に分類し直す
 
-- `.mjun/steering/`と関連コードを読み、原因、変更箇所、既存パターンを特定する
-- 用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`) と共通の決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) を (あれば) 読む。specの用語がCONTEXT.mdの定義と衝突していればspec側を定義に揃え (定義を変えたい場合はHuman-owned decisionにする)、適用対象のacceptedな判断と矛盾する要求はHuman-owned decisionとして扱う ([references/source-resolution.md 用語集と決定記録](references/source-resolution.md#用語集と決定記録))
-- 対象以外のactiveなspec (source-resolution.mdの一覧手順で列挙) の `spec.md` のBoundariesと `design.md` のChange Outlineを読む。Ownsの重なり、Public Contracts Affectedが同じ公開interfaceを指す、Change Outlineのdirectoryの重なりがあれば、どちらのspecが所有するか (または分割・統合するか) をHuman-owned decisionとして扱う。対象specが他のactive specの成果に依存するなら、BoundariesのDependenciesに `spec: <slug>` と書く ([references/source-resolution.md spec間の依存と境界](references/source-resolution.md#spec間の依存と境界))
-- 現在のspecを [references/spec-template.md](references/spec-template.md) のcontract構成と突き合わせ、欠落セクション、曖昧な記述、実装者が追加調査を要する箇所を列挙する。取り込んだIssueコメントの合意事項は反映対象として扱う
-- スコープ外の問題を見つけた場合は本文に混ぜず、Out of Scopeへの記載と別spec化の提案に回す
+### Phase 3: decisionの解決と設計
 
-### Phase 3: decision frontierの構築
+frontierの論点を1つずつ解決し、確定するたびにspecと決定記録へ反映して、対象specの `Decisions:` 行へIDを追加する。用語が確定したら用語集へ追記する (無ければ `.mjun/CONTEXT.md` を作る)。
 
-依頼の解釈が複数成立し、どれを取るかで論点の大半が変わる場合 (例: 既存の仕組みへ載せるのか、別の単純な経路を足すのか) は、frontierを組む前に、その方向だけをHuman-owned decisionとして先に解決する。片方の解釈を前提に細部の論点を作ってから人間に渡さない。
-
-gapから意思決定の論点を洗い出し、[references/decision-authority.md](references/decision-authority.md) に従って各論点をAgent-owned / Human-owned / Evidence-blockedへ分類する。前提が解決済みの論点 (frontier) だけを扱い、依存する論点は前提の解決後に分類し直す。
-
-### Phase 4: decisionの解決
-
-frontierの論点を1つずつ解決し、確定するたびに**Localのspecと決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) へ逐次**反映する。対象specの `Decisions:` 行へIDを追加する。決定記録のentry形式は [references/decisions-template.md](references/decisions-template.md) に従う。
-
-- **Agent-owned**: decision-authority.mdの自己問答 (論点 → 調査 → 推奨案 → 反論 → 採択 + 確信度) で解決する。確信度lowは `Status: tentative` (要確認) として記録し、Phase 5.7で解消する
+- **Agent-owned**: decision-authority.mdの自己問答で解決する。確信度lowは `Status: tentative` として記録し、Phase 4で解消する
 - **Human-owned**: `mjun-grilling` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
-- **Evidence-blocked**: 不足の種類に応じて `mjun-research` (外部事実) / `mjun-prototype` (UI、状態、ロジックの実物) / trial implementation (Phase 5へ) で証拠を集め、再分類して解決する
-- `--grill` 指定時は、Agent-ownedのdecisionもHuman-ownedと同様に1問ずつ確認する
-- decisionの解決で用語が確定したら、その場でPhase 2で解決した `CONTEXT.md` へ追記する (どちらも無ければ `.mjun/CONTEXT.md` を作る)
+- **Evidence-blocked**: `mjun-research` (外部事実) / `mjun-prototype` (UI、状態、ロジックの実物) / trial implementation (現行codeでの実現可能性) で証拠を集め、再分類して解決する
 
-### Phase 4.5: design.mdの作成
+frontierがすべて解決したら、採択した設計を [references/design-template.md](references/design-template.md) の構成で `design.md` に書く (既存なら更新する。省略しない)。実装者が決定記録を読み直さなくても構造が分かるよう、散らばった設計上の採択をここへ集約する。
 
-frontierのdecisionがすべて解決したら、採択した設計を `design.md` へ [references/design-template.md](references/design-template.md) の構成で書く (既存specの磨き直しでは既存のdesign.mdを更新する)。design.mdは省略しない。spec.mdと同じく、調査しても埋まらないセクションは省略してよいが、Modules と Change Outline (module / directory単位。ファイルは書かない) は必ず書く。共通記録の対象specが参照するdecisionに散らばる設計上の採択を1か所に集約し、実装者 (fresh context) が共通記録を読み直さなくても構造が分かる状態にする。
+実装方針の実現可能性が不確かな場合は、[references/trial-implementation.md](references/trial-implementation.md) の手順で検証する (`--skip-trial` 指定時は行わない)。
 
-### Phase 5: trial implementation
+### Phase 4: 承認準備
 
-`--skip-trial` 指定時は省略する。実装方針の実現可能性が不確かな場合に、一時worktreeで検証する:
+承認を求める前に、次の3つをこの順に行う。
 
-1. worktreeを作成する: branch名は `specify/<slug>-trial`、パスは `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>`。既存と衝突する場合は末尾に `-2`, `-3` を付ける。作成後に `ln -s <repo-root>/.mjun <worktree-path>/.mjun` を張る (`.mjun/` はgit管理外でworktreeに無く、symlinkが無いとworktree内から相対パスで行ったspecの更新が失われる)
-2. 修正方針の最小実装を行い、テストを実行して結果を確認する
-3. 検証結果 (実行したテスト、結果、落とし穴、方針の修正点) を要約して `design.md` の Trial Implementation Notes に書く。diff全文は載せず、鍵になる数行のスニペットのみ許可する
-4. 方針の問題が見つかった場合はPhase 4へ戻り、decisionと `design.md` を更新する
-5. **worktreeとbranchは、成功でも中断でも必ず削除する**: `git worktree remove --force <path>` → `git branch -D <branch>`。削除に失敗した場合はユーザーに警告する
+#### 4-1. セルフチェック
 
-### Phase 5.3: 承認前のセルフ検査
+spec reviewに機械的な指摘を残さないため、次を確かめて欠けを反映する。
 
-Phase 5.5のreviewerに機械的な指摘を残さないため、spec reviewを呼ぶ前に次を自分で検査し、欠けをspec / decisionsへ反映する。
+1. **AC 1件 = 1コマンド**: 各ACが1つの確認コマンドに対応するか。複数の観察 (シナリオ、バージョン、dispatch) を束ねていれば分割する
+2. **Requirement ↔ ACの対応**: 各Requirementの振る舞いごとに、それを観察するACがあるか。無ければ追加する (対応表は会話内に保持し、specへは書かない)。件数や回数を問うRequirementのACは、存在確認ではなく件数で書く
+3. **Evidenceの実在確認**: 対象specが参照するentryのEvidence (`file:line`、引用、件数) を、ファイルの読み直しかコマンドの再実行で確かめ、食い違いは訂正entryで置き換える。contractとdesignに書いた外部の固有名 (環境変数名、URL、package名、CLI option) は一次資料で綴りを確かめ、確かめられなければEvidence-blockedとしてPhase 3へ戻す
+4. **ACのbaseline確認**: 既存のコマンド (テスト、lint、CLI、`grep`) で確認できるACは現在のtreeで実行する。新規・変更する振る舞いのACが変更前から通るなら、要求した差分を観察できているかを確かめ、できていなければ差分を捉えるACへ書き直す。回帰防止のACと、完了済みtaskの意味を変えないACは、変更前に通っていても残す。Boundaries外の既存の失敗で成立しないAC (repository全体のlint成功など) は、観察範囲を変更箇所へ絞る
 
-1. **AC 1件 = 1コマンド**: Acceptance Criteriaの各項目が1つの検査コマンドに落ちるか。複数の観察 (複数のシナリオ、バージョン、dispatch) を1件に束ねていれば分割する
-2. **Requirement ↔ ACの対応**: Requirements 1件ごとに、それを観察するACが1つ以上あるか。1件のRequirementが複数の振る舞いを述べていれば、振る舞いごとに対応を見る。無ければACを追加する (対応表は会話内に保持し、specへは書かない)。件数や回数を問うRequirement (「1件につき1行」など) のACは、存在確認ではなく件数で書く
-3. **Evidenceの実在確認**: 決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) の対象specが参照するentryのEvidenceにある `file:line`、引用、件数を、その場でファイルを読み直す、またはコマンドを再実行して照合する。食い違いは訂正entryを追記し、旧entryをsupersededにしてspecの参照を更新する。contractとdesignに書いた外部の固有名 (環境変数名、URL、package名、CLI option) は、一次資料 (公式ドキュメント、upstreamのソース) で綴りを確かめる。確かめられないものはEvidence-blockedとしてPhase 4へ戻す
-4. **ACのbaseline確認**: 各ACの検査に使えるコマンドが既にあるもの (既存のテスト、lint、CLI呼び出し、`grep`) は、現在のtreeで実行する。新規または変更する振る舞いのACが変更前から成立している場合は、要求した差分を観察できているかを確認し、観察できていなければその差分を捉えるACへ書き直す。完了済みtaskの意味を変えないACと、既存の振る舞いを維持する回帰防止のACは、変更前に通っていても維持する。Boundariesの外にある既存の失敗のために成立させられないAC (repository全体のlint成功など) は、観察の範囲を変更箇所へ絞る
+#### 4-2. spec review
 
-### Phase 5.5: spec review
+`mjun-spec-review` に `.mjun/specs/<slug>` と次の文脈を渡してSkill toolで呼び出す (`--grill` 指定時も省略しない)。
 
-承認を求める前に、`mjun-spec-review` に `.mjun/specs/<slug>` を渡してSkill toolで呼び出し、contractとdesign.mdをfresh contextで検査させる。メイン会話はPhase 2〜5で自分が下した判断に引きずられるため、検査は必ず別のcontextで行う。`--grill` 指定時も省略しない。
+- sourceの原文 (Issueの本文とコメント、取り込んだMarkdown、または下書き素材)
+- 人間が決めたdecisionの一覧 (D番号とタイトル)
 
-呼び出し時に次の文脈を渡す (skillが取得し直さないため)。
+結果ブロック `## Spec Review` の `- VERDICT:`、`FINDINGS`、`HUMAN_DECISION_CONFLICTS` を読む。構造化値が無い、または曖昧なら1回だけ再要求する。
 
-- sourceの原文: Issueなら本文とコメント、Markdown取り込みなら元ファイルの内容、新規作成ならPhase 1の下書き素材
-- Human-ownedとして人間が決めたdecisionの一覧 (D番号とタイトル)
+- `PASS` → 4-3へ進む
+- `NEEDS_FIXES` → contractの明文とコードの事実に照らして妥当な指摘だけをspec / decisions / designへ反映する
+- `HUMAN_DECISION_CONFLICTS` → 該当decisionだけを `mjun-grilling` の単一decisionモードで再解決し、`design.md` を更新する
+- どの場合も再レビューはしない
 
-結果ブロック `## Spec Review` の合否は `- VERDICT:` フィールドで判定する。修正対象は `FINDINGS`、人間への再確認が必要なdecisionは `HUMAN_DECISION_CONFLICTS` から読み取る。必要な構造化値が無い、または曖昧な場合は1回だけ再要求する。
+#### 4-3. tentativeの解消
 
-- `PASS` → Phase 5.7へ進む
-- `NEEDS_FIXES` → 各指摘を読み、contractの明文とコードの事実に照らして妥当なものをspec / decisions / designへ反映する。決定の内容が変わる場合は決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) にentryを追記し、旧entryをsupersededにして対象specの参照を更新する。妥当でないと判断した指摘は捨てる。**再レビューはしない** (直後に人間の承認があるため)
-- `HUMAN_DECISION_CONFLICTS` に挙がった指摘 (人間が決めたdecisionとの矛盾) は、Phase 4へ戻って該当decisionだけを `mjun-grilling` の単一decisionモードで再解決し、`design.md` を更新してからPhase 5.7へ進む。戻るのは1回だけとし、再解決後の再レビューはしない
+対象specの `Decisions:` が参照する `Status: tentative` を承認前に0件にする。
 
-### Phase 5.7: tentativeの解消
+1. **証拠による昇格**: 確信度が低い原因が証拠の不足なら、Evidence-blockedと同じ手段で証拠を集めて再判定する (`--skip-trial` 指定時はtrial implementationを使わない)。確信度がhigh / mediumになれば `Status: accepted` にし、Evidenceへ根拠を追記する
+2. **人間の確認**: 上がらなかったものは、`mjun-grilling` の単一decisionモードへ論点、選択肢、agentの採択案 (推奨として)、調査結果を渡して1問ずつ解決する。agentの採択と同じなら `Status: accepted`、`Owner: human` にしてEvidenceへ確認日と根拠を追記する。異なるなら `Owner: human` の新entryで置き換え、`spec.md` と `design.md` を更新する
 
-承認を求める前に、決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) のうち対象specの `Decisions:` が参照する `Status: tentative` のdecisionをすべて解消し、対象specの承認時点でtentativeを0件にする。Phase 4の途中でAgent-ownedの論点を人間に投げない代わりに、ここで証拠を集め、証拠で決まらなかったものだけを人間に確認する。
+### Phase 5: contractの提示と承認
 
-1. **証拠による昇格**: 確信度が低い原因が証拠の不足なら、Evidence-blockedと同じ経路で証拠を集めて再判定する (外部事実は `mjun-research`、UI・状態・ロジックの実物は `mjun-prototype`、現行codeでの実現可能性はPhase 5の手順によるtrial implementation。`--skip-trial` 指定時はtrial implementationを使わない)。確信度がhigh / mediumになれば `Status: accepted` へ更新し、Evidenceに根拠を追記する
-2. **人間の確認**: 証拠で上がらなかったものは、Human-ownedと同じく `mjun-grilling` の単一decisionモードへ論点、選択肢、agentの採択案 (推奨として)、調査結果を渡して1問ずつ解決する。人間の決定がagentの採択と同じなら、entryの `Status` を `accepted`、`Owner` を `human` に更新し、Evidenceへ確認日と根拠を追記する。異なるなら旧entryを `Status: superseded by D-NNNN` にして `Owner: human` の新entryを追加してDecisionsの参照を更新し、`spec.md` と `design.md` の該当箇所を更新する
+contract全文、`design.md` 全文、変更点サマリ (追加・変更したセクションと理由。spec reviewの指摘を反映した箇所はその旨)、4-3で解消したdecision (D番号と、証拠で昇格 / 人間の決定の別) を提示し、「反映する / 修正して再提示 / HTMLで内容を確認する / キャンセル」で承認を取る。承認対象はcontractで、design.mdは目視用である。
 
-### Phase 6: contractの提示と承認
+- **反映する**: `approval: approved` へ更新してPhase 6へ進む
+- **修正して再提示**: 指摘を反映してこのPhaseをやり直す
+- **HTMLで内容を確認する**: [references/approval-html.md](references/approval-html.md) に従って解説HTMLを作って開き、同じ承認質問に戻る
+- **キャンセル**: 以降へ進まず、Local specを削除するか `approval: pending` のまま残すかを確認する
 
-- specのcontract全文、`design.md` の全文、変更点サマリ (追加または変更したセクションと理由。Phase 5.5の指摘を反映した箇所はその旨を添える)、Phase 5.7で解消したdecisionの一覧 (D番号と、証拠で昇格 / 人間の決定の別) を提示する。承認対象はcontractであり、design.mdは人間が目視する場所とする (気になる点があれば「修正して再提示」で戻す)
-- AskUserQuestionで「反映する / 修正して再提示 / HTMLで内容を確認する / キャンセル」の承認を取る (使えない環境では同等の選択肢をテキストで提示する)。「修正して再提示」は指摘を反映してこのPhaseをやり直す
-- 「HTMLで内容を確認する」の場合は、設計と実装の方針を図解で説明する1枚の自己完結HTMLを作って `open` で開き、同じ承認質問に戻る。contractとdesign.mdの転記ではなく、[references/approval-html.md](references/approval-html.md) の構成で説明する。Skill toolに `exhtml` があれば、approval-html.mdの内容と素材 (spec.md、design.md、参照するdecision、変更前のコード構造の調査結果) を渡して作らせる。無ければskillを使わずその場でHTMLを書く (図はインラインSVGで描き、外部ファイルに依存しない)。保存先は `/tmp/YYYY-MM-DD-<slug>-spec.html` とし、spec配下には置かない
-- 「反映する」の場合は `spec.md` のfrontmatterを `approval: approved` へ更新してからPhase 7へ進む
-- 「キャンセル」の場合は以降のPhaseへ進まず、作成または更新済みのLocal specを削除するか `approval: pending` のまま残すかを確認する
+### Phase 6: task分解
 
-### Phase 7: task分解
+`mjun-to-tasks` に調査済みの文脈 (requirements、boundary、変更対象の見当) を渡し、承認済みcontractを `tasks.md` へ分解する。単一task規模でも省略せず、既存の `tasks.md` は最新contractで再分解する。承認は取らない。
 
-`mjun-to-tasks` を連結して、承認済みcontractを `tasks.md` へ分解する。単一task規模でも省略しない (taskの決定はspec作成側が持ち、実装側は `tasks.md` が無ければ着手しない)。既存の `tasks.md` があれば最新contractへ再分解する (contractから消えたtaskがキューに残らない)。調査済みの文脈 (requirements、boundary、変更対象の見当) をプロンプトで渡す。task分解はAgent-ownedのため承認は取らない。
+### Phase 7: Issueへの投影
 
-### Phase 8: Issueへの記帳
+`Source:` の無いspecでは投影先Issueを作るかを確認し、作らない場合とGitHub remoteが無い場合は純LocalのままこのPhaseを終える。それ以外は [references/issue-projection.md](references/issue-projection.md) に従ってIssueを作成・投影する。投影直前の確認でLocal specに無い内容を取り込む場合は、`approval: pending` へ戻してPhase 3へ戻る。
 
-`Source:` の無いspecでは、投影先Issueを作成するかをAskUserQuestionで確認する (使えない環境では選択肢をテキストで提示する)。ただし `gh repo view` が失敗する (GitHub remoteが無い) 場合は確認せず、純LocalのままこのPhaseを終了する。作成しない場合も純LocalのままこのPhaseを終了する。作成する場合は、リポジトリ内 `.github/ISSUE_TEMPLATE/` (無ければ [references/ISSUE_TEMPLATE](references/ISSUE_TEMPLATE)、日本語は [references/ISSUE_TEMPLATE_JA](references/ISSUE_TEMPLATE_JA)) から種別を自動判定してタイトルとラベル (既存ラベルのみ) を生成し、`gh issue create` で投影先Issueを作成して `Source:` を記録する (本文は次の投影手順で書き込む)。
-
-承認済みcontractをIssueへ投影する:
-
-1. `gh issue view` で最新のIssueを取得する。取り込み後に付いた新しいコメントや、Local specに反映されていない本文の記述があれば内容を提示し、specへ取り込むかを確認する (取り込む場合は `approval: pending` へ戻してからPhase 4へ戻る)
-2. Issue本文を一時ファイル経由で一括更新する (`gh issue edit <number> --body-file <tmpfile>`)。取り込んだIssueの元の本文は消さず、区切り行 `<!-- projected-spec -->` の下へ投影を追記する (本文に区切り行が無ければ本文全体を元の本文として残し、あれば区切り行より下だけを置き換える。Issueのタイトルは変更しない)。投影にはcontract (Context〜Out of Scope) + `## Decision Log` (対象specが参照するacceptedのdecisionの要約表) + 必要なら `## Design Notes` + `tasks.md` があれば `## Tasks` (taskタイトルを `- [ ]` のチェックボックスで列挙) を置く。Dependenciesの `spec: <slug>` 行は、そのspecに `Source: #M` があれば `#M` に置き換え、無ければ除く (specは内部文書)。task進捗はLocalの `tasks.md` だけで管理し、Issueのチェックボックスへは同期しない
-3. 却下案と検討経緯は `gh issue comment` で記録し、変更サマリのコメントを1件追記する (body編集はwatcherに通知されないため)
-
-### Phase 9: 結果報告
-
-以下を簡潔にまとめて出力する。
+### Phase 8: 結果報告
 
 - **Spec**: Local specのパス (`Source:` があればIssue番号とURLも)
 - **変更点サマリ**: 追加または変更したセクション
-- **Review**: Phase 5.5のVERDICTと、反映した指摘の件数 (Phase 4へ戻したdecisionがあればそのD番号)
-- **Decisions**: Phase 5.7で解消したtentativeの一覧 (D番号と、証拠で昇格 / 人間の決定の別)。無ければ「なし」
-- **Tasks**: 分解した場合はtask一覧 (各taskのBoundary、AC数、Done whenと、分割候補の印)、単一taskならその旨。粒度が粗い、または細かいと感じた場合は `mjun-to-tasks` で再分解できる旨を添える (ここは承認ではなく、人間が粒度を目視する場所)
-- **次の一手**: 次の入力へそのままコピペできる `mjun-implement` の呼び出しを、1行の `text` コードブロックで提示する。
-  - 実行中のAgentに合わせ、Codexでは `$mjun-implement <source>`、Claude Codeでは `/mjun-implement <source>` とする
-  - `<source>` は `Source: #N` があれば実際のIssue番号、無ければ実際のLocal specディレクトリのパスに置き換える。`<source>`、`#N`、`...` などのプレースホルダーを出力に残さない
-  - 「次は以下を入力してください」などの案内はコードブロックの外に置き、ブロック内には呼び出しだけを書く
-  - 単一task規模の増分で、`tasks.md` に `Implementation Branch:` が記録済み (実装branchが既にある) の場合は、そのbranchへ直接commitして届ける選択肢も1行添える (小さな増分に実装の全工程は過剰になる)
+- **Review**: spec reviewのVERDICTと、反映した指摘の件数 (再解決したdecisionがあればそのD番号)
+- **Decisions**: 4-3で解消したtentative (D番号と、証拠で昇格 / 人間の決定の別)。無ければ「なし」
+- **Tasks**: task一覧 (各taskのBoundary、AC数、Done whenと、分割候補の印)、または単一taskである旨。粒度が粗い、または細かいと感じた場合は `mjun-to-tasks` で再分解できる旨を添える
+- **次の一手**: `mjun-implement` の呼び出しを、そのままコピペできる1行の `text` コードブロックで提示する (Codexでは `$mjun-implement`、Claude Codeでは `/mjun-implement`)。引数は `Source: #N` があれば実際のIssue番号、無ければ実際のLocal specディレクトリのパスとし、プレースホルダーを残さない。案内文はブロックの外に置く。単一task規模の増分で `tasks.md` に `Implementation Branch:` が記録済みなら、そのbranchへ直接commitする選択肢も1行添える
