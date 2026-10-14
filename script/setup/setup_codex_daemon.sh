@@ -32,6 +32,11 @@ migrate)
     if [[ -L $current && $(readlink "$current") == */mise/installs/* ]]; then
         rm "$current"
     fi
+    # 旧 layout の状態ファイルが1つでも残っていると、daemon は standalone を選び続ける
+    if [[ ! -e $current && ! -L $current ]]; then
+        state=${CODEX_HOME:-$HOME/.codex}/app-server-daemon
+        rm -f "$state"/{app-server.pid,app-server.stderr.log,app-server-updater.pid,app-server-updater.stderr.log}
+    fi
     ;;
 pin)
     daemon enable-remote-control
