@@ -25,24 +25,25 @@ Phase 3.2の判定がGOまたはMANUAL_VERIFY_REQUIREDのあと、reviewerの `N
 
 1. **refactorerの起動**: 開始前に全 `CHECK_FILES` のハッシュを記録する。このpassでは検査の作成者によらず全検査ファイルを変更禁止とする。テンプレートに、worktreeの絶対パス、contractのBoundariesとOut of Scope、全taskの `NOTES`、全 `CHECK_COMMANDS` と `CHECK_FILES`、検証コマンドを合成して起動する
 2. `## Refactor Report` の `- STATUS:` だけをパースする。`SKIPPED` なら何もしない。`DONE` ならreviewerを `ROUND: refactor` で起動し、全taskの `CHECK_COMMANDS` / `CHECK_FILES` と、このpassの `PROTECTED_CHECK_FILES` として全 `CHECK_FILES` と開始前のハッシュ、検証コマンド、contractのBoundariesを渡す (全検査の通過、検査ファイルの不変、Boundary、振る舞いの不変を検査する)
-3. `APPROVED` → `refactor:` 種別のcommitを作る。`REJECTED` → refactorerの `FILES_CHANGED` だけを `git checkout -- <files>` で戻す (失うのは整理だけで、taskのcommitは影響を受けない)。再試行はしない
+3. `APPROVED` → `refactor:` 種別のcommitを作り、ID検査を `log HEAD~1..HEAD` で実行する (検出されたら `git commit --amend` でmessageを書き直す)。`REJECTED` → refactorerの `FILES_CHANGED` だけを `git checkout -- <files>` で戻す (失うのは整理だけで、taskのcommitは影響を受けない)。再試行はしない
 4. Run Logの `feature:` 行に `refactor=<DONE | SKIPPED | REJECTED>` を追記する
 
 ## Phase 4: commitと配送 (git-commit / github-pr-create に連結)
 
-メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。commit messageやPR本文などの外部向け出力には、`.mjun/` 配下のパスや内部spec文書を含めない (外部へ見せるspecの参照はGitHub Issue番号だけを使う)。
+メイン会話が、作業ディレクトリをworktreeの絶対パスに切り替えた上で実行する。commit messageやPR本文などの外部向け出力には、`.mjun/` 配下のパス、内部spec文書、spec内部の識別子を含めない (外部へ見せるspecの参照はGitHub Issue番号だけを使う)。
 
 1. **ADRを書く**: spec modeでは `design.md` の `## Decisions` のうち `ADR: 要作成` の判断を、どのmodeでも実装中に生じた [ADRにする基準](../../mjun-steering/references/glossary_and_adr.md#adrにする基準) の3条件を満たす判断を、ADR (Git管理へ移行済みなら作業中のworktreeの `docs/adr/`、未移行ならメインrepositoryの `.mjun/steering/adr/`) として書く。既存ADRを覆す判断なら旧ADRに `Status: superseded by ADR-NNNN` を足す。spec modeでは、書いたADRの番号で `design.md` (メインrepositoryの絶対パス) の `ADR:` 行を置き換える。contractを変える判断は先にspecへ戻して再承認する。
-2. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正、Git管理側のADRの追記など)。残変更が無ければスキップする
+2. **`git-commit` skillでcommitを作成する**: 対象はPhase 3のtask commitに含まれていない残りの変更 (最終検証での修正、Git管理側のADRの追記など)。残変更が無ければスキップする。commitしたらID検査を `log HEAD~1..HEAD` で実行し、検出されたら `git commit --amend` でmessageを書き直す
 3. **baseへの再同期**: `git fetch` で `<base-branch>` を最新化し、作業branchをその上へ `git rebase` する (worktree作成後に並行する他のspecの成果がmergeされている場合に備える。`--no-pr` と `--merge` でも行う。remoteが無いrepositoryではfetchを省き、localの `<base-branch>` を使う。remoteに同名branchが既にある場合はrebaseではなく `git merge` で取り込む)。conflictが出たら自動解決せず中止し、worktreeとbranchを残して衝突ファイルを報告する。再同期後に全taskの `CHECK_COMMANDS` とTEST / LINT / BUILD / SMOKE (宣言済みのもの) を再実行し、失敗があればPhase 3.2の差し戻しと同じ手順 (implementer → reviewer、合わせて最大2周) で修正して `git-commit` skillでcommitする。収束しなければ中止し、worktreeとbranchを残して報告する。Run Logの `feature:` 行に `base-sync=<CLEAN | FIXED | CONFLICT>` を追記する
-4. **`--no-pr` の場合**: ここで配送を終える。base branchへのmergeは行わない (選ばれていない配送をしない)。Phase 5へ進む
-5. **`--merge` の場合**: メインrepositoryのworking treeが `<base-branch>` をcheckoutしていて未commit変更が無いことを確かめ、そこで `git merge --ff-only <branch-name>` を実行する。満たさない、またはfast-forwardできない場合はmergeせず、worktreeとbranchを残して報告する。pushはしない。Phase 5へ進む
-6. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
+4. **branch全体のID検査**: ID検査を `diff <base-branch>` と `log <base-branch>..HEAD` で実行する。コードの検出は直して `git-commit` skillでcommitし、commit messageの検出は該当commitを書き直す (pushしていないcommitに限る。push済みなら報告に残す)
+5. **`--no-pr` の場合**: ここで配送を終える。base branchへのmergeは行わない (選ばれていない配送をしない)。Phase 5へ進む
+6. **`--merge` の場合**: メインrepositoryのworking treeが `<base-branch>` をcheckoutしていて未commit変更が無いことを確かめ、そこで `git merge --ff-only <branch-name>` を実行する。満たさない、またはfast-forwardできない場合はmergeせず、worktreeとbranchを残して報告する。pushはしない。Phase 5へ進む
+7. **`--pr` の場合、`github-pr-create` skillでPRを作成する**:
    - Phase 1で決めた出力言語を `language` として渡す
    - **specが `Source: #N` を持つ場合はそのIssue番号を `spec` として渡す** (PR本文の `Closes #N` に使われる)。純Local specでは渡さない (specは内部文書であり、PR本文で言及しない。PRレビューでcontractを照合するときはLocal specのパスを `--spec` で直接渡す)
    - push、PRタイトルと本文の生成、PR作成はすべて連結先skillが行う。手順を再実装しない
-7. **結果を検証する** (`--pr` のみ): 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
-8. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後、`--merge` はmerge成功後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
+8. **結果を検証する** (`--pr` のみ): 作成されたPRのURLと状態を `gh pr view <url> --json url,state` で確認する。`Source: #N` を持つspecでは本文に `Closes #N` が含まれるか確認し、無ければ `gh pr edit --body-file` で追記する。PRのタイトルと本文にID検査を `text` で実行し (`gh pr view <url> --json title,body` の値を渡す)、検出されたら `gh pr edit` で書き直す。PR作成に失敗した場合はworktreeをクリーンアップせず、エラーを伝えて中止する
+9. **specのstatusを更新する**: 配送の完了後 (`--pr` はPR作成成功後、`--no-pr` はcommit完了後、`--merge` はmerge成功後)、specのfrontmatterを `status: done` へ更新する (doc modeではスキップ)。以降このspecは照合、逆引き、一覧の対象から外れる
 
 ## Phase 5: 結果の表示
 

@@ -51,7 +51,7 @@ worktree内の未commitの変更 (`git diff` とuntracked file) を読む。こ�
 1. 検査: 全 `CHECK_COMMANDS` を実行する。1つでも失敗ならREJECTED
 2. 回帰: 親提供の検証コマンドを実行する。失敗ならREJECTED。ただし失敗したテストが変更と無関係に見える場合は、そのテストだけを単独で再実行する (最大2回)。単独では通り、失敗が変更ファイルを通らない (並列実行下でだけ落ちる、既知のflakyテストに含まれる) ことを示せれば、`Tests` に `FLAKY (テスト名)` と書いて `NOTES` に残し、REJECTの根拠にしない
 3. 保護された検査ファイルの不変: `PROTECTED_CHECK_FILES` のハッシュ (`shasum -a 256`) を親の記録と照合する。不一致ならREJECTED (親がverifier経由で更新した場合は、更新後のハッシュを受け取っている)。保護対象が無ければ `Check files: N/A` とする。保護対象以外の検査の修正は許可されており、項目9でAcceptance Criteriaとの整合を確かめる
-4. 未完了マーカーと内部識別子: 変更ファイルにTBD/TODO/FIXME/HACKが残っていないか (このタスク以前から存在するものは除く)。あわせて、task ID (`T-NNN`)、`AC-n`、未移行のADR番号、Requirement番号、`.mjun/`、`spec.md` / `tasks.md` などspec内部の識別子への言及が、変更ファイルの内容とファイル名に無いかをgrepで確かめる (`CHECK_FILES` を含む。specは内部文書であり、repositoryに残るものから参照しない)
+4. 未完了マーカー: 変更ファイルにTBD/TODO/FIXME/HACKが残っていないか (このタスク以前から存在するものは除く)。spec内部の識別子は親がscriptで検査する
 5. secret: 変更ファイルにハードコードされた認証情報が無いか
 
 ### 判断検査 (コードを読み、sourceと照合する)

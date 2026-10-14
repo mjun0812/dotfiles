@@ -6,13 +6,15 @@ description: >-
   specの作成・磨き上げ・承認や、未取り込みIssueの取り込みには使わない。
   specも設計docも無く、会話の中で決めた小規模な変更にも使わない (直接実装する)。
   呼び出し元から作業指示を渡された実装担当 (SubAgentやorchestratorのworker) は、指示がこのSkillの実行を明示しているときだけ使い、それ以外はその指示に従う。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), Bash(zsh:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(mjun-to-tasks)
 ---
 
 # mjun-implement
 
 specを起点に、内容検査 → 実装 → commit → (必要なら) PR作成までを進めるSkill。
 メイン会話が担うのは、検査、worktree作成、SubAgentへの引き継ぎ、進捗の永続化、結果検証、クリーンアップであり、**実装 (Phase 3) はSubAgentに委譲し、commitとPR作成 (Phase 4) は `git-commit` skillと `github-pr-create` skillに連結する**。
+
+repositoryに残るもの (コード、コメント、テスト名、関数名、ファイル名) とGitHubへ出すもの (commit message、PRのタイトルと本文) に、spec内部の識別子 (task ID、AC番号、Requirement番号、`.mjun/` のパス、`spec.md` / `tasks.md`) を書かない。手順の中で `zsh <skill-dir>/scripts/check_internal_ids.sh` (以下、ID検査) を実行して機械的に確かめ、検出されたら振る舞いや目的を表す言葉に書き換える。
 spec modeのtaskはspec作成側が `tasks.md` に決めたものを実行し、実装中に分かった事実で再分解が必要になった場合も `mjun-to-tasks` に連結する (分解規則をこのskillに持たない)。
 
 ## Arguments
