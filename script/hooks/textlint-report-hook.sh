@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-# agentが編集したMarkdownのうち、今回変わった行にある自動修正できない指摘 (AIっぽい語など) をagentへ返すPostToolUse hook。
+# agentが編集したMarkdownのうち、今回変わった行にある自動修正できない指摘 (AIっぽい語、日本語の文章規則など) をagentへ返すPostToolUse hook。
 # 自動修正できるルールは format-hook.sh が直す。ルールは config/textlint/textlintrc.report.json。
 #
 # 変わった行: gitで追跡中のファイルはHEADとの差分で追加・変更された行。追跡外・git管理外のファイルは全行。
@@ -41,7 +41,7 @@ done
 ((${#report[@]} > 0)) || exit 0
 
 {
-    print "今回編集した行に、AIが書いた文章で多用される表現や書式があります。文意を保ったまま書き直してください。"
+    print "今回編集した行に、日本語の文章規則の指摘があります。文意を保ったまま書き直してください。"
     print -l -- "${report[@]}"
 } >&2
 exit 2

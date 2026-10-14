@@ -57,7 +57,8 @@ mise install --force npm:textlint
 
 Rules in `bun_args` are installation arguments, not separately tracked mise
 tools. `mise upgrade` does not bump their pinned versions. The migration preserves
-the four direct rule versions from the former `bun.lock`; transitive dependencies
+the four direct rule versions from the former `bun.lock`, and the Japanese presets
+(`preset-japanese`, `preset-ja-technical-writing`) are pinned the same way; transitive dependencies
 are no longer frozen by a repository lockfile. This is a personal global-tool
 setup, not a fully locked project dependency graph. Installation stays outside
 agent hooks; ordinary lint invocations do not install or update packages.

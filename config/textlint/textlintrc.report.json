@@ -8,6 +8,12 @@
       "no-ai-list-formatting": {
         "allows": ["/^\\s*(?:[-*+]|\\d+[.)])\\s+\\*\\*[^*]+\\*\\*\\s*[:：]/"]
       }
+    },
+    "preset-japanese": {
+      "sentence-length": false
+    },
+    "preset-ja-technical-writing": {
+      "sentence-length": false
     }
   }
 }
