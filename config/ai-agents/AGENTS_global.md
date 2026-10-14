@@ -45,6 +45,7 @@
 - 選択肢付きの質問には同期の `request_user_input` を使用し、`request_user_input_async` は使用しないこと。
 - 選択肢付きの質問後は、回答を受け取るまで作業を進めないこと。
 - ブラウザ操作では、ログイン状態が必要な操作とユーザーのChromeでの操作には `playwriter` skillを、ログインが不要な操作には `agent-browser` skillを使うこと。
+- CSV・TSV・Parquet・JSONなどのデータファイルを集計・変換・調査するときは、awkやPythonのscriptを書かずにduckdb CLIを使うこと (`read-file`、`query` skill)。プロジェクトのコードに組み込むデータ処理は、そのプロジェクトの既存の依存に従うこと。
 
 ## Glossary and ADR
 
@@ -63,13 +64,13 @@ GitHub操作は必ず `git, gh` CLIで行うこと。
 - 環境およびパッケージ管理には `uv` を使用すること。
 - コードのリンターには`uvx ruff check --fix` を使用すること。
 - コードの型チェックには`uvx ty check` を使用すること。
-- SQLAlchemy ORM は **2.0 スタイル**の記法を使用してください。
+- SQLAlchemy ORMは **2.0 スタイル**の記法を使用してください。
 
 ## Markdown
 
 - 英数字と日本語の間、および半角括弧 `()` の外側に半角スペースを入れないこと。inline codeの前後には入れてよい。コードブロックの中は対象外
   - 良い例: MLflowサーバをECS(arm64)で動かす。`mlflow-server` のrepoを使う。
-  - 悪い例: MLflow サーバを ECS (arm64) で動かす。
+  - 悪い例: MLflowサーバをECS (arm64) で動かす。
 - 区切り線 `---` を多用しないこと。節の区切りは見出しで表す。文書の中で性質が大きく変わる境界(例: 現行の手順と旧構成の記録の間)にだけ使う
 - コマンドがbashとzshで異なる場合は、同じコードブロックに `# bash` と `# zsh` のコメントで分けて両方を書くこと。共通の部分は1つにまとめる
 
@@ -88,7 +89,7 @@ GitHub操作は必ず `git, gh` CLIで行うこと。
 
 ## Skill
 
-- Agent skill を作成・編集するときは、コマンド例を最小限にする。
+- Agent skillを作成・編集するときは、コマンド例を最小限にする。
 - コマンド例は、次のいずれかを明確にする場合にだけ追加する。
   - 入力・出力の形式
   - 操作の順序
