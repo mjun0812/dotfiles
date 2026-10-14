@@ -33,7 +33,7 @@ groupの順に、groupごとに次を行ってからPhase 3.1へ進む。
 1. **implementerの起動**: テンプレートに以下を合成して起動する
    - worktreeの絶対パス、base branch名と作業branch名
    - specのタイトルと本文の要約と、**contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)**
-   - `design.md` の該当部分 (spec modeのみ。実装設計) と、適用対象のacceptedな判断 (ADRを含む) (あれば)
+   - `design.md` の該当部分 (spec modeのみ。実装設計) と、有効なADR (あれば)
    - `TASK_BRIEF`、採用済みの `CHECK_FILES` / `CHECK_COMMANDS`、`PROTECTED_CHECK_FILES` (変更禁止)、事前検査の `CHECK_BASELINES` (あれば)。review-onlyのtaskがあれば、そのtask IDとAcceptance Criteria。当該groupの事前検査が無ければ、その一覧は空でよい。先行groupの保護対象は引き続き渡す
    - 担当groupの各taskの説明、Boundary、Done when、Seam、Blocked by、Phase 1で決めた実装方針
    - groupに関係する検証コマンド
@@ -43,7 +43,7 @@ groupの順に、groupごとに次を行ってからPhase 3.1へ進む。
    - `CHECK_DISPUTE` → 親が `DISPUTE` の主張を該当taskのAcceptance Criteriaと照らして裁定する。検査が誤っていればverifierに `DISPUTE` を渡して1回だけ作り直させ (Phase 3.0と同じ種別・根拠・実行結果の確認とハッシュ更新を行う)、更新後の検査と `CHECK_BASELINES` を添えてimplementerを継続する。検査が正しければ裁定理由を添えてimplementerを継続する。裁定は同一taskで1回まで
    - `NEEDS_CONTEXT` → `MISSING` の不足情報を用意して1回だけimplementerを継続する。解決しなければ中止し、Phase 1と同じ形式でユーザーに質問する
    - `BLOCKED` → Phase 3.1'のdebuggerへ進む
-3. **reviewerの起動**: テンプレートに、groupの各taskの文脈と全Acceptance Criteria、contract、`TASK_BRIEF`、`design.md` の該当部分 (spec modeのみ)、適用対象のacceptedな判断 (ADRを含む) (あれば)、`CHECK_COMMANDS`、`CHECK_FILES`、`PROTECTED_CHECK_FILES` とそのハッシュ、採用済みコマンドの変更前後と理由 (あれば)、review-onlyのtask (あれば)、Implementation Notesにある既知のflakyテスト (あれば)、groupに関係する検証コマンド、implementerのStatus Report (参照用)、周回 (`ROUND`) を合成して起動する。2周目以降は前回の `FINDINGS` と `REMEDIATION` も渡す (reviewerは前回指摘の解消を先に判定し、新規のREJECT根拠を検査の失敗・回帰・保護された検査ファイルの改変・実在性・Boundary違反・Acceptance Criterionの未充足に限る)
+3. **reviewerの起動**: テンプレートに、groupの各taskの文脈と全Acceptance Criteria、contract、`TASK_BRIEF`、`design.md` の該当部分 (spec modeのみ)、有効なADR (あれば)、`CHECK_COMMANDS`、`CHECK_FILES`、`PROTECTED_CHECK_FILES` とそのハッシュ、採用済みコマンドの変更前後と理由 (あれば)、review-onlyのtask (あれば)、Implementation Notesにある既知のflakyテスト (あれば)、groupに関係する検証コマンド、implementerのStatus Report (参照用)、周回 (`ROUND`) を合成して起動する。2周目以降は前回の `FINDINGS` と `REMEDIATION` も渡す (reviewerは前回指摘の解消を先に判定し、新規のREJECT根拠を検査の失敗・回帰・保護された検査ファイルの改変・実在性・Boundary違反・Acceptance Criterionの未充足に限る)
 4. **VERDICTの処理**: `## Review Verdict` の `- VERDICT:` フィールドだけをパースする
    - `APPROVED` → 親がworktreeで全 `CHECK_COMMANDS` を実行し、`PROTECTED_CHECK_FILES` のハッシュを照合する (reviewerの `MECHANICAL_RESULTS` を検証の代わりにしない。`MECHANICAL_RESULTS` に `NOT_RUN` の項目があればそのコマンドも実行する)。`AC_RESULTS` がgroupの全Acceptance Criteriaを覆い、全項目が充足であることを確認する。review-onlyのcriterionは、各 `file:line` が実在して主張と一致することも親がReadして確かめる。reviewerが `FLAKY` と報告したテストは、親も単独で再実行して確かめ、Implementation Notesに既知のflakyテストとして記録する。1つでも失敗、または不一致なら、その証拠を添えて `REJECTED` と同じ差し戻しを行い、Run Logの `reject=` に `mismatch` を記録する。すべて通れば group完了。**先にworktree内でそのgroupの変更 (検査ファイルを含む) をcommitし** (Conventional Commits形式で、groupのtaskのタイトルを要約したメッセージ)、成功後に `tasks.md` のgroupの各taskを `Status: done` へ更新する (Issueへは書き込まない)。commit対象の差分が無い場合は、前回実行でcommit済みとみなしてstatus更新だけを行う。この順序により「done = commit済み」が常に成り立ち、中断してもコードが失われない。`NOTES` と全taskの検査一覧は最終検証のために保持する。implementerを終了し、Run Logに周回数、差し戻しの証拠種別、結果を記録し、次のgroupへ進む
    - `REJECTED` で根拠がChange Outline外のパスだけの場合: そのパスが担当groupのtaskのAcceptance Criteriaに必要で、かつspecのOwns内なら、親がメインrepo側の `design.md` のChange Outlineへそのdirectoryを追記し、Implementation Notesに1行残してreviewerだけを再起動する (差し戻しの周回に数えない)。Owns外、または必要性を示せない場合は次の通常の差し戻しとする

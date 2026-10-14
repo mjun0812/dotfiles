@@ -28,9 +28,9 @@ sourceの形からmodeを決める。
 2. Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経て **spec mode**
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
-spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tasks.md` (いずれも必須) をReadする。共通の決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) からspec.mdの `Decisions:` が参照するentryとprojectのacceptedな判断を読む。StatusとScopeは [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従い、参照先の欠落・重複ID・supersededの参照はspecの修正へ戻す。taskに関係する判断の内容をSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
+spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tasks.md` (いずれも必須) をReadする。specの判断は `design.md` の `## Decisions` にある。ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) があれば [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って有効なものを読む。`## Decisions` に `ADR: 要作成 (ADR-NNNN を覆す)` の判断があれば、覆されるADRは有効なADRとして扱わない (supersededの追記は配送時に行う)。taskに関係する判断の内容をSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
 
-doc modeでも共通の決定記録があればprojectのacceptedな判断を読み、関係する内容をSubAgentへ渡す。判断記録が存在せず参照も無い場合は、読み取りだけのために空ファイルを作らない。
+doc modeでもADRがあれば有効なものを読み、関係する内容をSubAgentへ渡す。
 
 ### Issue番号の逆引き
 
@@ -55,7 +55,7 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
 3. **内容検査**:
    1. **contract承認とdesign.md** (spec modeのみ): `spec.md` のfrontmatterが `approval: approved` か確認する。値が無い、または `pending` の場合は中止し、contractの承認が先に必要であることを案内する。実装依頼そのものをcontract承認の代わりにしない。`design.md` が無い場合も中止し、実装設計の作成が先に必要であることを案内する。`tasks.md` が無い場合も中止し、`mjun-to-tasks` でtaskへ分解する必要があることを案内する (このskillでは分解しない)
    2. **情報の充足** (doc modeのみ): Goal、受け入れ基準、実装方針など、実装に必要な情報が揃っているか。コードを読めば確認できる事実は自分で解決する。仕様や方針の判断に必要な情報が欠けている場合は中止し、欠落情報を項目立てて具体的に伝え、specを詰め直す必要があることを案内する。方針を推測で補って実装に進まない。spec modeではcontractの十分性をspec作成側のレビューと承認で確定済みとし、ここで判定し直さない
-   3. **要確認の残留**: 共通記録のうち対象specの `Decisions:` が参照するentry (doc modeでは本文の要確認記載) に `tentative` (要確認) の暫定決定が残っていないか。spec作成側が承認前にtentativeを解消するため、ここで残っているのは承認後に共通記録の参照entryが編集された場合などに限る。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` を `accepted`、`Owner:` を `human` へ更新し、Evidenceに確認日と根拠を追記してから進む (確認済みの決定として記録し、再実行時に同じtentativeで止まらない)
+   3. **要確認の残留**: `design.md` の `## Decisions` (doc modeでは本文の要確認記載) に `Status: tentative` (要確認) の暫定決定が残っていないか。spec作成側が承認前にtentativeを解消するため、ここで残っているのは承認後に `design.md` が編集された場合などに限る。残っていれば一覧を提示し、このまま進めてよいかをユーザーに確認する。続行が選ばれた場合は、該当decisionの `Status:` 行を消して `Owner: human` にしてから進む (再実行時に同じtentativeで止まらない)
    4. **Issueとの乖離**: `Source: #N` を持つspecでは `gh issue view <N> --json state,body,comments` で最新を取得する。Issueが**closedなら実装済みの可能性を警告**して続行を確認する。取り込みと投影の後に付いた新しいコメントや本文の変更があれば内容を提示し、specへ反映してから進むか、このまま進むかを確認する。反映する場合は `approval: pending` へ戻してから反映し、更新後のcontractを提示して承認を得て `approved` へ更新してから進む。承認されなければ中止し、specの磨き直しが必要であることを案内する
    5. **spec間依存** (spec modeのみ): BoundariesのDependenciesに `spec: <slug>` の行があれば `.mjun/specs/<slug>/spec.md` を読み、`status: done` を確認する。specが存在しない、またはdoneでない場合は中止し、先に該当specの配送が必要であることを案内する
 4. **taskキューを構築する**:

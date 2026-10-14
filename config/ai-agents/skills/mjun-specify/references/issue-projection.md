@@ -15,7 +15,7 @@
 ## 本文の構成
 
 - 元の本文 → 区切り行 `<!-- projected-spec -->` → 投影範囲の順に置く。区切り行が無ければ本文全体を元の本文として残し、あれば区切り行より下だけを置き換える。投影時に作成したIssueは区切り行から始める。Issueのタイトルは変更しない
-- 投影範囲: contract (Context〜Out of Scope) + `## Decision Log` (対象specが参照するacceptedのdecisionの要約表) + 必要なら `## Design Notes` + `tasks.md` があれば `## Tasks` (taskタイトルを `- [ ]` で列挙)
+- 投影範囲: contract (Context〜Out of Scope) + `## Decision Log` (`design.md` の `## Decisions` の要約表: 論点 / 決定 / 根拠) + 必要なら `## Design Notes` + `tasks.md` があれば `## Tasks` (taskタイトルを `- [ ]` で列挙)
 - Dependenciesの `spec: <slug>` 行は、そのspecに `Source: #M` があれば `#M` に置き換え、無ければ除く
 - 区切り行より下が外部で編集されていても、承認済みのLocal contractで上書きする
 - task進捗は投影しない。`## Tasks` は承認時点のスナップショットとし、実装側はIssueへ書き込まない

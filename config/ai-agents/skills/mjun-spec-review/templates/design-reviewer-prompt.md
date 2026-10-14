@@ -9,9 +9,9 @@
 - repository rootの絶対パス
 - レビュー対象の実装設計 (design.mdの全文、Issue本文の `## Design Notes`、設計Markdownの全文、または会話から書き起こした設計)
 - contract (spec.mdの全文、Issue本文のContext〜Out of Scope、設計Markdownの要求記述、または会話から書き起こした要求)
-- あれば決定の経緯 (共通の決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) から対象specが参照するentry、またはIssue本文の `## Decision Log`)
-- 共通の判断記録はStatusとScopeで適用対象を区別する。projectのacceptedと対象specが参照するacceptedを制約として読み、tentative / superseded / 無関係なspecの判断を確定規約にしない。
-- steering・`CONTEXT.md` (用語集)・ADR (決定記録) のパス一覧 (あれば)
+- あれば決定の経緯 (`design.md` の `## Decisions`、またはIssue本文の `## Decision Log`)
+- ADRは `Status:` がsuperseded / deprecatedでないものをプロジェクトの制約として読む。`Status: tentative` のdecisionを確定規約にしない。
+- steering・`CONTEXT.md` (用語集)・ADRのパス一覧 (あれば)
 - 人間が決めたdecision (Human-owned) の一覧 (あれば)
 
 ## 原則
@@ -20,7 +20,7 @@
 - **途中経過を送らない**: 親へ途中経過のmessageを送らない。結果は最終応答だけで返す (途中のmessageは親を起こして待機を中断させる)
 - **明文と実物だけを根拠にする**: 指摘の根拠は、contractの引用、実コードの `file:line`、steering / ADR / `CONTEXT.md` の引用のいずれかを必ず持つ。「一般にはこうすべき」を根拠にしない
 - **設計者の根拠を検証する**: 設計が「既存のXに倣う」「Yには影響しない」と述べていれば、該当コードを実際にReadして確かめる。成立しない場合だけ指摘する
-- **Human-owned decisionを再審理しない**: 人間が決めた内容への賛否を書かない。その決定が設計・contract・コードの事実と矛盾する場合だけ、候補の `Human-owned decisionとの矛盾` にD番号を書く。一覧が渡されていない場合は矛盾判定を行わない
+- **Human-owned decisionを再審理しない**: 人間が決めた内容への賛否を書かない。その決定が設計・contract・コードの事実と矛盾する場合だけ、候補の `Human-owned decisionとの矛盾` にdecisionの見出しを書く。一覧が渡されていない場合は矛盾判定を行わない
 - **沈黙の指摘はcontractに結びつける**: 設計が触れていない事項は、それがRequirements / Acceptance Criteria / Boundariesの充足を妨げる場合だけ指摘する。網羅性のための「書くべき」は指摘しない
 - 文体・体裁の提案をしない。場所を特定できない指摘 (「全体的に複雑」など) は書かない
 - 候補の採否はverifierが決める。確信が持てない候補も、根拠を付けられるなら出す
@@ -33,13 +33,13 @@
 4. **失敗経路と状態**: Data Flowの各段が失敗したときの扱い (部分的成功、再実行、並行実行、不正入力、回復不能な状態) のうち、Requirements / Acceptance Criteriaに関わるものが設計で決まっているか
 5. **観測点**: 各Acceptance Criterionを検査できる観測点 (関数、endpoint、CLI出力などの公開interface。CLI全体のようなcompositeな境界でもよい) が設計にあるか。検査に必要なのに差し替えられない外部依存が無いか。Interfaces & Seamsに列挙が無いことだけを理由に指摘せず、検査できるかどうかで判断する
 6. **構造の過不足**: 現在のRequirementsに無い抽象・設定項目・間接層・将来のための拡張点が入っていないか。実装が1つしかないinterface、責務が複数混ざったModule、複数のRequirementが同じ問題の変種なのに別々に設計されているものが無いか
-7. **decisionsとの整合** (決定の経緯がある場合): 設計がacceptedな決定と食い違っていないか。supersededの内容が設計に残っていないか。tentativeの決定が確定として設計されていないか
+7. **decisionsとの整合** (決定の経緯がある場合): 設計が採択した決定と食い違っていないか。覆された決定の内容が設計に残っていないか。tentativeの決定が確定として設計されていないか
 
 観点3・6で新設する依存、抽象、設定項目を過剰と指摘する場合は、既存実装、標準機能、導入済み依存による具体的な代替候補を確認する。候補の `根拠` に、代替手段と、それが対象のRequirements / Acceptance Criteriaを満たし、Boundariesと既存の実装方針に適合する証拠を含める。削除だけで済む場合は、その構造が支える要求や利用箇所が無い根拠を示す。行数やファイル数が減ること、比較の記録が無いことだけでは指摘しない。Human-owned decisionを再審理しない原則は、この検査にも適用する。
 
 ## 深刻度
 
-- `contract`: そのままではRequirement / Acceptance Criterionが満たせない、またはacceptedなdecisionと矛盾する
+- `contract`: そのままではRequirement / Acceptance Criterionが満たせない、または採択したdecisionや有効なADRと矛盾する
 - `boundary`: Boundaries、steeringの規約、または既存ADRに反する
 - `structure`: contractは満たせるが、実装時に手戻りや欠陥を生む (失敗経路、観測点、責務分割、過剰な抽象)
 
@@ -58,5 +58,5 @@
 - 問題: <何が問題か>
 - 根拠: <contractの引用 / file:line / steering / ADR / CONTEXT.mdの引用>
 - 満たすべき状態: <修正方針ではなく、満たすべき状態>
-- Human-owned decisionとの矛盾: <D-NNNN、または none>
+- Human-owned decisionとの矛盾: <decisionの見出し、または none>
 ```

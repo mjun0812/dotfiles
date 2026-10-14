@@ -8,7 +8,7 @@ specの実体は常に `.mjun/specs/<slug>/` である。GitHub Issueは取り�
 
 ```text
 取り込み: Issue → .mjun/specs/<slug>/ へspec化
-作業:     spec作成・task分解・実装のどの段階でもLocalのspec文書と決定記録を読み書きする
+作業:     spec作成・task分解・実装のどの段階でもLocalのspec文書とADRを読み書きする
 投影:     承認後、Localのcontractを Issue本文へ反映 (Sourceを持つspecのみ)
 配送:     worktreeで実装 → PR (SourceがあればCloses #N)
 ```
@@ -87,10 +87,6 @@ Issue番号からspecを逆引きするときは、activeなspecから `Source: 
 
 `Source:` を持つspecは、contract承認後に [issue-projection.md](issue-projection.md) に従ってIssue本文へ投影する。
 
-## 決定記録
-
-Scope・状態・追記規則は [用語集と決定記録](../../mjun-steering/references/glossary_and_adr.md) に従う。spec.mdのH1直下の `Decisions: D-0001, D-0002` がそのspecの判断への参照であり、判断本文はspecへ複製しない。tentativeの解消とIssueへのDecision Logの投影はこの参照先に限る。projectのacceptedは共通方針として読み、無関係なspecのtentativeは対象に含めない。
-
 ## git管理と参照規則
 
 `.mjun/` はグローバルgitignoreによりgit管理外であり、次のように扱う。
@@ -99,4 +95,4 @@ Scope・状態・追記規則は [用語集と決定記録](../../mjun-steering/
 - specは内部文書である。PR本文・PRタイトル・commit messageなど外部向けの出力では、`.mjun/` 配下のパスやspecの存在に言及せず、specの参照にはGitHub Issue (`Closes #N`) だけを使う
 - PRレビュー側は、contractを「`--spec` 引数で明示されたsource → PR本文の `Closes #N` が指すIssue」の順で解決し、どちらも無ければContract観点をスキップする (Issue本文は承認時点の投影であり、最新はLocal specにある)
 - resumeとtask進捗の永続化は、`.mjun/` が残っている同一working tree上でのみ有効
-- repo直下の `CONTEXT.md` はgit管理下にありworktreeにも存在する。決定記録もGit管理へ移行済みなら作業中のworktreeの `docs/adr/` を使って変更をcommitに含め、未移行ならメインrepositoryの絶対パスを使う。配送時のADR転記は行わない
+- repo直下の `CONTEXT.md` はgit管理下にありworktreeにも存在する。ADRもGit管理へ移行済みなら作業中のworktreeの `docs/adr/` を使って変更をcommitに含め、未移行ならメインrepositoryの絶対パスを使う。配送時のADR転記は行わない

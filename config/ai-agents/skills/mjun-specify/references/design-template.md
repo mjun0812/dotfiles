@@ -2,6 +2,8 @@
 
 contractの内側にある実装設計。承認前に必ず書き、後続のtask分解と実装が構造を読む正本とする。実装手順書ではなく、実装者 (fresh context) が迷わないための構造の記述に留める。spec.mdと同じく、調査しても埋まらないセクションは省略する (空セクションやプレースホルダーを残さない) が、Modules と Change Outline は省略しない。Trial Implementation Notes はtrial implementationを実施した場合だけ書く。
 
+`## Decisions` には、specを磨く過程で解決した論点を1件ずつ書く。新しい依存、抽象、設定項目を採用する判断では、より単純な候補 (既存実装や標準機能など) をAlternativesに、その候補では満たせない要求や制約をRationaleに書く。候補間で優劣が決まらず人間が選んだ場合は、そのtrade-offと選択理由を書き、候補の不足を捏造しない。
+
 Seamは、taskの検査が呼ぶ公開interfaceを指す。関数、endpoint、CLIコマンドのいずれでもよく、CLI全体や1つのendpointのようなcompositeな境界を1つのSeamにしてよい。テスト時に差し替える依存点はSeamと呼ばず、Test Strategyに書く。
 
 ```markdown
@@ -26,6 +28,18 @@ Seamは、taskの検査が呼ぶ公開interfaceを指す。関数、endpoint、C
 ## Trial Implementation Notes
 
 <お試し実装で確認できたこと・落とし穴 (実施した場合)>
+
+## Decisions
+
+### <論点>
+
+- Decision: <採択した案>
+- Alternatives: <却下した案と、その理由>
+- Rationale: <採用理由>
+- Owner: human | agent
+- Status: tentative <確信度lowで未解消のときだけ書く。解消したら行を消す>
+- Evidence: <根拠。file:line、research/<topic>.md、prototypeの結果など。あれば>
+- ADR: <ADRの3条件を満たす判断なら `要作成` (既存ADRを覆すなら `要作成 (ADR-NNNN を覆す)`)。ADRを書いたらその番号に置き換える>
 
 ## Change Outline
 

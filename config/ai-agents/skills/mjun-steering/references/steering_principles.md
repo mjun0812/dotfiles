@@ -2,7 +2,7 @@
 
 Steering files are **project memory**, not exhaustive specifications.
 
-The pattern and regeneration guidance below applies to core/custom files. The decision records (`adr/NNNN-<slug>.md`, one decision per file) are the shared decision history: follow [the decision record rules](glossary_and_adr.md), preserve their entries, and never regenerate them from code. Source/Evidence may reference spec paths.
+The pattern and regeneration guidance below applies to core/custom files. ADRs (`adr/NNNN-<slug>.md`, one decision per file) record why hard-to-reverse decisions were made: follow [the ADR rules](glossary_and_adr.md), preserve their bodies, and never regenerate them from code.
 
 ---
 
@@ -68,7 +68,7 @@ Never include:
 
 - **Single domain**: One topic per file
 - **Concrete examples**: Show patterns with code
-- **Reference rationale**: Link to the relevant decision record file instead of duplicating its history
+- **Reference rationale**: Link to the relevant ADR instead of duplicating its rationale
 
 ---
 

@@ -19,43 +19,31 @@ for spec in "$specs_dir"/*/spec.md; do
     ((all)) || [[ $spec_status == active ]] || continue
 
     remaining=0 branch="" tasks="" blocked="" local_branch="" worktree=""
-    decision_refs=$(sed -n 's/^Decisions: *//p' "$spec" | head -1)
-    decision_files=("$root"/.mjun/steering/adr/[0-9][0-9][0-9][0-9]-*.md)
     record_issues=""
-    docs_adrs=("$root"/docs/adr/[0-9][0-9][0-9][0-9]-*.md)
+    local_adrs=("$root"/.mjun/steering/adr/[0-9][0-9][0-9][0-9]-*.md)
     migrated=0 untracked=0
-    for adr in "${docs_adrs[@]}"; do
-        grep -q '^# D-[0-9]*:' "$adr" || continue
+    for adr in "$root"/docs/adr/[0-9][0-9][0-9][0-9]-*.md; do
+        grep -q '^# ADR-[0-9]*:' "$adr" || continue
         migrated=1
         git -C "$root" ls-files --error-unmatch -- "$adr" >/dev/null 2>&1 || untracked=1
     done
     if ((migrated)); then
-        ((${#decision_files})) && record_issues="decisions migration incomplete;"
-        decision_files=("${docs_adrs[@]}")
-        ((untracked)) && record_issues+="decisions destination untracked;"
+        ((${#local_adrs})) && record_issues="adr migration incomplete;"
+        ((untracked)) && record_issues+="adr destination untracked;"
     fi
     if [[ -f "$root/CONTEXT.md" && -f "$root/.mjun/CONTEXT.md" ]]; then
         record_issues+="glossary migration incomplete;"
     fi
-    ((${#decision_files})) || decision_files=(/dev/null)
-    decision_report=$(awk -v refs="$decision_refs" '
-        BEGIN { gsub(/,/, " ", refs); count=split(refs, wanted, /[[:space:]]+/) }
-        FNR == 1 { id=FILENAME; sub(/^.*\//, "", id); id=(id ~ /^[0-9][0-9][0-9][0-9]-/ ? "D-" substr(id, 1, 4) : ""); if (id != "") seen[id]++ }
-        /^# / && id != "" && !(id in title) { title[id]=substr($0,3) }
-        /^- Status: / && id != "" && !(id in state) { state[id]=substr($0,11) }
-        END {
-            for (i=1; i<=count; i++) {
-                key=wanted[i]; if (key == "" || used[key]++) continue
-                if (!seen[key]) { issues=issues key " missing;"; continue }
-                n++
-                if (seen[key]>1) issues=issues key " duplicate;"
-                if (state[key]=="tentative") pending=pending title[key] ";"
-                else if (state[key]!="accepted") issues=issues key " " (state[key] == "" ? "missing status" : state[key]) ";"
-            }
-            sub(/;$/, "", pending); sub(/;$/, "", issues)
-            printf "- decisions: %d\n- tentative: %s\n- decision_issues: %s", n, (pending == "" ? "none" : pending), (issues == "" ? "none" : issues)
-        }
-    ' "${decision_files[@]}")
+    if [[ -f "$dir/design.md" ]]; then
+        decision_report=$(awk '
+            /^## / { in_dec = ($0 == "## Decisions"); next }
+            in_dec && /^### / { n++; title = substr($0, 5) }
+            in_dec && /^- Status: tentative/ { pending = pending title ";" }
+            END { sub(/;$/, "", pending); printf "- decisions: %d\n- tentative: %s", n, (pending == "" ? "none" : pending) }
+        ' "$dir/design.md")
+    else
+        decision_report=$'- decisions: 0\n- tentative: none'
+    fi
     if [[ -f "$dir/tasks.md" ]]; then
         branch=$(sed -n 's/^Implementation Branch: *//p' "$dir/tasks.md" | head -1)
         tasks=$(awk '/^## T-/{n++} /^- Status: /{s[$3]++} END{printf "total=%d ready=%d in-progress=%d blocked=%d done=%d", n, s["ready"], s["in-progress"], s["blocked"], s["done"]}' "$dir/tasks.md")

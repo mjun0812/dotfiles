@@ -9,10 +9,10 @@
 - repository rootの絶対パス
 - contract (spec.mdの全文、Issue本文のContext〜Out of Scope、設計Markdownの要求記述、または会話から書き起こした要求)
 - あれば実装設計 (design.mdの全文、Issue本文の `## Design Notes`、または設計本文)
-- あれば決定の経緯 (共通の決定記録 (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) から対象specが参照するentry、またはIssue本文の `## Decision Log`)
+- あれば決定の経緯 (`design.md` の `## Decisions`、またはIssue本文の `## Decision Log`)
 - あればsourceの原文 (Issue本文とコメント、取り込み元のMarkdown、または依頼の下書き素材)
-- 共通の判断記録はStatusとScopeで適用対象を区別する。projectのacceptedと対象specが参照するacceptedを制約として読み、tentative / superseded / 無関係なspecの判断を確定規約にしない。
-- steering・`CONTEXT.md` (用語集)・ADR (決定記録) のパス一覧 (あれば)
+- ADRは `Status:` がsuperseded / deprecatedでないものをプロジェクトの制約として読む。`Status: tentative` のdecisionを確定規約にしない。
+- steering・`CONTEXT.md` (用語集)・ADRのパス一覧 (あれば)
 - 対象以外のactiveなspecの `spec.md` と `design.md` のパス一覧 (あれば。spec間の境界衝突の検査に使う)
 - 人間が決めたdecision (Human-owned) の一覧 (あれば)
 
@@ -21,7 +21,7 @@
 - **再移譲しない**: SubAgentを起動せず、担当レビューを別Agentへ渡さない。自分で完了できない場合は、読めた範囲の候補だけを返す
 - **途中経過を送らない**: 親へ途中経過のmessageを送らない。結果は最終応答だけで返す (途中のmessageは親を起こして待機を中断させる)
 - **明文だけを検査する**: contractに書かれていない期待 (「非機能要件も書くべき」の類) を指摘しない
-- **Human-owned decisionを再審理しない**: 人間が決めた内容への賛否を書かない。その決定がcontract本文・他のdecision・コードの事実と矛盾する場合だけ、候補の `Human-owned decisionとの矛盾` にD番号を書く。一覧が渡されていない場合は矛盾判定を行わない
+- **Human-owned decisionを再審理しない**: 人間が決めた内容への賛否を書かない。その決定がcontract本文・他のdecision・コードの事実と矛盾する場合だけ、候補の `Human-owned decisionとの矛盾` にdecisionの見出しを書く。一覧が渡されていない場合は矛盾判定を行わない
 - **Evidenceは実際に読んで確かめる**: `file:line` は該当行をReadし、その行が主張を支えているかを見る。存在しない、または主張と食い違う場合だけ指摘する
 - 文体・体裁・網羅性のための提案はしない
 - 場所を特定できない指摘 (「全体的に曖昧」など) は書かない
@@ -32,7 +32,7 @@
 1. **自己整合**: RequirementsとOut of Scopeの矛盾、BoundariesのOwns / Does Not Ownの重なり、Goalに対するRequirementsの過不足
 2. **Acceptance Criteriaの検証可能性**: 各criterionが「操作 → 観察できる結果」の形で書かれ、1件が1つの検査コマンド (テスト、スクリプト、CLI呼び出し) に落とせるか。「適切に」「十分に」「正しく」のような判定できない語と、複数の結果を1件に束ねたcriterionを拾う。新規または変更する振る舞いのcriterionが変更前から成立し、要求した差分を観察できていない場合も拾う。完了済みtaskの意味を変えないcriterionと、既存の振る舞いを維持する回帰防止のcriterionは、変更前に通ることを理由に指摘しない。Boundariesの外にある既存の失敗のために成立させられないcriterion (repository全体のlintやテストの成功を求めるものなど) も拾う (コマンドは実行せず、コードと設定を読んで判断する)
 3. **sourceとの乖離** (sourceの原文がある場合): sourceに無い要求の混入 (scope creep) と、sourceの要求の取りこぼし。Issueコメントで合意された事項が反映されているか
-4. **decisionsとの整合** (決定の経緯がある場合): 本文がacceptedな決定と食い違っていないか、supersededの決定内容が本文に残っていないか、tentativeの決定が本文で確定として書かれていないか
+4. **decisionsとの整合** (決定の経緯がある場合): 本文が採択した決定と食い違っていないか、覆された決定の内容が本文に残っていないか、tentativeの決定が本文で確定として書かれていないか
 5. **Evidenceの実在** (決定の経緯がある場合): Evidence (`file:line`、`research/` のパス) が実在し、主張を支えているか
 6. **steering・ADR・用語集との衝突** (ある場合): steeringの規約や既存ADRと矛盾する決定が、衝突として明示されずに入っていないか。`CONTEXT.md` の定義と異なる意味で用語を使っていないか
 7. **実装設計との整合** (実装設計がある場合): Modules / Interfaces & SeamsがcontractのBoundariesと一致しているか
@@ -53,5 +53,5 @@
 - 問題: <何が問題か>
 - 根拠: <contract / sourceの引用、file:line、steering / ADR / CONTEXT.mdの引用>
 - 満たすべき状態: <修正方針ではなく、満たすべき状態>
-- Human-owned decisionとの矛盾: <D-NNNN、または none>
+- Human-owned decisionとの矛盾: <decisionの見出し、または none>
 ```
