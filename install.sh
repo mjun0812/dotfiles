@@ -176,8 +176,9 @@ ln -snfv "$DOTPATH/config/cursor/keybindings.json" "$CURSOR_USER_DIR/keybindings
 ################ [Agent Skills] ################
 log_section "Setting up agent skills..."
 AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
-# Purge dangling symlinks (left after their sources were removed); they make the backup cp -L fail
-for link in "$HOME/.agents/skills"/*(@N); do
+# Purge dangling symlinks (left after their sources were removed) in every directory APM deploys to.
+# They make the backup cp -L fail, and APM aborts the whole package when a skill it deploys collides with one.
+for link in "$HOME/.agents/skills"/*(@N) "$HOME/.claude/skills"/*(@N) "$HOME/.gemini/antigravity-cli/skills"/*(@N); do
     [ -e "$link" ] || rm -f "$link"
 done
 cp -aLf "$HOME/.agents/skills" "$DOTPATH/.backup/agents_skills" 2>/dev/null || true
