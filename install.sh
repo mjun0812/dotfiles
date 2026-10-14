@@ -64,6 +64,8 @@ done
 log_section "Setting up mise..."
 $DOTPATH/script/setup/install_mise.sh
 source "$HOME/.zprofile"
+# 旧 codex-remote-control service を先に撤去する (codex の postinstall が新 daemon を起動するため)
+zsh "$DOTPATH/script/setup/setup_codex_daemon.sh" migrate
 MISE_USE_VERSIONS_HOST=1 mise install
 mise reshim
 
@@ -79,6 +81,7 @@ if [ "$(uname -s)" = "Darwin" ]; then
     fi
 fi
 mise bootstrap services apply --yes
+zsh "$DOTPATH/script/setup/setup_codex_daemon.sh" pin
 
 ################ [textlint] ################
 log_section "Setting up textlint..."

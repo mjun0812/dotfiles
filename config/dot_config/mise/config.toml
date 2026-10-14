@@ -81,18 +81,9 @@ systemctl --user try-restart dev.mise.playwriter-browser.service 2>/dev/null || 
 "aqua:anthropics/claude-code" = { version = "latest", minimum_release_age = "0s" }
 "aqua:openai/codex" = { version = "latest", minimum_release_age = "0s", postinstall = '''
 set -eu
-
-current="${CODEX_HOME:-$HOME/.codex}/packages/standalone/current"
-
-mkdir -p "$(dirname "$current")"
 ln -sfn bin/codex "$MISE_TOOL_INSTALL_PATH/codex"
-ln -sfn "$MISE_TOOL_INSTALL_PATH" "$current"
-
-case "$(uname -s)" in
-Darwin) launchctl kickstart -k "gui/$(id -u)/dev.mise.codex-remote-control" 2>/dev/null || true ;;
-Linux) systemctl --user restart dev.mise.codex-remote-control.service 2>/dev/null || true ;;
-esac
-"$current/codex" --version
+"$HOME"/.dotfiles/script/setup/setup_codex_daemon.sh pin
+"$MISE_TOOL_INSTALL_PATH/codex" --version
 ''' }
 "aqua:google-antigravity/antigravity-cli" = { version = "latest", minimum_release_age = "0s" }
 "github:kenn-io/agentsview" = "latest"
@@ -142,12 +133,12 @@ command = "~/.local/share/mise/shims/cli-proxy-api"
 working_directory = "~/.config/cli-proxy-api"
 restart = "always"
 
-[bootstrap.services.codex-remote-control]
+[bootstrap.services.codex-app-server-daemon]
 scope = "user"
-description = "Start the Codex Remote Control daemon"
-# zshenv経由でPATH (mise shims) を、~/.zshrc.localからAPIキーなどの環境変数を受け継ぐ
-command = "/bin/zsh -c '[[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local; exec ~/.codex/packages/standalone/current/codex app-server --remote-control --listen unix://'"
-restart = "always"
+description = "Start the Codex app-server daemon"
+# daemonはpidfile管理のdetached processでreboot後に復活しないため、login時に起動する
+command = "~/.dotfiles/script/setup/setup_codex_daemon.sh run"
+restart = "on-failure"
 
 [tasks.headroom-proxy]
 description = "Start the Headroom proxy"
