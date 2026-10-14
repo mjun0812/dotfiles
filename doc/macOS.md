@@ -63,11 +63,11 @@ mise bootstrap services apply --yes
 
 ### Managed Agents
 
-| Label                           | Purpose                                           |
-| ------------------------------- | ------------------------------------------------- |
-| `dev.mise.headroom-proxy`       | Run `headroom proxy` on `127.0.0.1:8787` at login |
-| `dev.mise.cli-proxy-api`        | Run CLIProxyAPI on `127.0.0.1:8317` at login      |
-| `dev.mise.codex-remote-control` | Start the Codex Remote Control daemon at login    |
+| Label                              | Purpose                                           |
+| ---------------------------------- | ------------------------------------------------- |
+| `dev.mise.headroom-proxy`          | Run `headroom proxy` on `127.0.0.1:8787` at login |
+| `dev.mise.cli-proxy-api`           | Run CLIProxyAPI on `127.0.0.1:8317` at login      |
+| `dev.mise.codex-app-server-daemon` | Start the Codex app-server daemon at login        |
 
 The generated plists are `~/Library/LaunchAgents/<label>.plist`.
 
@@ -129,24 +129,33 @@ log show --predicate 'subsystem == "com.apple.xpc.launchd" AND eventMessage CONT
 
 ## Codex Remote Control
 
-Codex is installed by mise through the Aqua backend on macOS and Linux. The inline postinstall hook points the managed standalone package path at the exact mise installation and enables the Remote Control daemon:
+Codex is installed by mise through the Aqua backend on macOS and Linux. The Remote Control server runs as the Codex-managed daemon (`codex app-server daemon`), and mise stays the only version authority:
 
 ```text
 mise/Aqua Codex package
-  -> ~/.codex/packages/standalone/current
+  -> codex app-server daemon update --from-cli   (copy and pin)
+  -> ~/.codex/packages/app-server-daemon/current
   -> Codex Remote Control daemon
 ```
 
-Do not run `codex app-server daemon bootstrap --remote-control` or `codex remote-control start`; both enable the standalone updater and create a second version authority. Use the managed daemon lifecycle commands instead:
+`script/setup/setup_codex_daemon.sh` drives the lifecycle:
+
+| Subcommand | Called from                          | Action                                                                                                  |
+| ---------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `pin`      | Codex postinstall, `install.sh`      | Enable Remote Control, start the daemon, and pin the mise-installed package (restarts a running daemon) |
+| `run`      | `codex-app-server-daemon` service    | Start the daemon at login, then idle so the service manager does not reap it                            |
+| `migrate`  | `install.sh` (before `mise install`) | Remove the old `codex-remote-control` service and the `~/.codex/packages/standalone/current` link       |
+
+The daemon is a pidfile-backed detached process and does not survive a reboot, so the `codex-app-server-daemon` mise user service (LaunchAgent on macOS, systemd user service on Linux) starts it at login. Pinning disables the daemon's own updater; `mise upgrade` runs the postinstall, which pins the new version and restarts the daemon. Run it when no active Codex turn should be interrupted.
+
+Do not run `codex app-server daemon update` without `--from-cli`, `codex app-server daemon bootstrap`, or `codex remote-control start`; they return the daemon to Codex's own update channel and create a second version authority.
 
 ```sh
-codex app-server daemon enable-remote-control
+codex app-server daemon version   # status and versions as JSON
+codex app-server daemon stop
 codex app-server daemon start
-codex app-server daemon version
 ```
 
-`mise upgrade` updates the managed link and restarts the daemon. Run it when no active Codex turn should be interrupted.
+Migrating an existing machine: rerun `./install.sh`. `migrate` removes the old service (`mise bootstrap services remove codex-remote-control`), so the old definition is not restored by `mise bootstrap services apply`, and the legacy `standalone/current` link, so only one daemon runs.
 
 Start a new Remote Control session with `codex --remote unix://`. Add `resume` or `fork` to the command to resume or fork a stored session.
-
-The daemon is declared as a mise user service in `config/dot_config/mise/config.toml`: macOS starts it with a LaunchAgent and Linux with a systemd user service.

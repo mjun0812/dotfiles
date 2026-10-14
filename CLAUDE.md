@@ -17,6 +17,7 @@ zsh script/setup/setup_claude_code.sh   # Claude Code設定のsymlink・plugin
 zsh script/setup/setup_codex.sh         # Codex設定 (config.tomlはキー単位マージ、他はsymlink)
 bash script/setup/setup_herdr.sh        # herdr integration・plugin link (miseのpostinstallからも呼ばれる)
 bash script/setup/setup_hunk.sh         # hunk-gh extensionのinstall (miseのpostinstallからも呼ばれる)
+zsh script/setup/setup_codex_daemon.sh pin   # Codex daemonをmise管理のバージョンに固定 (miseのpostinstallからも呼ばれる。migrate/runも有り)
 script/setup/update_completions.sh      # zsh補完の更新
 
 # ローカルのapp設定 (macOS app defaults・VSCode拡張リスト) をリポジトリへ逆同期
