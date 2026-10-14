@@ -40,7 +40,7 @@ pin)
     ;;
 run)
     daemon start
-    exec sleep infinity
+    exec tail -f /dev/null
     ;;
 *)
     echo "usage: $0 <migrate|pin|run>" >&2
