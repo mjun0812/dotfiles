@@ -57,7 +57,7 @@ grep -m1 "^Source: " <spec.md>                    # 投影先 (あれば)
 複数のspecが同時にactiveになり、別々の会話で並行して実装される前提で扱う。
 
 - 他のactive specの成果に依存するspecは、BoundariesのDependenciesに `spec: <slug>` の行を書く。実装側はそのspecが `status: done` になるまで実装を開始しない
-- 境界の重なり (Ownsの重なり、Public Contracts Affectedが同じ公開interfaceを指す、`design.md` のChange Outlineのdirectoryの重なり) は、spec作成時の調査、spec review、状況表示で検出する。どちらのspecが所有するか、分割・統合するかは人間が決める (Human-owned)
+- 境界の重なり (Ownsの重なり、Public Contracts Affectedが同じ公開interfaceを指す、`design.md` のChange Outlineのdirectoryの重なり) は、spec作成時の調査とspec reviewで検出する。どちらのspecが所有するか、分割・統合するかは人間が決める (Human-owned)
 - feature検証では、branch全体の変更パスが `design.md` のChange Outlineに収まるかを確かめる
 - 配送の前に作業branchをbase branchの最新へrebaseし、すべてのチェックを再実行して、先にmergeされた並行specとの衝突を拾う
 

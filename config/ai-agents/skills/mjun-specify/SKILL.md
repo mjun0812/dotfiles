@@ -4,7 +4,7 @@ description: >-
   アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できる仕様へ磨き上げるSkill。
   調査で決まる論点はAgentが決め、人間の判断が必要な論点だけを1問ずつ確認して仕様を確定し、承認後にspec ファイルを作成する。
   ユーザーが「specを作って」「仕様を作成して」のように依頼したら使うこと。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), Skill(exhtml), Skill(mjun-grilling), Skill(mjun-research), Skill(mjun-prototype), Skill(mjun-spec-review), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), Skill(exhtml), Skill(mjun-grilling), Skill(mjun-research), Skill(mjun-spec-review), Skill(mjun-to-tasks)
 ---
 
 # mjun-specify
@@ -15,7 +15,7 @@ specの実体は常に `.mjun/specs/<slug>/` のLocal specとし、GitHub Issue�
 
 - `source` (任意): GitHub Issue番号 (`#123` / `123`)、GitHub URL、`.mjun/specs/<slug>`、またはMarkdownパス。未指定なら会話内容を下書きとして新規specを作る
 - `--grill` (任意): Human-firstモード。Agent-ownedを含むすべてのdecisionを1問ずつ人間と決める (factsの調査はAgentが行う)。未指定時はAgent-firstで、Agent-ownedはAgentが決め、Human-ownedと判断に迷うものだけを人間と決める
-- `--skip-trial` (任意): trial implementationを行わない
+- `--skip-trial` (任意): 一時worktreeでの最小実装 (trial implementation) を行わない
 
 ## 共通規則
 
@@ -68,11 +68,11 @@ frontierの論点を1つずつ解決し、確定するたびにspecと `design.m
 
 - **Agent-owned**: decision-authority.mdの自己問答で解決する。確信度lowは `Status: tentative` として記録し、Phase 4で解消する
 - **Human-owned**: `mjun-grilling` の単一decisionモードへ、論点、選択肢、調査結果を渡して解決する
-- **Evidence-blocked**: `mjun-research` (外部事実) / `mjun-prototype` (UI、状態、ロジックの実物) / trial implementation (現行codeでの実現可能性) で証拠を集め、再分類して解決する
+- **Evidence-blocked**: `mjun-research` (外部事実) か、[references/prototyping.md](references/prototyping.md) の試作 (UI、状態、ロジックの実物) / 最小実装 (現行codeでの実現可能性) で証拠を集め、再分類して解決する
 
 frontierがすべて解決したら、採択した設計で `design.md` の残りのセクションを書く (既存なら更新する。省略しない)。
 
-実装方針の実現可能性が不確かな場合は、[references/trial-implementation.md](references/trial-implementation.md) の手順で検証する (`--skip-trial` 指定時は行わない)。
+実装方針の実現可能性が不確かな場合は、prototyping.mdの最小実装で検証する (`--skip-trial` 指定時は行わない)。
 
 ### Phase 4: 承認準備
 
@@ -105,7 +105,7 @@ spec reviewに機械的な指摘を残さないため、次を確かめて欠け
 
 `## Decisions` の `Status: tentative` を承認前に0件にする。
 
-1. **証拠による昇格**: 確信度が低い原因が証拠の不足なら、Evidence-blockedと同じ手段で証拠を集めて再判定する (`--skip-trial` 指定時はtrial implementationを使わない)。確信度がhigh / mediumになれば `Status:` 行を消し、Evidenceへ根拠を追記する
+1. **証拠による昇格**: 確信度が低い原因が証拠の不足なら、Evidence-blockedと同じ手段で証拠を集めて再判定する (`--skip-trial` 指定時は最小実装を使わない)。確信度がhigh / mediumになれば `Status:` 行を消し、Evidenceへ根拠を追記する
 2. **人間の確認**: 上がらなかったものは、`mjun-grilling` の単一decisionモードへ論点、選択肢、agentの採択案 (推奨として)、調査結果を渡して1問ずつ解決する。どちらの場合も `Status:` 行を消して `Owner: human` にする。agentの採択と異なるなら、決定内容と、それに依存する `spec.md` と `design.md` の箇所を書き直す
 
 ### Phase 5: contractの提示と承認
