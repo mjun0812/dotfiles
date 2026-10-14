@@ -64,6 +64,15 @@ ty = "latest"
 "npm:oxlint" = "latest"
 "npm:prettier" = "latest"
 "npm:pyright" = "latest"
+# Keep textlint and its rules in one Bun prefix so the CLI can resolve them.
+# Rule versions are kept from the former bun.lock; after changing them, run
+# mise install --force npm:textlint (requires mise >= 2026.4.27).
+"npm:textlint" = { version = "latest", bun_args = """
+@textlint-ja/textlint-rule-preset-ai-writing@1.7.0
+textlint-rule-ja-space-between-half-and-full-width@3.0.3
+textlint-rule-preset-ai-words-ja@1.2.1
+textlint-rule-prh@6.1.0
+""" }
 "npm:typescript" = "latest"
 "npm:typescript-language-server" = "latest"
 
