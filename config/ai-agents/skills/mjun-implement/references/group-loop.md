@@ -4,7 +4,7 @@ Phase 3.0 (実装準備と必要な事前検査) とPhase 3.1 (実装とレビ�
 
 ## Run Log
 
-`tasks.md` 末尾の `## Run Log` に、groupごとに1行で追記する (中断後のresumeでは既存行を保持し、新しい行を足す)。原因分析の材料にするため、周回数と差し戻しの証拠種別、debuggerの分類を残す。証拠種別はa (失敗コマンドの出力)、b (file:line + 引用)、mismatch (reviewerの `MECHANICAL_RESULTS` と親の再実行が食い違った) のいずれか。groupから外れてblockedになったtaskは別行にする。
+`tasks.md` 末尾の `## Run Log` に、groupごとに1行で追記する (中断後のresumeでは既存行を保持し、新しい行を足す)。原因分析の材料にするため、周回数と差し戻しの証拠種別、reviewer起動前の差し戻し (`precheck=`) の回数、debuggerの分類を残す。証拠種別はa (失敗コマンドの出力)、b (file:line + 引用)、mismatch (reviewerの `MECHANICAL_RESULTS` と親の再実行が食い違った) のいずれか。groupから外れてblockedになったtaskは別行にする。
 
 ```text
 - T-001: verifier=none | checks=IMPLEMENTER | rounds=1 | result=done
@@ -39,7 +39,7 @@ groupの順に、groupごとに次を行ってからPhase 3.1へ進む。
    - groupに関係する検証コマンド
    - これまでのImplementation Notes (あれば)
 2. **STATUSの処理**: `## Status Report` の `- STATUS:` フィールドだけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
-   - `READY_FOR_REVIEW` → implementerの `CHECK_FILES` がrepository規約に沿った検査・fixture・テストヘルパーであり、production codeを含まないことを確認して検査ファイル全体へ加える。`CHECK_COMMANDS` をtask / Acceptance Criterionへ対応づけて採用する。事前検査のコマンドは維持し、採用済みコマンドの削除・変更はAcceptance Criteriaに基づく理由を確認し、変更前後と理由をreviewerへ渡す。implementerの `REVIEW_ONLY` を保持し、コマンドが無いcriterionのtaskもreview-onlyへ加える。バグ修正では `REPRODUCTION` に修正前の失敗と修正後の成功の証拠があることも確認する。不足があればそのimplementerに1回だけ補充させ、解消しなければ `BLOCKED` と同じ原因調査へ進む。採用した検査一覧をユーザーに簡潔に示し、3へ進む
+   - `READY_FOR_REVIEW` → 先に `CHECKS_RUN` と `TESTS_RUN` を読む。FAILの項目か、実行を始めたが完了しなかった項目 (hang、timeout、途中で止めたもの) があれば、reviewerを起動しない。該当の項目を示して同じimplementerを継続し、直させる。原因が担当groupの外にあれば `BLOCKED` で返させる。変更前の状態で同じコマンドが同じように失敗した結果が書かれている項目と、Implementation Notesに既知のflakyとして記録されたテストは除く。この差し戻しは周回に数えず、回数をRun Logの `precheck=` に記録する。同じ項目で2回戻しても残る場合は、`BLOCKED` と同じ原因調査へ進む。次に、implementerの `CHECK_FILES` がrepository規約に沿った検査・fixture・テストヘルパーであり、production codeを含まないことを確認して検査ファイル全体へ加える。`CHECK_COMMANDS` をtask / Acceptance Criterionへ対応づけて採用する。事前検査のコマンドは維持し、採用済みコマンドの削除・変更はAcceptance Criteriaに基づく理由を確認し、変更前後と理由をreviewerへ渡す。implementerの `REVIEW_ONLY` を保持し、コマンドが無いcriterionのtaskもreview-onlyへ加える。バグ修正では `REPRODUCTION` に修正前の失敗と修正後の成功の証拠があることも確認する。不足があればそのimplementerに1回だけ補充させ、解消しなければ `BLOCKED` と同じ原因調査へ進む。採用した検査一覧をユーザーに簡潔に示し、3へ進む
    - `CHECK_DISPUTE` → 親が `DISPUTE` の主張を該当taskのAcceptance Criteriaと照らして裁定する。検査が誤っていればverifierに `DISPUTE` を渡して1回だけ作り直させ (Phase 3.0と同じ種別・根拠・実行結果の確認とハッシュ更新を行う)、更新後の検査と `CHECK_BASELINES` を添えてimplementerを継続する。検査が正しければ裁定理由を添えてimplementerを継続する。裁定は同一taskで1回まで
    - `NEEDS_CONTEXT` → `MISSING` の不足情報を用意して1回だけimplementerを継続する。解決しなければ中止し、Phase 1と同じ形式でユーザーに質問する
    - `BLOCKED` → Phase 3.1'のdebuggerへ進む
