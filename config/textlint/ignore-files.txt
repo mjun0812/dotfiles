@@ -1,0 +1,5 @@
+# script/tools/textlint.sh が検査から外すファイル (dotfilesのrootからの相対パス)。
+# symlinkを解決した実体のパスで照合するので、~/.claude/CLAUDE.md などのsymlink経由で渡しても外れる。
+# 例としてわざと規則に反する文を含むため、自動修正と指摘の対象にしない。
+config/ai-agents/claude/CLAUDE.md
+config/ai-agents/AGENTS_global.md

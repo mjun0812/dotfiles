@@ -41,7 +41,10 @@ printf '%s\n' '日本語の本文です。' | textlint --stdin --stdin-filename 
 ```
 
 The wrapper resolves mise's installation from the dotfiles checkout, rather than
-from the calling project. Both profiles and `prh.yml` keep their existing rules.
+from the calling project. It also drops the files listed in `ignore-files.txt`
+(the global agent instructions, which contain intentional bad examples) before
+running textlint, matching them by their resolved real path so symlinks such as
+`~/.claude/CLAUDE.md` are skipped too. Both profiles and `prh.yml` keep their existing rules.
 Changing the package-manager backend also requires adapting the wrapper's
 `bin/textlint` and `node_modules` paths and the installation arguments.
 
