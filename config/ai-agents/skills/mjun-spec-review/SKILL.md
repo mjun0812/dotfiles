@@ -10,47 +10,60 @@ allowed-tools: Task, Read, Glob, Grep, AskUserQuestion, Bash(git rev-parse:*), B
 # mjun-spec-review
 
 specを、それを書いた会話とは別のfresh contextで敵対的に検査するSkill。書き手の判断と根拠を未検証の仮説として扱い、contractの明文・sourceの原文・実コード・steeringだけを根拠に、承認・実装の前に解消すべき問題を探す。
-検査はcontract軸とdesign軸で行い、呼び出し元からtask planのdraftを渡された場合はtasks軸を加える。**contract軸**はspec自身の整合と検証可能性を、**design軸**は実装設計がcontractを満たしコードベースに馴染むかを、**tasks軸**はtask分解がcontractと実装設計を正しく実現しているかを見る。各軸のreviewerが出した候補をverifierが反証し、`confirmed` だけを出力する。厳しさは探索範囲と反証の深さに使い、指摘の証拠基準は下げない。
-ファイルは読むだけで、spec・design・decisions・コードを変更しない。指摘の反映は呼び出し元 (人間、または承認前検査としてこのskillを呼んだ側) が判断する。
+
+検査は3つの軸で行う。**contract軸**はspec自身の整合と検証可能性を、**design軸**は実装設計がcontractを満たしコードベースに馴染むかを、**tasks軸** (呼び出し元からtask planのdraftを渡されたときだけ) はtask分解がcontractと実装設計を正しく実現しているかを見る。各軸のreviewerが候補を出し、verifierが反証し、`confirmed` だけを返す。厳しさは探索範囲と反証の深さに使い、指摘の証拠基準は下げない。
+
+ファイルは読むだけで、spec・design・decisions・コードを変更しない。指摘をどう反映するかは呼び出し元 (人間、または承認前検査としてこのskillを呼んだ側) が決めるからである。
 
 ## Arguments
 
 - `source` (任意): `.mjun/specs/<slug>` (配下のファイルパスでも可)、GitHub Issue番号 (`#123` / `123`)、PR番号 (`pr#45` / PRのURL)、または設計を書いたMarkdownのパス。未指定なら会話中の設計・計画を対象にする
 
-呼び出し元skillから文脈 (sourceの原文、Human-owned decisionの一覧、task planのdraft) を渡された場合はそれを使い、同じものを取得し直さない。
-
 ## Task
 
 ### Phase 1: sourceの解決とcontextの収集
 
-1. repository rootを `git rev-parse --show-toplevel` で特定する。Git repositoryでなければ現在のディレクトリを使い、コードベースとの整合検査が限定的になる旨をPhase 4のSUMMARYに含める
-2. sourceの形からmodeを決め、reviewerに渡す材料を集める。出力言語はsourceの言語に合わせる
-   - **spec mode** (`.mjun/specs/<slug>`): `spec.md` をcontract、`design.md` を実装設計、その `## Decisions` を決定の経緯として渡す。`design.md` が無ければdesign軸を省略し、その旨をSUMMARYに含める。`## Decisions` のうち `Owner: human` のdecisionの見出しをHuman-owned decisionの一覧にする。`spec.md` のH1直下に `Source: #N` があれば `gh issue view N --json title,body,comments` で本文とコメントを取得し、sourceの原文とする
-   - **Issue番号**: `status: active` のspecの `spec.md` から `Source: #N` を検索し、無ければ `status: done` のspecも検索する。見つかればそのspecをspec modeで扱う (複数ヒットした場合は一覧を提示して選んでもらう)。見つからなければ **issue mode**: `gh issue view N --json title,body,comments` で取得し、本文のContext〜Out of Scopeをcontract、`## Design Notes` があれば実装設計 (無ければdesign軸を省略)、`## Decision Log` があれば決定の経緯として扱う。sourceの原文はコメントとし、本文に区切り行 `<!-- projected-spec -->` があれば区切り行より上の元の本文も含める (contractは区切り行より下から読む)。Human-owned decisionの一覧は無いものとして渡す
-   - **PR番号**: `gh pr view N --json body` で本文を取得し、`Closes #N` / `Fixes #N` / `Resolves #N` からIssue番号を取り出してIssue番号として解決する (複数あれば一覧を提示して選んでもらう)。無ければ中止し、PRから検査対象のspecを特定できないことを報告する。PRのコード差分は読まない
-   - **doc mode** (`.mjun/specs/` 外のMarkdown): ファイル内の要求・制約・スコープの記述をcontract、実装方針の記述を実装設計として扱う。どちらかが無ければその軸を省略し、SUMMARYに含める
-   - **conversation mode** (source未指定): 会話中の設計・計画を、要求・制約・スコープ (contract) と設計本文に分けて書き起こし、reviewerへの入力にする (SubAgentは会話を読めない)。素材が無ければ中止する
-   - 共通: `.mjun/steering/*.md`、用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`)、ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) があればパス一覧を集める (reviewerとverifierが自分で読む)。対象以外のactiveなspec (`.mjun/specs/*/spec.md` のうち `status: active` のもの) の `spec.md` と `design.md` のパス一覧も集める (spec間の境界衝突の検査に使う。他にactiveなspecが無ければcontract軸の観点8を省略し、その旨をSUMMARYに含める)
-   - ADRは [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って読み、superseded / deprecatedを確定規約にしない。`## Decisions` の `Status: tentative` も確定規約にしない
-3. `gh` が失敗した場合は中止し、エラーを報告する。パスは常にrepository rootからの絶対パスで渡す
+reviewerとverifierはこの会話を読めないので、検査に要る材料をここで揃える。材料は、contract (要求・制約・スコープ)、実装設計、決定の経緯、sourceの原文、Human-owned decisionの一覧、参照文書のパス一覧である。呼び出し元から渡されたもの (sourceの原文、Human-owned decisionの一覧、task planのdraft) は取得し直さない。出力言語はsourceの言語に合わせる。
+
+repository rootは `git rev-parse --show-toplevel` で決める。Git repositoryでなければ現在のディレクトリを使う。SubAgentの作業ディレクトリが親と同じとは限らないので、パスはrepository rootからの絶対パスで渡す。
+
+sourceの形ごとに、材料を次のように取る。
+
+- **spec mode** (`.mjun/specs/<slug>`): `spec.md` がcontract、`design.md` が実装設計、その `## Decisions` が決定の経緯、そのうち `Owner: human` のdecisionの見出しがHuman-owned decisionの一覧になる。`spec.md` のH1直下に `Source: #N` があれば、`gh issue view N --json title,body,comments` の本文とコメントをsourceの原文にする
+- **Issue番号**: 取り込み済みのIssueはLocal specが正本なので、`spec.md` に `Source: #N` を持つspecを `status: active`、`status: done` の順に探し、見つかればspec modeで扱う (複数あれば一覧から選んでもらう)。無ければ **issue mode** とし、`gh issue view N --json title,body,comments` の本文のContext〜Out of Scopeをcontract、`## Design Notes` を実装設計、`## Decision Log` を決定の経緯、コメントをsourceの原文にする。本文に区切り行 `<!-- projected-spec -->` があれば、contractは区切り行より下から読み、区切り行より上の元の本文もsourceの原文に含める。Human-owned decisionの一覧は無い
+- **PR番号**: `gh pr view N --json body` の `Closes #N` / `Fixes #N` / `Resolves #N` からIssue番号を取り出し、Issue番号として解決する (複数あれば一覧から選んでもらう)。無ければ検査対象のspecを特定できないと報告して中止する。PRのコード差分は読まない
+- **doc mode** (`.mjun/specs/` 外のMarkdown): 要求・制約・スコープの記述がcontract、実装方針の記述が実装設計になる
+- **conversation mode** (source未指定): 会話中の設計・計画を、contractと設計本文に分けて書き起こす。素材が無ければ中止する
+
+どのmodeでも、steering (`.mjun/steering/*.md`)、用語集 `CONTEXT.md` (repo直下、無ければ `.mjun/CONTEXT.md`)、ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`)、対象以外の `status: active` のspecの `spec.md` と `design.md` のパス一覧を集める。中身は、検査に関係するものをSubAgentが自分で読む。
+
+`gh` が失敗したら中止してエラーを報告する。
 
 ### Phase 2: reviewerによる候補の発見
 
-contract軸は [templates/contract-reviewer-prompt.md](templates/contract-reviewer-prompt.md)、design軸は [templates/design-reviewer-prompt.md](templates/design-reviewer-prompt.md) にPhase 1の材料を合成し、fresh contextのSubAgentを軸ごとに1体、並列に起動する。省略した軸は起動しない。task planのdraftが渡され、2 task以上を含む場合は、[mjun-to-tasksのtask-plan reviewer](../mjun-to-tasks/templates/reviewer-prompt.md) にcontract、実装設計、draftを合成し、tasks軸のreviewerとして同時に起動する。reviewerには読み取り (Read / Glob / Grep) だけを許可し、ファイルの変更、テスト、ビルド、再現コードの実行をさせない。
+書き手のcontextを持たない目で、問題の候補を広く集める。採否はPhase 3で決めるので、ここでは取りこぼさないことを優先する。
 
-各出力の `## Candidates` から、テンプレートの形式 (軸・観点・深刻度・対象と引用・問題・根拠・満たすべき状態・Human-owned decisionとの矛盾) を満たす候補だけを採用する。tasks軸は、`## Task Plan Review` の `FINDINGS` の各項目を `軸: tasks` の候補として扱う (深刻度とHuman-owned decisionとの矛盾は持たない)。形式を満たさない候補は捨てる。各軸の候補を1つの集合にまとめ、同じセクションの同じ根本原因の候補は、verifierの起動前に1件へまとめる (軸が違っても同じ根本原因なら1件にする)。書き手の意図や見た目の確からしさだけを理由に、verifierの前で候補を破棄しない。
+軸ごとにfresh contextのSubAgentを1体ずつ、並列に起動する。contract軸は [templates/contract-reviewer-prompt.md](templates/contract-reviewer-prompt.md)、design軸は [templates/design-reviewer-prompt.md](templates/design-reviewer-prompt.md) にPhase 1の材料を合成する。材料が無い軸は起動しない (実装設計が無ければdesign軸)。task planのdraftが渡され、2 task以上を含むときは、[mjun-to-tasksのtask-plan reviewer](../mjun-to-tasks/templates/reviewer-prompt.md) にcontract、実装設計、draftを合成し、tasks軸として同時に起動する。reviewerには読み取り (Read / Glob / Grep) だけを許可する。
+
+候補として採るのは、verifierが反証できる形のものだけである。contract軸とdesign軸は、`## Candidates` のうちテンプレートの全フィールドを持つものを採る。tasks軸は `## Task Plan Review` の `FINDINGS` の各項目を `軸: tasks` の候補として扱う (深刻度とHuman-owned decisionとの矛盾は持たない)。同じセクションで同じ根本原因の候補は、軸が違っても1件にまとめる。
+
+書き手の意図や見た目の確からしさを理由に、ここで候補を捨てない。承認前検査では親が書き手と同じcontextを持つので、親の判断で捨てるとfresh contextで検査する意味がなくなる。
 
 ### Phase 3: verifierによる反証
 
-候補を、対象セクションが同じもの同士で最大3件ずつに束ね、束ごとに [templates/verifier-prompt.md](templates/verifier-prompt.md) に候補とPhase 1の材料 (tasks軸の候補を含む束にはdraftも) を合成してSubAgentを起動する (候補ごとに起動すると、全員が同じ文書を読み直す)。束の間に依存は無いので並列に起動してよい。候補が多くても、親が自分で候補を検証してverifierの代わりにしない (承認前検査として呼ばれた場合、親は書き手と同じcontextを持つ)。verifierにはrepository内の読み取りと `git` の読み取り系コマンドだけを許可し、コードを変更させない。
+候補のうち、反証に耐えたものだけを残す。
 
-各出力の `## Verdict` を `CANDIDATE` で候補に対応づける。verdictが `confirmed` の候補だけを確定指摘とし、`refuted` と `uncertain` は捨てる。確定指摘の根拠に `file:line` があれば、親がその行をReadして引用が存在し主張と一致するかを確かめ、無い、または食い違うものは捨てる (verifierの報告を実在確認の代わりにしない)。
+対象セクションが同じ候補を最大3件ずつ束ね、束ごとに [templates/verifier-prompt.md](templates/verifier-prompt.md) に候補とPhase 1の材料 (tasks軸の候補を含む束にはdraftも) を合成して、SubAgentを並列に起動する。束ねるのは、候補ごとに起動すると全員が同じ文書を読み直すからである。verifierにはrepository内の読み取りと `git` の読み取り系コマンドだけを許可する。
+
+候補が多くても、親が自分で検証してverifierの代わりにしない。Phase 2と同じ理由で、親による検証は書き手の判断の追認になる。
+
+各出力の `## Verdict` を `CANDIDATE` で候補に対応づけ、`confirmed` だけを確定指摘にする (`refuted` と `uncertain` は捨てる)。確定指摘の根拠に `file:line` があれば、親がその行をReadし、引用が実在して主張と一致するものだけを残す。存在しない行を根拠にした指摘は呼び出し元の修正を誤らせるので、verifierの報告だけで実在を認めない。
 
 ### Phase 4: 出力
 
-結果をチャットへ出力する。ファイルへの保存はしない。確定指摘はcontract軸を先に観点番号順で、次にdesign軸を深刻度 `contract` → `boundary` → `structure` の順 (同じ深刻度は観点番号順) で、最後にtasks軸を観点番号順で並べる。verifierの検証過程、捨てた候補、内部の証拠は出力しない。
+結果をチャットへ出力し、ファイルには保存しない。確定指摘は、contract軸を観点番号順に、次にdesign軸を深刻度 `contract` → `boundary` → `structure` の順 (同じ深刻度は観点番号順) に、最後にtasks軸を観点番号順に並べる。呼び出し元が使うのは確定指摘だけなので、verifierの検証過程、捨てた候補、内部の証拠は出力しない。
 
-応答の最後に、次の構造化ブロックを必ず1つだけ出力する。呼び出し元skillは合否を `- VERDICT:` で判定し、修正対象を `FINDINGS`、人間への再確認が必要なdecisionを `HUMAN_DECISION_CONFLICTS` から読み取る。見出しの変更、値の同義語への置き換え、ブロック後の追記をしない。補足説明は各フィールドの中に書く。
+応答の最後に、次の構造化ブロックを1つだけ出力する。呼び出し元skillは合否を `- VERDICT:` で、修正対象を `FINDINGS` で、人間への再確認が必要なdecisionを `HUMAN_DECISION_CONFLICTS` で読み取る。パースできるように、見出しと値の語彙は変えず、ブロックの後に何も書かない。補足は各フィールドの中に書く。
 
 ```
 ## Spec Review
@@ -64,4 +77,4 @@ contract軸は [templates/contract-reviewer-prompt.md](templates/contract-review
 - SUMMARY: <1文の要約>
 ```
 
-FINDINGSが0件かつHUMAN_DECISION_CONFLICTSがnoneのときだけPASSとする。HUMAN_DECISION_CONFLICTSに挙げた矛盾はFINDINGSにも含める。省略した軸や検査できなかった観点 (sourceの原文が無い、Git repositoryでない) があれば、SUMMARYにその旨を含める。
+FINDINGSが0件で、HUMAN_DECISION_CONFLICTSもnoneのときだけPASSとする。HUMAN_DECISION_CONFLICTSに挙げた矛盾はFINDINGSにも含める。検査しきれなかった範囲はSUMMARYに書く (省略した軸、材料が無く見られなかった観点、Git repositoryでないためにコードと照合できなかったこと)。PASSを「問題が無い」と読み違えないようにするためである。

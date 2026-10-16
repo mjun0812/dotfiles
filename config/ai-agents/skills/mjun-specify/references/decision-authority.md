@@ -1,60 +1,36 @@
 # Decision Authority
 
-specを磨く過程で現れる各論点を、誰が決めるかで3種類に分類する。
+specを磨く過程で現れる各論点を、誰が決めるかで3種類に分ける。
 
 > Agentはfactsを調べ、contract内の可逆なdesignを決める。HumanはAgentの権限を超えるdecisionを決める。
 
-Agent-ownedとHuman-ownedの両方の条件に該当する場合は、Human-ownedを優先する。分類に必要な事実が不足している場合はEvidence-blockedとして証拠を集めてから判定する。
+人間の時間は、人間にしか決められない論点だけに使う。調べれば分かるfactsを人間に聞かず、Human-ownedをagentが決めない。後者は承認されたcontractに、人間が選んでいない振る舞いや範囲を紛れ込ませることになる。
 
 ## Agent-owned
 
-Agentが調査し、自分で決める。Human-ownedの条件に該当せず、次のいずれかに該当するもの。
+根拠 (コード、steering、repository内のprior art、公式仕様、既存architecture) から答えがほぼ一意に決まり、public behaviorを変えず、contract内部で局所的に覆せる論点。Agentが調べて自分で決める。
 
-- コードを読めば答えが分かる
-- steeringに既存方針がある
-- リポジトリに明確なprior artがある
-- 公式仕様で決まっている
-- public behaviorを変えない
-- contract内部の実装詳細
-- 局所的で可逆
-- 既存architectureからほぼ一意に決まる
+各論点は1つずつ、次の順で決める。まとめて即断すると、論点ごとの根拠と反論を検討しないまま確定してしまう。
 
-### 自己問答の手順
+1. 何を決めるのかを1文にする
+2. コードベース、規約、ドキュメントから判断材料を集める。推測で決めない
+3. 根拠つきの案を立て、採択の前にその案への最も強い反論を1つ検討する
+4. 採択し、確信度をhigh / medium / lowで記録する
 
-各Agent-owned decisionは、1つずつ次の手順で解決する。複数の分岐をまとめて即断しない。
-
-1. **論点**: 何を決めるのかを一文で明示する
-2. **調査**: コードベース・規約・ドキュメントから判断材料を集める。推測で決めない
-3. **推奨案**: 根拠とともに案を立てる
-4. **反論**: 採択する前に、その案への反論 (devil's advocate) を必ず一つ挙げて検討する
-5. **採択**: 案を決定し、確信度を high / medium / low で記録する
-
-確信度lowの決定は「要確認」として `design.md` の `## Decisions` に `Status: tentative` 付きで残す。無断で確定扱いにしない。tentativeは承認の前 (mjun-specify Phase 4) に、証拠で確信度を上げるか人間に確認して解消し、承認時点で0件にする。承認後に残留したtentativeはmjun-implementの起動時検査が検出し、人間の確認を求める関所として働く (機械的に実装を止めるhard gateではない。人間が続行を選んだdecisionは `Status:` 行が消される)。
+確信度lowの決定は `design.md` の `## Decisions` に `Status: tentative` 付きで残し、確定扱いにしない。tentativeは承認の前 (mjun-specify Phase 4) に、証拠で確信度を上げるか人間に確認して0件にする。承認後に編集されてtentativeが残った場合は、mjun-implementが起動時に検出して人間に続行を確認する。
 
 ## Human-owned
 
-人間に確認する。互いに依存しない論点は1回の質問にまとめる。次のいずれかに該当するもの。
+決め方によって、利用者や他の担い手から見える結果が変わる論点、または根拠からは決まらない論点。Product behavior、Domain semantics、Scope、Public contract、Boundary ownership、UX上のtrade-offがこれに当たる。技術的には、複数案に明確な優劣が無いもの、高コストで覆しにくいもの、steeringとユーザー要求が衝突するものも含む。
 
-- Product behavior
-- Domain semantics
-- Scope
-- Public contract
-- Boundary ownership
-- UX上のtrade-off
-- 複数案に技術的な明確な優劣がない
-- 高コストで覆しにくい
-- steeringとユーザー要求が衝突する
-
-必ず推奨案と理由を添える。調べれば分かるfactsを人間に聞かない。
+Agent-ownedの条件にも当たる場合はHuman-ownedを優先する。人間に聞くときは推奨案と理由を添える。互いに依存しない論点は1回の質問にまとめる。
 
 ## Evidence-blocked
 
-情報が足りず、まだAgentもHumanも決められないもの。証拠を集めてから再分類する。
+分類に必要な事実が足りず、まだ誰にも決められない論点。証拠を集めてから、Agent-ownedかHuman-ownedへ分類し直す。
 
 | 不足しているもの         | 解消手段                                    |
 | ------------------------ | ------------------------------------------- |
 | 外部仕様・外部事実       | 一次資料の調査 ([research.md](research.md)) |
 | UI・状態・ロジックの実物 | 試作 ([prototyping.md](prototyping.md))     |
 | 現行codeでの実現可能性   | 最小実装 ([prototyping.md](prototyping.md)) |
-
-証拠が得られたら、そのdecisionをAgent-ownedかHuman-ownedへ再分類して解決する。

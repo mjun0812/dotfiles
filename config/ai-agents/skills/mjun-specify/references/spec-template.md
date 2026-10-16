@@ -2,7 +2,7 @@
 
 人間が承認するcontract。frontmatterにはライフサイクル状態 (`status: active | done`) とcontract承認状態 (`approval: pending | approved`) を持つ。
 
-`Source:` 行は投影先のGitHub Issueがある場合だけ書く (純Localのspecでは省略する)。調査しても埋まらないセクションは省略する (空セクションやプレースホルダーを残さない)。小規模な修正ではBoundariesを丸ごと省略してよい。RequirementsとAcceptance Criteriaは省略しない。
+`Source:` 行は投影先のGitHub Issueがある場合だけ書く (純Localのspecでは省略する)。調査しても埋まらないセクションは省略する (空セクションやプレースホルダーを残さない)。小規模な修正ではBoundariesを丸ごと省略してよい。RequirementsとAcceptance Criteriaは、task分解と実装の検証が直接使うので省略しない。
 
 ```markdown
 ---

@@ -10,141 +10,73 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls:*), Bash(find:*), Bash(rg:
 
 ## 目的
 
-`.mjun/steering/` をプロジェクトの永続メモリとして維持する。
+`.mjun/steering/` を、agentがコードを書く前に読むプロジェクトの永続メモリとして維持する。steeringは「このプロジェクトではこう書く」というパターンと原則を伝えるもので、コードの写しではない。既存パターンに従う新しいコードのためにsteeringを更新せずに済む粒度を目安にする。何を書き何を省くかは [references/steering_principles.md](references/steering_principles.md) を参照する。
 
-- **Bootstrap**: 初回にコードベースを分析してcore steeringを生成し、続けて証拠のあるドメインのcustom steeringを生成する
-- **Sync**: steeringとコードベースの整合を保ち、新たに証拠が揃ったドメインのcustom steeringを追加する
-- **Mine**: 履歴 (merged PR、closed Issue、設計doc) から用語と根拠が明文の判断を発掘し、用語集とADRへ追記する (追記専用。既存項目を書き換えない。保存先は [references/glossary_and_adr.md](references/glossary_and_adr.md))
-- **Preserve**: ユーザーのカスタマイズは神聖。更新は追記で行い、置換しない
+置き場所は内容の性質で分ける。
 
-成功条件:
+- core (`product.md`、`tech.md`、`structure.md`) とcustom (`<domain>.md`): 現在のコードに証拠があるパターン。コードに合わせて更新する
+- 用語集 `CONTEXT.md` とADR: 用語の呼び分けと判断の理由。履歴から発掘して追記し、コードから再生成しない。保存先・書式・規則は [references/glossary_and_adr.md](references/glossary_and_adr.md) に従う
 
-- core / customが網羅的なリストではなく、パターンと原則を記録している
-- steeringとコードのdriftが検出・報告されている
-- `.mjun/steering/*.md` はcore・customを問わずすべて等しく扱われている
-- customファイルはすべて、根拠となる実在のコードパターンに基づいている
-- `CONTEXT.md` とADRへの追記は、すべて由来 (出典) を持つ
+`.mjun/steering/*.md` はcore・customを問わずすべてプロジェクトメモリとして読み込まれるので、両者を同じ重みで扱う。
 
-## Git管理への移行
+## 守ること
 
-用語集やADRをGit管理へ移す依頼では、[共通記録規則の移行手順](references/glossary_and_adr.md#git管理へ移す場合) を適用する。全内容と参照を移して検証し、移行先をGit管理対象にした後で `.mjun/` 側の元ファイルを削除する。これは追記・削除禁止の保存先移行に限った例外である。以後は移行先だけを使う。
+- secret (API key、パスワード、認証情報、DBのURL、内部IP) を書かない。steeringはagentのcontextへ毎回読み込まれ、Git管理されることもあるので、書いた時点で流出する
+- ユーザーが書いた記述を置換・削除しない。更新は追記を基本にし、変えた理由をサマリに書く。ユーザーの記述とコードが食い違い、どちらが正か判断できないときは、書き換えずに両方の状態を報告して確認する
+- `CONTEXT.md` とADRは追記専用にする。例外 (supersededの追記、Git管理への移行、番号の振り直し) は [共通記録規則](references/glossary_and_adr.md) に従う。判断の理由は失うと取り戻せず、捏造すると将来の判断を誤らせるので、理由が明文でない履歴から判断を作らない
 
-## ADRの追記
+## 作業の選び方
 
-spec作成や会話中にADRを書く場合は [共通記録規則](references/glossary_and_adr.md) だけを適用し、以下のBootstrap / Syncを開始しない。ADRはcustom作成基準の対象外である。
+- 用語集やADRをGit管理に移す依頼: [Git管理へ移す場合](references/glossary_and_adr.md#git管理へ移す場合) の手順だけを行う。`.mjun/` 側の元ファイルの削除はこの移行に限った例外で、移行先の検証が済んでから行う
+- spec作成や会話の中でADRを書く場合: [共通記録規則](references/glossary_and_adr.md) だけを適用し、Bootstrap / Syncは始めない
+- それ以外: `.mjun/steering/` にcore 3ファイルがそろっていればSync Flow、1つでも欠けていればBootstrap Flowを行う
 
-## モード判定
-
-`.mjun/steering/` の状態を確認してモードを自動判別する。
-
-- **Bootstrap Mode**: ディレクトリが空、またはcoreファイル (product.md, tech.md, structure.md) のいずれかが欠けている
-- **Sync Mode**: coreファイルが3つとも存在する
-
-会話の中でsteeringの内容が既に得られている場合、重複するファイル読み込みは省略してよい。
+会話の中で既に読んだsteeringは読み直さなくてよい。
 
 ## Bootstrap Flow
 
-Phase 1でcore 3ファイルを完成させてから、Phase 2でcustomファイル、Phase 3で用語集とADRに取りかかる。
-customの検討をPhase 1に持ち込まないこと。
+coreの分析結果 (技術スタック、構成パターン) をcustomの判断に使うため、Phase 1から順に進める。
 
 ### Phase 1: core 3ファイル
 
-1. [`references/`](references) のテンプレートを読み込む
-   - [`references/product_template.md`](references/product_template.md)
-   - [`references/tech_template.md`](references/tech_template.md)
-   - [`references/structure_template.md`](references/structure_template.md)
-2. コードベースを分析する。以下の3観点は独立しているため、並列に調査する
-   - **Product分析**: README、package.json等のマニフェスト、ドキュメントから、目的・価値・core capabilities を読み取る
-   - **Tech分析**: 設定ファイル、依存関係、frameworkから、技術パターンと技術的決定を読み取る
-   - **Structure分析**: ディレクトリツリー、命名規則、importパターンから、構成方針を読み取る
-3. パターンを抽出する (リストではなく)
-   - Product: 目的、価値、core capabilities
-   - Tech: framework、決定事項、規約
-   - Structure: 構成、命名、import
-4. テンプレートに従って `.mjun/steering/` にcore steeringファイルを生成する
-5. [`references/steering_principles.md`](references/steering_principles.md) の原則に沿っているか確認する
+次の3観点でコードベースを調べ、[product](references/product_template.md)・[tech](references/tech_template.md)・[structure](references/structure_template.md) のテンプレートに沿って `.mjun/steering/` へ書く。3観点は独立しているので並列に調べてよい。
+
+- Product: README、マニフェスト、docsから目的・価値・core capabilities
+- Tech: 設定ファイル、依存、frameworkから技術上の決定と規約
+- Structure: ディレクトリ構成、命名、importから構成方針
 
 ### Phase 2: customファイル
 
-core 3ファイルの生成が完了してから開始する。Phase 1で得た分析結果 (tech.mdの技術スタック、structure.mdの構成パターン) を前提知識として再利用する。
-
-6. コードベースをドメイン横断でスキャンし、[作成基準](#customファイルの作成基準) を満たすドメインをすべて特定する
-7. 各ドメインを `.mjun/steering/<domain>.md` に確認なしで一括生成する
-8. サマリを提示してレビューを求める (Phase 3の結果も同じサマリに含める)
-
-**Focus**: 判断を導くパターンを書く。ファイルや依存の一覧 (カタログ) を書かない。
+ドメイン横断でコードを調べ、[作成基準](#customファイルの作成基準) を満たすドメインをすべて `.mjun/steering/<domain>.md` として確認なしで作る。
 
 ### Phase 3: 用語集とADRの発掘
 
-core / custom steeringは「コードに証拠がある事実」を書く場所であり、用語の呼び分けと判断の理由は `CONTEXT.md` とADRに分けて書く (置き場所の解決を含む形式と規則は [references/glossary_and_adr.md](references/glossary_and_adr.md) に従う)。どちらも**追記専用**で、既存の用語・ADR本文は書き換えず削除しない (supersededの追記は共通記録規則に従う)。
+全件は読まず、理由が書かれている履歴に絞る。対象は本文に理由があるmerged PR、議論のあるclosed Issue、README・docsの設計記述、既存の `docs/adr/` である。GitHubリポジトリでなく `gh` が使えなければ、docsとcommit messageを対象にする。用語集とADRへ入れる内容の基準は [履歴の発掘](references/glossary_and_adr.md#履歴の発掘) と [ADRにする基準](references/glossary_and_adr.md#adrにする基準) を参照する。
 
-9. 発掘元を集める。全件を読まず、理由が書かれているものに絞る
-   - 本文に理由が書かれたmerged PR (`gh pr list --state merged --json number,title,body` で本文を持つものを選ぶ)
-   - 議論のあるclosed Issue (`gh issue list --state closed --json number,title,body,comments`)
-   - README・docs配下の設計記述、既存の `docs/adr/`
-   - `gh` が使えない (GitHubリポジトリでない) 場合は、docsとcommit message (`git log`) だけを対象にする
-10. **用語集**: コードの識別子 (型名、module名、テーブル名など) をcanonical nameとし、Issue・PR・docsで同じ概念に使われている別の呼び名を `_Avoid_` に集めて `CONTEXT.md` へ追記する (どちらも無ければ `.mjun/CONTEXT.md` を作る)。プロジェクト固有の概念だけを対象にし、一般的なプログラミング用語と実装詳細は書かない。既存の用語は触らない
-11. **ADR**: 理由が明文の判断のうち、[ADRにする基準](references/glossary_and_adr.md#adrにする基準) の3条件をすべて満たすものだけをADRとして追加する。判断内容で既存ADRとの重複を確認し、コードから推測した理由は記録しない。
-12. サマリに追加した用語とADRを由来付きで列挙する
+Phase 1〜3の結果は1つのサマリにまとめて [出力](#出力) する。
 
 ## Sync Flow
 
-1. 既存の `.mjun/steering/*.md` をすべて読み込む。ADRは判断履歴として扱い、コードから再生成しない。以下のコードとのdrift検査とcustom作成基準はcore / customに適用する
-2. コードベースの変更を分析する
-3. driftを検出する
-   - **Steering → Code**: steeringに書かれているがコードに無い要素 → Warning
-   - **Code → Steering**: コードに現れた新パターン → 更新候補
-   - **Customファイル**: 内容がまだ有効か確認する
-4. 更新を提案する (追記主義。ユーザーが書いた内容は保持する)
-5. [作成基準](#customファイルの作成基準) を新たに満たしたドメインがあれば、その場で `.mjun/steering/<domain>.md` を作成する (候補の提示や推奨で止めない)
-6. 用語集とADRを追記する: 既存ADRと判断内容が重複しないmerged PRとclosed Issueを対象に、Bootstrap Phase 3と同じ基準で発掘して追記する。既存項目は書き換えない。コードが有効なADRに反していれば、未実装の計画かどうかを確かめ、実装済みならCode Driftとして報告する
-7. 報告する: 更新内容、新規作成したcustomファイル、追記した用語とADR、警告
-
-**Update Philosophy**: 置換せず追記する。ユーザーが書いたセクションは保持する。
-詳細は [`references/steering_principles.md` の Preservation](references/steering_principles.md#preservation-when-updating) を参照。
+1. 既存の `.mjun/steering/*.md` をすべて読み、コードベースの変更を調べる
+2. core / customとコードのdriftを調べる。steeringにあってコードに無い要素はWarningにし、コードに現れた新しいパターンは追記で反映する。customファイルはまだ有効かを確かめる
+3. [作成基準](#customファイルの作成基準) を新たに満たしたドメインがあれば、候補の提示で止めずにcustomファイルを作る
+4. 既存ADRと判断が重複しないmerged PRとclosed Issueから、Bootstrap Phase 3と同じ基準で用語とADRを追記する。コードが有効なADRに反していれば、未実装の計画かどうかを確かめ、実装済みならCode Driftとして報告する
+5. [出力](#出力) する
 
 ## customファイルの作成基準
 
-customファイルを作るかどうかは、次の1点だけで判断する。
+コードベースに実在するパターンを、具体的なファイルパス付きで挙げられるドメインだけを作る。証拠の無い一般論のベストプラクティス集は、読んだagentに実在しない規約を守らせてしまう。
 
-> **コードベースに実在するパターンを、具体的なファイルパス付きで挙げられるか。**
+- 証拠を挙げられるドメインは数の上限なく作り、分量は証拠の量に従わせる
+- 1ファイル1ドメインにし、coreと内容を重ねない
+- 証拠があるか判断できないドメインは作らず、見送った理由をサマリで報告する
+- ADRはこの基準の対象外である
 
-- 証拠を挙げられるドメインは、数の上限なくすべて作成する
-- 証拠を挙げられないドメインは作成しない。「あった方が良さそう」という一般論のベストプラクティス集を書かない
-- 分量の目安は設けない。実在する証拠の量に文書量を従わせる (パターンが豊富なドメインは長く、薄いドメインは短く)
-- 1ファイル1ドメインとし、coreファイルと内容を重複させない
-
-### customテンプレート
-
-以下のドメインは [`references/steering_custom/`](references/steering_custom) にテンプレートがある。該当があれば見出し構成の起点にする。テンプレートの本文は一般論の例なので、コードに証拠のある内容だけに置き換え、証拠の無い節は削る。
-
-| ドメイン                                                            | 内容                                    |
-| ------------------------------------------------------------------- | --------------------------------------- |
-| [`api-standards.md`](references/steering_custom/api-standards.md)   | REST/GraphQL規約、エラー形式            |
-| [`testing.md`](references/steering_custom/testing.md)               | テスト構成、mock、カバレッジ            |
-| [`security.md`](references/steering_custom/security.md)             | 認証パターン、入力検証、secret          |
-| [`database.md`](references/steering_custom/database.md)             | スキーマ設計、migration、クエリパターン |
-| [`error-handling.md`](references/steering_custom/error-handling.md) | エラー型、ログ、retry戦略               |
-| [`authentication.md`](references/steering_custom/authentication.md) | 認証フロー、権限、session管理           |
-| [`deployment.md`](references/steering_custom/deployment.md)         | CI/CD、環境、rollback手順               |
-
-テンプレートの無いドメイン (例: i18n、ロギング、ジョブキュー) も、作成基準を満たすならテンプレートなしで作成してよい。
-
-## 粒度の原則
-
-> "If new code follows existing patterns, steering shouldn't need updating."
-> (新しいコードが既存パターンに従う限り、steeringの更新は不要であるべき)
-
-パターンと原則を記録する。網羅的なリストを記録しない。
-詳細は [`references/steering_principles.md` の Content Granularity](references/steering_principles.md#content-granularity) を参照。
-
-- **Bad**: ディレクトリツリーの全ファイルを列挙する
-- **Good**: 構成パターンを例付きで記述する
+[`references/steering_custom/`](references/steering_custom) のテンプレート (api-standards、testing、security、database、error-handling、authentication、deployment) は見出し構成の起点に使う。本文は一般論の例なので、コードに証拠のある内容に置き換え、証拠の無い節は削る。テンプレートの無いドメイン (i18n、ロギング、ジョブキューなど) も、基準を満たせば作ってよい。
 
 ## 出力
 
-チャットにはサマリのみを出す (ファイルは直接更新する)。
-customファイルは確認なしで作成する代わりに、**それぞれの根拠となったファイルパスを必ずサマリに列挙**し、事後レビューで削除できるようにする。
+ファイルは直接更新し、チャットにはサマリだけを出す。customファイルは確認なしで作る代わりに、事後レビューで不要なものを消せるよう、それぞれの根拠にしたファイルパスを必ず列挙する。追加した用語とADRには由来を付ける。
 
 Bootstrap:
 
@@ -188,19 +120,3 @@ Steering Updated
 - import規約に従っていないコンポーネントあり
 - src/orders/ が ADR-0001 (event-sourced) に反して直接UPDATEしている
 ```
-
-## Safety & Fallback
-
-- **Security**: API key、パスワード、secretは絶対に書かない ([`references/steering_principles.md` の Security](references/steering_principles.md#security) を参照)
-- **Uncertainty**: steeringとコードのどちらが正か判断できない場合は、両方の状態を報告してユーザーに確認する
-- **Preservation**: 迷ったら置換ではなく追記する
-- **Custom**: 証拠の有無が判断できないドメインは作成せず、サマリで「見送ったドメインと理由」として報告する
-- **判断履歴**: 理由が明文でない履歴から判断を捏造しない。3条件が確認できない判断と、採択自体が不確かな案はADRにしない
-
-## Notes
-
-- `.mjun/steering/*.md` はすべてプロジェクトメモリとして読み込まれる
-- パターンを書き、カタログを書かない
-- **Golden Rule**: 既存パターンに従う新コードのためにsteeringの更新が必要になってはいけない
-- agent固有のツールディレクトリ (`.claude/`, `.codex/`, `.gemini/` など) や `.mjun/` 配下のメタ情報のカタログはcore / customに書かない
-- `CONTEXT.md` とADRの本文は追記で保持し、コードから再生成しない (ADRのsupersededの追記は共通記録規則に従う)

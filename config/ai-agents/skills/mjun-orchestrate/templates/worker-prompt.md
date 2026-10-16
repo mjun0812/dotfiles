@@ -1,7 +1,7 @@
 # Worker Prompt
 
 orchestratorが下表のplaceholderを埋め、本文をquoted heredocでshell変数に入れて `herdr agent prompt <worker名> "$task_prompt"` で送る。
-依頼文の後ろに添えるのは、作業場所の注意、報告ファイル、完了報告の3つだけとし、workerやskillの進め方を上書きする指示は足さない。
+依頼文の後ろに添えるのは、作業場所の注意、報告ファイル、完了報告の3つだけにする。進め方はworkerとskillが持っており、orchestratorが指示を足すとskillの手順と食い違うためである。
 
 ## Placeholder一覧
 
@@ -13,7 +13,7 @@ orchestratorが下表のplaceholderを埋め、本文をquoted heredocでshell�
 | `{{worker_name}}`   | worker agent名 (`<orch名>-<slug>`)             |
 | `{{orch_name}}`     | orchestratorのagent名                          |
 
-`{{location_note}}` はkindで決まる。`<branch>` と `<checkout_path>` はPhase 2とPhase 3で記録した値。
+`{{location_note}}` はkindで決まる。`<branch>` と `<checkout_path>` はPhase 2とPhase 3で記録した値。どちらの文面も、並列に動く他のworkerと同じcheckoutを書き換えないためのものである。
 
 | kind       | 文面                                                                                                                                                                                                   |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

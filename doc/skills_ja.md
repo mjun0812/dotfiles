@@ -155,7 +155,7 @@ graph LR
 | Caller             | Callee                                                           | タイミング                                                                                                                                             |
 | ------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `github-pr-create` | `git-commit`                                                     | Phase 0のみ、現在のbranchがdefault branchまたは未commit変更がある場合                                                                                  |
-| `mjun-specify`     | `mjun-grilling`                                                  | Human-owned / Evidence-blockedなdecisionの解決と、承認前に残ったtentativeの解消が必要な場合                                                            |
+| `mjun-specify`     | `mjun-grilling`                                                  | Human-ownedなdecisionの解決と、spec reviewの前に残ったtentativeの解消が必要な場合 (Evidence-blockedは自分で調べて解決する)                             |
 | `mjun-specify`     | `mjun-spec-review`                                               | Phase 4 (承認前) でcontract、design.md、task planのdraftをレビューし、妥当な指摘だけを反映                                                             |
 | `mjun-specify`     | `mjun-to-tasks`                                                  | 承認前に `--draft` でtask planのdraftを作り、承認後にspec reviewを経たdraftからtasks.mdを確定する (単一task規模を含む。既存tasks.mdがあれば再分解する) |
 | `mjun-specify`     | `exhtml`                                                         | Phase 5で「HTMLで内容を確認する」が選ばれた場合 (設計を図解する解説ページ)。skillが無ければその場でHTMLを書く                                          |

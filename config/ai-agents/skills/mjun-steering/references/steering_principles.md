@@ -1,33 +1,29 @@
 # Steering Principles
 
-Steering files are **project memory**, not exhaustive specifications.
+Steering files are project memory: they tell an agent how this project is built so that new code fits in. They are neither specifications nor a copy of the code, so anything an agent can see by listing or reading files does not need repeating.
 
-The pattern and regeneration guidance below applies to core/custom files. ADRs (`adr/NNNN-<slug>.md`, one decision per file) record why hard-to-reverse decisions were made: follow [the ADR rules](glossary_and_adr.md), preserve their bodies, and never regenerate them from code.
-
----
-
-## Content Granularity
-
-### Golden Rule
+The test for granularity:
 
 > "If new code follows existing patterns, steering shouldn't need updating."
 
-### ✅ Document
+A file that needs editing whenever a component or dependency is added is a catalog, not project memory.
+
+These principles apply to core and custom files. ADRs record why hard-to-reverse decisions were made. They follow [glossary_and_adr.md](glossary_and_adr.md) and are never regenerated from code. When a steering file relies on a decision's rationale, link the ADR instead of restating it.
+
+## Content Granularity
+
+Document what guides decisions in new code:
 
 - Organizational patterns (feature-first, layered)
-- Naming conventions (PascalCase rules)
+- Naming conventions
 - Import strategies (absolute vs relative)
 - Architectural decisions (state management)
-- Technology standards (key frameworks)
+- Key technology standards
 
-### ❌ Avoid
+Leave out:
 
-- Complete file listings
-- Every component description
-- All dependencies
-- Implementation details
-- Agent-specific tooling directories (e.g. `.cursor/`, `.gemini/`, `.claude/`)
-- Detailed documentation of `.mjun/` metadata directories
+- Complete file listings, per-component descriptions, every dependency, and implementation details. They go stale with each change and are visible in the repo
+- Agent-specific tooling directories (`.claude/`, `.codex/`, `.gemini/`, `.cursor/`) and `.mjun/` metadata. They describe the agent setup, not the project. A light reference to `.mjun/steering/` is fine
 
 ### Example Comparison
 
@@ -52,46 +48,11 @@ Reusable, design-system aligned primitives
 - No business logic
 ```
 
----
-
-## Security
-
-Never include:
-
-- API keys, passwords, credentials
-- Database URLs, internal IPs
-- Secrets or sensitive data
-
----
-
-## Quality Standards
-
-- **Single domain**: One topic per file
-- **Concrete examples**: Show patterns with code
-- **Reference rationale**: Link to the relevant ADR instead of duplicating its rationale
-
----
-
-## Preservation (when updating)
-
-- Preserve user sections and custom examples
-- Additive by default (add, don't replace)
-- Note why changes were made
-
----
-
-## Notes
-
-- Templates are starting points, customize as needed
-- All steering files loaded as project memory
-- Light references to `.mjun/steering/` are acceptable; avoid documenting other `.mjun/` directories
-- Custom files equally important as core files
-
----
-
 ## File-Specific Focus
+
+Templates give a starting structure. Adapt the headings to what the project actually has.
 
 - **product.md**: Purpose, value, business context (not exhaustive features)
 - **tech.md**: Key frameworks, standards, conventions (not all dependencies)
 - **structure.md**: Organization patterns, naming rules (not directory trees)
-- **Custom files**: Specialized patterns (API, testing, security, etc.)
+- **Custom files**: One domain per file. Show its patterns with short code examples drawn from the files they come from
