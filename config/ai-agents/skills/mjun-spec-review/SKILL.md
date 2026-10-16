@@ -45,7 +45,7 @@ sourceの形ごとに、材料を次のように取る。
 
 軸ごとにfresh contextのSubAgentを1体ずつ、並列に起動する。contract軸は [templates/contract-reviewer-prompt.md](templates/contract-reviewer-prompt.md)、design軸は [templates/design-reviewer-prompt.md](templates/design-reviewer-prompt.md) にPhase 1の材料を合成する。材料が無い軸は起動しない (実装設計が無ければdesign軸)。task planのdraftが渡され、2 task以上を含むときは、[mjun-to-tasksのtask-plan reviewer](../mjun-to-tasks/templates/reviewer-prompt.md) にcontract、実装設計、draftを合成し、tasks軸として同時に起動する。reviewerには読み取り (Read / Glob / Grep) だけを許可する。
 
-候補として採るのは、verifierが反証できる形のものだけである。contract軸とdesign軸は、`## Candidates` のうちテンプレートの全フィールドを持つものを採る。tasks軸は `## Task Plan Review` の `FINDINGS` の各項目を `軸: tasks` の候補として扱う (深刻度とHuman-owned decisionとの矛盾は持たない)。同じセクションで同じ根本原因の候補は、軸が違っても1件にまとめる。
+候補として採るのは、verifierが反証できる形のものだけである。contract軸とdesign軸は、`## Candidates` のうちテンプレートの全フィールドを持つものを採る。tasks軸は `## Task Plan Review` の `FINDINGS` の各項目を `軸: tasks` の候補として扱う (深刻度とHuman-owned decisionとの矛盾は持たない)。同じセクションで同じ根本原因の候補は、軸が違っても1件にまとめる。まとめた後、候補のIDを `C-1` から通し番号で振り直す。軸ごとのreviewerは別々に番号を振るので、そのままではverifierの `CANDIDATE` と対応づけられない。
 
 書き手の意図や見た目の確からしさを理由に、ここで候補を捨てない。承認前検査では親が書き手と同じcontextを持つので、親の判断で捨てるとfresh contextで検査する意味がなくなる。
 
@@ -53,11 +53,11 @@ sourceの形ごとに、材料を次のように取る。
 
 候補のうち、反証に耐えたものだけを残す。
 
-対象セクションが同じ候補を最大3件ずつ束ね、束ごとに [templates/verifier-prompt.md](templates/verifier-prompt.md) に候補とPhase 1の材料 (tasks軸の候補を含む束にはdraftも) を合成して、SubAgentを並列に起動する。束ねるのは、候補ごとに起動すると全員が同じ文書を読み直すからである。verifierにはrepository内の読み取りと `git` の読み取り系コマンドだけを許可する。
+候補の全件を [templates/verifier-prompt.md](templates/verifier-prompt.md) にPhase 1の材料 (tasks軸の候補があればdraftも) と合わせて合成し、verifierのSubAgentを1体だけ起動する。1体にすると、文書を読むのが1回で済み、起動と完了待ちも1回で終わる。候補が0件なら起動しない。verifierにはrepository内の読み取りと `git` の読み取り系コマンドだけを許可する。
 
 候補が多くても、親が自分で検証してverifierの代わりにしない。Phase 2と同じ理由で、親による検証は書き手の判断の追認になる。
 
-各出力の `## Verdict` を `CANDIDATE` で候補に対応づけ、`confirmed` だけを確定指摘にする (`refuted` と `uncertain` は捨てる)。確定指摘の根拠に `file:line` があれば、親がその行をReadし、引用が実在して主張と一致するものだけを残す。存在しない行を根拠にした指摘は呼び出し元の修正を誤らせるので、verifierの報告だけで実在を認めない。
+出力の各 `## Verdict` を `CANDIDATE` で候補に対応づけ、`confirmed` だけを確定指摘にする (`refuted` と `uncertain` は捨てる)。`## Verdict` の無い候補があれば、同じverifierを継続して1回だけ求め、それでも無ければ `uncertain` として捨てる。確定指摘の根拠に `file:line` があれば、親がその行をReadし、引用が実在して主張と一致するものだけを残す。存在しない行を根拠にした指摘は呼び出し元の修正を誤らせるので、verifierの報告だけで実在を認めない。
 
 ### Phase 4: 出力
 
