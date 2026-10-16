@@ -55,10 +55,6 @@ dependencies:
     - duckdb/duckdb-skills/skills/convert-file
     - duckdb/duckdb-skills/skills/duckdb-docs
     - duckdb/duckdb-skills/skills/s3-explore
-    - git: duckdb/duckdb-skills
-      path: skills/read-memories
-      targets:
-        - claude
   mcp: []
 includes: auto
 scripts: {}
