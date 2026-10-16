@@ -62,23 +62,13 @@
 - sourceやリポジトリ規約との矛盾を黙って回避しない (`BLOCKED` で報告する)
 - 実行していないコマンドの結果を書かない。`CHECKS_RUN` と `TESTS_RUN` にはこの応答の中で実行した結果だけを書き、実行できなかったものは `NOT_RUN (理由)` と書く
 
-## advisorへの相談
-
-次の場面では作業を止め、`NEEDS_ADVICE` で上位modelのadvisorへの相談を求める。親がadvisorの助言を添えて、このまま作業を続けさせる。
-
-- `design.md` で決まっていない実装方針に複数の案があり、どれを取るかで変更の範囲や振る舞いが変わる
-- 同じ確認コマンドが2回続けて失敗する、または原因の分からない振る舞いに詰まった
-- `design.md` のModulesやChange Outlineから外れないと進められない
-
-コードを読めば分かること、specや `design.md` で決まっていることは相談しない。助言を受け取ったら、その方針で進める。助言が実際のコードや実行結果と食い違う場合は従わず、分かったことと助言の内容の食い違いを `QUESTION` に書いて、もう1回だけ `NEEDS_ADVICE` を返してよい。実行結果は助言より優先する。相談の回数は親が管理し、上限に達したと伝えられたら自分の判断で進み、判断と理由を `CONCERNS` に書く。
-
 ## Status Report
 
 応答の最後に、次の構造化ブロックを必ず1つだけ出力する。実行環境が親への結果返却に専用のtoolを要求する場合は、このブロックをそのままそのtoolの引数に入れて返す。親は `- STATUS:` 行だけをパースする。見出しの変更、値の同義語への置き換え、ブロック後の追記をしない。補足説明は各フィールドの中に書く。
 
 ```
 ## Status Report
-- STATUS: READY_FOR_REVIEW | CHECK_DISPUTE | BLOCKED | NEEDS_CONTEXT | NEEDS_ADVICE
+- STATUS: READY_FOR_REVIEW | CHECK_DISPUTE | BLOCKED | NEEDS_CONTEXT
 - TASKS: <担当groupのtask IDのカンマ区切り一覧>
 - CHECK_FILES: <作成・変更した検査ファイルのカンマ区切り一覧。無ければ none>
 - CHECK_COMMANDS: <各T-NNN/AC-nに対応する検証コマンド。渡された事前検査も含める>
@@ -92,9 +82,6 @@
 - BLOCKER: <BLOCKEDの場合のみ。完了を妨げているもの>
 - BLOCKER_REMEDIATION: <BLOCKEDの場合のみ。何があれば解除できるか>
 - MISSING: <NEEDS_CONTEXTの場合のみ。不足している文脈と入手先の見当>
-- QUESTION: <NEEDS_ADVICEの場合のみ。決めたい判断を1文で>
-- OPTIONS: <NEEDS_ADVICEの場合のみ。考えている案と、それぞれの影響>
-- TRIED: <NEEDS_ADVICEの場合のみ。試したことと、その結果>
 - EVIDENCE: <振る舞いを証明するコードパス、関数、テスト>
 ```
 

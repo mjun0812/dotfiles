@@ -11,9 +11,8 @@ mjun-implementが起動するSubAgentのmodelとeffortは、この表に従う�
 | verifier    | `opus` / `high`                  | `gpt-6.1-sol` / `high`               |
 | reviewer    | `opus` / `high`                  | `gpt-6.1-sol` / `high`               |
 | debugger    | `opus` / `xhigh`                 | `gpt-6.1-sol` / `xhigh`              |
-| advisor     | `opus` / `xhigh`                 | `gpt-6.1-sol` / `xhigh`              |
 
-reviewer・verifier・advisorは、implementerより上位のmodelにする。implementerを昇格させた場合も、これらをimplementerより下にしない。
+reviewerとverifierは、implementerより上位のmodelにする。implementerを昇格させた場合も、これらをimplementerより下にしない。
 
 ## implementerの昇格
 
