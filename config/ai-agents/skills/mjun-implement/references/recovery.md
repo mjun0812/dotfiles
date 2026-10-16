@@ -14,7 +14,7 @@ taskをblockedへ移すときの隔離と、差し戻しが収束しないとき
 
 BLOCKED、差し戻し2周後のREJECTED、同じ指摘や同じ失敗出力の繰り返し、reviewerの指摘が検査やspecの誤りを示すとき ([group-loop.md](group-loop.md) のPhase 3.1) に起動する。debuggerはfresh contextで動かし、失敗した試行の経緯は渡さない。
 
-1. **debuggerの起動**: テンプレートに、失敗の内容 (`BLOCKER` または最後のreviewerの `FINDINGS` / `REMEDIATION`)、失敗したコマンドの生の出力、現在の `git diff`、`TASK_BRIEF`、採用済みの `CHECK_COMMANDS` と `PROTECTED_CHECK_FILES`、contractの該当箇所、Implementation Notesを合成して起動する
+1. **debuggerの起動**: 受け渡しファイルの起動promptに、失敗の内容 (`BLOCKER` または最後のreviewerの `FINDINGS` / `REMEDIATION`) と、失敗したコマンドのログのパスを書いて起動する。`TASK_BRIEF`、採用済みの `CHECK_COMMANDS` と `PROTECTED_CHECK_FILES`、Implementation Notesはgroupの `brief.md` にある。現在の `git diff` はdebuggerが自分で読む
 2. **NEXT_ACTIONの処理**: `## Debug Report` の `- NEXT_ACTION:` だけをパースする。構造化値が無い、または曖昧な場合は1回だけ再要求する
    - `RETRY_TASK` → `FIX_PLAN` と `NOTES` を渡して新しいimplementerを起動し、Phase 3.1の2で検査一覧と報告を採用してからレビューを1周だけ行う
    - `FIX_CHECK` → 検査自体の誤り。対象が `PROTECTED_CHECK_FILES` またはverifierが指定した事前検査のコマンドなら `ROOT_CAUSE` を渡してverifierに作り直させ、Phase 3.0と同じ種別・根拠・実行結果の確認と、変更した保護ファイルのハッシュ更新を行う。それ以外はverifierを起動せず、implementerに `ROOT_CAUSE` と `FIX_PLAN` を渡して直させる。いずれも更新後の検査を使ってimplementerが検証し、Phase 3.1の2で検査一覧と報告を採用してからレビューを1周だけ行う

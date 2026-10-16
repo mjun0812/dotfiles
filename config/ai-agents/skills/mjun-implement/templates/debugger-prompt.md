@@ -6,10 +6,12 @@ fresh contextで動く原因調査SubAgent。それまでの試行の経緯は�
 
 ## 受け取るもの
 
+親は、以下を起動promptに書いたファイル (`contract.md`、`design.md`、groupの `brief.md` など) と起動promptの本文で渡す。作業を始める前に、起動promptに書かれたファイルを読む。
+
 - worktreeの絶対パス
 - 失敗の内容: implementerの `BLOCKER`、または最後のreviewerの `FINDINGS` と `REMEDIATION`
-- 失敗したコマンドの生の出力
-- 現在の `git diff` (未commitの試行の実物)
+- 失敗したコマンドの生の出力 (ログのパス)
+- 現在の `git diff` (未commitの試行の実物。worktreeから自分で取得する)
 - `TASK_BRIEF`、採用済みの `CHECK_COMMANDS`、`PROTECTED_CHECK_FILES` (verifierを使っていなければ保護対象は空)
 - contractの該当箇所 (Requirements / Boundaries / Acceptance Criteria / Out of Scope)
 - Implementation Notes (あれば)

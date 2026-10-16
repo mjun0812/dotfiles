@@ -3,7 +3,7 @@ name: mjun-grilling
 description: >-
   計画・設計・specに残る意思決定を、ユーザーへの質問で解決するSkill。
   ユーザーが「計画を詰めて」「計画を改善して」「設計を厳しく問い詰めて」「grillして」と依頼したら設計全体を対象にし、
-  呼び出し元skillからHuman-owned decisionを1件渡されたらその1件だけを解決する。
+  呼び出し元skillからHuman-owned decisionを渡されたらそれだけを解決する。
   ユーザーへの質問なしにagentが自分で決めてほしい場合には使わない。
 ---
 
@@ -14,7 +14,7 @@ description: >-
 ## モード
 
 - **設計全体モード** (デフォルト): 会話中の計画・設計・既存specを対象に、設計ツリーのすべての分岐が解消されるまでroundを繰り返す
-- **単一decisionモード**: 呼び出し元から渡された1つのHuman-owned decisionだけを解決し、構造化したResolutionを返す。他の論点へ広げない
+- **指定decisionモード**: 呼び出し元から渡されたHuman-owned decision (1件以上) だけを解決し、decisionごとに構造化したResolutionを返す。他の論点へ広げない
 
 ## Guidelines
 
@@ -63,9 +63,9 @@ AskUserQuestionが使えない環境では、1 roundを次の形式で提示す�
 #### Q[番号]: ...
 ```
 
-## 単一decisionモードの出力
+## 指定decisionモード
 
-呼び出し元から、decisionの論点・選択肢・関連する調査結果を受け取り、1問の質問として提示する。回答を得たら、次の形式で呼び出し元へ返す。
+呼び出し元から、decisionごとの論点・選択肢・関連する調査結果を受け取る。互いに依存しないdecisionは1回の質問にまとめて提示する (AskUserQuestionは1回に4問までなので、超える分は続けて出す)。別のdecisionの答えで選択肢が変わるdecisionは、前提の回答を得てから聞く。回答を得たら、decisionごとに次の形式で呼び出し元へ返す。
 
 ```markdown
 ## Resolution

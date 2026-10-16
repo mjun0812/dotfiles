@@ -30,7 +30,7 @@ sourceの形からmodeを決める。
 2. Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経て **spec mode**
 3. その他のMarkdownパス → **doc mode**。ファイル全文を起点とする (frontmatterがあれば除く)
 
-spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tasks.md` (いずれも必須) をReadする。specの判断は `design.md` の `## Decisions` にある。ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) があれば [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って有効なものを読む。`## Decisions` に `ADR: 要作成 (ADR-NNNN を覆す)` の判断があれば、覆されるADRは有効なADRとして扱わない (supersededの追記は最終検証の前に行う)。taskに関係する判断の内容をSubAgentへ渡す (SubAgentに `.mjun/` を読ませない)。
+spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tasks.md` (いずれも必須) をReadする。specの判断は `design.md` の `## Decisions` にある。ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) があれば [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って有効なものを読む。`## Decisions` に `ADR: 要作成 (ADR-NNNN を覆す)` の判断があれば、覆されるADRは有効なADRとして扱わない (supersededの追記は最終検証の前に行う)。taskに関係する判断の内容は、Phase 3の受け渡しファイルでSubAgentへ渡す (SubAgentに `.mjun/specs/` を読ませない)。
 
 doc modeでもADRがあれば有効なものを読み、関係する内容をSubAgentへ渡す。
 
@@ -42,7 +42,7 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
 2. activeに無ければ、doneのspecからも `Source: #<number>` を検索する。見つかれば「実装済みのspec (`<path>`) がある。再開する場合は `status` を `active` へ戻すか、Issueを取り込み直す」と案内して中止する
 3. どちらにも無ければ中止し、Issueを先にLocal specへ取り込んで磨き上げる必要があることを案内する
 
-**Local specの参照と更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のため新規のworktreeやPR checkoutには存在しない。Phase 2でworktree内にメインrepositoryの `.mjun/` へのsymlinkを張り、worktree内のcwdから相対パスで参照しても同じファイルを指すようにする。SubAgentへはspecの内容をプロンプトに合成して渡し、`.mjun/` パスを読ませない。
+**Local specの参照と更新は、常にメインrepositoryの絶対パスで行う。** `.mjun/` はgit管理外のため新規のworktreeやPR checkoutには存在しない。Phase 2でworktree内にメインrepositoryの `.mjun/` へのsymlinkを張り、worktree内のcwdから相対パスで参照しても同じファイルを指すようにする。SubAgentへはspecの内容をPhase 3の受け渡しファイル (`.mjun/runs/` 配下) へ写して渡し、`.mjun/specs/` を読ませない。
 
 ## Task
 
@@ -63,10 +63,10 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
 4. **taskキューを構築する**:
    - spec modeでは `tasks.md` をキューとして採用する。`Status: done` のtaskは**完了扱いでスキップする** (中断後のresume)。`Status: blocked` のtaskは `Resume when` が現在満たされたと確認できた場合だけ `ready` へ戻し、それ以外はblocked一覧へ残す
    - 採用したtaskのうちAcceptance Criteriaが8件を超えるものは、`mjun-to-tasks` の粒度の基準を外れている。Phase 3.0を待たず、該当taskのIDを文脈として `mjun-to-tasks` を連結して `tasks.md` を再分解させ、再分解後の `tasks.md` をキューとして読み直す。粒度の基準の免除をユーザーに求めて、そのまま進めない
-   - 全taskが `done` の場合も終了せず、記録済みbranchからresumeしてPhase 3.2の最終検証とPhase 4の配送を再実行する
+   - 全taskが `done` の場合も終了せず、記録済みbranchからresumeしてPhase 3.3の最終検証とPhase 4の配送を再実行する
    - doc modeでは [mjun-to-tasks の分解規則](../mjun-to-tasks/SKILL.md#分解規則) とTask形式に従って会話内のキューを作り、Local specの `tasks.md` は作らない
-   - 各taskの受け入れ基準、Boundary (specにBoundariesがある場合)、Done when、Seamを確認し、依存順 (Blocked by) に並べる。`Blocked by` の全taskが `done` のtaskだけを実行可能とし、blocked taskに依存するtaskは実行せず依存待ち一覧へ残す
-   - **task groupへ区切る**: groupがPhase 3.0〜3.1の単位 (implementer、reviewer、commit。必要なtaskだけverifierを先に使う) になる。依存順に並べたキューを先頭から走査し、現在のgroupのいずれかのtaskと、specのOwnsの同じ責務 (Boundary) または `design.md` の同じModuleに属するtaskは現在のgroupへ加え、どちらにも属さなければ新しいgroupを始める (Boundariesが無い場合はSeamが同じ公開interfaceかで判定する)。groupごとにverifier・implementer・reviewer・検証・commitの固定コストがかかるため、groupは大きく取る。1 groupはtask 8件・Acceptance Criteria合計24件を上限の目安とし、超える場合は依存順で区切る (implementerが1つのfresh contextで扱える大きさ)。groupは依存順に直列で処理するため、先行groupのtaskは処理時点でdoneになっている。単一taskのgroupも同じ手順で扱う
+   - 各taskの受け入れ基準、Boundary (specにBoundariesがある場合)、Done when、Seamを確認し、依存順 (Blocked by) に並べる。`Blocked by` の全taskが `done` か、同じgroupで先に並ぶtaskであるtaskだけを実行可能とし、blocked taskに依存するtaskは実行せず依存待ち一覧へ残す
+   - **task groupへ区切る**: groupがPhase 3.0〜3.1の単位 (implementer、reviewer、commit。必要なtaskだけ先にverifierを使う) となる。groupはverifier・implementer・reviewer・検証・commitの固定コストを毎回伴うため、上限まで詰める。依存順に並べたキューを先頭から走査して現在のgroupへ加え、加えるとtask 8件またはAcceptance Criteria合計24件を超えるときだけ新しいgroupを始める (implementerが1つのfresh contextで扱える大きさ)。BoundaryやModuleが違うことは、groupを区切る理由にしない。groupは依存順に直列で処理するため、先行groupのtaskは処理時点でdoneになっている。単一taskのgroupも同じ手順で扱う
 5. `--pr` / `--no-pr` / `--merge` が未指定なら、ここでAskUserQuestionにより配送方法を確認する (使えない環境では選択肢をテキストで提示する)。手順1の `gh repo view` が失敗した (GitHub remoteが無い) 場合はPRを作れないため、`--no-pr` と `--merge` の2択で確認する
 6. 実装方針とtask一覧 (group区切り付き) を**簡潔に**提示し、確認を取らずPhase 2へ進む
 
@@ -94,7 +94,7 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
 
 ### Phase 3: 実装
 
-実装はSubAgentで行う。受け渡しはすべてメイン会話が構造化ブロックをパースして仲介する。プロンプトはskill内のテンプレートにgroup (Phase 1で区切ったtask group) の文脈を合成して作る。
+実装はSubAgentで行う。受け渡しはすべてメイン会話が構造化ブロックをパースして仲介する。SubAgentへの文脈は、下の「受け渡しファイル」で渡す。
 verifier、reviewer、debugger、refactorerは毎回新規に起動する (fresh context)。implementerはgroupごとに1回起動し、同じgroupの差し戻し・裁定・不足情報の補充は**同じimplementerを継続して** (send_message / resume等) 行う。継続できない環境では新規に起動し、失敗した試行の履歴は含めず `REMEDIATION` など修正に必要な情報と、前回の方針の要約1行だけを渡す。
 
 役割は5つある。
@@ -105,20 +105,39 @@ verifier、reviewer、debugger、refactorerは毎回新規に起動する (fresh
 - **debugger** ([templates/debugger-prompt.md](templates/debugger-prompt.md)): 差し戻しが収束しない、またはBLOCKEDのときに、fresh contextでroot causeを分類し `## Debug Report` を返す
 - **refactorer** ([templates/refactorer-prompt.md](templates/refactorer-prompt.md)): 全task完了後、reviewerのNOTESとtask間の重複を全検査greenのまま整理し、`## Refactor Report` を返す
 
-`design.md` は、groupに関係する部分だけをSubAgentへ渡す (全文を毎回渡すと、後半のgroupでSubAgentのcontextを圧迫する)。groupのtaskのBoundaryに対応するModules、Seamに対応するInterfaces & Seams、それらを通るData Flow、Test Strategy、Change Outlineの全体を含め、対応を判断できないセクションは全文を渡す。以下ではこれを「`design.md` の該当部分」と呼ぶ。
+### 受け渡しファイル
+
+SubAgentへの文脈は、親が書いたファイルで渡す。LLMは入力を読むより出力を書くほうがずっと遅く、テンプレートやcontractを起動のたびにpromptへ書き写すと、その時間がすべて待ちになる。
+
+- 受け渡しディレクトリ (`<run-dir>`) は `<repo-root>/.mjun/runs/<branch-name>/` とする (Git管理外)。最初のSubAgentを起動する前に作り、使うroleのテンプレート (`<skill-dir>/templates/<role>-prompt.md`) と、contract (spec modeでは `spec.md`、doc modeではsourceのMarkdown) を `contract.md` として `cp` で置く。spec modeでは `design.md` も置き、親が `design.md` を更新したら置き直す
+- groupごとに `<run-dir>/<group>/brief.md` を1回だけ書く。中身は、groupの各task (ID、説明、Boundary、Done when、Seam、Blocked by、Acceptance Criteria)、Phase 1の実装方針、`TASK_BRIEF`、採用済みの `CHECK_FILES` / `CHECK_COMMANDS`、`PROTECTED_CHECK_FILES` とハッシュ、事前検査の `CHECK_BASELINES`、review-onlyのtask、関係するdecisionと有効なADR、`design.md` の該当部分のセクション名、groupに関係する検証コマンド、Implementation Notes (既知のflakyテストを含む) とする。検査の一覧などが変わったら、次のSubAgentを起動する前に更新する
+- `design.md` の該当部分は、groupのtaskのBoundaryに対応するModules、Seamに対応するInterfaces & Seams、それらを通るData Flow、Test Strategy、Change Outlineの全体とする。対応を判断できないセクションは全体を含める
+- 起動promptは次の形にする。ファイルの内容は書き写さず、本文にはそのroleにだけ渡すものを書く
+
+  ```text
+  mjun-implementの<role>として作業する。役割と手順は <run-dir>/<role>-prompt.md に従う。
+  - worktree: <worktreeの絶対パス> (base: <base branch>、branch: <作業branch>)
+  - contract: <run-dir>/contract.md
+  - 実装設計: <run-dir>/design.md (spec modeのみ)
+  - group: <run-dir>/<group>/brief.md
+  <このroleへの差分: 対象task、周回、前回のFINDINGSとREMEDIATION、親の検査結果のパスなど>
+  ```
+
+- SubAgentには、`<run-dir>` のファイルとworktreeだけを読ませる。`.mjun/specs/` は読ませない
 
 SubAgentを起動するたびに、roleに応じたmodelとeffortを [references/subagent.md](references/subagent.md) に従って指定する。この指定は環境のグローバル指示のモデル指針より優先する。
 
-実装を始める前に、リポジトリから正規の検証コマンドを洗い出し、`TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` / `SMOKE_COMMANDS` として保持する。探索順は `.mjun/steering/` の記述 → manifest類 → タスクランナー → CI設定 → README。リポジトリの自動化が既に使っているコマンドを優先する。`SMOKE_COMMANDS` (起動して最初の利用可能な状態に達することを確かめるコマンド) は宣言されているものだけを使い、無ければ空のままにしてPhase 3.2で各taskの検査から代用する。
+実装を始める前に、リポジトリから正規の検証コマンドを洗い出し、`TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` / `SMOKE_COMMANDS` として保持する。探索順は `.mjun/steering/` の記述 → manifest類 → タスクランナー → CI設定 → README。リポジトリの自動化が既に使っているコマンドを優先する。`SMOKE_COMMANDS` (起動して最初の利用可能な状態に達することを確かめるコマンド) は宣言されているものだけを使い、無ければ空のままにしてPhase 3.3で各taskの検査から代用する。
 
 Phase 3の間の制約:
 
 - verifier、implementer、reviewer、debugger、refactorerはleaf roleとし、SubAgentを起動せず、担当作業を別Agentへ再移譲しない。自分で完了できない場合はrole固有の構造化結果で親へ返し、追加の委譲は親だけが判断する
-- ループ内で `git reset --hard` 等の破壊的リセットを行わない (例外はPhase 3.3で整理の変更だけを戻す場合のみ)
+- ループ内で `git reset --hard` 等の破壊的リセットを行わない (例外はPhase 3.2で整理の変更だけを戻す場合のみ)
 - pushとPR作成はPhase 4まで行わない。commitはgroup承認ごとにメイン会話が行う (Phase 3.1)。SubAgentにはcommitさせない
 - SubAgentの完了主張を検証の代わりにしない。判定は構造化フィールドと、検査・reviewer・最終検証の実行結果だけで行う
 - 構造化値が無い、または曖昧なときの再要求は、作業したSubAgentを継続して行う (SendMessage等)。継続できない環境では、ブロックだけを別のSubAgentに求めず、そのroleを最初からやり直す (作業していないagentが返すブロックは捏造になる)
 - SubAgentの報告で `NOT_RUN` の項目は、親が該当コマンドを実行して埋める。推測で埋めない
+- 親が実行する検査は、すべて `zsh <skill-dir>/scripts/run_checks.sh <worktree> <run-dir> <name> <commands-file>` で行う (`<name>` は `G2-r1` のような実行ごとの名前、`<commands-file>` は1行1コマンドのファイル)。scriptはworktreeの内容の指紋 (commitしても変わらない) ごとに成功を記録し、同じ内容で成功済みのコマンドは実行せず `CACHED (PASS)` と返す。SubAgentには要約 (`summary.md`) とログのパスを渡し、出力を書き写さない。親は失敗したコマンドのログだけを読む。`FAIL (worktreeを書き換えた)` は、検査がformatterの自動修正やlockfileの更新などの変更を生んだことを示すので、失敗と同じに扱う。toolのtimeoutに収まらない見込みのコマンドは、commands-fileを分けて別々に実行する
 - `CHECK_FILES` は採用した検査ファイル全体、`CHECK_COMMANDS` はAcceptance Criterionごとの検証コマンドとする。verifierが書いたファイルだけを `PROTECTED_CHECK_FILES` に登録し、verifier以外に変更させない。親はその作成直後にハッシュ (`shasum -a 256`) を記録し、reviewerが照合する。implementerは保護対象以外の検査を作成・修正でき、変更の妥当性はreviewerがAcceptance Criteriaから判定する。後続groupで検査を直す場合も、保護対象はverifier経由で更新してハッシュを記録し、それ以外はimplementerが直してreviewerが確認する。期待値を実装に合わせて弱めず、更新したファイル・コマンドと理由をRun Logに記録する
 - ユーザーの指示で手順の一部を変える場合も、role、テンプレート、構造化ブロック、回数の上限はそのまま使い、独自の役割名や報告形式を作らない。複数groupを同じworktreeで並列に実装しない (Phase 3.1)
 - 実行中にcontractに無い追加要求を受けた場合は、`spec.md` を直接書き換えて実装に入らない。現在のgroupを終えた時点で止め、specの磨き直し (承認を含む) が先に必要であることを案内する
@@ -131,6 +150,6 @@ Phase 3以降の手順は、必要になった時点で次のファイルを読�
 - [references/subagent.md](references/subagent.md): roleごとのSubAgentのmodelとeffort、implementerの昇格条件。最初のSubAgentを起動する前に読む
 - [references/group-loop.md](references/group-loop.md): Phase 3.0 (実装準備と必要な事前検査) とPhase 3.1 (実装とレビュー)、Run Logの形式。最初のgroupを始める前に読む
 - [references/recovery.md](references/recovery.md): taskの隔離とblocked、Phase 3.1' (debuggerによる原因調査)。implementerが `BLOCKED` を返した、差し戻しが2周に達した、taskをblockedへ移す、task計画を直す、のいずれかのときに読む
-- [references/validation-and-delivery.md](references/validation-and-delivery.md): Phase 3.2 (feature単位の検証)、Phase 3.3 (整理)、Phase 4 (commitと配送)、Phase 5 (結果の表示)、Phase 6 (worktreeクリーンアップ)。実行可能なtaskが尽きたときに読む
+- [references/validation-and-delivery.md](references/validation-and-delivery.md): Phase 3.2 (ADRと整理)、Phase 3.3 (feature単位の検証)、Phase 4 (commitと配送)、Phase 5 (結果の表示)、Phase 6 (worktreeクリーンアップ)。実行可能なtaskが尽きたときに読む
 
-完了の定義: 全taskが `done` で、Phase 3.2の判定が `GO` または `MANUAL_VERIFY_REQUIRED` になり、選ばれた配送方法で届け、Phase 5の結果を表示し、Phase 6でworktreeを片付けた状態 (`COMPLETE`)。doneでないtaskが残る場合は `PARTIAL` として、Phase 5とPhase 6だけを行う。エラーやユーザーの中止で途中終了する場合も、Phase 6は必ず実行する。
+完了の定義 (`COMPLETE`): 全taskが `done` で、Phase 3.3の判定が `GO` または `MANUAL_VERIFY_REQUIRED` である。そのうえで選ばれた配送方法で届け、Phase 5の結果を表示し、Phase 6でworktreeを片付けた状態を指す。doneでないtaskが残る場合は `PARTIAL` として、Phase 5とPhase 6だけを行う。エラーやユーザーの中止で途中終了する場合も、Phase 6は必ず実行する。

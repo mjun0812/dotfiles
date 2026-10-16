@@ -91,7 +91,7 @@ Issue番号からspecを逆引きするときは、activeなspecから `Source: 
 
 `.mjun/` はグローバルgitignoreによりgit管理外であり、次のように扱う。
 
-- worktreeやPR checkoutは `.mjun/` を含まない (skillが作るworktreeには作成直後に `<repo-root>/.mjun` へのsymlinkを張る)。worktree内の作業からspec文書を参照・更新するときは、メインrepositoryの絶対パスを使う。SubAgentへはspec内容をプロンプトに合成して渡し、worktree内のパスを読ませない
+- worktreeやPR checkoutは `.mjun/` を含まない (skillが作るworktreeには作成直後に `<repo-root>/.mjun` へのsymlinkを張る)。worktree内の作業からspec文書を参照・更新するときは、メインrepositoryの絶対パスを使う。SubAgentへはspec内容を呼び出し元skillが決めた形 (promptや受け渡しファイル) で渡し、worktree内の `.mjun/` を読ませない
 - specは内部文書である。PR本文・PRタイトル・commit messageなど外部向けの出力では、`.mjun/` 配下のパスやspecの存在に言及せず、specの参照にはGitHub Issue (`Closes #N`) だけを使う
 - PRレビュー側は、contractを「`--spec` 引数で明示されたsource → PR本文の `Closes #N` が指すIssue」の順で解決し、どちらも無ければContract観点をスキップする (Issue本文は承認時点の投影であり、最新はLocal specにある)
 - resumeとtask進捗の永続化は、`.mjun/` が残っている同一working tree上でのみ有効

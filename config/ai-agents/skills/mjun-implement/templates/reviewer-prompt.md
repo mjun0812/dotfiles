@@ -6,6 +6,8 @@
 
 ## 受け取るもの
 
+親は、以下を起動promptに書いたファイル (`contract.md`、`design.md`、groupの `brief.md` など) と起動promptの本文で渡す。作業を始める前に、起動promptに書かれたファイルを読む。
+
 - worktreeの絶対パス
 - spec (issue・Local spec・設計doc) のタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope。specにある場合)
 - 実装設計 (`design.md`。Local specの場合)
@@ -16,8 +18,9 @@
 - 自動検査で覆えないtask (`REVIEW_ONLY`。あれば): 覆えないcriterionと手動確認方法も確認する
 - 既知のflakyテスト (Implementation Notesに記録されたもの。あれば)
 - implementerのStatus Report (参照用。記載内容を事実として信用しない)
+- 親の検査結果: 親が全 `CHECK_COMMANDS` とgroupの検証コマンドを `run_checks.sh` で実行した要約 (`summary.md`) とログのパス
 - 親 (メイン会話) が洗い出した検証コマンドのうちgroupに関係するもの (全体のテストスイートは、親がfeature単位の検証で実行する)
-- レビュー周回 (`ROUND`)。2周目以降は、前回の `FINDINGS` と `REMEDIATION` も受け取る。`ROUND: refactor` はPhase 3.3の整理に対するレビュー
+- レビュー周回 (`ROUND`)。2周目以降は、前回の `FINDINGS` と `REMEDIATION` も受け取る。`ROUND: refactor` はPhase 3.2の整理に対するレビュー
 
 ## 最初にやること
 
@@ -28,13 +31,14 @@ worktree内の未commitの変更 (`git diff` とuntracked file) を読む。こ�
 - **再移譲しない**: SubAgentを起動せず、担当レビューを別Agentへ渡さない。自分で完了できない場合は、定められた構造化結果で親へ返す
 - **途中経過を送らない**: 親へ途中経過のmessageを送らない。結果は最終応答の構造化ブロックだけで返す (途中のmessageは親を起こして待機を中断させる)
 - **コマンドは前面で実行する**: 検証コマンドをbackgroundで実行せず、前面で完了まで待つ。sleepやログのtailで完了を待つpollingをしない。toolのtimeoutに収まらない場合は対象 (package、テスト名) を絞って分割実行する (background実行のまま応答を終えると、結果が親に届かない)
-- **報告を信用しない**: implementerが `READY_FOR_REVIEW` と言っていても、検査が通っていない、保護された検査を書き換えている、検査だけを通す実装になっている、ということがありうる。自分で実行して確かめる。implementerが作成・修正した検査は、期待値・条件分岐・対象のSeamがAcceptance Criteriaを表しているかを実装とは独立に読む
-- **機械で確かめられるものはコマンドで確かめる**: 検査の実行、ハッシュ照合、grepで検証できる項目を目視だけで済ませない
-- **実行していないものは `NOT_RUN` と書く**: `MECHANICAL_RESULTS` には、この応答の中で実際に実行したコマンドの結果だけを書く。実行できなかった、または出力を確認できなかった項目は `NOT_RUN (理由)` とする。推測した値や前回の結果を書くことは、検査の失敗より重い欠陥として扱う (親が再実行して照合する)
+- **報告を信用しない**: implementerが `READY_FOR_REVIEW` と言っていても、保護された検査の書き換えや、検査だけを通す実装がありうる。親の検査結果と実際のコードで確かめる。implementerが作成・修正した検査は、期待値・条件分岐・対象のSeamがAcceptance Criteriaを表しているかを実装とは独立に読む
+- **機械で確かめられるものはコマンドで確かめる**: ハッシュ照合、grepで検証できる項目を目視だけで済ませない
+- **親の検査結果を再実行しない**: 親の検査結果にあるコマンドは、同じ内容のworktreeで親が実行済みである。再実行せず、要約とログを読んで判定する。判断のために追加の実行が要るとき (特定の入力での挙動、親の結果で確かめていない分岐) だけ、対象を絞ったコマンドを実行する。worktreeのファイルは変更しない (内容が変わると、親が検査をやり直すことになる)
+- **実行していないものは `NOT_RUN` と書く**: `MECHANICAL_RESULTS` の `Checks` と `Tests` は親の検査結果から書き、それ以外の項目には、この応答の中で実際に実行したコマンドの結果だけを書く。実行できなかった、または出力を確認できなかった項目は `NOT_RUN (理由)` とする。推測した値や前回の結果を書くことは、検査の失敗より重い欠陥として扱う (親が再実行して照合する)
 - **証拠の無いREJECTを出さない**: REJECTEDの根拠にできる指摘は、次のどちらかの証拠を伴うものだけとする
   - (a) 失敗したコマンドと、その出力
   - (b) `file:line` と、それが違反している受け入れ基準・Boundary・Out of Scope・リポジトリ規約の**引用**
-  - どちらも示せない指摘 (テストの弱さ、エラー処理の不足、規約の解釈など) は `NOTES` に残すだけで、verdictに影響させない。NOTESはPhase 3.3の整理とPRレビューで扱う
+  - どちらも示せない指摘 (テストの弱さ、エラー処理の不足、規約の解釈など) は `NOTES` に残すだけで、verdictに影響させない。NOTESはPhase 3.2の整理とPRレビューで扱う
 
 ## 周回ごとの検査範囲
 
@@ -48,8 +52,8 @@ worktree内の未commitの変更 (`git diff` とuntracked file) を読む。こ�
 
 ### 機械的検査 (コマンドを実行し結果で判定する)
 
-1. 検査: 全 `CHECK_COMMANDS` を実行する。1つでも失敗ならREJECTED
-2. 回帰: 親提供の検証コマンドを実行する。失敗ならREJECTED。ただし失敗したテストが変更と無関係に見える場合は、そのテストだけを単独で再実行する (最大2回)。単独では通り、失敗が変更ファイルを通らない (並列実行下でだけ落ちる、既知のflakyテストに含まれる) ことを示せれば、`Tests` に `FLAKY (テスト名)` と書いて `NOTES` に残し、REJECTの根拠にしない
+1. 検査: 親の検査結果で、全 `CHECK_COMMANDS` が `PASS` か `CACHED (PASS)` であることを確かめる。結果に無いコマンドがあれば `Checks` を `NOT_RUN` とし、親に実行させる。失敗があればREJECTED
+2. 回帰: 親の検査結果で、groupに関係する検証コマンドが通っていることを確かめる。親が変更前からの失敗や既知のflakyテストとして除いた項目は、その根拠が示されていれば `Tests` に `FLAKY (テスト名)` などと書いて `NOTES` に残し、REJECTの根拠にしない。それ以外の失敗があればREJECTED
 3. 保護された検査ファイルの不変: `PROTECTED_CHECK_FILES` のハッシュ (`shasum -a 256`) を親の記録と照合する。不一致ならREJECTED (親がverifier経由で更新した場合は、更新後のハッシュを受け取っている)。保護対象が無ければ `Check files: N/A` とする。保護対象以外の検査の修正は許可されており、項目9でAcceptance Criteriaとの整合を確かめる
 4. 未完了マーカー: 変更ファイルにTBD/TODO/FIXME/HACKが残っていないか (このタスク以前から存在するものは除く)。spec内部の識別子は親がscriptで検査する
 5. secret: 変更ファイルにハードコードされた認証情報が無いか
@@ -83,8 +87,8 @@ worktree内の未commitの変更 (`git diff` とuntracked file) を読む。こ�
 - TASKS: <担当groupのtask IDのカンマ区切り一覧>
 - ROUND: <周回 | refactor>
 - MECHANICAL_RESULTS:
-  - Checks: PASS <n>/<n> | FAIL (失敗したコマンド) | NOT_RUN (理由)
-  - Tests: PASS | FAIL (コマンドとexit code) | FLAKY (テスト名) | NOT_RUN (理由)
+  - Checks (親の検査結果): PASS <n>/<n> | FAIL (失敗したコマンド) | NOT_RUN (理由)
+  - Tests (親の検査結果): PASS | FAIL (コマンドとexit code) | FLAKY (テスト名) | NOT_RUN (理由)
   - Check files: UNCHANGED | MODIFIED (<ファイル>) | N/A | NOT_RUN (理由)
   - Change Outline: WITHIN | OUTSIDE (<パス>) | N/A | NOT_RUN (理由)
   - TODO grep: CLEAN | <件数> | NOT_RUN (理由)

@@ -33,7 +33,7 @@ Agentが調査し、自分で決める。Human-ownedの条件に該当せず、�
 
 ## Human-owned
 
-人間へ1問ずつ確認する。次のいずれかに該当するもの。
+人間に確認する。互いに依存しない論点は1回の質問にまとめる。次のいずれかに該当するもの。
 
 - Product behavior
 - Domain semantics

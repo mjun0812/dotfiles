@@ -10,14 +10,14 @@ allowed-tools: Task, Read, Glob, Grep, AskUserQuestion, Bash(git rev-parse:*), B
 # mjun-spec-review
 
 specを、それを書いた会話とは別のfresh contextで敵対的に検査するSkill。書き手の判断と根拠を未検証の仮説として扱い、contractの明文・sourceの原文・実コード・steeringだけを根拠に、承認・実装の前に解消すべき問題を探す。
-検査は2軸で行う。**contract軸**はspec自身の整合と検証可能性を、**design軸**は実装設計がcontractを満たしコードベースに馴染むかを見る。両軸のreviewerが出した候補をverifierが1件ずつ反証し、`confirmed` だけを出力する。厳しさは探索範囲と反証の深さに使い、指摘の証拠基準は下げない。
+検査はcontract軸とdesign軸で行い、呼び出し元からtask planのdraftを渡された場合はtasks軸を加える。**contract軸**はspec自身の整合と検証可能性を、**design軸**は実装設計がcontractを満たしコードベースに馴染むかを、**tasks軸**はtask分解がcontractと実装設計を正しく実現しているかを見る。各軸のreviewerが出した候補をverifierが反証し、`confirmed` だけを出力する。厳しさは探索範囲と反証の深さに使い、指摘の証拠基準は下げない。
 ファイルは読むだけで、spec・design・decisions・コードを変更しない。指摘の反映は呼び出し元 (人間、または承認前検査としてこのskillを呼んだ側) が判断する。
 
 ## Arguments
 
 - `source` (任意): `.mjun/specs/<slug>` (配下のファイルパスでも可)、GitHub Issue番号 (`#123` / `123`)、PR番号 (`pr#45` / PRのURL)、または設計を書いたMarkdownのパス。未指定なら会話中の設計・計画を対象にする
 
-呼び出し元skillから文脈 (sourceの原文、Human-owned decisionの一覧) を渡された場合はそれを使い、同じものを取得し直さない。
+呼び出し元skillから文脈 (sourceの原文、Human-owned decisionの一覧、task planのdraft) を渡された場合はそれを使い、同じものを取得し直さない。
 
 ## Task
 
@@ -36,19 +36,19 @@ specを、それを書いた会話とは別のfresh contextで敵対的に検査
 
 ### Phase 2: reviewerによる候補の発見
 
-contract軸は [templates/contract-reviewer-prompt.md](templates/contract-reviewer-prompt.md)、design軸は [templates/design-reviewer-prompt.md](templates/design-reviewer-prompt.md) にPhase 1の材料を合成し、fresh contextのSubAgentを軸ごとに1体、並列に起動する。省略した軸は起動しない。reviewerには読み取り (Read / Glob / Grep) だけを許可し、ファイルの変更、テスト、ビルド、再現コードの実行をさせない。
+contract軸は [templates/contract-reviewer-prompt.md](templates/contract-reviewer-prompt.md)、design軸は [templates/design-reviewer-prompt.md](templates/design-reviewer-prompt.md) にPhase 1の材料を合成し、fresh contextのSubAgentを軸ごとに1体、並列に起動する。省略した軸は起動しない。task planのdraftが渡され、2 task以上を含む場合は、[mjun-to-tasksのtask-plan reviewer](../mjun-to-tasks/templates/reviewer-prompt.md) にcontract、実装設計、draftを合成し、tasks軸のreviewerとして同時に起動する。reviewerには読み取り (Read / Glob / Grep) だけを許可し、ファイルの変更、テスト、ビルド、再現コードの実行をさせない。
 
-各出力の `## Candidates` から、テンプレートの形式 (軸・観点・深刻度・対象と引用・問題・根拠・満たすべき状態・Human-owned decisionとの矛盾) を満たす候補だけを採用する。形式を満たさない候補は捨てる。両軸の候補を1つの集合にまとめ、同じセクションの同じ根本原因の候補は、verifierの起動前に1件へまとめる (軸が違っても同じ根本原因なら1件にする)。書き手の意図や見た目の確からしさだけを理由に、verifierの前で候補を破棄しない。
+各出力の `## Candidates` から、テンプレートの形式 (軸・観点・深刻度・対象と引用・問題・根拠・満たすべき状態・Human-owned decisionとの矛盾) を満たす候補だけを採用する。tasks軸は、`## Task Plan Review` の `FINDINGS` の各項目を `軸: tasks` の候補として扱う (深刻度とHuman-owned decisionとの矛盾は持たない)。形式を満たさない候補は捨てる。各軸の候補を1つの集合にまとめ、同じセクションの同じ根本原因の候補は、verifierの起動前に1件へまとめる (軸が違っても同じ根本原因なら1件にする)。書き手の意図や見た目の確からしさだけを理由に、verifierの前で候補を破棄しない。
 
 ### Phase 3: verifierによる反証
 
-候補を、対象セクションが同じもの同士で最大3件ずつに束ね、束ごとに [templates/verifier-prompt.md](templates/verifier-prompt.md) に候補とPhase 1の材料を合成してSubAgentを起動する (候補ごとに起動すると、全員が同じ文書を読み直す)。束の間に依存は無いので並列に起動してよい。候補が多くても、親が自分で候補を検証してverifierの代わりにしない (承認前検査として呼ばれた場合、親は書き手と同じcontextを持つ)。verifierにはrepository内の読み取りと `git` の読み取り系コマンドだけを許可し、コードを変更させない。
+候補を、対象セクションが同じもの同士で最大3件ずつに束ね、束ごとに [templates/verifier-prompt.md](templates/verifier-prompt.md) に候補とPhase 1の材料 (tasks軸の候補を含む束にはdraftも) を合成してSubAgentを起動する (候補ごとに起動すると、全員が同じ文書を読み直す)。束の間に依存は無いので並列に起動してよい。候補が多くても、親が自分で候補を検証してverifierの代わりにしない (承認前検査として呼ばれた場合、親は書き手と同じcontextを持つ)。verifierにはrepository内の読み取りと `git` の読み取り系コマンドだけを許可し、コードを変更させない。
 
 各出力の `## Verdict` を `CANDIDATE` で候補に対応づける。verdictが `confirmed` の候補だけを確定指摘とし、`refuted` と `uncertain` は捨てる。確定指摘の根拠に `file:line` があれば、親がその行をReadして引用が存在し主張と一致するかを確かめ、無い、または食い違うものは捨てる (verifierの報告を実在確認の代わりにしない)。
 
 ### Phase 4: 出力
 
-結果をチャットへ出力する。ファイルへの保存はしない。確定指摘はcontract軸を先に観点番号順で、次にdesign軸を深刻度 `contract` → `boundary` → `structure` の順 (同じ深刻度は観点番号順) で並べる。verifierの検証過程、捨てた候補、内部の証拠は出力しない。
+結果をチャットへ出力する。ファイルへの保存はしない。確定指摘はcontract軸を先に観点番号順で、次にdesign軸を深刻度 `contract` → `boundary` → `structure` の順 (同じ深刻度は観点番号順) で、最後にtasks軸を観点番号順で並べる。verifierの検証過程、捨てた候補、内部の証拠は出力しない。
 
 応答の最後に、次の構造化ブロックを必ず1つだけ出力する。呼び出し元skillは合否を `- VERDICT:` で判定し、修正対象を `FINDINGS`、人間への再確認が必要なdecisionを `HUMAN_DECISION_CONFLICTS` から読み取る。見出しの変更、値の同義語への置き換え、ブロック後の追記をしない。補足説明は各フィールドの中に書く。
 
@@ -59,6 +59,7 @@ contract軸は [templates/contract-reviewer-prompt.md](templates/contract-review
 - FINDINGS:
   1. [contract:<観点1〜8>] <セクション名> — 引用: "<該当箇所>" — 問題: <何が問題か> — 根拠: <contract / sourceの引用、file:line、steering / ADR / CONTEXT.mdの引用> — 満たすべき状態: <修正方針ではなく、満たすべき状態>
   2. [design:<観点1〜7>][<contract | boundary | structure>] <セクション名> — 引用: "<該当箇所>" — 問題: <何が問題か> — 根拠: <同上> — 満たすべき状態: <同上>
+  3. [tasks:<観点1〜6>] <対象task ID> — 引用: "<該当箇所>" — 問題: <何が問題か> — 根拠: <同上> — 満たすべき状態: <同上>
 - HUMAN_DECISION_CONFLICTS: <decisionの見出しと矛盾の内容。無ければ none>
 - SUMMARY: <1文の要約>
 ```

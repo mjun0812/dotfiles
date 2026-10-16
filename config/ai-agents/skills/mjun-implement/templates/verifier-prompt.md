@@ -6,6 +6,8 @@
 
 ## 受け取るもの
 
+親は、以下を起動promptに書いたファイル (`contract.md`、`design.md`、groupの `brief.md` など) と起動promptの本文で渡す。作業を始める前に、起動promptに書かれたファイルを読む。
+
 - worktreeの絶対パス (ファイル操作とコマンド実行はすべてこの配下で行う)
 - specのタイトルと本文の要約、contract (Requirements / Boundaries / Acceptance Criteria / Out of Scope)
 - 実装設計 (`design.md`。Local specの場合。Interfaces & Seams と Test Strategy を検査対象の特定に使う)
