@@ -66,7 +66,7 @@ $DOTPATH/script/setup/install_mise.sh
 source "$HOME/.zprofile"
 # 旧 codex-remote-control service を先に撤去する (codex の postinstall が新 daemon を起動するため)
 zsh "$DOTPATH/script/setup/setup_codex_daemon.sh" migrate
-MISE_USE_VERSIONS_HOST=1 mise install
+mise install
 mise reshim
 
 log_section "Applying mise bootstrap..."
