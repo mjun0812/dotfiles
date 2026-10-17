@@ -41,7 +41,7 @@
 
 - 選択肢付きの質問には `AskUserQuestion` を使用すること。
 - ブラウザ操作では、ログイン状態が必要な操作とユーザーのChromeでの操作には `playwriter` skillを、ログインが不要な操作には `agent-browser` skillを使うこと。
-- CSV・TSV・Parquet・JSONなどのデータファイルを集計・変換・調査するときは、awkやPythonのscriptを書かずにduckdb CLIを使うこと (`read-file`、`query` skill)。プロジェクトのコードに組み込むデータ処理は、そのプロジェクトの既存の依存に従うこと。
+- CSV・TSV・Parquet・JSONなどのデータファイルを集計・変換・調査するときは、awkやPythonのscriptを書かずにduckdb CLIを使うこと (`duckdb` skill)。プロジェクトのコードに組み込むデータ処理は、そのプロジェクトの既存の依存に従うこと。
 
 ## Glossary and ADR
 
