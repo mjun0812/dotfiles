@@ -270,6 +270,7 @@
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
   "autoCompactEnabled": true,
+  "idleCompaction": false,
   "autoContinueAtUsageLimit": true,
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
