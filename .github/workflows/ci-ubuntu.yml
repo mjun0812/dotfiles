@@ -133,7 +133,7 @@ jobs:
               exit 1
             fi
           }
-          for f in CLAUDE.md settings.json mcp.json statusline.py subagent_statusline.py; do
+          for f in CLAUDE.md settings.json statusline.py subagent_statusline.py; do
             check_link "$home/.claude/$f"
           done
           check_link "$home/.codex/AGENTS.md"
@@ -145,6 +145,15 @@ jobs:
             echo "✗ .codex/config.toml is missing"
             exit 1
           fi
+          # MCP servers come from dependencies.mcp in apm.yml (written by apm, not symlinked)
+          for s in chrome-devtools context7 drawio; do
+            if grep -q "\"$s\"" "$home/.claude.json" && grep -q "^\[mcp_servers\.$s\]" "$home/.codex/config.toml"; then
+              echo "✓ MCP server $s is configured"
+            else
+              echo "✗ MCP server $s is missing"
+              exit 1
+            fi
+          done
           for d in config/ai-agents/skills/*(/); do
             name=$(basename "$d")
             for base in "$home/.agents/skills" "$home/.claude/skills" "$home/.gemini/antigravity-cli/skills"; do

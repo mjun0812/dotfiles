@@ -57,9 +57,7 @@ diff() {
 
 # Claude Code
 CLAUDE_COMMIT_MODEL="sonnet"
-alias claude="claude \
-    --mcp-config=${HOME}/.claude/mcp.json \
-    --allow-dangerously-skip-permissions"
+alias claude="claude --allow-dangerously-skip-permissions"
 alias commit-cc='command \claude \
     --model="${CLAUDE_COMMIT_MODEL}" \
     --dangerously-skip-permissions \
@@ -71,7 +69,7 @@ alias commit-cc-ja='command \claude \
 claude-headroom() (
     export ANTHROPIC_BASE_URL="http://127.0.0.1:8787"
     command \claude \
-        --mcp-config="${HOME}/.claude/mcp.json" --allow-dangerously-skip-permissions "$@"
+        --allow-dangerously-skip-permissions "$@"
 )
 claudex() (
     export ANTHROPIC_BASE_URL="http://127.0.0.1:8317"
@@ -82,8 +80,7 @@ claudex() (
     export ANTHROPIC_DEFAULT_OPUS_MODEL="gpt-6.1-sol"
     export ANTHROPIC_DEFAULT_SONNET_MODEL="gpt-6-luna"
     export ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-6-luna"
-    command \claude --mcp-config="${HOME}/.claude/mcp.json" \
-        --allow-dangerously-skip-permissions "$@"
+    command \claude --allow-dangerously-skip-permissions "$@"
 )
 
 # agentsview
