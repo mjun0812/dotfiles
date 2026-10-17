@@ -6,7 +6,6 @@ description: >-
   通常はspecの承認後と、実装中にtaskの再分解が必要になったときに自動で呼び出される。ユーザーが「taskに分解して」「分解をやり直して」と依頼したときや、
   specの変更後に再分解したいときに単体で使うこと。実装そのもの、およびspec本文の作成・修正には使わない。
 allowed-tools: Read, Write, Edit, Glob, Grep, Task, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(cat:*), Bash(ls:*), Bash(mkdir:*)
-disable-model-invocation: true
 ---
 
 # mjun-to-tasks

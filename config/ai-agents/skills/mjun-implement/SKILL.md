@@ -6,7 +6,7 @@ description: >-
   specの作成・磨き上げ・承認や、未取り込みIssueの取り込みには使わない。
   spec・brief・設計docのどれも無い作業の依頼にも使わない (mjun-startが作業の種類を振り分ける)。
   呼び出し元から作業指示を渡された実装担当 (SubAgentやorchestratorのworker) は、指示がこのSkillの実行を明示しているときだけ使い、それ以外はその指示に従う。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), Bash(zsh:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(mjun-start)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), Bash(zsh:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(mjun-to-tasks), Skill(mjun-start)
 ---
 
 # mjun-implement
@@ -19,7 +19,7 @@ allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bas
 - SubAgentの完了主張を検証の代わりにしない。判定は、親が `run_checks.sh` で実行した検査、reviewerの判定、親自身の照合の結果だけで行う。報告をそのまま信じると、検証を経ていない変更がcommitされる
 - repositoryに残るもの (コード、コメント、テスト名、ファイル名) とGitHubへ出すもの (commit message、PRのタイトルと本文) に、spec内部の識別子 (task ID、AC番号、Requirement番号、`.mjun/` のパス、`spec.md` / `tasks.md`) を書かない。specはrepositoryに無い内部文書で、番号は再分解で変わる。`zsh <skill-dir>/scripts/check_internal_ids.sh` (以下、ID検査) で機械的に確かめ、検出されたら振る舞いや目的を表す言葉に書き換える
 - 実装をcontractのBoundariesとOut of Scopeの外へ広げない。contractに無い追加要求を受けても `spec.md` を書き換えて実装に入らず、現在のgroupを終えた時点で止めて、specの磨き直し (承認を含む) が先に必要であることを案内する。contractは人間が承認した範囲であり、実装側で広げると、承認を経ていない変更が入る
-- task計画の作り直しは `mjun-to-tasks` に任せる。分解規則はこのskillに持たない。`mjun-to-tasks` はユーザーが `/` で直接呼ぶ専用 (`disable-model-invocation`) なので、Skill toolでは呼ばず、`<skill-dir>/../mjun-to-tasks/SKILL.md` を読んで、その手順に従う。読んだファイルの相対リンク (`templates/reviewer-prompt.md` など) は、そのファイルの場所を基準にたどる。このskillにも同じ名前のテンプレートがあり、取り違えやすいためである
+- task計画の作り直しは `mjun-to-tasks` に任せる。分解規則はこのskillに持たない
 
 ## Arguments
 
@@ -58,7 +58,7 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
    - メインrepositoryのroot (`<repo-root>`): `git rev-parse --path-format=absolute --git-common-dir` の親ディレクトリ。起動場所がworktreeでもメインのcheckoutを指す
 2. 出力言語は、repositoryの既存のPR・commit message・READMEに合わせる (判別できなければ英語)。specや依頼の言語には合わせない。コメント、commit、PRに使う
 3. 内容検査。次のどれかに当たれば止める。実装依頼そのものを承認の代わりにしない
-   - spec modeで、`spec.md` が `approval: approved` でない、または `design.md` か `tasks.md` が無い。中止して、contractの承認、実装設計の作成、`/mjun-to-tasks` での分解のうち足りないものを案内する
+   - spec modeで、`spec.md` が `approval: approved` でない、または `design.md` か `tasks.md` が無い。中止して、contractの承認、実装設計の作成、`mjun-to-tasks` での分解のうち足りないものを案内する
    - doc modeで、Goal、受け入れ基準、実装方針など、方針の判断に要る情報が欠けている。コードを読めば分かる事実は自分で調べる。方針を推測で補わず、欠けている項目を具体的に挙げて中止する。briefでは、種類ごとの節、`完了条件`、`範囲` がそろっていれば足りる (実装方針はimplementerが決める)。spec modeのcontractの十分性は承認で確定済みなので、ここで判定し直さない
    - `## Decisions` (doc modeでは本文の要確認の記載) に `Status: tentative` が残っている。承認前に解消されるはずのものなので、一覧を示して進めてよいかをユーザーに確認する。続行が選ばれたら、該当decisionの `Status:` 行を消して `Owner: human` にする。再実行のたびに同じ箇所で止まらないためである
    - `Source: #N` を持つspecで、`gh issue view <N> --json state,body,comments` が取り込み後の変化を示す。closedなら実装済みの可能性を警告して続行を確認する。新しいコメントや本文の変更があれば内容を示し、specへ反映するかを確認する。反映するなら `approval: pending` へ戻してから反映し、更新後のcontractの承認を得て `approved` に戻す。承認されなければ中止する

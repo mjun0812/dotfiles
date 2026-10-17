@@ -5,7 +5,6 @@ description: >-
   ユーザーが「計画を詰めて」「計画を改善して」「設計を厳しく問い詰めて」「grillして」と依頼したら設計全体を対象にし、
   呼び出し元skillからHuman-owned decisionを渡されたらそれだけを解決する。
   ユーザーへの質問なしにagentが自分で決めてほしい場合には使わない。
-disable-model-invocation: true
 ---
 
 # mjun-grilling

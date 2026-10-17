@@ -5,7 +5,6 @@ description: >-
   ユーザーが「このspecをレビューして」「#Nの仕様を検査して」「設計の穴を探して」と依頼したときや、呼び出し元skillから承認前のspec検査を渡されたときに使うこと。
   人間との対話で仕様の分岐を決める用途や、コード差分のレビュー (PR番号を渡されてもコードは見ない) には使わない。
 allowed-tools: Task, Read, Glob, Grep, AskUserQuestion, Bash(git rev-parse:*), Bash(gh issue view:*), Bash(gh pr view:*)
-disable-model-invocation: true
 ---
 
 # mjun-spec-review
