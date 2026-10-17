@@ -4,7 +4,6 @@ description: >-
   `.mjun/steering/` のプロジェクトメモリ (product.md、tech.md、structure.md、ドメイン別のcustom steering) と、用語集 `CONTEXT.md`・ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) を、コードベースと履歴から作成・更新するSkill。
   ユーザーが「steeringを作って」「steeringを更新して」「プロジェクトメモリを整備して」のように依頼したら使うこと。
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls:*), Bash(find:*), Bash(rg:*), Bash(git:*), Bash(cat:*), Bash(head:*), Bash(tail:*), Bash(wc:*), Bash(tree:*), Bash(mkdir:*), Bash(gh pr list:*), Bash(gh pr view:*), Bash(gh issue list:*), Bash(gh issue view:*)
-disable-model-invocation: true
 ---
 
 # mjun-steering
