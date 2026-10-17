@@ -48,7 +48,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/dot_config/<name>`                                                                                                            | `~/.config/<name>`                                                            |
 | `config/dot_config/{herdr,hunk}/config.toml`, `config/dot_config/cli-proxy-api/config.yaml`, `config/dot_config/omniwm/settings.toml` | `~/.config/<name>/` 配下にファイル単位でsymlink (ディレクトリは実体)          |
 | `config/dot_config/herdr/plugins/<plugin>`                                                                                            | `herdr plugin link` で登録 (symlinkではない。`setup_herdr.sh` が実行)         |
-| `config/ai-agents/claude/{CLAUDE.md,settings.json,mcp.json,statusline.py,subagent_statusline.py,rules/*}`                             | `~/.claude/` 配下                                                             |
+| `config/ai-agents/claude/{CLAUDE.md,settings.json,statusline.py,subagent_statusline.py,rules/*}`                                      | `~/.claude/` 配下                                                             |
 | `config/ai-agents/skills/<skill>`                                                                                                     | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
 | hunk同梱の `hunk-review` skill (`hunk skill path` の親ディレクトリ)                                                                   | 上記3箇所へ `hunk-review` としてsymlink (`setup_hunk.sh` が実行)              |
 | `config/ai-agents/codex/hooks.json`                                                                                                   | `~/.codex/hooks.json`                                                         |
@@ -76,6 +76,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 ### AI agent設定の共有構造
 
 - 共有skillとcode-reviewer agentはこのリポジトリでは管理せず、[mjun0812/skills](https://github.com/mjun0812/skills) の `main` をapmで購読する。購読定義は `config/ai-agents/apm.yml` (`~/.apm/apm.yml` へsymlink) にあり、`install.sh` が `apm update -g -y` を実行して展開する。
+- MCPサーバーも `config/ai-agents/apm.yml` の `dependencies.mcp` で一元管理する。apmが各agentの設定 (`~/.claude.json` の `mcpServers`、`~/.codex/config.toml` の `[mcp_servers.*]`、`~/.gemini/config/mcp_config.json`) へ直接書き込むので、symlinkや `--mcp-config` は使わない。Codexのテンプレートには `[mcp_servers.*]` を書かない (apmの書き込みと二重管理になるため)。
 - このリポジトリに残る私用skill (`mjun-*`) は `config/ai-agents/skills/` に一元管理され、`~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` の3箇所へsymlinkされる。Codexは `~/.agents/skills/` を直接読むため `~/.codex/skills/` には展開しない。1箇所の編集が全agentに反映される。
 - skillの一覧と依存関係は `doc/skills.md` (英語) と `doc/skills_ja.md` に記載されている。skillを追加・変更したらここも更新する (`doc-sync` skillがこの同期を担う)。
 - Codexの `~/.codex/config.toml` だけはsymlinkではなく、`script/setup/rewrite_config.py` (tomlkit) がテンプレート (`config/ai-agents/codex/config.toml`) 側のキーだけを既存ファイルへマージする方式。Codexが自動生成する `[projects.*]` や `[hooks.state]` などのローカル状態を温存するため。キーの上書きのみでキーの削除はできない点に注意。

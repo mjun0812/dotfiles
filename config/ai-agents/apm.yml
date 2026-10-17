@@ -51,6 +51,27 @@ dependencies:
     - herdrdev/herdr/skills/herdr#>=0.8.0
     - github/gh-stack/skills/gh-stack#>=0.1.0
     - jupyter-ai-contrib/nb-cli/skills/notebook-cli#>=0.0.10
-  mcp: []
+  # Written into each target's own MCP config (~/.claude.json, ~/.codex/config.toml,
+  # ~/.gemini/config/mcp_config.json). startup_timeout_sec is a Codex key passed
+  # through to every target; bunx's first download exceeds Codex's 10s default.
+  mcp:
+    - name: chrome-devtools
+      registry: false
+      transport: stdio
+      command: bunx
+      args: ["chrome-devtools-mcp@latest"]
+      startup_timeout_sec: 120
+    - name: context7
+      registry: false
+      transport: stdio
+      command: bunx
+      args: ["@upstash/context7-mcp@latest"]
+      startup_timeout_sec: 120
+    - name: drawio
+      registry: false
+      transport: stdio
+      command: bunx
+      args: ["@drawio/mcp@latest"]
+      startup_timeout_sec: 120
 includes: auto
 scripts: {}
