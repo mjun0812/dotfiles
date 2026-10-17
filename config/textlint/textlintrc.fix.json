@@ -1,6 +1,5 @@
 {
   "rules": {
-    "ja-space-between-half-and-full-width": { "space": "never" },
     "prh": { "rulePaths": ["./prh.yml"] }
   }
 }

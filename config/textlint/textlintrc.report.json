@@ -5,12 +5,8 @@
       "ai-tech-writing-guideline": {
         "enableDocumentAnalysis": false
       },
-      "no-ai-list-formatting": {
-        "allows": ["/^\\s*(?:[-*+]|\\d+[.)])\\s+\\*\\*[^*]+\\*\\*\\s*[:：]/"]
-      }
-    },
-    "preset-japanese": {
-      "sentence-length": false
+      "no-ai-list-formatting": false,
+      "no-ai-colon-continuation": false
     },
     "preset-ja-technical-writing": {
       "sentence-length": false,
@@ -20,6 +16,7 @@
         "preferInList": "",
         "strict": false
       }
-    }
+    },
+    "no-kangxi-radicals": true
   }
 }
