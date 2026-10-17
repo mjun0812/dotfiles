@@ -119,6 +119,9 @@ filetype (e.g. `shfmt`, `oxfmt`) runs first, and LSP formatting is used as a fal
 GitHub Copilot is not a plugin here: the `copilot` language server is installed through Mason
 (`lua/config/mason-servers.lua`) and its suggestions are shown as ghost text via `vim.lsp.inline_completion`.
 
+Language servers that are also used from the shell or pre-commit (`oxfmt`, `ruff`, `taplo`, `ty`) are installed by mise
+instead of Mason and enabled from `lua/config/mise-servers.lua`, so Neovim runs the same versions as the shell.
+
 ### Diagnostics (Trouble)
 
 | Key          | Mode   | Description                       |
