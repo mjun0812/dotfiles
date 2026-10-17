@@ -4,7 +4,7 @@ description: >-
   アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できる仕様へ磨き上げるSkill。
   調査で決まる論点はAgentが決め、人間の判断が必要な論点だけを確認して仕様を確定し、承認後にspec ファイルを作成する。
   ユーザーが「specを作って」「仕様を作成して」のように依頼したら使うこと。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), WebSearch, WebFetch, Skill(exhtml), Skill(mjun-grilling), Skill(mjun-spec-review), Skill(mjun-to-tasks), Skill(mjun-start)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), WebSearch, WebFetch, Skill(exhtml), Skill(mjun-start)
 ---
 
 # mjun-specify
@@ -23,6 +23,7 @@ specの実体は常に `.mjun/specs/<slug>/` のLocal specで、GitHub Issueは�
 
 - specの中で閉じる判断は `design.md` の `## Decisions` に書く。ADRにするかどうかと書式は [用語集とADR](../mjun-steering/references/glossary_and_adr.md) に従う
 - 用語集はrepo直下の `CONTEXT.md`、無ければ `.mjun/CONTEXT.md`
+- `mjun-grilling`、`mjun-spec-review`、`mjun-to-tasks` は、ユーザーが `/` で直接呼ぶ専用 (`disable-model-invocation`) なので、Skill toolでは呼べない。この手順で「渡す」「呼ぶ」ときは、`<skill-dir>/../<skill名>/SKILL.md` を読み、その手順に従う。読んだファイルの相対リンクは、そのファイルの場所を基準にたどる
 - 選択肢のある確認はAskUserQuestionで行い、使えない環境では同じ選択肢をテキストで示す
 - `gh repo view` が失敗するrepositoryはGitHub remoteが無いものとして扱い、PRやIssue作成の選択肢を出さない
 - 出力言語はsourceまたは依頼の言語に合わせる
@@ -102,7 +103,7 @@ spec reviewの指摘を、機械的に見つかる欠けではなく判断の誤
 
 #### 4-4. spec review
 
-`mjun-spec-review` をSkill toolで呼び、`.mjun/specs/<slug>` と次の文脈を渡す (`--grill` 指定時も省かない)。
+`mjun-spec-review` を呼び、`.mjun/specs/<slug>` と次の文脈を渡す (`--grill` 指定時も省かない)。
 
 - sourceの原文 (Issueの本文とコメント、取り込んだMarkdown、または下書き素材)
 - 人間が決めたdecision (`Owner: human`) の見出しの一覧
@@ -141,5 +142,5 @@ contract全文、`design.md` 全文、変更点サマリ (追加・変更した�
 - **変更点サマリ**: 追加または変更したセクション
 - **Review**: spec reviewのVERDICTと、反映した指摘の件数 (task planへの指摘を含む。決め直したdecisionがあればその見出し)
 - **Decisions**: 4-1で解消したtentative (見出しと、証拠で昇格 / 人間の決定の別) と、`ADR: 要作成` のdecision。無ければ「なし」
-- **Tasks**: task一覧 (各taskのBoundary、AC数、Done whenと、分割候補の印)、または単一taskである旨。粒度が合わなければ `mjun-to-tasks` で再分解できる旨を添える
+- **Tasks**: task一覧 (各taskのBoundary、AC数、Done whenと、分割候補の印)、または単一taskである旨。粒度が合わなければ `/mjun-to-tasks` で再分解できる旨を添える
 - **次の一手**: `mjun-implement` の呼び出しを、そのままコピペできる1行の `text` コードブロックで示す (Codexでは `$mjun-implement`、Claude Codeでは `/mjun-implement`)。引数は `Source: #N` があれば実際のIssue番号、無ければ実際のLocal specディレクトリのパスとし、プレースホルダーを残さない。案内文はブロックの外に置く。単一task規模の増分で `tasks.md` に `Implementation Branch:` が記録済みなら、そのbranchへ直接commitする選択肢も1行添える
