@@ -99,76 +99,71 @@ apm update -g
 
 ### CLI
 
-| Name                       | Description                                           |
-| -------------------------- | ----------------------------------------------------- |
-| agent-browser              | Browser automation CLI for AI agents                  |
-| agentsview                 | Session browser and usage analytics for AI agents     |
-| apm                        | Agent package manager                                 |
-| ast-grep                   | Structural code search and lint                       |
-| aws-cli                    | AWS command-line interface                            |
-| bat                        | Modern `cat` with syntax highlighting                 |
-| CLIProxyAPI                | OpenAI/Gemini/Claude compatible API proxy for AI CLIs |
-| cmake                      | Build system generator                                |
-| container                  | Linux containers in lightweight VMs (macOS)           |
-| copier                     | Project template generator                            |
-| delta                      | Git diff pager                                        |
-| duckdb                     | In-process analytical SQL database                    |
-| dust                       | Modern `du`                                           |
-| eza                        | Modern `ls`                                           |
-| fd                         | Modern `find`                                         |
-| fzf                        | Fuzzy finder                                          |
-| gh                         | GitHub CLI                                            |
-| git-lfs                    | Git Large File Storage                                |
-| gitleaks                   | Secret scanner                                        |
-| glances                    | System monitor                                        |
-| headroom                   | Token-compressing proxy for coding agents             |
-| herdr                      | Terminal multiplexer for coding agents                |
-| huggingface_hub            | Hugging Face Hub CLI (`hf`)                           |
-| hunk                       | Review-first terminal diff viewer                     |
-| hyperfine                  | Command-line benchmarking tool                        |
-| imagemagick                | Image processing                                      |
-| jactionlint                | GitHub Actions workflow linter                        |
-| jq                         | JSON processor                                        |
-| keychain                   | ssh-agent / gpg-agent manager                         |
-| kubectl                    | Kubernetes CLI                                        |
-| mactop                     | Apple Silicon monitor (macOS)                         |
-| md-to-pdf                  | Markdown to PDF converter                             |
-| mermaid-cli                | Mermaid diagram renderer (`mmdc`)                     |
-| ninja                      | Build system                                          |
-| nvitop                     | NVIDIA GPU process viewer                             |
-| oxfmt                      | JS/TS/Markdown/JSON/YAML formatter                    |
-| oxlint                     | JS/TS linter                                          |
-| playwriter                 | Browser automation via an extension in your Chrome    |
-| pnpm                       | Node.js package manager                               |
-| powershell                 | PowerShell (macOS)                                    |
-| prek                       | pre-commit runner in Rust                             |
-| prettier                   | Code formatter                                        |
-| pyright                    | Python type checker and language server               |
-| resvg                      | SVG renderer (macOS)                                  |
-| ripgrep                    | Modern `grep`                                         |
-| ripgrep-all                | `ripgrep` for PDFs, archives, and docs                |
-| rtk                        | Token-reducing CLI proxy for LLMs                     |
-| ruff                       | Python linter and formatter                           |
-| runpodctl                  | RunPod CLI                                            |
-| sheldon                    | Zsh plugin manager                                    |
-| shellcheck                 | Shell script linter                                   |
-| shfmt                      | Shell script formatter                                |
-| starship                   | Cross-shell prompt                                    |
-| stylua                     | Lua formatter                                         |
-| swiftlint                  | Swift linter (macOS)                                  |
-| taplo                      | TOML formatter                                        |
-| tex-fmt                    | LaTeX formatter                                       |
-| tmux                       | Terminal multiplexer                                  |
-| tree-sitter                | Parser generator tool                                 |
-| ty                         | Python type checker                                   |
-| typescript                 | TypeScript compiler                                   |
-| typescript-language-server | TypeScript language server                            |
-| usage                      | CLI specification tool                                |
-| uv                         | Python package and tool manager                       |
-| vp                         | Vite Plus CLI                                         |
-| yobirin                    | Interactive notification CLI (macOS)                  |
-| yq                         | YAML processor                                        |
-| zoxide                     | Smart `cd` command                                    |
+| Name            | Description                                           |
+| --------------- | ----------------------------------------------------- |
+| agent-browser   | Browser automation CLI for AI agents                  |
+| agentsview      | Session browser and usage analytics for AI agents     |
+| apm             | Agent package manager                                 |
+| ast-grep        | Structural code search and lint                       |
+| aws-cli         | AWS command-line interface                            |
+| bat             | Modern `cat` with syntax highlighting                 |
+| CLIProxyAPI     | OpenAI/Gemini/Claude compatible API proxy for AI CLIs |
+| cmake           | Build system generator                                |
+| container       | Linux containers in lightweight VMs (macOS)           |
+| copier          | Project template generator                            |
+| delta           | Git diff pager                                        |
+| duckdb          | In-process analytical SQL database                    |
+| dust            | Modern `du`                                           |
+| eza             | Modern `ls`                                           |
+| fd              | Modern `find`                                         |
+| fzf             | Fuzzy finder                                          |
+| gh              | GitHub CLI                                            |
+| git-lfs         | Git Large File Storage                                |
+| gitleaks        | Secret scanner                                        |
+| glances         | System monitor                                        |
+| headroom        | Token-compressing proxy for coding agents             |
+| herdr           | Terminal multiplexer for coding agents                |
+| huggingface_hub | Hugging Face Hub CLI (`hf`)                           |
+| hunk            | Review-first terminal diff viewer                     |
+| hyperfine       | Command-line benchmarking tool                        |
+| imagemagick     | Image processing                                      |
+| jactionlint     | GitHub Actions workflow linter                        |
+| jq              | JSON processor                                        |
+| keychain        | ssh-agent / gpg-agent manager                         |
+| kubectl         | Kubernetes CLI                                        |
+| mactop          | Apple Silicon monitor (macOS)                         |
+| md-to-pdf       | Markdown to PDF converter                             |
+| mermaid-cli     | Mermaid diagram renderer (`mmdc`)                     |
+| ninja           | Build system                                          |
+| nvitop          | NVIDIA GPU process viewer                             |
+| oxfmt           | JS/TS/Markdown/JSON/YAML formatter                    |
+| playwriter      | Browser automation via an extension in your Chrome    |
+| pnpm            | Node.js package manager                               |
+| powershell      | PowerShell (macOS)                                    |
+| prek            | pre-commit runner in Rust                             |
+| resvg           | SVG renderer (macOS)                                  |
+| ripgrep         | Modern `grep`                                         |
+| ripgrep-all     | `ripgrep` for PDFs, archives, and docs                |
+| rtk             | Token-reducing CLI proxy for LLMs                     |
+| ruff            | Python linter and formatter                           |
+| runpodctl       | RunPod CLI                                            |
+| sheldon         | Zsh plugin manager                                    |
+| shellcheck      | Shell script linter                                   |
+| shfmt           | Shell script formatter                                |
+| starship        | Cross-shell prompt                                    |
+| stylua          | Lua formatter                                         |
+| swiftlint       | Swift linter (macOS)                                  |
+| taplo           | TOML formatter                                        |
+| tex-fmt         | LaTeX formatter                                       |
+| tmux            | Terminal multiplexer                                  |
+| tree-sitter     | Parser generator tool                                 |
+| ty              | Python type checker                                   |
+| usage           | CLI specification tool                                |
+| uv              | Python package and tool manager                       |
+| vp              | Vite Plus CLI                                         |
+| yobirin         | Interactive notification CLI (macOS)                  |
+| yq              | YAML processor                                        |
+| zoxide          | Smart `cd` command                                    |
 
 ### AI Agents
 

@@ -62,9 +62,6 @@ ty = "latest"
 "npm:md-to-pdf" = { version = "latest", install_env = { PUPPETEER_SKIP_DOWNLOAD = "1" } }
 "npm:neovim" = "latest"
 "npm:oxfmt" = "latest"
-"npm:oxlint" = "latest"
-"npm:prettier" = "latest"
-"npm:pyright" = "latest"
 "npm:textlint" = { version = "latest", bun_args = """
 @textlint-ja/textlint-rule-preset-ai-writing@1.7.0
 textlint-rule-no-kangxi-radicals@0.2.2
@@ -72,8 +69,6 @@ textlint-rule-preset-ai-words-ja@1.2.1
 textlint-rule-preset-ja-technical-writing@12.0.2
 textlint-rule-prh@6.1.0
 """ }
-"npm:typescript" = "latest"
-"npm:typescript-language-server" = "latest"
 
 # AI coding agents
 opencode = "latest"
