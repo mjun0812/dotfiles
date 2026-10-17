@@ -1,12 +1,12 @@
 ---
 name: mjun-implement
 description: >-
-  承認済みのspec (`.mjun/specs/` のLocal spec、GitHub Issue番号、または単発の設計doc) を起点に、task group単位の実装からAcceptance Criteriaの照合、commit、必要ならPR作成までを一気通貫で行うSkill。
+  承認済みのspec (`.mjun/specs/` のLocal spec、GitHub Issue番号、または単発の設計doc) や、mjun-startが書いたbrief (`.mjun/briefs/`) を起点に、task group単位の実装からAcceptance Criteriaの照合、commit、必要ならPR作成までを一気通貫で行うSkill。
   ユーザーが「#Nを実装して」「このspecを実装して」「実装してPRまで」のように依頼したら使うこと。
   specの作成・磨き上げ・承認や、未取り込みIssueの取り込みには使わない。
-  specも設計docも無く、会話の中で決めた小規模な変更にも使わない (直接実装する)。
+  spec・brief・設計docのどれも無い作業の依頼にも使わない (mjun-startが作業の種類を振り分ける)。
   呼び出し元から作業指示を渡された実装担当 (SubAgentやorchestratorのworker) は、指示がこのSkillの実行を明示しているときだけ使い、それ以外はその指示に従う。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), Bash(zsh:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), Bash(zsh:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(mjun-to-tasks), Skill(mjun-start)
 ---
 
 # mjun-implement
@@ -23,14 +23,16 @@ allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bas
 
 ## Arguments
 
-- `source` (必須): 実装対象。GitHub Issue番号 (`#123` / `123`)、`.mjun/specs/<slug>` のLocal specディレクトリ、または単発Markdownのパス
+- `source` (必須): 実装対象。GitHub Issue番号 (`#123` / `123`)、`.mjun/specs/<slug>` のLocal specディレクトリ、`.mjun/briefs/<slug>.md` のbrief、または単発Markdownのパス
 - `--pr` / `--no-pr` / `--merge` (任意): 実装をPRとして届けるか、local commitまでで終えるか、base branchへfast-forward mergeして届けるか。いずれも未指定なら、worktree作成前に確認する (長時間の自律実装の最後で確認待ちにしない)
 
 ### source種別
 
 - `.mjun/specs/<slug>` のディレクトリ、またはその配下のファイルパス → spec mode
 - Issue番号またはGitHub URL → 取り込み済みspecへの逆引き (下記) を経てspec mode
+- `.mjun/briefs/<slug>.md` → doc mode。mjun-startがバグ修正・refactoring・性能改善のために書いたbriefで、frontmatterの `kind` (`bug` / `refactor` / `perf`) によって、Phase 3でimplementerとreviewerに渡す観点が変わる
 - その他のMarkdownパス → doc mode。ファイル全文 (frontmatterを除く) を起点とする
+- spec・brief・設計docのどれも無い作業の依頼を渡されたら、依頼内容を添えてmjun-startへ渡し、このskillを終える。作業の種類によって進め方の重さが違うので、振り分けはmjun-startが持つ
 
 spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tasks.md` を読む。specの判断は `design.md` の `## Decisions` にある。どちらのmodeでも、ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) があれば [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って有効なものを読む。`## Decisions` に `ADR: 要作成 (ADR-NNNN を覆す)` の判断があれば、覆されるADRは有効なADRとして扱わない (supersededの追記はPhase 3.2で行う)。taskに関係する判断とADRは、Phase 3の受け渡しファイルでSubAgentへ渡す。
 
@@ -40,7 +42,7 @@ Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが
 
 1. activeなspec (`status: active`) から `Source: #<number>` を持つものを探す。見つかればそれを対象にする (複数あれば一覧を示して選んでもらう)
 2. 無ければdoneのspecからも探す。見つかれば「実装済みのspec (`<path>`) がある。再開するなら `status` を `active` へ戻すか、Issueを取り込み直す」と案内して中止する
-3. どちらにも無ければ中止し、Issueを先にLocal specへ取り込んで磨き上げる必要があると案内する
+3. どちらにも無ければ、Issue番号を添えてmjun-startへ渡し、このskillを終える。mjun-startが、新規機能ならmjun-specifyでの取り込みへ、バグ修正などならbriefを書いてこのskillへ戻す
 
 Local specの参照と更新は、メインrepositoryの絶対パスで行う。`.mjun/` はgit管理外なので、新規のworktreeには存在しない。Phase 2でworktree内に `.mjun` へのsymlinkを張り、相対パスでも同じファイルを指すようにする。
 
@@ -57,9 +59,10 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
 2. 出力言語は、repositoryの既存のPR・commit message・READMEに合わせる (判別できなければ英語)。specや依頼の言語には合わせない。コメント、commit、PRに使う
 3. 内容検査。次のどれかに当たれば止める。実装依頼そのものを承認の代わりにしない
    - spec modeで、`spec.md` が `approval: approved` でない、または `design.md` か `tasks.md` が無い。中止して、contractの承認、実装設計の作成、`mjun-to-tasks` での分解のうち足りないものを案内する
-   - doc modeで、Goal、受け入れ基準、実装方針など、方針の判断に要る情報が欠けている。コードを読めば分かる事実は自分で調べる。方針を推測で補わず、欠けている項目を具体的に挙げて中止する。spec modeのcontractの十分性は承認で確定済みなので、ここで判定し直さない
+   - doc modeで、Goal、受け入れ基準、実装方針など、方針の判断に要る情報が欠けている。コードを読めば分かる事実は自分で調べる。方針を推測で補わず、欠けている項目を具体的に挙げて中止する。briefでは、種類ごとの節、`完了条件`、`範囲` がそろっていれば足りる (実装方針はimplementerが決める)。spec modeのcontractの十分性は承認で確定済みなので、ここで判定し直さない
    - `## Decisions` (doc modeでは本文の要確認の記載) に `Status: tentative` が残っている。承認前に解消されるはずのものなので、一覧を示して進めてよいかをユーザーに確認する。続行が選ばれたら、該当decisionの `Status:` 行を消して `Owner: human` にする。再実行のたびに同じ箇所で止まらないためである
    - `Source: #N` を持つspecで、`gh issue view <N> --json state,body,comments` が取り込み後の変化を示す。closedなら実装済みの可能性を警告して続行を確認する。新しいコメントや本文の変更があれば内容を示し、specへ反映するかを確認する。反映するなら `approval: pending` へ戻してから反映し、更新後のcontractの承認を得て `approved` に戻す。承認されなければ中止する
+   - `Source: #N` を持つbriefで、Issueがclosedになっている。実装済みの可能性を警告して続行を確認する
    - spec modeで、BoundariesのDependenciesにある `spec: <slug>` のspecが存在しない、または `status: done` でない。先にそのspecの配送が要ると案内して中止する
 4. taskキューを組む
    - spec modeでは `tasks.md` をキューにする。`Status: done` のtaskは完了扱いで飛ばす (resume)。`Status: blocked` のtaskは、`Resume when` が満たされたと確認できたものだけ `ready` に戻す
@@ -82,7 +85,7 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
 
 この場合は手順4の `.mjun` のsymlinkと手順5・6だけを行う。満たさなければ手順1から行う。
 
-1. branch名候補: `<type>/<slug>` (specが `Source: #N` を持てば `<type>/<N>-<slug>`)。`<type>` はConventional Commitsの種別 (判別できなければ `feat`)、`<slug>` はタイトルのkebab-case (英数字とハイフン、40文字以内)
+1. branch名候補: `<type>/<slug>` (specかbriefが `Source: #N` を持てば `<type>/<N>-<slug>`)。`<type>` はConventional Commitsの種別 (briefの `kind` が `bug` なら `fix`、`refactor` なら `refactor`、`perf` なら `perf`。判別できなければ `feat`)、`<slug>` はタイトルのkebab-case (英数字とハイフン、40文字以内)
 2. resumeの判定: spec modeの `tasks.md` に `Implementation Branch: <branch-name>` があり、そのlocal branchが存在すれば、それを使う。記録されたbranchが無ければ記録を破棄して新規として続ける。新規ではbranch名の衝突を末尾の `-2`, `-3` で避ける。doc modeは常に新規とする
 3. worktreeのパス: `<repo-root>/.tmp/<repo-name>-worktrees/<branch-name>` (衝突したら末尾に `-2`, `-3`)
 4. worktreeを用意する
@@ -117,6 +120,7 @@ SubAgentへの文脈は、親が書いたファイルのパスで渡す。LLMは
   - 使うroleのテンプレート (`<skill-dir>/templates/<role>-prompt.md`) と、全roleに共通の約束 `<skill-dir>/templates/common.md`
   - contract (spec modeでは `spec.md`、doc modeではsourceのMarkdown) を `contract.md` として
   - spec modeでは `design.md`。親が `design.md` を更新したら置き直す
+  - briefなら、`kind` に対応する観点 `<skill-dir>/templates/kind-<kind>.md`。spec modeでも、バグ修正のtaskを含むgroupでは `kind-bug.md` を置く。種類ごとに重視する確かめ方 (バグ修正の再現と原因、refactoringの振る舞い不変、性能改善の計測) を、implementerとreviewerにそろえて渡すためである
 - groupごとに `<run-dir>/<group>/brief.md` を書く。中身は、groupの各task (ID、説明、Boundary、Done when、Seam、Blocked by、Acceptance Criteria)、Phase 1の実装方針、`TASK_BRIEF`、採用済みの `CHECK_FILES` / `CHECK_COMMANDS`、`PROTECTED_CHECK_FILES` とハッシュ、事前検査の `CHECK_BASELINES`、review-onlyのtask、関係するdecisionと有効なADR、`design.md` で読むべきセクション名、groupに関係する検証コマンド、Implementation Notes (既知のflakyテストを含む)。検査の一覧などが変わったら、次のSubAgentを起動する前に書き直す
 - `design.md` で読むべきセクションは、groupのtaskのBoundaryに対応するModules、Seamに対応するInterfaces & Seams、それらを通るData Flow、Test Strategy、Change Outlineの全体とする。対応を判断できないセクションは含める
 - 起動promptは次の形にする。ファイルの内容は書き写さず、本文にはそのroleだけに渡すものを書く
@@ -126,6 +130,7 @@ SubAgentへの文脈は、親が書いたファイルのパスで渡す。LLMは
   - worktree: <worktreeの絶対パス> (base: <base branch>、branch: <作業branch>)
   - contract: <run-dir>/contract.md
   - 実装設計: <run-dir>/design.md (spec modeのみ)
+  - 種類の観点: <run-dir>/kind-<kind>.md (置いた場合だけ。implementerとreviewer)
   - group: <run-dir>/<group>/brief.md
   <このroleへの差分: 対象task、周回、前回のFINDINGSとREMEDIATION、親の検査結果のパスなど>
   ```

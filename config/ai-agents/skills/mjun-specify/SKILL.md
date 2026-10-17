@@ -4,7 +4,7 @@ description: >-
   アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できる仕様へ磨き上げるSkill。
   調査で決まる論点はAgentが決め、人間の判断が必要な論点だけを確認して仕様を確定し、承認後にspec ファイルを作成する。
   ユーザーが「specを作って」「仕様を作成して」のように依頼したら使うこと。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), WebSearch, WebFetch, Skill(exhtml), Skill(mjun-grilling), Skill(mjun-spec-review), Skill(mjun-to-tasks)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), WebSearch, WebFetch, Skill(exhtml), Skill(mjun-grilling), Skill(mjun-spec-review), Skill(mjun-to-tasks), Skill(mjun-start)
 ---
 
 # mjun-specify
@@ -43,7 +43,7 @@ specの実体は常に `.mjun/specs/<slug>/` のLocal specで、GitHub Issueは�
 既存specを対象にした場合は省く。それ以外は、依頼内容とactiveなspecの一覧 (H1タイトルと `Source:` 行) を比べ、判定に要る範囲だけコードを見て、最初に当てはまるものを選ぶ。
 
 1. **既存specの拡張**: 依頼が既存のactiveなspecの境界内の拡張、修正、または重複である。sourceなしとMarkdownなら、質問せずに依頼内容を素材としてそのspecを磨き直す。Issueは `Source:` を1つしか持てないので新規specとして取り込み、境界の重なりはPhase 2で扱う
-2. **spec不要**: 人間が決めるべき論点 (振る舞い、ドメインの意味、スコープ) が無く、変更が局所的で、完了条件が自明である。判定理由を1行添えて「直接実装してPRを作る / 直接実装してcommitまで / specを作る」を確認する。直接実装なら、specを作らずにこのskillを終えて同じ会話で実装し、commitは `git-commit`、PRは続けて `github-pr-create` で作る (sourceがIssueならIssue番号を `spec` として渡し、`Closes #N` を付ける)
+2. **spec作りに当たらない**: 新しい振る舞いを足すのでも、期待する振る舞いを変えるのでもない (軽微な修正、バグ修正、1つのtaskに収まるrefactoring、性能改善)。specを作らず、判定理由を1行添えて、依頼内容と調べた範囲 (sourceがIssueならその番号) を `mjun-start` へ渡し、このskillを終える。これらは種類ごとに重視する点が違い、spec作りの流れはそれに合わない。`mjun-start` から新規機能 (広範囲のrefactoringを含む) として渡された依頼では、この判定を省く
 3. **新規spec**: 上のどちらにも当たらない
 
 ### Phase 1: Local specの確保

@@ -4,7 +4,7 @@ Phase 3.0 (実装準備と必要な事前検査) とPhase 3.1 (実装とレビ�
 
 ## Run Log
 
-`tasks.md` 末尾の `## Run Log` に、groupごとに1行を追記する (resumeでは既存行を残して足す)。後で原因を分析する材料なので、周回数、差し戻しの証拠種別、reviewer起動前の差し戻し回数 (`precheck=`)、debuggerの分類を残す。証拠種別は、a (失敗コマンドの出力)、b (file:line + 引用)、mismatch (承認後の親の確認がreviewerの判定と食い違った) のいずれか。groupから外れてblockedになったtaskは別行にする。
+`tasks.md` 末尾の `## Run Log` に、groupごとに1行を追記する (resumeでは既存行を残して足す)。briefを起点にしたdoc modeでは、briefの末尾の `## Run Log` に追記する。種類ごとの結果を、後で振り返れるようにするためである。それ以外のdoc modeでは残さない。後で原因を分析する材料なので、周回数、差し戻しの証拠種別、reviewer起動前の差し戻し回数 (`precheck=`)、debuggerの分類を残す。証拠種別は、a (失敗コマンドの出力)、b (file:line + 引用)、mismatch (承認後の親の確認がreviewerの判定と食い違った) のいずれか。groupから外れてblockedになったtaskは別行にする。
 
 ```text
 - T-001: verifier=none | checks=IMPLEMENTER | rounds=1 | result=done

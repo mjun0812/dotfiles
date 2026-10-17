@@ -9,7 +9,7 @@
 ## Phase 3.2: ADRと整理
 
 1. ADRを書く。対象は、spec modeの `design.md` の `## Decisions` で `ADR: 要作成` の判断と、どのmodeでも実装中に生じた、[ADRにする基準](../../mjun-steering/references/glossary_and_adr.md#adrにする基準) の3条件を満たす判断である。置き場は、Git管理へ移行済みなら作業中のworktreeの `docs/adr/`、未移行ならメインrepositoryの `.mjun/steering/adr/` とする。既存ADRを覆すなら旧ADRに `Status: superseded by ADR-NNNN` を足す。spec modeでは、`design.md` (メインrepositoryの絶対パス) の `ADR:` 行を書いたADRの番号に置き換える。contractを変える判断なら、先にspecへ戻して再承認を得る。ADRを観察するAcceptance Criteriaは、Phase 3.3で確かめる。Phase 3.3の差し戻しで新たに3条件を満たす判断が生じたら、検証をやり直す前に同じように書く
-2. 整理するかを決める。reviewerの `NOTES` が1件以上あれば手順3へ進む。無ければRun Logの `feature:` 行に `refactor=SKIPPED` を残してPhase 3.3へ進む
+2. 整理するかを決める。reviewerの `NOTES` が1件以上あれば手順3へ進む。無ければRun Logの `feature:` 行に `refactor=SKIPPED` を残してPhase 3.3へ進む。briefを起点にした場合 (バグ修正、refactoring、性能改善) は、`NOTES` があっても整理を省いて `refactor=SKIPPED` を残し、`NOTES` はPhase 5の報告とPR本文に回す。どれも変更を必要な範囲に留めることを重視する作業で、整理の変更を足すと、確かめた範囲の外に差分が広がるからである
 3. refactorerを起動する。開始前に全 `CHECK_FILES` のハッシュを記録する。このpassでは、作成者によらず全検査ファイルを変更禁止とする (振る舞いを変えていないことを、検査の不変で示すため)。全taskの `NOTES`、全 `CHECK_COMMANDS` と `CHECK_FILES`、検証コマンドを `<run-dir>/refactor/brief.md` に書いて渡す
 4. `## Refactor Report` の `- STATUS:` をパースする。`SKIPPED` なら何もしない。`DONE` なら、Phase 3.3の手順1と同じコマンド一式を親が `run_checks.sh` (`<name>` は `refactor`) で実行する。失敗があれば、手順5の `REJECTED` と同じく整理を戻す。すべて通れば、reviewerを `ROUND: refactor` で起動する。起動promptには親の検査結果 (`summary.md` のパス) と、このpassの `PROTECTED_CHECK_FILES` (全 `CHECK_FILES` と開始前のハッシュ) を書く
 5. `APPROVED` なら `refactor:` 種別でcommitし、ID検査を `log HEAD~1..HEAD` で実行する (検出されたら `git commit --amend` で直す)。`REJECTED` なら、refactorerの `FILES_CHANGED` だけを `git checkout -- <files>` で戻す。失うのは整理だけで、taskのcommitには影響しない。再試行はしない。Run Logの `feature:` 行に `refactor=<DONE | SKIPPED | REJECTED>` を残す
@@ -46,9 +46,9 @@ Run Logの `feature:` 行に `validation=<GO | MANUAL_VERIFY_REQUIRED | NO-GO>` 
 5. `--merge`: メインrepositoryのworking treeが `<base-branch>` をcheckoutしていて未commit変更が無いことを確かめ、そこで `git merge --ff-only <branch-name>` を実行する。条件を満たさない、またはfast-forwardできなければmergeせず、worktreeとbranchを残して報告する。pushはしない。Phase 5へ進む
 6. `--pr`: `github-pr-create` skillでPRを作る。push、PRのタイトルと本文、PR作成は連結先skillが行うので、手順を再実装しない
    - Phase 1で決めた出力言語を `language` として渡す
-   - specが `Source: #N` を持つなら、そのIssue番号を `spec` として渡す (PR本文の `Closes #N` になる)。純Local specでは渡さない。specは内部文書なので、PR本文では触れない。PRレビューでcontractとの整合を確かめるときは、Local specのパスを `--spec` で直接渡す
-7. `--pr` の結果を確かめる。`gh pr view <url> --json url,state` でURLと状態を見る。`Source: #N` を持つspecでは本文に `Closes #N` があることを確かめ、無ければ `gh pr edit --body-file` で足す。PRのタイトルと本文 (`gh pr view <url> --json title,body`) にID検査を `text` で実行し、検出されたら `gh pr edit` で直す。PR作成に失敗したら、worktreeを片付けずにエラーを伝えて中止する
-8. 配送が済んだら (`--pr` はPR作成の成功後、`--no-pr` はcommitの完了後、`--merge` はmergeの成功後)、specのfrontmatterを `status: done` にする (doc modeでは省く)。以降、このspecは逆引きや一覧の対象から外れる
+   - specかbriefが `Source: #N` を持つなら、そのIssue番号を `spec` として渡す (PR本文の `Closes #N` になる)。純Local specでは渡さない。specは内部文書なので、PR本文では触れない。PRレビューでcontractとの整合を確かめるときは、Local specのパスを `--spec` で直接渡す
+7. `--pr` の結果を確かめる。`gh pr view <url> --json url,state` でURLと状態を見る。`Source: #N` を持つspecやbriefでは本文に `Closes #N` があることを確かめ、無ければ `gh pr edit --body-file` で足す。PRのタイトルと本文 (`gh pr view <url> --json title,body`) にID検査を `text` で実行し、検出されたら `gh pr edit` で直す。PR作成に失敗したら、worktreeを片付けずにエラーを伝えて中止する
+8. 配送が済んだら (`--pr` はPR作成の成功後、`--no-pr` はcommitの完了後、`--merge` はmergeの成功後)、specのfrontmatterを `status: done` にする。briefを起点にした場合は、briefの `status` を `done` にする。それ以外のdoc modeでは省く。以降、このspecやbriefは逆引きや一覧の対象から外れる
 
 ## Phase 5: 結果の表示
 

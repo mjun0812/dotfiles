@@ -13,7 +13,7 @@ specの実体は常に `.mjun/specs/<slug>/` である。GitHub Issueは取り�
 配送:     worktreeで実装 → PR (SourceがあればCloses #N)
 ```
 
-task分解や実装に未取り込みのIssue番号が渡された場合、それらのskillは中止してこのskillでの取り込みを案内する。取り込む側は、Issueが直接実装できる品質かを判断しない (specが不要な依頼はPhase 0の振り分けで直接実装へ回す)。
+task分解に未取り込みのIssue番号が渡された場合は、中止してこのskillでの取り込みを案内する。実装 (`mjun-implement`) に渡された場合は、`mjun-start` が作業の種類を振り分ける。取り込む側は、Issueが直接実装できる品質かを判断しない (spec作りに当たらない依頼は、Phase 0の振り分けで `mjun-start` へ渡す)。
 
 ## Local specの配置
 
