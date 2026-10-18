@@ -16,7 +16,7 @@ allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bas
 
 全Phaseを通して、次のことを守る。
 
-- SubAgentの完了主張を検証の代わりにしない ([原則](principles/evidence-levels.md))。判定は、親が `run_checks.sh` で実行した検査、reviewerの判定、親自身の照合の結果だけで行う。報告をそのまま信じると、検証を経ていない変更がcommitされる
+- SubAgentの完了主張を検証の代わりにしない。判定は、親が `run_checks.sh` で実行した検査、reviewerの判定、親自身の照合の結果だけで行う。報告をそのまま信じると、検証を経ていない変更がcommitされる
 - repositoryに残るもの (コード、コメント、テスト名、ファイル名) とGitHubへ出すもの (commit message、PRのタイトルと本文) に、spec内部の識別子 (task ID、AC番号、Requirement番号、`.mjun/` のパス、`spec.md` / `tasks.md`) を書かない。specはrepositoryに無い内部文書で、番号は再分解で変わる。`zsh <skill-dir>/scripts/check_internal_ids.sh` (以下、ID検査) で機械的に確かめ、検出されたら振る舞いや目的を表す言葉に書き換える
 - 実装をcontractのBoundariesとOut of Scopeの外へ広げない。contractに無い追加要求を受けても `spec.md` を書き換えて実装に入らず、現在のgroupを終えた時点で止めて、specの磨き直し (承認を含む) が先に必要であることを案内する。contractは人間が承認した範囲であり、実装側で広げると、承認を経ていない変更が入る
 - task計画の作り直しは `mjun-to-tasks` に任せる。分解規則はこのskillに持たない
@@ -41,7 +41,7 @@ spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tas
 Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが直接実装できる品質かをこのskillで判断しない。
 
 1. activeなspec (`status: active`) から `Source: #<number>` を持つものを探す。見つかればそれを対象にする (複数あれば一覧を示して選んでもらう)
-2. 無ければ、Issue番号を添えてmjun-startへ渡し、このskillを終える。`status: done` のspecは参照しない ([原則](principles/disposable-specs.md))。mjun-startが、新規機能ならmjun-specifyでの取り込みへ、バグ修正などならbriefを書いてこのskillへ戻す
+2. 無ければ、Issue番号を添えてmjun-startへ渡し、このskillを終える。`status: done` のspecは作業を終えた使い捨ての文書で、残っていても参照しない (ユーザーが手で削除する)。mjun-startが、新規機能ならmjun-specifyでの取り込みへ、バグ修正などならbriefを書いてこのskillへ戻す
 
 Local specの参照と更新は、メインrepositoryの絶対パスで行う。`.mjun/` はgit管理外なので、新規のworktreeには存在しない。Phase 2でworktree内に `.mjun` へのsymlinkを張り、相対パスでも同じファイルを指すようにする。
 
@@ -70,7 +70,7 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
    - doc modeでは [mjun-to-tasks の分解規則](../mjun-to-tasks/SKILL.md#分解規則) とTask形式で会話内のキューを作る。`tasks.md` は作らない
    - 依存順 (Blocked by) に並べる。実行できるのは、`Blocked by` の全taskが `done` か、同じgroupで先に並ぶtaskだけである。blocked taskに依存するtaskは依存待ちに残す
    - groupに区切る。groupごとにverifier・implementer・reviewer・検査・commitの固定コストがかかるので、上限まで詰める。上限はtask 8件、Acceptance Criteria合計24件 (implementerが1つのfresh contextで扱える大きさ) とし、キューの先頭から加えて上限を超えるときだけ次のgroupを始める。BoundaryやModuleの違いは区切る理由にしない
-5. どこまで進めるかが未指定なら、AskUserQuestion (使えなければテキストの選択肢) で確認する。GitHub remoteが無ければ `--no-pr` と `--merge` の2択にする。`## Decisions` に `ADR: 要作成` があり、ADRの置き場所が未決定 ([置き場所の決め方](../mjun-steering/references/glossary_and_adr.md#置き場所の決め方)) なら、置き場所も同じ確認で聞く。自律実行の途中で確認待ちにしないためである ([原則](principles/asking-humans.md))
+5. どこまで進めるかが未指定なら、AskUserQuestion (使えなければテキストの選択肢) で確認する。GitHub remoteが無ければ `--no-pr` と `--merge` の2択にする。`## Decisions` に `ADR: 要作成` があり、ADRの置き場所が未決定 ([置き場所の決め方](../mjun-steering/references/glossary_and_adr.md#置き場所の決め方)) なら、置き場所も同じ確認で聞く。自律実行の途中で確認待ちにしないためである
 6. 実装方針とgroup区切り付きのtask一覧を簡潔に示し、確認を取らずにPhase 2へ進む
 
 ### Phase 2: worktreeの作成

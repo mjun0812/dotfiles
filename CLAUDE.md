@@ -32,9 +32,6 @@ zsh script/setup/setup_textlint.sh     # 共通設定と旧CLIリンクの移行
 
 # VSCode拡張をextensions.txtと完全同期 (--dry-runで差分確認)
 script/tools/sync_vscode_extensions.sh --dry-run
-
-# mjun系skillの共通原則を、原本から各skillの principles/ へ写す (引数なしなら一致の確認だけ。pre-commit hookでも実行される)
-zsh script/tools/sync_mjun_principles.sh --fix
 ```
 
 全体の検証はGitHub Actions (`ci-ubuntu.yml` / `ci-rocky.yml` / `ci-macos.yml`) がクリーンな環境で `install.sh` を実行し、symlinkと主要ツールの存在を確認する形で行われる。`ci-macos-packages.yml` は `mise bootstrap packages apply` (brew / brew-cask) の適用・冪等性・statusを、`ci-lint.yml` は `prek run --all-files` を検証する。
@@ -81,7 +78,6 @@ zsh script/tools/sync_mjun_principles.sh --fix
 - 共有skillとcode-reviewer agentはこのリポジトリでは管理せず、[mjun0812/skills](https://github.com/mjun0812/skills) の `main` をapmで購読する。購読定義は `config/ai-agents/apm.yml` (`~/.apm/apm.yml` へsymlink) にあり、`install.sh` が `apm update -g -y` を実行して展開する。
 - MCPサーバーも `config/ai-agents/apm.yml` の `dependencies.mcp` で一元管理する。apmが各agentの設定 (`~/.claude.json` の `mcpServers`、`~/.codex/config.toml` の `[mcp_servers.*]`、`~/.gemini/config/mcp_config.json`) へ直接書き込むので、symlinkや `--mcp-config` は使わない。Codexのテンプレートには `[mcp_servers.*]` を書かない (apmの書き込みと二重管理になるため)。
 - このリポジトリに残る私用skill (`mjun-*`) は `config/ai-agents/skills/` に一元管理され、`~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` の3箇所へsymlinkされる。Codexは `~/.agents/skills/` を直接読むため `~/.codex/skills/` には展開しない。1箇所の編集が全agentに反映される。
-- 複数の `mjun-*` skillに共通する原則 (specは使い捨て、人間に聞く基準、証拠の段階) は、`config/ai-agents/mjun-principles/` を原本とし、使うskillの `principles/` に同じファイルを写す。`config/ai-agents/skills/` の直下に置くと、skillとして3箇所へsymlinkされてしまうので、原本はその外に置く。編集するのは原本だけで、`script/tools/sync_mjun_principles.sh --fix` で写しを上書きする。pre-commit hookの `mjun-principles` が、写しが原本と一致しているかを確かめる。
 - skillの一覧と依存関係は `doc/skills.md` (英語) と `doc/skills_ja.md` に記載されている。skillを追加・変更したらここも更新する (`doc-sync` skillがこの同期を担う)。
 - Codexの `~/.codex/config.toml` だけはsymlinkではなく、`script/setup/rewrite_config.py` (tomlkit) がテンプレート (`config/ai-agents/codex/config.toml`) 側のキーだけを既存ファイルへマージする方式。Codexが自動生成する `[projects.*]` や `[hooks.state]` などのローカル状態を温存するため。キーの上書きのみでキーの削除はできない点に注意。
 - Codexのhookは `config/ai-agents/codex/hooks.json` で管理され、`~/.codex/hooks.json` へsymlinkされる。hook定義を変更すると `[hooks.state]` の `trusted_hash` が無効になり、TUIの `/hooks` で再承認が必要になる。そのため通知の条件や文言はhooks.jsonではなくシェルスクリプト側に置く。

@@ -32,7 +32,7 @@ task分解に未取り込みのIssue番号が渡された場合は、中止し�
 
 ## ライフサイクル状態 (`status`)
 
-specは作業中だけ使う文書である ([原則](../principles/disposable-specs.md))。作成・取り込み時に `status: active` を書き、PR作成などを終えた時点で実装側が `status: done` へ更新する。一覧と進行中spec間の比較は `active` だけを対象にし、明示的にパスを渡されたspecはstatusを問わず読む。放棄したspecは手で削除する。
+specは作業中だけ使う文書である。作成・取り込み時に `status: active` を書き、PR作成などを終えた時点で実装側が `status: done` へ更新する。その後も残す価値があるものは、コードとテスト、ADR、用語集、Issue、PR、commitに移っている。そのため `status: done` のspecは、どのskillも逆引き・一覧・比較・依存の判定に使わず、ユーザーが手で削除する。残っていても削除されていても、skillの挙動は変わらない。一覧と進行中spec間の比較は `active` だけを対象にし、明示的にパスを渡されたspecはstatusを問わず読む。放棄したspecは手で削除する。
 
 ## Contract承認状態 (`approval`)
 
