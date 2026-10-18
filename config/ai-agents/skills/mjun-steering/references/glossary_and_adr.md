@@ -4,7 +4,7 @@ mjun-steeringのほか、spec・tasks・実装・レビューのskillが用語�
 
 ## 保存先と責務
 
-- 用語集とADRは、spec・brief・runのような使い捨ての作業文書と違い、作業を終えた後も残す記録である。置き場所はrepositoryごとに、Git管理 (repo直下の `CONTEXT.md` と `docs/adr/`) かローカル (`.mjun/CONTEXT.md` と `.mjun/steering/adr/`) のどちらかに決まる。決め方は次の「置き場所の決め方」に従う。
+- 用語集とADRは、spec・brief・runのような使い捨ての作業文書と違い、作業を終えた後も残す記録である ([原則](../principles/disposable-specs.md))。置き場所はrepositoryごとに、Git管理 (repo直下の `CONTEXT.md` と `docs/adr/`) かローカル (`.mjun/CONTEXT.md` と `.mjun/steering/adr/`) のどちらかに決まる。決め方は次の「置き場所の決め方」に従う。
 - 用語集は置き場所の `CONTEXT.md` に、用語が確定したら `**用語**: 定義 (1〜2文)` と `_Avoid_: 使わない言い換え` を追記する。実装詳細は書かない。
 - ADRは置き場所のADRディレクトリに1件1ファイル (`NNNN-<slug>.md`) で置く。ディレクトリは最初のADRを書くときに作る。
 
@@ -16,7 +16,7 @@ ADRや用語集をcommitしてよいかは、repositoryの持ち主や公開範�
 2. 1に当たらず、`.mjun/steering/adr/` にADRがあるか `.mjun/CONTEXT.md` があれば、ローカルである
 3. どちらにも当たらなければ未決定である。読むときは、どちらも無いものとして扱う。書く必要が出たら、書く前に「Git管理 (commitしてrepositoryで残す) / ローカル (`.mjun/` に置き、commitしない)」を選択肢で聞き、選ばれた場所へ書く
 
-聞く時機は、人間の手が止まらないように選ぶ。対話の途中で書くskillは、その時点のほかの質問とまとめて聞く。長い自律実行を始めるskill (`mjun-implement`) は、開始前の確認でどこまで進めるかと一緒に聞く。自律実行の途中で未決定のまま書く必要が出たら、書かずに結果の報告でADRの案を示し、置き場所を聞く。
+聞く時機は、人間の手が止まらないように選ぶ ([原則](../principles/asking-humans.md))。対話の途中で書くskillは、その時点のほかの質問とまとめて聞く。長い自律実行を始めるskill (`mjun-implement`) は、開始前の確認でどこまで進めるかと一緒に聞く。自律実行の途中で未決定のまま書く必要が出たら、書かずに結果の報告でADRの案を示し、置き場所を聞く。
 
 - specの中で閉じる判断はADRにせず、そのspecの `design.md` の `## Decisions` に書く。
 - core / custom steeringは現在の実装に裏付けられたパターンを、ADRは判断の理由を記録する。理由はコードに残らないので、ADRをコードから再生成したり、コードに合わせて理由を書き換えたりしない。
@@ -49,7 +49,7 @@ ADRや用語集をcommitしてよいかは、repositoryの持ち主や公開範�
 
 - 読み手は `Status:` が `superseded` / `deprecated` のADRを現在の規約として適用しない。それ以外のADRはプロジェクト全体の制約として読む。
 - ADRに反する要求はHuman-owned decisionとして確認する。ADRを覆す場合は新しいADRを書き、旧ADRには `Status: superseded by ADR-NNNN` の行だけを足す。判断の履歴を保つため、既存ADRの本文は書き換えず削除しない (保存先移行と番号の振り直しを除く)。
-- ADRの判断がlint・ast-grep・script・CIで機械的に強制されるようになっても、ADRは削除しない。本文と `Status:` は変えず、`Enforced by: <repository rootからの設定やruleのパス>` の行だけを本文の後 (`Status:` 行があればその次) に足す (同じ設定ファイルに複数のruleがあれば `<パス>#<rule ID>`、強制する場所が複数なら読点で並べる)。チェックが置き換えるのは文章の規約で、判断の理由と履歴ではない。チェックがあれば読み手は違反に気づけるが、なぜその規約なのかはADRにしか残らないためである。ADRを根拠にしたsteeringや `CLAUDE.md` の規約の文章は、チェックに置き換えて削ってよいが、理由が要る箇所ではADRへのリンクを残す
+- ADRの判断がlint・ast-grep・script・CIで機械的に強制されるようになっても、ADRは削除しない。本文と `Status:` は変えず、`Enforced by: <repository rootからの設定やruleのパス>` の行だけを本文の後 (`Status:` 行があればその次) へ足す。同じ設定ファイルに複数のruleがあれば `<パス>#<rule ID>` と書き、強制する場所が複数なら読点で並べる。チェックが置き換えるのは文章の規約で、判断の理由と履歴ではない。チェックがあれば読み手は違反に気づけるが、なぜその規約なのかはADRにしか残らないためである。ADRを根拠にしたsteeringや `CLAUDE.md` の規約の文章は、チェックに置き換えて削ってよいが、理由が要る箇所ではADRへのリンクを残す
 - `Enforced by:` の参照先が消えたり、ruleが外されたりしても、行は消さない。Code Driftとして報告し、チェックを戻すか、ADRを `deprecated` にするかを人間に確認する。ADRがローカル (`.mjun/steering/adr/`) なら、`Enforced by:` に書くのはGit管理された設定のパスで構わない
 - codeとADRが食い違う場合は、未実装の計画かどうかを確かめる。実装済みの判断への違反はCode Driftとして報告して人間に確認する。
 

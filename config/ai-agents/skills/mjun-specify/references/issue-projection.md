@@ -1,6 +1,6 @@
 # Issue Projection
 
-承認した判断シートとAcceptance CriteriaをGitHub Issueへ投影する。Local specは作業を終えると使い捨てになるので、Issueは「何を、なぜ、どの範囲で作ったか」を後から辿れる場所として残す。作業中はLocal specの内容が正しい。
+承認した判断シートとAcceptance CriteriaをGitHub Issueへ投影する。Local specは作業を終えると使い捨てになるので ([原則](../principles/disposable-specs.md))、Issueは「何を、なぜ、どの範囲で作ったか」を後から辿れる場所として残す。作業中はLocal specの内容が正しい。
 
 投影するのは、人間が承認した判断シートと、完了条件のAcceptance Criteriaだけである。contractの全文やdesign.mdは載せない。人間が読まない文書を外へ写しても辿る役に立たず、実装済みの振る舞いを定めるのはコードとテストだからである。Acceptance Criteriaを載せるのは、PRのレビューが紐づいたIssueから完了条件を読めるようにするためである。
 
