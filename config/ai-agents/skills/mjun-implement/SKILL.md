@@ -65,7 +65,7 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
    - spec modeで、BoundariesのDependenciesにある `spec: <slug>` のspecが `status: active` のまま残っている。先にそのspecの実装を終える必要があると案内して中止する。`status: done` か、存在しない (作業を終えた後に手で削除された) specは、依存を満たしたものとして扱い、そう判断したことを実装方針と一緒に示す
 4. taskキューを組む
    - spec modeでは `tasks.md` をキューにする。`Status: done` のtaskは完了扱いで飛ばす (resume)。`Status: blocked` のtaskは、`Resume when` が満たされたと確認できたものだけ `ready` に戻す
-   - Acceptance Criteriaが8件を超えるtask (手順3の形式検査が件数で指摘する) は `mjun-to-tasks` の粒度を外れている。そのtask IDを文脈として `mjun-to-tasks` で再分解させ、読み直したキューを使う
+   - Acceptance Criteriaが24件を超えるtask (手順3の形式検査が件数で指摘する) は `mjun-to-tasks` の粒度を外れている。そのtask IDを文脈として `mjun-to-tasks` で再分解させ、読み直したキューを使う
    - 全taskが `done` でも終了しない。記録済みbranchからresumeし、Phase 3.3とPhase 4をやり直す
    - doc modeでは [mjun-to-tasks の分解規則](../mjun-to-tasks/SKILL.md#分解規則) とTask形式で会話内のキューを作る。`tasks.md` は作らない
    - 依存順 (Blocked by) に並べる。実行できるのは、`Blocked by` の全taskが `done` か、同じgroupで先に並ぶtaskだけである。blocked taskに依存するtaskは依存待ちに残す
