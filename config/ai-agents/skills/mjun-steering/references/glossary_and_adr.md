@@ -50,7 +50,7 @@ ADRや用語集をcommitしてよいかは、repositoryの持ち主や公開範�
 - 読み手は `Status:` が `superseded` / `deprecated` のADRを現在の規約として適用しない。それ以外のADRはプロジェクト全体の制約として読む。
 - ADRに反する要求はHuman-owned decisionとして確認する。ADRを覆す場合は新しいADRを書き、旧ADRには `Status: superseded by ADR-NNNN` の行だけを足す。判断の履歴を保つため、既存ADRの本文は書き換えず削除しない (保存先移行と番号の振り直しを除く)。
 - ADRの判断がlint・ast-grep・script・CIで機械的に強制されるようになっても、ADRは削除しない。本文と `Status:` は変えず、`Enforced by: <repository rootからの設定やruleのパス>` の行だけを本文の後 (`Status:` 行があればその次) へ足す。同じ設定ファイルに複数のruleがあれば `<パス>#<rule ID>` と書き、強制する場所が複数なら読点で並べる。チェックが置き換えるのは文章の規約で、判断の理由と履歴ではない。チェックがあれば読み手は違反に気づけるが、なぜその規約なのかはADRにしか残らないためである。ADRを根拠にしたsteeringや `CLAUDE.md` の規約の文章は、チェックに置き換えて削ってよいが、理由が要る箇所ではADRへのリンクを残す
-- `Enforced by:` の参照先が消えたり、ruleが外されたりしても、行は消さない。Code Driftとして報告し、チェックを戻すか、ADRを `deprecated` にするかを人間に確認する。ADRがローカル (`.mjun/steering/adr/`) なら、`Enforced by:` に書くのはGit管理された設定のパスで構わない
+- `Enforced by:` の参照先が消えたり、ruleが外されたりしても、行は消さない。Code Driftとして報告し、チェックを戻すか、ADRを `deprecated` にするかを人間に確認する。ADRがローカル (`.mjun/steering/adr/`) なら、`Enforced by:` には、Git管理された設定のパスも、`.mjun/lint/` のlocalのlintも書ける。Git管理のADRには、localのlintを書かない。外の読み手は `.mjun/` を開けないからである
 - codeとADRが食い違う場合は、未実装の計画かどうかを確かめる。実装済みの判断への違反はCode Driftとして報告して人間に確認する。
 
 ## Git管理へ移す場合
