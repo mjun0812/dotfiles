@@ -4,7 +4,7 @@ specを磨く過程で現れる各論点を、誰が決めるかで3種類に分
 
 > Agentはfactsを調べ、contract内の可逆なdesignを決める。HumanはAgentの権限を超えるdecisionを決める。
 
-人間の時間は、人間にしか決められない論点だけに使う。調べれば分かるfactsを人間に聞かず、Human-ownedをagentが決めない。後者は承認されたcontractに、人間が選んでいない振る舞いや範囲を紛れ込ませることになる。
+人間の時間は、人間にしか決められない論点だけに使う (skillをまたぐ基準は [原則](../principles/asking-humans.md))。調べれば分かるfactsを人間に聞かず、Human-ownedをagentが決めない。後者は承認されたcontractに、人間が選んでいない振る舞いや範囲を紛れ込ませることになる。
 
 ## Agent-owned
 
