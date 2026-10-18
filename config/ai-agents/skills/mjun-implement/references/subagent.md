@@ -18,7 +18,7 @@ reviewerとverifierは、implementerより上位のmodelにする。implementer�
 
 次の場合は、implementerを `opus` / `gpt-6.1-sol` (effortは `high`) で起動する。
 
-- groupに統合task (Boundaryに `(integration)`) を含む
+- groupのtaskのBoundaryが、2つ以上の責務にまたがる。責務をまたぐ変更は、呼び出し規約やデータの受け渡しを複数の箇所でそろえる必要があり、難しいからである
 - debuggerの分類を受けて、implementerを新規に起動し直す
 
 これより上位のmodel (`gpt-6-astra` など) は使わない。昇格したimplementerでも収束しない場合は、[recovery.md](recovery.md) の規則に従ってtaskを隔離する。

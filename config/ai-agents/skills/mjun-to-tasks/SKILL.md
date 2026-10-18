@@ -34,16 +34,14 @@ specを、実装者がtaskごとにfresh contextで着手し、単独で検証�
 
 ## 分解規則
 
-目的は、各taskを「1つのfresh contextの実装者がそのtaskだけを読んで実装し、1つのコマンドで検証してcommitできる」単位にすることである。taskごとに実装・レビュー・検証・commitの固定コストがかかるため、この目的に必要な分だけ分け、それ以上は分けない。
+目的は、各taskを「1つのfresh contextの実装者がそのtaskだけを読んで実装し、親の検査とレビューを通して1つのcommitにできる」単位にすることである。taskはmjun-implementの実装・レビュー・commitの単位になり、1つ増えるごとに、implementer、検査、reviewer、commitの固定コストが1回ずつ増える。分けたtaskをつなぐ準備のtaskが増えると、依存の連鎖も伸びる。だから、1つのcontextに収まるかぎり分けない。分けるのは、収まらないときだけである。1つの機能は1人の担当が持ち、検証できる単位でcommitを重ねる、というpstackの進め方に合わせている。
 
 - **vertical slice**: 各taskは、DB・API・UIのようなlayer別ではなく、単独で検証・デモできるend-to-end behaviorにする。layer別に切ると、どのtaskも単独では振る舞いを示せず、検証が最後のtaskまで先送りになる
-- **大きさ**: 1つのfresh contextで実装しきれるかを、次の基準で判断する
-  - taskのAcceptance Criteriaを、1つの実行可能なコマンド (テスト、スクリプト、CLI呼び出し) で検証できる。できなければ分ける。これは検証可能性の条件で、サイズの上限ではない (巨大な機能も1本のE2Eテストで検証できる)。実装前のREDは条件にしない
-  - そのコマンドを通す変更が `design.md` のModulesの1つに収まり、BoundaryがspecのOwnsの1つに閉じる。2つ以上に及ぶなら分けるか、統合taskと明示して、触る責務の先行taskより後に置く
-  - 数の目安は、ACが3〜6件、触る責務が1つ。ACの件数だけを理由に分割しない。ACが8件を超えるtaskと、変更ファイルが10を超える見込みのtaskは分割する (mjun-implementと実装時のverifierも同じ基準で大きすぎると判定し、再分解に戻ってくる)
-- **分割と統合**: 独立に検証できる成果が2つ以上あるtaskは分ける。帳簿だけのtask、単独で検証できないtask、同じmoduleの同じSeamを検証して単独では小さな成果しか持たないtaskは、隣のtaskにまとめる
+- **大きさ**: 1 taskの上限は、Acceptance Criteriaが24件までで、変更が1つのcontextで読み切れる量 (互いに関係の薄い大きな変更が並ばない) である。この上限は、mjun-implementがimplementerへ一度に渡す量と同じである。上限に収まるなら、`design.md` のModulesやspecのOwnsがいくつにまたがっても、独立に検証できる成果が複数あっても、1 taskにする。spec全体が上限に収まれば、spec全体を1 taskにする
+- **分けるとき**: 上限を超える見込みのときだけ分け、分ける数は、上限に収まる範囲で最も少なくする。切れ目は、前のtaskが単独で検証でき、そこまでをcommitしてもビルドとテストが通るところへ置く。後のtaskは前のtaskの成果の上に積む
+- **検証**: 各Acceptance Criterionを、1つの実行可能なコマンド (テスト、スクリプト、CLI呼び出し) で判定できるようにする。これは検証可能性の条件で、taskの大きさの上限ではない。実装前のREDは条件にしない
 - **順序**: 依存順に1 taskずつ完了させたとき、どの時点でもビルドと型検査が通るようにする。実装者は自分のtaskしか見ないので、途中でビルドが通らない状態を残すと、後続taskの検証が濁る。具体的には次のとおり
-  - 型・設定・配線・整形 (prefactoring) の前提は、存在すると仮定せず、先行taskにしてBlocked byで結ぶ
+  - 型・設定・配線・整形 (prefactoring) は、それを使う最初のtaskに含める。準備だけのtaskは作らない。準備だけでは振る舞いを検証できず、依存の連鎖も伸びる
   - 公開interfaceのシグネチャや型を変えるtaskには、既存の呼び出し側の追従を含める
   - 共有のlayout、既定値、設定のように他taskの検査の前提を変えるtaskは、その前提に依存するtaskより先に置く
   - Blocked byのグラフにcycleを作らない。cycleが出たら切り方を見直す
@@ -70,10 +68,10 @@ specを、実装者がtaskごとにfresh contextで着手し、単独で検証�
 mjun-implementがこの形式を読んでキューとresume先にするので、見出し、フィールド名、値の語彙を変えない。形式は `scripts/check_spec_format.sh` が検査する。
 
 - Status: `ready | in-progress | blocked | done`。新規taskは `ready`。`blocked` のtaskには `Blocked reason` と `Resume when` を足す
-- Boundary: specのOwnsのうちどの責務か。統合taskは `Boundary: <責務A>, <責務B> (integration)` と書く
+- Boundary: specのOwnsのうち、そのtaskが触る責務。複数なら `Boundary: <責務A>, <責務B>` とカンマで区切る
 - Blocked by: 先に完了が必要なtask
 - Done when: 完了時に観察できることを1行で
-- Seam: 検証する公開interfaceを1行で。`design.md` のInterfaces & Seamsから取る。CLI全体や1つのendpointのようなcompositeな境界でもよい。実装時にはここに対して検査が書かれる
+- Seam: 検証する公開interface。複数ならカンマで区切って1行に書く。`design.md` のInterfaces & Seamsから取る。CLI全体や1つのendpointのようなcompositeな境界でもよい。実装時にはここに対して検査が書かれる
 - Acceptance Criteria: 機械的に判定できるcheckbox
 - `Implementation Branch: <branch-name>`: 実装側が初回worktreeの作成後にファイル先頭へ記録する。このskillは新規作成時にこの行を書かない
 
@@ -86,7 +84,7 @@ mjun-implementがこの形式を読んでキューとresume先にするので、
    - specのRequirements 1件ごと → 実現するtaskが1つ以上ある
    - `design.md` のModules (新設・変更) 1件ごと → いずれかのtaskのBoundaryが触る
    - `design.md` のInterfaces & SeamsのうちspecのACが観測するもの1件ごと → いずれかのtaskのSeamに現れる (ACが観測しないinterfaceと、差し替える依存点は対象外)
-   - `design.md` のData Flowでmodule境界をまたぐ箇所ごと → 統合taskで検証されるか、単一taskの中で完結する
+   - `design.md` のData Flowでmodule境界をまたぐ箇所ごと → どれかのtaskのAcceptance Criteriaで検証される
    - taskが前提とする型・設定・配線ごと → 先行taskか既存コードに存在する
 
    2周の修正後も残る未カバーは、task分解では埋められないspec / designの欠落である。中止して未カバーの一覧を報告し、specの磨き直しが先に必要だと案内する

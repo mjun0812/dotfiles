@@ -49,9 +49,8 @@ taskごとに次を導く。
 
 taskごとに判定する。次のどれかに当たるtaskは検査を書かずに `TOO_LARGE` とし、分割案を返す。他のtaskの検査は通常どおり書く。
 
-- Acceptance Criteriaが8つを超える
+- Acceptance Criteriaが24を超える
 - 1つのcriterionが2つ以上のSeamにまたがる
-- 検査がBoundaryの2つ以上の責務に触れる (Boundaryで `(integration)` と明示された統合taskを除く)
 
 分割案の各taskには、説明、Acceptance Criteria、Boundary、Done when、Seam、Blocked byを含める。元taskのAcceptance Criteriaを追加・削除・再解釈せず、各criterionをちょうど1つのtaskへ割り当てる。
 

@@ -131,7 +131,7 @@ if [[ -f $tasks ]]; then
             }
             if (!acseen) print f ":" tl ": " id " に ### Acceptance Criteria が無い"
             else if (ac == 0) print f ":" tl ": " id " のAcceptance Criteriaに \"- [ ] \" の項目が無い"
-            else if (ac > 8) print f ":" tl ": " id " のAcceptance Criteriaが " ac " 件で、8件を超える (mjun-to-tasksで分割する)"
+            else if (ac > 24) print f ":" tl ": " id " のAcceptance Criteriaが " ac " 件で、24件を超える (mjun-to-tasksで分割する)"
             id = ""
         }
         /^## / {
