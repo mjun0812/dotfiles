@@ -15,7 +15,7 @@ Seamは、taskの検査が呼ぶ公開interfaceを指す。関数、endpoint、C
 
 ## Interfaces & Seams
 
-<検査が呼ぶ公開interface (Seam)。Acceptance Criteriaが観測するものを列挙する。差し替える依存点は書かない>
+<検査が呼ぶ公開interface (Seam)。Acceptance Criteriaが観測するものを列挙する。差し替える依存点は書かない。骨組み (`skeleton.patch`) を作った場合は、Seamの名前とpatchの中の場所 (ファイルと型・関数の名前) だけを書き、型と引数を写さない>
 
 ## Data Flow
 

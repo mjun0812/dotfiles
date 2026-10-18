@@ -102,7 +102,7 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
 role:
 
 - implementer ([templates/implementer-prompt.md](templates/implementer-prompt.md)): groupの全taskを実装し、必要な検査を作って実行し、`## Status Report` を返す。TDDは強制しない。バグ修正だけは、修正前後の証拠 (再現テスト、届かなければ実物での観察か計測) を取る
-- reviewer ([templates/reviewer-prompt.md](templates/reviewer-prompt.md)): 親の検査結果と実際のコードで、全Acceptance Criterion、保護された検査ファイルの不変、実在性、Boundaryを敵対的に確かめ、`## Review Verdict` を返す
+- reviewer ([templates/reviewer-prompt.md](templates/reviewer-prompt.md)): 親の検査結果、親の機械的な確認の結果、実際のコードで、全Acceptance Criterion、実在性、Boundaryを敵対的に確かめ、`## Review Verdict` を返す
 - verifier ([templates/verifier-prompt.md](templates/verifier-prompt.md)): 検査を実装より先に、独立して設計する必要があるtaskだけを担当し、`## Check Report` を返す。使うのは、ユーザーかspecが独立した事前検査を指定しているときか、期待値や検証手段を実装から独立に確定すべき具体的な理由を親が示せるときである。「バグ修正」「複雑なロジック」という分類だけでは使わない
 - debugger ([templates/debugger-prompt.md](templates/debugger-prompt.md)): 差し戻しが収束しないとき、またはBLOCKEDのときに、root causeを分類して `## Debug Report` を返す
 - refactorer ([templates/refactorer-prompt.md](templates/refactorer-prompt.md)): 全task完了後、reviewerのNOTESとtask間の重複を、全検査greenのまま整理して `## Refactor Report` を返す
@@ -149,18 +149,28 @@ SubAgentへの文脈は、親が書いたファイルのパスで渡す。LLMは
 - `FAIL (worktreeを書き換えた)` は、formatterの自動修正やlockfileの更新などで内容が変わったことを示す。失敗と同じに扱う
 - toolのtimeoutに収まらない見込みのコマンドは、commands-fileを分けて実行する
 
+判断の要らない確認は、親が `zsh <skill-dir>/scripts/check_mechanical.sh <worktree> <base> [--design <run-dir>/design.md] [--exclude <検査ファイルの一覧>] [--protected <run-dir>/protected.sha256] [--final] --out <結果のファイル>` でまとめて行う。見るのは、保護された検査ファイルのハッシュ、Change Outlineの外のパス、足した行のTODO類、spec内部の識別子、secrets、骨組みの未実装の残りである。reviewerが同じ確認を自分で回すと、手順と結果が毎回揺れ、判断が要る項目に使う時間も減る。だからreviewerには結果のファイルを渡し、写させるだけにする。`<base>` は、groupの未commitの変更を見るときは `HEAD`、branch全体を見るときはbase branchにする。`--exclude` には、`CHECK_FILES` を1行1パスで書いたファイルを渡す。
+
 検査ファイルは次のように扱う。
 
 - `CHECK_FILES` は採用した検査ファイル全体、`CHECK_COMMANDS` はAcceptance Criterionごとの検証コマンドを指す
-- verifierが書いたファイルだけを `PROTECTED_CHECK_FILES` とし、verifier以外には変更させない。親は作成直後に `shasum -a 256` でハッシュを記録し、reviewerと親が照合する。実装から独立に決めた期待値を、実装側の都合で書き換えさせないためである
+- verifierが書いたファイルだけを `PROTECTED_CHECK_FILES` とし、verifier以外には変更させない。親は作成直後に、worktreeのrootで全 `PROTECTED_CHECK_FILES` の `shasum -a 256` を `<run-dir>/protected.sha256` へ書き出し、`check_mechanical.sh` で照らし合わせる。実装から独立に決めた期待値を、実装側の都合で書き換えさせないためである
 - それ以外の検査はimplementerが作成・修正してよく、妥当性はreviewerがAcceptance Criteriaから判定する
 - 後続groupで検査を直すときも同じで、保護対象はverifier経由で直してハッシュを記録し直す。期待値を実装に合わせて弱めず、変えたファイル・コマンドと理由をRun Logに残す
+
+#### 骨組み
+
+spec modeで `<spec-dir>/skeleton.patch` があれば、最初のgroupの前に一度だけworktreeへ当てる。mjun-specifyが、型・署名・moduleの配置をコードで書き、buildと型検査を通したものである。実装はこの中身を埋める形で進み、verifierの検査も最初から本物の署名を呼べる。resumeで、作業branchに骨組みのcommitが既にあれば省く。
+
+1. `<run-dir>` を作り、worktreeで `git apply --3way --index <spec-dir>/skeleton.patch` を実行する
+2. 当たったら、`LINT_COMMANDS` / `BUILD_COMMANDS` / `TEST_COMMANDS` を `run_checks.sh` (`<name>` は `skeleton`) で実行する。通れば、型と署名を足したことを表すConventional Commits形式のmessageで1つのcommitにし、ID検査を `log HEAD~1..HEAD` で実行する。Run Logに `- skeleton: APPLIED` を残す
+3. 当たらない、または検査が通らなければ、骨組みを戻す。worktreeには骨組み以外の変更が無いので、`git reset --hard HEAD` と `git clean -fd` で当てる前に戻せる。patchを `<run-dir>/skeleton.patch` に置き、各groupの `brief.md` に参照として挙げる。implementerは、その署名で書く。Run Logに `- skeleton: REFERENCE (<当たらなかった理由>)` を残す
 
 #### Phase 3の間の約束
 
 - SubAgent共通の約束 (再委譲しない、途中経過を送らない、検証コマンドを前面で実行する、commitしないなど) は [templates/common.md](templates/common.md) にある。追加の委譲は親だけが判断する
 - commitはgroupの承認ごとに親が行う (Phase 3.1)。pushとPR作成はPhase 4まで行わない
-- `git reset --hard` などの破壊的リセットをしない。未commitの成果や他のgroupの変更を失うからである。例外は、Phase 3.2で整理の変更だけを戻す場合である
+- `git reset --hard` などの破壊的リセットをしない。未commitの成果や他のgroupの変更を失うからである。例外は、Phase 3.2で整理の変更だけを戻す場合と、当たらなかった骨組みを戻す場合である
 - 複数groupを同じworktreeで並列に実装しない。どのgroupの未commit変更かを区別できず、保護された検査ファイルのハッシュ照合も成り立たない
 - 構造化値が無い、または曖昧なときは、作業したSubAgentを継続して1回だけ再要求する。継続できない環境では、そのroleを最初からやり直す (作業していないagentにブロックだけを書かせると捏造になる)
 - SubAgentの報告で `NOT_RUN` の項目は、親が該当コマンドを実行して埋める。推測で埋めない
