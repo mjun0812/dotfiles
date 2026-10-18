@@ -39,6 +39,14 @@ repos:
         types: [lua]
         pass_filenames: true
 
+      # mjun系skillの共通原則の写しが正本と一致しているかを確かめる (直すときは --fix)
+      - id: mjun-principles
+        name: mjun principles in sync
+        entry: zsh script/tools/sync_mjun_principles.sh
+        language: system
+        files: ^config/ai-agents/(mjun-principles/|skills/mjun-[^/]+/principles/)
+        pass_filenames: false
+
       # p10k.zsh: powerlevel10k configureが生成するファイルのため対象外
       - id: shfmt-zsh
         name: shfmt (zsh)

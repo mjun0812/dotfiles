@@ -72,7 +72,7 @@ Run Logの `feature:` 行に `validation=<GO | MANUAL_VERIFY_REQUIRED | NO-GO>` 
 
 結果を示したら、次を1回の確認にまとめて聞く。どちらも無ければ聞かずに終える。
 
-- Follow-upsがあり、GitHub remoteがあれば、Issueにするものを選んでもらう (AskUserQuestionの複数選択)。選ばれたものは、1件ずつ `github-issue-create` skillで起票する。specやbriefはこの後で使い捨てになり、ここで拾わないと失われるからである
+- Follow-upsがあり、GitHub remoteがあれば、Issueにするものを選んでもらう (AskUserQuestionの複数選択)。選ばれたものは、1件ずつ `github-issue-create` skillで起票する。specやbriefはこの後で使い捨てになり、ここで拾わないと失われるからである ([原則](../principles/disposable-specs.md))
 - 書かなかったADRの案があれば、置き場所 (Git管理 / ローカル) を聞き、選ばれた場所に書く。Git管理を選ばれたら、作業branchとは別のcommitになるので、その届け方も同じ確認で聞く
 
 ## Phase 6: worktreeクリーンアップ

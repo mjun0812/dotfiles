@@ -122,7 +122,7 @@ workerごとに次を順に行う。
 
 ### Phase 5: workerへの対応
 
-waitが返ったら、`herdr agent get <worker>` と `herdr agent read <worker> --source recent-unwrapped --lines 80` を読み、人間がpaneを見たときと同じように対応する。workerの質問やdialogで、ユーザーの依頼から答えが決まるものはorchestratorが答える。ユーザーにしか決められないものはpaneを `🔴 <slug> <要旨>` にしてAskUserQuestionで確認し、回答を `herdr agent prompt` か `herdr agent send-keys` でそのまま渡す。止まっている理由がエラーや確認待ちなら、ユーザーの依頼の範囲で続行を促すか、`🔴` にして報告する。workerに何か送ったらwaitを張り直す。
+waitが返ったら、`herdr agent get <worker>` と `herdr agent read <worker> --source recent-unwrapped --lines 80` を読み、人間がpaneを見たときと同じように対応する。workerの質問やdialogで、ユーザーの依頼から答えが決まるものはorchestratorが答える ([原則](principles/asking-humans.md))。ユーザーにしか決められないものはpaneを `🔴 <slug> <要旨>` にしてAskUserQuestionで確認し、回答を `herdr agent prompt` か `herdr agent send-keys` でそのまま渡す。止まっている理由がエラーや確認待ちなら、ユーザーの依頼の範囲で続行を促すか、`🔴` にして報告する。workerに何か送ったらwaitを張り直す。
 
 完了の判定では、次の3点を誤りやすい。
 

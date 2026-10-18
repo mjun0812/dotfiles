@@ -27,7 +27,7 @@ specを、実装者がtaskごとにfresh contextで着手し、単独で検証�
 ### source解決
 
 - `.mjun/specs/<slug>` のパス: そのspecを対象にする
-- Issue番号: activeなspec (`status: active`) から `Source: #<number>` を逆引きする。複数見つかれば一覧を示して選んでもらう。無ければ、先にIssueをLocal specへ取り込む必要があると案内して中止する。`status: done` のspecは作業を終えた使い捨ての文書なので探さない
+- Issue番号: activeなspec (`status: active`) から `Source: #<number>` を逆引きする。複数見つかれば一覧を示して選んでもらう。無ければ、先にIssueをLocal specへ取り込む必要があると案内して中止する。`status: done` のspecは探さない ([原則](principles/disposable-specs.md))
 - 判定できない場合は、中止してユーザーに確認する
 
 `spec.md` のRequirementsとAcceptance Criteriaを読み取れない場合と、`design.md` が無い場合は、分解の根拠が無い。中止して、specの磨き上げが先に必要だと案内する。
