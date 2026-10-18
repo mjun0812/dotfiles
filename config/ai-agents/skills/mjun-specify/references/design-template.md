@@ -38,10 +38,12 @@ Seamは、taskの検査が呼ぶ公開interfaceを指す。関数、endpoint、C
 - Rationale: <採用理由>
 - Owner: human | agent
 - Status: tentative <確信度lowで未解消のときだけ書く。解消したら行を消す>
-- Evidence: <根拠。file:line、research/<topic>.md、prototypeの結果など。あれば>
+- Evidence: <根拠。repository内のファイルはrootからのパスを `path:line` の形でbacktickに入れ、repository外のものはURLで書く。research/<topic>.md、prototypeの結果など。あれば>
 - ADR: <ADRの3条件を満たす判断なら `要作成` (既存ADRを覆すなら `要作成 (ADR-NNNN を覆す)`)。ADRを書いたらその番号に置き換える>
 
 ## Change Outline
 
-<変更対象をmodule / directory単位で列挙する (新設・変更の別。テストの置き場を含む)。ファイル単位の列挙はしない。実装のreviewerはdiffのパスがこの範囲に収まるかを機械的に照合し、他のactive specとの衝突検査にも使う>
+- `<repository rootからのパス>` (新設 | 変更 | 削除): <変更の中身>
+
+<変更対象を、1行に1つのパスで上の形に列挙する。module / directory単位で書き (1ファイルのmoduleはそのファイル)、テストの置き場も含める。承認前にcheck_spec_format.shが、変更と削除のパスが実在し、新設のパスがまだ無いことを確かめる。実装のreviewerはdiffのパスがこの範囲に収まるかを照らし合わせ、他のactive specとの衝突を探すのにも使う>
 ```

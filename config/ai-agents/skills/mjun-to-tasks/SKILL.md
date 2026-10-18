@@ -5,24 +5,24 @@ description: >-
   `.mjun/specs/` 配下の `tasks.md` へ永続化するSkill。
   通常はspecの承認後と、実装中にtaskの再分解が必要になったときに自動で呼び出される。ユーザーが「taskに分解して」「分解をやり直して」と依頼したときや、
   specの変更後に再分解したいときに単体で使うこと。実装そのもの、およびspec本文の作成・修正には使わない。
-allowed-tools: Read, Write, Edit, Glob, Grep, Task, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(cat:*), Bash(ls:*), Bash(mkdir:*), Bash(zsh:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(cat:*), Bash(ls:*), Bash(mkdir:*), Bash(zsh:*)
 ---
 
 # mjun-to-tasks
 
-specを、実装者がtaskごとにfresh contextで着手し、単独で検証してcommitできる単位へ分解し、`.mjun/specs/<slug>/tasks.md` に永続化する。`tasks.md` はmjun-implementのキュー、進捗、resume先になる。そのため、分解の質と並んで、形式と既存の実装状態を壊さないことが重要である。分解はAgent-ownedの作業なので承認は取らない。
+specを、実装者がtaskごとにfresh contextで着手し、単独で検証してcommitできる単位へ分解し、`.mjun/specs/<slug>/tasks.md` に永続化する。`tasks.md` はmjun-implementのキュー、進捗、resume先になる。そのため、分解の質と並んで、形式と既存の実装状態を壊さないことが重要である。分解はAgent-ownedの作業なので承認は取らず、レビューも挟まない。taskの切り方の誤りは、コードの無い分解を読み比べても確かめようがなく、実装中に大きすぎるtaskの再分解やBLOCKEDとして現れたときに直せるからである。
 
 正本は `.mjun/specs/<slug>/` のLocal specである。GitHub Issueは `Source: #N` からspecを逆引きするためだけに使い、Issueを読み書きしない (Issueの取り込みはmjun-specifyの仕事)。
 
 ## Arguments
 
 - `source` (必須): 分解対象。`.mjun/specs/<slug>` のLocal specディレクトリ、またはGitHub Issue番号 (`#123` / `123`)
-- `--draft` (任意): 分解のdraftを `.mjun/specs/<slug>/tasks.draft.md` に書いて終える。task-plan reviewと `tasks.md` への書き込みは行わない。mjun-specifyが、承認前のspec reviewでdraftを検査するために使う
+- `--draft` (任意): 分解のdraftを `.mjun/specs/<slug>/tasks.draft.md` に書いて終える。`tasks.md` には書き込まない。mjun-specifyが承認前に使う。taskの件数を判断シートへ載せ、分解で見つかるspecの欠落を承認の前に直すためである
 
 呼び出し元から次のものを渡されたら使う。
 
 - 調査済みの文脈 (requirements、boundary、変更対象の見当): specの読み直しを最小にする
-- spec reviewを経たdraft (`tasks.draft.md`): draftを作り直さず、draftの後に変わったspecとdesignの記述 (追加・変更されたAcceptance Criteriaなど) だけを反映する。draftはspec reviewのtasks軸で検査済みなので、task-plan reviewは省く
+- 承認前に作ったdraft (`tasks.draft.md`): draftを作り直さず、draftの後に変わったspecとdesignの記述 (追加・変更されたAcceptance Criteriaなど) だけを反映する
 
 ### source解決
 
@@ -80,7 +80,7 @@ mjun-implementがこの形式を読んでキューとresume先にするので、
 ## 手順
 
 1. source解決で対象specを確定し、`spec.md` と `design.md` を読む。ADR (`docs/adr/` か `.mjun/steering/adr/` のうち、置き場所として決まっているほう) があれば、[共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って有効なものを読む。`Status: tentative` のdecisionと、superseded / deprecatedのADRは、確定した設計制約として扱わない
-2. 分解規則に従ってtask一覧のdraftを作り、依存順に並べる。spec reviewを経たdraftを渡された場合は、差分だけを反映する
+2. 分解規則に従ってtask一覧のdraftを作り、依存順に並べる。承認前に作ったdraftを渡された場合は、差分だけを反映する
 3. **coverage検査**: spec・designの約束がどのtaskからも漏れず、各ACの担当が1つに決まっていることを確かめる。次の対応表を内部で作り、未カバーと重複をdraftの修正で解消する。修正と再検査は最大2周とし、対応表は `tasks.md` に書かない
    - specのAcceptance Criteria 1件ごと → それを含むtaskがちょうど1つある (0件なら誰も実装せず、2件以上なら完了判定が割れる)
    - specのRequirements 1件ごと → 実現するtaskが1つ以上ある
@@ -91,18 +91,15 @@ mjun-implementがこの形式を読んでキューとresume先にするので、
 
    2周の修正後も残る未カバーは、task分解では埋められないspec / designの欠落である。中止して未カバーの一覧を報告し、specの磨き直しが先に必要だと案内する
 
-4. **task-plan review**: 分解した会話の判断を共有しないreviewerに、1 taskだけを見ても分からないtask間の問題 (隠れた前提、順序、境界の重なり) を探させる。`--draft` の場合、spec reviewを経たdraftを渡された場合、draftが単一taskの場合 (graphとして検査するものが無い) は省く。それ以外は、[templates/reviewer-prompt.md](templates/reviewer-prompt.md) に `spec.md` の全文、`design.md` の全文、draftのtask一覧を合成し、fresh contextのSubAgentを1体起動する。reviewerには読み取り (Read / Glob / Grep) だけを許可する
-   - 出力の `## Task Plan Review` から `- VERDICT:` を読む。構造化値が無い、または曖昧なら1回だけ再要求する。再要求は作業したSubAgentを継続して行い、継続できなければreviewerを最初からやり直す (作業していないagentが書いたブロックは捏造になる)
-   - `NEEDS_REPAIR` の指摘は、specと `design.md` の明文に照らして妥当なものだけdraftへ反映し、残りは捨てる。反映後は手順3のcoverage検査だけを再実行して閉じ、再レビューはしない (指摘と修正の往復が収束しないため)
-5. 下の「書き込み」に従ってファイルへ書き、`zsh <skill-dir>/scripts/check_spec_format.sh <spec-dir> <書いたtasksファイル>` で形式を検査する。taskの形式 (見出し、フィールド、Statusの語彙、Blocked byの実在と循環、AC件数) の指摘は直して再実行する (最大2周)。specやdesignの形式の指摘はこのskillでは直さず、結果の報告に含める
+4. 下の「書き込み」に従ってファイルへ書き、`zsh <skill-dir>/scripts/check_spec_format.sh <spec-dir> <書いたtasksファイル>` で形式を検査する。taskの形式 (見出し、フィールド、Statusの語彙、Blocked byの実在と循環、AC件数) の指摘は直して再実行する (最大2周)。specやdesignの形式の指摘はこのskillでは直さず、結果の報告に含める
    - scriptが見るのは、mjun-implementが機械的に読む形式だけである。人が目で確かめると取りこぼしやすく、形式が崩れたまま渡すと実装側がキューを組めずに止まるので、検査はscriptに任せる
-6. 結果を報告する。task一覧 (各taskのBoundary、AC数、Done when。変更ファイル数の見込みが多いものには分割候補の印)、依存関係、書き込み先、coverage (specのAC数とカバー数)、reviewerのVERDICTと反映した指摘の件数 (省いた場合はその旨)、単一taskの場合はその旨、`ready` に戻したtask、保持したblocked taskを含める。mjun-specifyはこのtask一覧をそのまま利用者への提示に使う
+5. 結果を報告する。task一覧 (各taskのBoundary、AC数、Done when。変更ファイル数の見込みが多いものには分割候補の印)、依存関係、書き込み先、coverage (specのAC数とカバー数)、単一taskの場合はその旨、`ready` に戻したtask、保持したblocked taskを含める。mjun-specifyはこのtask一覧をそのまま利用者への提示に使う
 
 ## 書き込み
 
 - 通常は `.mjun/specs/<slug>/tasks.md` へTask形式で書く。新規作成時は末尾に空の `## Implementation Notes` と `## Run Log` を置く
 - `--draft` の場合は、代わりに `tasks.draft.md` へ同じ形式で書き (既存の `tasks.draft.md` は上書きする)、`tasks.md` には触れない
-- spec reviewを経たdraftから `tasks.md` を書いた場合は、書き込み後に `tasks.draft.md` を削除する。残すと、どちらが現行の分解か分からなくなる
+- 承認前に作ったdraftから `tasks.md` を書いた場合は、書き込み後に `tasks.draft.md` を削除する。残すと、どちらが現行の分解か分からなくなる
 
 既存の `tasks.md` を更新するときは、実装済みの成果と実装側の記録を失わないことを優先する。このファイルには実装側が書いた進捗、branch、メモ、Run Logがあり、上書きで消すと復元できない。
 

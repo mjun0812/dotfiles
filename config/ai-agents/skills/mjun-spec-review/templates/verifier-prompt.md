@@ -7,27 +7,23 @@ spec reviewの候補をすべて受け取り、候補ごとに反証を試みる
 ## 受け取るもの
 
 - repository rootの絶対パス
-- 検証対象の候補すべて (それぞれ全文。`軸: contract | design | tasks` を含む)
+- 検証対象の候補すべて (それぞれ全文)
 - contract (要求・制約・スコープを書いた部分)
-- あれば: task planのdraft (tasks軸の候補がある場合)、実装設計、決定の経緯、sourceの原文、Human-owned decisionの一覧
-- あれば: steering・`CONTEXT.md` (用語集)・ADRのパス一覧
+- あれば: 実装設計、決定の経緯、sourceの原文、Human-owned decisionの一覧
+- あれば: steering・`CONTEXT.md` (用語集)・ADRのパス一覧、対象以外のactiveなspecの `spec.md` と `design.md` のパス一覧
 
 ADRは `Status:` がsuperseded / deprecatedのものを除いてプロジェクトの制約として読む。`Status: tentative` のdecisionは確定した規約として扱わない。
 
 ## 判断の基準
 
-候補は次の1〜5がすべて成り立つときだけ `confirmed` とする。1つでも成り立たないと確かめたら `refuted`、読める証拠では判断できなければ `uncertain` とし、何が判断できなかったかを書く。候補は独立に判定し、ある候補の結論を別の候補の根拠にしない (まとめて渡すのは、文書の読み直しを減らすためである)。
+候補は次の1〜6がすべて成り立つときだけ `confirmed` とする。1つでも成り立たないと確かめたら `refuted`、読める証拠では判断できなければ `uncertain` とし、何が判断できなかったかを書く。候補は独立に判定し、ある候補の結論を別の候補の根拠にしない (まとめて渡すのは、文書の読み直しを減らすためである)。
 
-1. **引用の実在**: 「対象」の引用が、軸に対応する文書 (contract軸はcontract、design軸は実装設計の該当セクション、tasks軸はtask planのdraft) に実在し、候補の主張どおりの内容である
-2. **根拠の成立**: 根拠が実際に候補の主張を支える。contractやsourceの引用は文意を、`file:line` は該当行をReadして、steering / ADR / `CONTEXT.md` の引用は規約・決定・定義として書かれていることを確かめる
+1. **引用の実在**: 「対象」の引用が、候補の示す文書 (contractか実装設計) の該当セクションに実在し、候補の主張どおりの内容である
+2. **根拠の成立**: 根拠が実際に候補の主張を支える。sourceや他specの引用は文意を、`file:line` は該当行をReadして、steering / ADR / `CONTEXT.md` の引用は規約・決定・定義として書かれていることを確かめる
 3. **文書内で未解決**: contract・実装設計・決定の経緯の別の箇所で、既に解決・明示されていない (reviewerが読み飛ばした記述ではない)
-4. **満たすべき状態の妥当性**: 「満たすべき状態」がcontractの明文、sourceの原文、実コードの事実、steeringの規約、有効なADR / `CONTEXT.md` から導ける。一般論や好みからは導けたことにならない
+4. **満たすべき状態の妥当性**: 「満たすべき状態」がsourceの原文、実コードの事実、steeringの規約、有効なADR / `CONTEXT.md`、他specの明文から導ける。一般論や好みからは導けたことにならない
 5. **再審理でない**: Human-owned decisionへの賛否に過ぎない候補ではない。決定と事実の矛盾を示す候補は検証を続ける
-
-軸ごとに、次の境界がある。
-
-- design軸の過剰設計の候補は、2と4で、代替手段が対象環境で使え、対象のRequirements / Acceptance Criteria・Boundaries・既存の実装方針を保てるかを確かめる (削除案なら利用箇所と削除後の要求充足)。代替案が要求を欠く、または行数削減や好みだけが根拠なら `refuted`、同じ要求を満たせるかを証拠から判断できなければ `uncertain`
-- tasks軸の候補が、task分解ではなくcontractや実装設計そのものの欠陥を指摘していれば `refuted` (それはcontract軸・design軸の対象である)
+6. **spec reviewの範囲内**: 候補が、specの外に実在するものとの食い違いを示している。コードの無い設計の良し悪し (失敗したときの扱いの網羅、抽象や設定の過不足、Acceptance Criteriaを満たせるか) やspec内の記述どうしの不一致だけを論じる候補は、spec reviewの対象外なので `refuted` とする。ただし、永続化するデータの形式を変える設計で、既存データの扱い・途中で失敗したときのデータの状態・再実行の結果が決まっていないことを示す候補は対象に含む
 
 自分で完結させる。SubAgentを起動せず、途中経過のmessageも送らない (途中のmessageは親を起こして待機を中断させる)。判定しきれなかった候補は `uncertain` で返す。
 

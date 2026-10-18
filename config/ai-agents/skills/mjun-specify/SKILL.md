@@ -75,7 +75,7 @@ frontierの論点を解決し、frontierを1つ解決し終えるごとに、ま
 - **Human-owned**: frontierのHuman-ownedの論点をすべて、論点ごとの選択肢と調査結果を付けて `mjun-grilling` の指定decisionモードへまとめて渡す。互いに依存しない論点を1回の質問にすることで、人間の往復を減らす
 - **Evidence-blocked**: [references/research.md](references/research.md) の一次資料の調査 (外部事実) か、[references/prototyping.md](references/prototyping.md) の試作 (UI、状態、ロジックの実物) / 最小実装 (現行コードでの実現可能性) で証拠を集め、分類し直して解決する
 
-frontierがすべて解決したら、採択した設計で `design.md` の残りのセクションを書く (既存なら更新する)。実装方針の実現可能性が不確かなら、prototyping.mdの最小実装で確かめる (`--skip-trial` 指定時は行わない)。
+frontierがすべて解決したら、採択した設計で `design.md` の残りのセクションを書く (既存なら更新する)。設計がうまく働くか (Acceptance Criteriaを満たせるか、失敗したときにどうなるか、抽象が要るか) が不確かなら、prototyping.mdの最小実装で確かめる。spec reviewはこれらを見ない。コードの無い設計を読み比べても答えは出ないが、実物を動かせば出るからである。`--skip-trial` 指定時は最小実装を作らず、不確かなまま残ったものを判断シートの「残る不確実性」に書く。
 
 ### Phase 4: 承認準備
 
@@ -94,27 +94,34 @@ spec reviewの指摘を、機械的に見つかる欠けではなく判断の誤
 
 1. **AC 1件 = 1コマンド**: 各ACを1つの確認コマンドで判定できるか。複数の観察 (シナリオ、バージョン、dispatch) を束ねていれば分ける。目視の確認シナリオ (`design.md` のTest Strategy) へ移すのは、見た目や操作感の良し悪しだけである。メモリ使用量や処理時間のように測れる量は、計測するコマンドと閾値の形に書き直してACに残す。見た目のうちコマンドで判定できる部分 (適用される値、状態の遷移) もACに残す
 2. **Requirement ↔ ACの対応**: 各Requirementの振る舞いごとに、それを観察するACがあるか (対応表は会話内に持ち、specへは書かない)。件数や回数を問うRequirementのACは、存在ではなく件数で確かめる形にする
-3. **Evidenceの実在**: `## Decisions` のEvidence (`file:line`、引用、件数) を読み直しか再実行で確かめる。contractとdesignに書いた外部の固有名 (環境変数名、URL、package名、CLI option) は一次資料で綴りを確かめ、確かめられなければEvidence-blockedとしてPhase 3へ戻す。ここで誤った綴りは、実装者がそのまま写す
+3. **Evidenceの中身**: `## Decisions` のEvidence (`file:line`、引用、件数) が主張を支えるかを、読み直しか再実行で確かめる (パスと行の実在は4-3のscriptが見る)。contractとdesignに書いた外部の固有名 (環境変数名、URL、package名、CLI option) は一次資料で綴りを確かめ、確かめられなければEvidence-blockedとしてPhase 3へ戻す。ここで誤った綴りは、実装者がそのまま写す
 4. **ACのbaseline**: 既存のコマンドで確認できるACは現在のtreeで実行する。新規・変更する振る舞いのACが変更前から通るなら、要求した差分を観察できていないので、差分を捉える形に書き直す。回帰防止のACと、完了済みtaskの意味を保つACは、変更前に通っていても残す。Boundaries外の既存の失敗で成り立たないAC (repository全体のlint成功など) は、観察範囲を変更箇所へ絞る
 
 #### 4-3. task planのdraft
 
-`mjun-to-tasks` を `--draft` 付きで呼び、調査済みの文脈 (requirements、boundary、変更対象の見当) を渡して、`.mjun/specs/<slug>/tasks.draft.md` にtask planのdraftを作らせる。task分解は4-4でcontract・designと並べてレビューする。
+`mjun-to-tasks` を `--draft` 付きで呼び、調査済みの文脈 (requirements、boundary、変更対象の見当) を渡して、`.mjun/specs/<slug>/tasks.draft.md` にtask planのdraftを作らせる。承認前に作る理由は2つある。判断シートにtaskの件数を載せるためと、どのtaskにも載らない約束 (mjun-to-tasksが未カバーとして報告するspec・designの欠落) を承認前に直すためである。未カバーが報告されたら、spec・designを直してdraftを作り直す。draftはレビューしない。taskの切り方の誤りは、実装中に再分解の要求として現れ、そこで直せる。
 
-draftができたら、`zsh <skill-dir>/../mjun-to-tasks/scripts/check_spec_format.sh .mjun/specs/<slug> .mjun/specs/<slug>/tasks.draft.md` で形式を検査し、`spec.md` と `design.md` への指摘を直す (tentativeの指摘は4-1で解消しきれていないので、4-1へ戻る)。spec reviewの時間を、機械的に見つかる形式の崩れに使わないためである。
+draftができたら、`zsh <skill-dir>/../mjun-to-tasks/scripts/check_spec_format.sh .mjun/specs/<slug> .mjun/specs/<slug>/tasks.draft.md` で形式を検査し、`spec.md` と `design.md` への指摘を直す (tentativeの指摘は4-1で解消しきれていないので、4-1へ戻る)。承認前のspecでは、scriptはEvidenceとChange Outlineのパスが実在するかと、依存先のspecがあるかも見る。spec reviewの時間を、機械的に見つかる崩れに使わないためである。
 
 #### 4-4. spec review
 
-`mjun-spec-review` をSkill toolで呼び、`.mjun/specs/<slug>` と次の文脈を渡す (`--grill` 指定時も省かない)。
+specを、source・steering・ADR・用語集・他のactiveなspec・既存のコードと、書き手と別のcontextで照らし合わせる。書き手と同じcontextでは、自分の思い込みとの食い違いに気付けないからである。
+
+次のすべてに当たるspecでは、spec reviewを省く。小さく方針が明らかな変更では、食い違いの余地が小さく、レビューにかかる時間と承認までの待ちのほうが大きい。人間の決定はコードの事実と矛盾していないかを確かめる価値があり、永続データは実装後に気付いても戻せないので、どちらかがあれば省かない。
+
+- `design.md` のModulesが1つ
+- `Owner: human` のdecisionが無い
+- Change OutlineとData Flowが、永続化するデータの形式 (DBのschemaや保存ファイルの形式) を変えない
+
+省かないときは、`mjun-spec-review` をSkill toolで呼び、`.mjun/specs/<slug>` と次の文脈を渡す。
 
 - sourceの原文 (Issueの本文とコメント、取り込んだMarkdown、または下書き素材)
 - 人間が決めたdecision (`Owner: human`) の見出しの一覧
-- task planのdraft (`tasks.draft.md` のパス)
 
 結果ブロック `## Spec Review` の `- VERDICT:`、`FINDINGS`、`HUMAN_DECISION_CONFLICTS` を読む。構造化値が無い、または曖昧なら1回だけ再要求する。
 
 - `PASS` → Phase 5へ進む
-- `NEEDS_FIXES` → contractの明文とコードの事実に照らして妥当な指摘だけを、spec、design、draftへ反映する (`[tasks:...]` の指摘はdraftへ)。reviewerは書き手の意図を知らないため、指摘がすべて正しいとは限らない
+- `NEEDS_FIXES` → contractの明文とコードの事実に照らして妥当な指摘だけを、specとdesignへ反映する。reviewerは書き手の意図を知らないため、指摘がすべて正しいとは限らない
 - `HUMAN_DECISION_CONFLICTS` と、反映で新たに生じたHuman-ownedの論点 → `mjun-grilling` の指定decisionモードへまとめて渡して決め直し、`design.md` を更新する
 
 再レビューはしない。反映の結果は判断シートに現れ、人間が承認時に確かめる。レビューを繰り返すと収束しない。
@@ -130,7 +137,7 @@ draftができたら、`zsh <skill-dir>/../mjun-to-tasks/scripts/check_spec_form
 
 ### Phase 6: task分解
 
-`mjun-to-tasks` に、4-4のspec reviewを経たdraft (`tasks.draft.md`) と調査済みの文脈 (requirements、boundary、変更対象の見当) を渡し、承認済みcontractの `tasks.md` を確定させる。draftの後に変わったspecとdesignの記述は、mjun-to-tasksが差分だけ反映する。`mjun-implement` は `tasks.md` が無いと着手しないので、単一task規模でも省かず、既存の `tasks.md` は最新contractで再分解する。承認は取らない。
+`mjun-to-tasks` に、4-3で作ったdraft (`tasks.draft.md`) と調査済みの文脈 (requirements、boundary、変更対象の見当) を渡し、承認済みcontractの `tasks.md` を確定させる。draftの後に変わったspecとdesignの記述は、mjun-to-tasksが差分だけ反映する。`mjun-implement` は `tasks.md` が無いと着手しないので、単一task規模でも省かず、既存の `tasks.md` は最新contractで再分解する。承認は取らない。
 
 ### Phase 7: Issueへの投影
 
@@ -140,7 +147,7 @@ draftができたら、`zsh <skill-dir>/../mjun-to-tasks/scripts/check_spec_form
 
 - **Spec**: Local specのパス (`Source:` があればIssue番号とURLも)
 - **変更点サマリ**: 追加または変更したセクション
-- **Review**: spec reviewのVERDICTと、反映した指摘の件数 (task planへの指摘を含む。決め直したdecisionがあればその見出し)
+- **Review**: spec reviewのVERDICTと、反映した指摘の件数 (決め直したdecisionがあればその見出し)。省いた場合はその旨と、当てはまった条件
 - **Decisions**: 4-1で解消したtentative (見出しと、証拠で昇格 / 人間の決定の別) と、`ADR: 要作成` のdecision。無ければ「なし」
 - **Tasks**: task一覧 (各taskのBoundary、AC数、Done whenと、分割候補の印)、または単一taskである旨。粒度が合わなければ `mjun-to-tasks` で再分解できる旨を添える
 - **次の一手**: `mjun-implement` の呼び出しを、そのままコピペできる1行の `text` コードブロックで示す (Codexでは `$mjun-implement`、Claude Codeでは `/mjun-implement`)。引数は `Source: #N` があれば実際のIssue番号、無ければ実際のLocal specディレクトリのパスとし、プレースホルダーを残さない。案内文はブロックの外に置く。単一task規模の増分で `tasks.md` に `Implementation Branch:` が記録済みなら、そのbranchへ直接commitする選択肢も1行添える
