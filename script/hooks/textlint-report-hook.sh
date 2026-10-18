@@ -4,6 +4,7 @@
 #
 # 変わった行: gitで追跡中のファイルはHEADとの差分で追加・変更された行。追跡外・git管理外のファイルは全行。
 # 既存の文書にある古い表現まで返すと、頼んでいない書き換えや直し続けるループが起きるため、変わった行に絞る。
+# .mjun/ 配下のファイルは対象外 (理由はループの中のコメント)。
 #
 # 指摘があるときはstderrに書いてexit 2で終える (Claude Code・Codexともにagentへのフィードバックになる)。
 # textlintが無い・失敗した場合はagentを止めないようexit 0で終える。
@@ -17,6 +18,9 @@ command -v jq >/dev/null 2>&1 || exit 0
 report=()
 for file in "${(@f)$("$DOTPATH/script/hooks/edited-files.sh")}"; do
     [[ $file == *.md ]] || continue
+    # .mjun/ はmjun系skillのagent向けのLocal文書 (spec、tasks、brief)。tasksはspecのAcceptance Criteriaを文言のまま写し、
+    # Boundaryのような決まった書式の行もあるので、言い換えを促す指摘を返さない。人が読む文章は判断シートやPRで別に見る
+    [[ $file == */.mjun/* || ${file:A} == */.mjun/* ]] && continue
 
     # 変わった行の範囲を {s: 開始行, n: 行数} の配列にする。null は全行
     ranges=null
