@@ -4,7 +4,7 @@ description: >-
   アイデア、GitHub Issue、Markdownを、実装者が追加調査なしで着手できる仕様へ磨き上げるSkill。
   調査で決まる論点はAgentが決め、人間の判断が必要な論点だけを確認して仕様を確定し、承認後にspec ファイルを作成する。
   ユーザーが「specを作って」「仕様を作成して」のように依頼したら使うこと。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), Bash(zsh:*), WebSearch, WebFetch, Skill(exhtml), Skill(mjun-grilling), Skill(mjun-spec-review), Skill(mjun-to-tasks), Skill(mjun-start)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(gh:*), Bash(git:*), Bash(mkdir:*), Bash(rm:*), Bash(cd:*), Bash(ls:*), Bash(cat:*), Bash(mktemp:*), Bash(open:*), Bash(zsh:*), WebSearch, WebFetch, Skill(exhtml), Skill(mjun-grilling), Skill(mjun-spec-review), Skill(mjun-to-tasks), Skill(mjun-start), Skill(github-issue-create)
 ---
 
 # mjun-specify
@@ -134,7 +134,7 @@ draftができたら、`zsh <skill-dir>/../mjun-to-tasks/scripts/check_spec_form
 
 ### Phase 7: Issueへの投影
 
-`Source:` の無いspecでは投影先Issueを作るかを確認し、作らない場合とGitHub remoteが無い場合は純LocalのままこのPhaseを終える。それ以外は [references/issue-projection.md](references/issue-projection.md) に従ってIssueを作成・投影する。投影直前の確認でLocal specに無い内容を取り込むなら、承認していない内容になるので `approval: pending` へ戻してPhase 3へ戻る。
+`Source:` の無いspecでは投影先Issueを作るかを確認し、作らない場合とGitHub remoteが無い場合は純LocalのままこのPhaseを終える。Issueを作る場合は、起票を `github-issue-create` に任せる。それ以外は [references/issue-projection.md](references/issue-projection.md) に従ってIssueを作成・投影する。投影直前の確認でLocal specに無い内容を取り込むなら、承認していない内容になるので `approval: pending` へ戻してPhase 3へ戻る。
 
 ### Phase 8: 結果報告
 

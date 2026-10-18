@@ -6,7 +6,7 @@
 
 ## 投影先Issueの作成
 
-`Source:` の無いspecで投影先Issueを作る場合は、リポジトリ内 `.github/ISSUE_TEMPLATE/` (無ければ [ISSUE_TEMPLATE](ISSUE_TEMPLATE)、日本語は [ISSUE_TEMPLATE_JA](ISSUE_TEMPLATE_JA)) から種別を選んでタイトルとラベル (既存ラベルのみ) を決め、`gh issue create` で作成して `spec.md` に `Source:` を記録する。本文は次の投影手順で書く。
+`Source:` の無いspecで投影先Issueを作る場合は、Skill toolで `github-issue-create` を呼び、起票を任せる。templateの選択、ラベル、関連Issueの検索、作成前の確認は、そのskillが持つ。下書きの素材には、判断シートの目的・やること・やらないことを渡す。作られたIssueの番号を `spec.md` に `Source:` として記録し、そのIssueへ次の投影手順で投影する。`github-issue-create` が書いた本文は、元の本文として区切り行の上に残る。
 
 ## 投影手順
 
