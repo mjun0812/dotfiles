@@ -138,7 +138,7 @@ SubAgentへの文脈は、親が書いたファイルのパスで渡す。LLMは
 
 #### 検証コマンドと検査
 
-実装を始める前に、repositoryの正規の検証コマンドを `TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` / `SMOKE_COMMANDS` として洗い出す。`.mjun/steering/`、manifest、タスクランナー、CI設定、READMEを見て、repositoryの自動化が既に使っているものを優先する。`SMOKE_COMMANDS` (起動して最初の利用可能な状態に達することを確かめるもの) は宣言されているものだけを使い、無ければ空にする。
+実装を始める前に、repositoryの正規の検証コマンドを `TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` / `SMOKE_COMMANDS` として洗い出す。`.mjun/steering/`、manifest、タスクランナー、CI設定、READMEを見て、repositoryの自動化が既に使っているものを優先する。`SMOKE_COMMANDS` (起動して最初の利用可能な状態に達することを確かめるもの) は宣言されているものだけを使い、無ければ空にする。メインrepositoryに `.mjun/lint/` があれば、`zsh <skill-dir>/../mjun-rule-lint/scripts/run_local_lint.sh <worktree> <base-branch>` を `LINT_COMMANDS` に加える。repositoryに含めないlocalのlint (mjun-rule-lintが作る) で、base branchから追加・変更したファイルだけを見る。
 
 親が実行する検査は、すべて `zsh <skill-dir>/scripts/run_checks.sh <worktree> <run-dir> <name> <commands-file>` で行う (`<name>` は `G2-r1` のような実行ごとの名前、`<commands-file>` は1行1コマンドのファイル)。
 

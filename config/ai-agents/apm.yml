@@ -36,7 +36,6 @@ dependencies:
         - japanese-tech-writing
         - chat-note
         - resume-other-agent
-        - rule-lint
         - self-review
         - skill-review
         - stop-ai-slop-jp
