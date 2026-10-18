@@ -11,7 +11,7 @@ allowed-tools: Task, Read, Glob, Grep, AskUserQuestion, Bash(git rev-parse:*), B
 
 specを、それを書いた会話とは別のfresh contextで敵対的にレビューするSkill。書き手の判断と根拠を未検証の仮説として扱い、specの外に実在するもの (sourceの原文、steering・ADR・用語集、他のactiveなspec、既存のコード) と照らし合わせて、承認・実装の前に解消すべき食い違いを探す。reviewerが候補を出し、verifierが反証し、`confirmed` だけを返す。厳しさは探索範囲と反証の深さに使い、指摘の証拠基準は下げない。
 
-コードの無い設計の良し悪し (失敗したときの扱いの網羅、抽象や設定の過不足、Acceptance Criteriaを満たせるか) は見ない。まだ無いコードの不具合を文書だけから論じると、起こりもしない懸念が増え、その対応に承認前の時間を使うことになる。これらは、実装のreviewerがdiffに対して原則 (`mjun-implement/principles/`) を当てて見る。設計が成り立つか不安なら、mjun-specifyが最小実装を作って確かめる。例外は永続データの形式を変える設計で、既存データの扱いだけは承認前に見る。実装後に気付いても、データは元に戻せないからである。task分解もレビューしない。taskの切り方の誤りは、実装中に再分解の要求として現れ、そこで直せる。
+指摘として残すかは、観点の種類ではなく根拠の場所で決める。根拠は、specの外に実在するもの (実コードの `file:line`、sourceの原文、steering・ADR・用語集・既存の文書、他のspec) か、人間が決めたdecisionでなければならない。spec内の記述どうしの読み比べや一般論だけを根拠にした懸念 (起こると決まっていない失敗、将来に備えるだけの構造) は扱わない。コードで確かめていない懸念を文書だけから論じると、起こりもしない懸念が増え、その対応に承認前の時間を使うことになる。こうした懸念は、実装のreviewerがdiffに対して原則 (`mjun-implement/principles/`) を当てて見る。設計が成り立つか不安なら、mjun-specifyが最小実装を作って確かめる。逆に、根拠がspecの外にあれば、設計の欠落 (既存の仕組みとの関わりが決まっていない、Acceptance Criterionを満たせない) も指摘する。過去のspec reviewでは、こうしたコードを根拠にした欠落が確定指摘の多くを占め、実装前に直す価値があった。例外は永続データの形式を変える設計で、既存データの扱いは根拠が設計の記述だけでも承認前に見る。実装後に気付いても、データは元に戻せないからである。task分解はレビューしない。taskの切り方の誤りは、実装中に再分解の要求として現れ、そこで直せる。
 
 ファイルは読むだけで、spec・design・decisions・コードを変更しない。指摘をどう反映するかは呼び出し元 (人間、または承認前のspec reviewとしてこのskillを呼んだ側) が決めるからである。
 
@@ -71,7 +71,7 @@ sourceの形ごとに、材料を次のように取る。
 - VERDICT: PASS | NEEDS_FIXES
 - FINDINGS:
   1. [形式] <scriptの出力の1行 (<file>:<line>: <内容>)>
-  2. [<観点1〜5>] <contract | 実装設計> の <セクション名> — 引用: "<該当箇所>" — 問題: <何が問題か> — 根拠: <sourceの引用、steering / ADR / CONTEXT.mdの引用、他specのパスと引用、file:line> — 満たすべき状態: <修正方針ではなく、満たすべき状態>
+  2. [<観点1〜6>] <contract | 実装設計> の <セクション名> — 引用: "<該当箇所>" — 問題: <何が問題か> — 根拠: <sourceの引用、steering / ADR / CONTEXT.md・既存の文書の引用、他specのパスと引用、file:line、Human-owned decisionの引用> — 満たすべき状態: <修正方針ではなく、満たすべき状態>
 - HUMAN_DECISION_CONFLICTS: <decisionの見出しと矛盾の内容。無ければ none>
 - SUMMARY: <1文の要約>
 ```
