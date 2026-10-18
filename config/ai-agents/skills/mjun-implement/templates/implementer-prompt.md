@@ -28,6 +28,7 @@
 - taskを依存順に進める。実装と検査のどちらを先にするかは任せる (TDDを強制しない)。期待する振る舞いを先に固めたほうが進めやすければ、検査から書いてよい
 - バグ修正だけは、production codeを直す前に、報告された不具合の修正前の証拠を取り、修正後に同じ手順で直ったことを示す。証拠の段階 (test / observation / instrumentation) と取り方は、種類の観点 (`kind-bug.md`) に従う。修正前後の結果を `REPRODUCTION` に書く
 - 検査の期待値は、Acceptance Criteriaから実装と独立に決める。実装の計算を写すだけの検査や、振る舞いを確かめず文言だけを固定する検査は、何も保証しない。回帰検査のGREENを保ち、失敗させるための期待値の反転やproduction codeの破壊をしない
+- worktreeに骨組み (中身が `skeleton: not implemented` の型と署名) があれば、それが実装設計である。担当taskが通る箇所の中身を埋め、署名は変えない。署名を変えないと要求を満たせないなら変えてよいが、変えた署名と理由を `CONCERNS` に書く。骨組みが誤っていたのか、要求を読み落としていたのか、実装が出過ぎているのかを、親とreviewerが判断する材料になるからである。骨組みがworktreeに無く、`brief.md` に `skeleton.patch` が参照として挙がっていれば、その署名で書く
 - 実装設計と設計制約に従い、変更を担当groupのtaskに閉じる。BoundariesやOut of Scopeの外の変更が要る場合と、sourceやrepositoryの規約と矛盾する場合は、回避せず `BLOCKED` で返す
 - コードは、渡された原則に沿って書く。テストは `test-behavior-not-implementation.md` の2つの思考実験 (振る舞いを壊したら落ちるか、内部だけを変えても通るか) で確かめてから残す
 - 修正中のlint、型検査、テストは、変更したファイルと対象のテストに絞る。全体のテストスイートは親がfeature単位の検証で実行するので、ここでは回さない
@@ -38,7 +39,7 @@
 
 - 各Acceptance Criterionに検証コマンドを対応づける。既存のコマンドを再利用してよく、criterionごとに検査ファイルを作る必要はない。自動検査で覆えないcriterionがあるtaskは `REVIEW_ONLY` に挙げ、理由、充足を示すコードパス、手動確認方法を `EVIDENCE` に書く
 - 失敗が変更と無関係な既存の問題によるなら、変更前の状態で同じコマンドが同じように失敗した結果を `TESTS_RUN` に添える
-- 報告する前に、reviewerの目で読み直す。Acceptance Criteriaが本物の振る舞いで満たされているか (検査を通すためだけの分岐、fixtureの値の直書き、mock・stub・placeholderのままの実装、TBD/TODO/FIXMEが残っていないか)。新たに前提にしたruntime依存、環境変数、設定を、検証するか `CONCERNS` に書いたか。渡された原則の「飛ばした合図」に当たる箇所が無いか
+- 報告する前に、reviewerの目で読み直す。Acceptance Criteriaが本物の振る舞いで満たされているか (検査を通すためだけの分岐、fixtureの値の直書き、mock・stub・placeholderのままの実装、担当taskが通る箇所の骨組みの未実装、TBD/TODO/FIXMEが残っていないか)。新たに前提にしたruntime依存、環境変数、設定を、検証するか `CONCERNS` に書いたか。渡された原則の「飛ばした合図」に当たる箇所が無いか
 
 ## Status Report
 

@@ -17,7 +17,7 @@ specの実体は常に `.mjun/specs/<slug>/` のLocal specで、GitHub Issueは�
 
 - `source` (任意): GitHub Issue番号 (`#123` / `123`)、GitHub URL、`.mjun/specs/<slug>`、またはMarkdownパス。未指定なら会話内容を下書きとして新規specを作る
 - `--grill` (任意): Human-firstモード。Agent-ownedを含むすべてのdecisionを人間と決める (factsの調査はAgentが行う)。未指定時はAgent-firstで、Agent-ownedはAgentが決め、Human-ownedと判断に迷うものだけを人間と決める
-- `--skip-trial` (任意): 一時worktreeでの最小実装 (trial implementation) を行わない
+- `--skip-trial` (任意): 一時worktreeでの最小実装 (trial implementation) と骨組みを作らない
 
 ## 共通の前提
 
@@ -75,7 +75,7 @@ frontierの論点を解決し、frontierを1つ解決し終えるごとに、ま
 - **Human-owned**: frontierのHuman-ownedの論点をすべて、論点ごとの選択肢と調査結果を付けて `mjun-grilling` の指定decisionモードへまとめて渡す。互いに依存しない論点を1回の質問にすることで、人間の往復を減らす
 - **Evidence-blocked**: [references/research.md](references/research.md) の一次資料の調査 (外部事実) か、[references/prototyping.md](references/prototyping.md) の試作 (UI、状態、ロジックの実物) / 最小実装 (現行コードでの実現可能性) で証拠を集め、分類し直して解決する
 
-frontierがすべて解決したら、採択した設計で `design.md` の残りのセクションを書く (既存なら更新する)。設計がうまく働くか (Acceptance Criteriaを満たせるか、失敗したときにどうなるか、抽象が要るか) が不確かなら、prototyping.mdの最小実装で確かめる。spec reviewは、specの外に根拠がある指摘しか扱わない。コードの無い設計を読み比べても答えは出ないが、実物を動かせば出るからである。`--skip-trial` 指定時は最小実装を作らず、不確かなまま残ったものを判断シートの「残る不確実性」に書く。
+frontierがすべて解決したら、採択した設計で `design.md` の残りのセクションを書く (既存なら更新する)。Modulesに新設があるか、既存の公開interfaceの署名を変える設計では、型・署名・moduleの配置を [references/skeleton.md](references/skeleton.md) の骨組み (`skeleton.patch`) としてコードで書き、Interfaces & Seamsにはその場所だけを書く。文章の設計がコードベースに合うかは想像するしかないが、骨組みはbuildと型検査で確かめられ、実装もその中身を埋める形で進むからである。設計がうまく働くか (Acceptance Criteriaを満たせるか、失敗したときにどうなるか、抽象が要るか) が不確かなら、prototyping.mdの最小実装で確かめる。spec reviewは、specの外に根拠がある指摘しか扱わない。コードの無い設計を読み比べても答えは出ないが、実物を動かせば出るからである。`--skip-trial` 指定時は最小実装を作らず、不確かなまま残ったものを判断シートの「残る不確実性」に書く。
 
 ### Phase 4: 承認準備
 

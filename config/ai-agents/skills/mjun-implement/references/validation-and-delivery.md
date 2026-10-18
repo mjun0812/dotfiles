@@ -10,18 +10,19 @@
 
 1. ADRを書く。対象は、spec modeの `design.md` の `## Decisions` で `ADR: 要作成` の判断と、どのmodeでも実装中に生じた、[ADRにする基準](../../mjun-steering/references/glossary_and_adr.md#adrにする基準) の3条件を満たす判断である。置き場は [置き場所の決め方](../../mjun-steering/references/glossary_and_adr.md#置き場所の決め方) に従い、Git管理なら作業中のworktreeの `docs/adr/`、ローカルならメインrepositoryの `.mjun/steering/adr/` とする。未決定のまま実装中に新しく3条件を満たす判断が生じたら、ADRを書かずに、その案をPhase 5で示して置き場所を聞く。既存ADRを覆すなら旧ADRに `Status: superseded by ADR-NNNN` を足す。spec modeでは、`design.md` (メインrepositoryの絶対パス) の `ADR:` 行を書いたADRの番号に置き換える。contractを変える判断なら、先にspecへ戻して再承認を得る。ADRを観察するAcceptance Criteriaは、Phase 3.3で確かめる。Phase 3.3の差し戻しで新たに3条件を満たす判断が生じたら、検証をやり直す前に同じように書く
 2. 整理するかを決める。reviewerの `NOTES` が1件以上あれば手順3へ進む。無ければRun Logの `feature:` 行に `refactor=SKIPPED` を残してPhase 3.3へ進む。briefを起点にした場合 (バグ修正、refactoring、性能改善) は、`NOTES` があっても整理を省いて `refactor=SKIPPED` を残し、`NOTES` はPhase 5の報告とPR本文に回す。どれも変更を必要な範囲に留めることを重視する作業で、整理の変更を足すと、確かめた範囲の外に差分が広がるからである
-3. refactorerを起動する。開始前に全 `CHECK_FILES` のハッシュを記録する。このpassでは、作成者によらず全検査ファイルを変更禁止とする (振る舞いを変えていないことを、検査の不変で示すため)。全taskの `NOTES`、全 `CHECK_COMMANDS` と `CHECK_FILES`、検証コマンドを `<run-dir>/refactor/brief.md` に書いて渡す
-4. `## Refactor Report` の `- STATUS:` をパースする。`SKIPPED` なら何もしない。`DONE` なら、Phase 3.3の手順1と同じコマンド一式を親が `run_checks.sh` (`<name>` は `refactor`) で実行する。失敗があれば、手順5の `REJECTED` と同じく整理を戻す。すべて通れば、reviewerを `ROUND: refactor` で起動する。起動promptには親の検査結果 (`summary.md` のパス) と、このpassの `PROTECTED_CHECK_FILES` (全 `CHECK_FILES` と開始前のハッシュ) を書く
+3. refactorerを起動する。開始前に、worktreeのrootで全 `CHECK_FILES` の `shasum -a 256` を `<run-dir>/refactor/protected.sha256` へ書き出す。このpassでは、作成者によらず全検査ファイルを変更禁止とする (振る舞いを変えていないことを、検査の不変で示すため)。全taskの `NOTES`、全 `CHECK_COMMANDS` と `CHECK_FILES`、検証コマンドを `<run-dir>/refactor/brief.md` に書いて渡す
+4. `## Refactor Report` の `- STATUS:` をパースする。`SKIPPED` なら何もしない。`DONE` なら、Phase 3.3の手順1と同じコマンド一式を親が `run_checks.sh` (`<name>` は `refactor`) で実行する。失敗があれば、手順5の `REJECTED` と同じく整理を戻す。すべて通れば、`check_mechanical.sh <worktree> HEAD --protected <run-dir>/refactor/protected.sha256 --out <run-dir>/refactor/mechanical.md` (spec modeでは `--design` も) を実行し、通らなければ同じく整理を戻す。通れば、reviewerを `ROUND: refactor` で起動する。起動promptには親の検査結果 (`summary.md` のパス) と機械的な確認の結果 (`mechanical.md` のパス) を書く
 5. `APPROVED` なら `refactor:` 種別でcommitし、ID検査を `log HEAD~1..HEAD` で実行する (検出されたら `git commit --amend` で直す)。`REJECTED` なら、refactorerの `FILES_CHANGED` だけを `git checkout -- <files>` で戻す。失うのは整理だけで、taskのcommitには影響しない。再試行はしない。Run Logの `feature:` 行に `refactor=<DONE | SKIPPED | REJECTED>` を残す
 
 ## Phase 3.3: feature単位の検証
 
-groupごとのレビューでは見えない、feature全体としての充足と整合を確かめる。検証コマンドの実行 (手順1) は親が自分で行う。手順2〜4はSubAgentに調べさせてよいが、判定は親が結果に基づいて行う。
+groupごとのレビューでは見えない、feature全体としての充足と整合を確かめる。検証コマンドの実行 (手順1) と機械的な確認 (手順5) は親が自分で行う。手順2〜4はSubAgentに調べさせてよいが、判定は親が結果に基づいて行う。
 
 1. TEST / LINT / BUILD全体と `SMOKE_COMMANDS`、全taskの `CHECK_COMMANDS` を `run_checks.sh` (`<name>` は `feature`) で実行する。`SMOKE_COMMANDS` が無ければ、各taskの `CHECK_COMMANDS` のうちend-to-endに最も近いものを代わりに使い、それも無ければ「実行時検証: 未実施」とする。`design.md` のTest Strategyに実機の操作シナリオがあれば、親が実行できる手段 (UIなら `agent-browser` skill) で実行して結果を残し、実行できなかったものはPhase 5で手動確認の手順として示す。UIのシナリオでは、操作後の状態をスクリーンショットで、動きを確かめるものは動画で撮り、`<repo-root>/.mjun/evidence/<branch-name>/` に保存する。`<run-dir>` と違って片付けで消さないのは、人間がPR作成などの後にこの画像で目視するためである。`(目視)` のシナリオは、見本 (試作で選んだ案の画像) があれば並べて撮る
 2. specのAcceptance Criteriaを1件ずつ、それを証明する検査と実装に対応づける。証明する検査が無いcriterionは実装と検証結果から判定し、判定できなければ未充足とする。doc modeでも、taskキューのAcceptance Criteriaは照合する
 3. task同士が共有するinterface、データ形、エラー形式、設定が一致しているかをコードで確かめる
-4. branch全体の変更 (`git diff <base>..HEAD`) が、specのBoundaries (Owns / Does Not Own) とOut of Scopeに収まるかを照合する。spec modeでは、`git diff --name-only <base>..HEAD` の全パス (`CHECK_FILES` を除く) が `design.md` のChange Outlineのdirectory配下にあることも確かめる。BoundariesとOut of Scopeがどちらも無ければ省く
+4. branch全体の変更 (`git diff <base>..HEAD`) が、specのBoundaries (Owns / Does Not Own) とOut of Scopeに収まるかを照合する。BoundariesとOut of Scopeがどちらも無ければ省く
+5. `check_mechanical.sh <worktree> <base-branch> --final` を実行する。spec modeでは `--design` と、全taskの `CHECK_FILES` を書いた `--exclude` を付ける。`Change Outline` の `OUTSIDE` はboundary違反、骨組みの未実装 (`Skeleton stubs`) の残りはcriterionの未充足として扱う
 
 判定は次のとおり。
 
