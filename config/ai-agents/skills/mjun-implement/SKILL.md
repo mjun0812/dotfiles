@@ -6,7 +6,7 @@ description: >-
   specの作成・磨き上げ・承認や、未取り込みIssueの取り込みには使わない。
   spec・brief・設計docのどれも無い作業の依頼にも使わない (mjun-startが作業の種類を振り分ける)。
   呼び出し元から作業指示を渡された実装担当 (SubAgentやorchestratorのworker) は、指示がこのSkillの実行を明示しているときだけ使い、それ以外はその指示に従う。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), Bash(zsh:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(mjun-to-tasks), Skill(mjun-start)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), Bash(zsh:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(github-issue-create), Skill(mjun-to-tasks), Skill(mjun-start)
 ---
 
 # mjun-implement
@@ -34,15 +34,14 @@ allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bas
 - その他のMarkdownパス → doc mode。ファイル全文 (frontmatterを除く) を起点とする
 - spec・brief・設計docのどれも無い作業の依頼を渡されたら、依頼内容を添えてmjun-startへ渡し、このskillを終える。作業の種類によって進め方の重さが違うので、振り分けはmjun-startが持つ
 
-spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tasks.md` を読む。specの判断は `design.md` の `## Decisions` にある。どちらのmodeでも、ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) があれば [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って有効なものを読む。`## Decisions` に `ADR: 要作成 (ADR-NNNN を覆す)` の判断があれば、覆されるADRは有効なADRとして扱わない (supersededの追記はPhase 3.2で行う)。taskに関係する判断とADRは、Phase 3の受け渡しファイルでSubAgentへ渡す。
+spec modeでは、specディレクトリ配下の `spec.md`、`design.md`、`tasks.md` を読む。specの判断は `design.md` の `## Decisions` にある。どちらのmodeでも、ADR (置き場所は [共通記録規則](../mjun-steering/references/glossary_and_adr.md#置き場所の決め方) で決まる `docs/adr/` か `.mjun/steering/adr/`) があれば [共通記録規則](../mjun-steering/references/glossary_and_adr.md) に従って有効なものを読む。`## Decisions` に `ADR: 要作成 (ADR-NNNN を覆す)` の判断があれば、覆されるADRは有効なADRとして扱わない (supersededの追記はPhase 3.2で行う)。taskに関係する判断とADRは、Phase 3の受け渡しファイルでSubAgentへ渡す。
 
 ### Issue番号の逆引き
 
 Issueの取り込みと磨き上げはspec作成側の仕事であり、Issueが直接実装できる品質かをこのskillで判断しない。
 
 1. activeなspec (`status: active`) から `Source: #<number>` を持つものを探す。見つかればそれを対象にする (複数あれば一覧を示して選んでもらう)
-2. 無ければdoneのspecからも探す。見つかれば「実装済みのspec (`<path>`) がある。再開するなら `status` を `active` へ戻すか、Issueを取り込み直す」と案内して中止する
-3. どちらにも無ければ、Issue番号を添えてmjun-startへ渡し、このskillを終える。mjun-startが、新規機能ならmjun-specifyでの取り込みへ、バグ修正などならbriefを書いてこのskillへ戻す
+2. 無ければ、Issue番号を添えてmjun-startへ渡し、このskillを終える。`status: done` のspecは作業を終えた使い捨ての文書で、残っていても参照しない (ユーザーが手で削除する)。mjun-startが、新規機能ならmjun-specifyでの取り込みへ、バグ修正などならbriefを書いてこのskillへ戻す
 
 Local specの参照と更新は、メインrepositoryの絶対パスで行う。`.mjun/` はgit管理外なので、新規のworktreeには存在しない。Phase 2でworktree内に `.mjun` へのsymlinkを張り、相対パスでも同じファイルを指すようにする。
 
@@ -50,28 +49,28 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
 
 ### Phase 1: 内容検査とtaskキュー構築
 
-実装に入ってよいかを確かめ、taskキューとgroupを組み、配送方法を決める。
+実装に入ってよいかを確かめ、taskキューとgroupを組み、どこまで進めるか (PR作成 / commit / base branchへのmerge) を決める。
 
 1. 状況を集める
    - リポジトリ情報: `gh repo view --json defaultBranchRef,nameWithOwner`。ghが使えなければ `git symbolic-ref --short refs/remotes/origin/HEAD`、それも失敗したら現在のbranchをbaseとする
    - source本文、現在のbranch、`git worktree list --porcelain`
    - メインrepositoryのroot (`<repo-root>`): `git rev-parse --path-format=absolute --git-common-dir` の親ディレクトリ。起動場所がworktreeでもメインのcheckoutを指す
 2. 出力言語は、repositoryの既存のPR・commit message・READMEに合わせる (判別できなければ英語)。specや依頼の言語には合わせない。コメント、commit、PRに使う
-3. 内容検査。次のどれかに当たれば止める。実装依頼そのものを承認の代わりにしない
+3. 内容検査。次のどれかに当たれば止める。実装依頼そのものを承認の代わりにしない。spec modeでは先に `zsh <skill-dir>/../mjun-to-tasks/scripts/check_spec_format.sh <spec-dir>` で形式を検査し、指摘を次のように振り分ける。tentativeとAC件数の指摘は、下の該当項目と手順4で扱う。taskの形式の指摘 (見出し、フィールド、Statusの語彙、Blocked byの実在と循環) は、指摘を文脈に `mjun-to-tasks` で書き直させてから検査し直す。書き直しは1回までとし、それでも残れば指摘を示して中止する。`spec.md` と `design.md` の形式の指摘は、specの磨き直しが要ると案内して中止する
    - spec modeで、`spec.md` が `approval: approved` でない、または `design.md` か `tasks.md` が無い。中止して、contractの承認、実装設計の作成、`mjun-to-tasks` での分解のうち足りないものを案内する
    - doc modeで、Goal、受け入れ基準、実装方針など、方針の判断に要る情報が欠けている。コードを読めば分かる事実は自分で調べる。方針を推測で補わず、欠けている項目を具体的に挙げて中止する。briefでは、種類ごとの節、`完了条件`、`範囲` がそろっていれば足りる (実装方針はimplementerが決める)。spec modeのcontractの十分性は承認で確定済みなので、ここで判定し直さない
    - `## Decisions` (doc modeでは本文の要確認の記載) に `Status: tentative` が残っている。承認前に解消されるはずのものなので、一覧を示して進めてよいかをユーザーに確認する。続行が選ばれたら、該当decisionの `Status:` 行を消して `Owner: human` にする。再実行のたびに同じ箇所で止まらないためである
    - `Source: #N` を持つspecで、`gh issue view <N> --json state,body,comments` が取り込み後の変化を示す。closedなら実装済みの可能性を警告して続行を確認する。新しいコメントや本文の変更があれば内容を示し、specへ反映するかを確認する。反映するなら `approval: pending` へ戻してから反映し、更新後のcontractの承認を得て `approved` に戻す。承認されなければ中止する
    - `Source: #N` を持つbriefで、Issueがclosedになっている。実装済みの可能性を警告して続行を確認する
-   - spec modeで、BoundariesのDependenciesにある `spec: <slug>` のspecが存在しない、または `status: done` でない。先にそのspecの配送が要ると案内して中止する
+   - spec modeで、BoundariesのDependenciesにある `spec: <slug>` のspecが `status: active` のまま残っている。先にそのspecの実装を終える必要があると案内して中止する。`status: done` か、存在しない (作業を終えた後に手で削除された) specは、依存を満たしたものとして扱い、そう判断したことを実装方針と一緒に示す
 4. taskキューを組む
    - spec modeでは `tasks.md` をキューにする。`Status: done` のtaskは完了扱いで飛ばす (resume)。`Status: blocked` のtaskは、`Resume when` が満たされたと確認できたものだけ `ready` に戻す
-   - Acceptance Criteriaが8件を超えるtaskは `mjun-to-tasks` の粒度を外れている。そのtask IDを文脈として `mjun-to-tasks` で再分解させ、読み直したキューを使う
+   - Acceptance Criteriaが8件を超えるtask (手順3の形式検査が件数で指摘する) は `mjun-to-tasks` の粒度を外れている。そのtask IDを文脈として `mjun-to-tasks` で再分解させ、読み直したキューを使う
    - 全taskが `done` でも終了しない。記録済みbranchからresumeし、Phase 3.3とPhase 4をやり直す
    - doc modeでは [mjun-to-tasks の分解規則](../mjun-to-tasks/SKILL.md#分解規則) とTask形式で会話内のキューを作る。`tasks.md` は作らない
    - 依存順 (Blocked by) に並べる。実行できるのは、`Blocked by` の全taskが `done` か、同じgroupで先に並ぶtaskだけである。blocked taskに依存するtaskは依存待ちに残す
    - groupに区切る。groupごとにverifier・implementer・reviewer・検査・commitの固定コストがかかるので、上限まで詰める。上限はtask 8件、Acceptance Criteria合計24件 (implementerが1つのfresh contextで扱える大きさ) とし、キューの先頭から加えて上限を超えるときだけ次のgroupを始める。BoundaryやModuleの違いは区切る理由にしない
-5. 配送方法が未指定なら、AskUserQuestion (使えなければテキストの選択肢) で確認する。GitHub remoteが無ければ `--no-pr` と `--merge` の2択にする
+5. どこまで進めるかが未指定なら、AskUserQuestion (使えなければテキストの選択肢) で確認する。GitHub remoteが無ければ `--no-pr` と `--merge` の2択にする。`## Decisions` に `ADR: 要作成` があり、ADRの置き場所が未決定 ([置き場所の決め方](../mjun-steering/references/glossary_and_adr.md#置き場所の決め方)) なら、置き場所も同じ確認で聞く。自律実行の途中で確認待ちにしないためである
 6. 実装方針とgroup区切り付きのtask一覧を簡潔に示し、確認を取らずにPhase 2へ進む
 
 ### Phase 2: worktreeの作成
@@ -102,7 +101,7 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
 
 role:
 
-- implementer ([templates/implementer-prompt.md](templates/implementer-prompt.md)): groupの全taskを実装し、必要な検査を作って実行し、`## Status Report` を返す。TDDは強制しない。バグ修正だけは、修正前に再現テストが失敗することを確かめる
+- implementer ([templates/implementer-prompt.md](templates/implementer-prompt.md)): groupの全taskを実装し、必要な検査を作って実行し、`## Status Report` を返す。TDDは強制しない。バグ修正だけは、修正前後の証拠 (再現テスト、届かなければ実物での観察か計測) を取る
 - reviewer ([templates/reviewer-prompt.md](templates/reviewer-prompt.md)): 親の検査結果と実際のコードで、全Acceptance Criterion、保護された検査ファイルの不変、実在性、Boundaryを敵対的に確かめ、`## Review Verdict` を返す
 - verifier ([templates/verifier-prompt.md](templates/verifier-prompt.md)): 検査を実装より先に、独立して設計する必要があるtaskだけを担当し、`## Check Report` を返す。使うのは、ユーザーかspecが独立した事前検査を指定しているときか、期待値や検証手段を実装から独立に確定すべき具体的な理由を親が示せるときである。「バグ修正」「複雑なロジック」という分類だけでは使わない
 - debugger ([templates/debugger-prompt.md](templates/debugger-prompt.md)): 差し戻しが収束しないとき、またはBLOCKEDのときに、root causeを分類して `## Debug Report` を返す
@@ -173,6 +172,6 @@ SubAgentへの文脈は、親が書いたファイルのパスで渡す。LLMは
 - [references/subagent.md](references/subagent.md): roleごとのmodelとeffort、implementerの昇格条件。最初のSubAgentを起動する前に読む
 - [references/group-loop.md](references/group-loop.md): Phase 3.0 (実装準備と必要な事前検査)、Phase 3.1 (実装とレビュー)、Run Logの形式。最初のgroupを始める前に読む
 - [references/recovery.md](references/recovery.md): taskの隔離とblocked、Phase 3.1' (debuggerによる原因調査)。次のどれかのときに読む: implementerが `BLOCKED` を返した / 差し戻しが2周に達した / taskをblockedへ移す / task計画を直す
-- [references/validation-and-delivery.md](references/validation-and-delivery.md): Phase 3.2 (ADRと整理)、Phase 3.3 (feature単位の検証)、Phase 4 (commitと配送)、Phase 5 (結果の表示)、Phase 6 (worktreeクリーンアップ)。実行可能なtaskが尽きたときに読む
+- [references/validation-and-delivery.md](references/validation-and-delivery.md): Phase 3.2 (ADRと整理)、Phase 3.3 (feature単位の検証)、Phase 4 (commitとPR作成・merge)、Phase 5 (結果の表示)、Phase 6 (worktreeクリーンアップ)。実行可能なtaskが尽きたときに読む
 
-完了 (`COMPLETE`) は、全taskが `done` で、Phase 3.3の判定が `GO` または `MANUAL_VERIFY_REQUIRED` である状態を指す。そのうえで選ばれた配送方法で届け、Phase 5の結果を示し、Phase 6で片付ける。doneでないtaskが残るときは `PARTIAL` として、Phase 5とPhase 6だけを行う。エラーやユーザーの中止で途中終了するときも、Phase 6は必ず行う。
+完了 (`COMPLETE`) は、全taskが `done` で、Phase 3.3の判定が `GO` または `MANUAL_VERIFY_REQUIRED` である状態を指す。そのうえで選ばれたところまで進め、Phase 5の結果を示し、Phase 6で片付ける。doneでないtaskが残るときは `PARTIAL` として、Phase 5とPhase 6だけを行う。エラーやユーザーの中止で途中終了するときも、Phase 6は必ず行う。

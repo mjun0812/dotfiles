@@ -30,12 +30,12 @@ repository rootは `git rev-parse --show-toplevel` で決める。Git repository
 sourceの形ごとに、材料を次のように取る。
 
 - **spec mode** (`.mjun/specs/<slug>`): `spec.md` がcontract、`design.md` が実装設計、その `## Decisions` が決定の経緯、そのうち `Owner: human` のdecisionの見出しがHuman-owned decisionの一覧になる。`spec.md` のH1直下に `Source: #N` があれば、`gh issue view N --json title,body,comments` の本文とコメントをsourceの原文にする
-- **Issue番号**: 取り込み済みのIssueはLocal specが正本なので、`spec.md` に `Source: #N` を持つspecを `status: active`、`status: done` の順に探し、見つかればspec modeで扱う (複数あれば一覧から選んでもらう)。無ければ **issue mode** とし、`gh issue view N --json title,body,comments` の本文のContext〜Out of Scopeをcontract、`## Design Notes` を実装設計、`## Decision Log` を決定の経緯、コメントをsourceの原文にする。本文に区切り行 `<!-- projected-spec -->` があれば、contractは区切り行より下から読み、区切り行より上の元の本文もsourceの原文に含める。Human-owned decisionの一覧は無い
+- **Issue番号**: 取り込み済みのIssueは作業中のLocal specが正しいので、`spec.md` に `Source: #N` を持つ `status: active` のspecを探し、見つかればspec modeで扱う (複数あれば一覧から選んでもらう。`status: done` のspecは作業を終えた使い捨ての文書なので探さない)。無ければ **issue mode** とし、`gh issue view N --json title,body,comments` で読む。本文に区切り行 `<!-- projected-spec -->` があれば、その下は投影された判断シートとAcceptance Criteriaなので、判断シートの目的・やること・やらないこと・動作の例とACをcontract、「人間が決めたこと」「agentが決めたこと」を決定の経緯 (前者の見出しがHuman-owned decisionの一覧) にし、区切り行より上の元の本文とコメントをsourceの原文にする。区切り行が無ければ、本文の要求・制約・スコープの記述をcontract、実装方針の記述を実装設計、コメントをsourceの原文にし、Human-owned decisionの一覧は無い。issue modeに `design.md` に当たる実装設計は無いので、design軸は本文に実装方針があるときだけ起動する
 - **PR番号**: `gh pr view N --json body` の `Closes #N` / `Fixes #N` / `Resolves #N` からIssue番号を取り出し、Issue番号として解決する (複数あれば一覧から選んでもらう)。無ければ検査対象のspecを特定できないと報告して中止する。PRのコード差分は読まない
 - **doc mode** (`.mjun/specs/` 外のMarkdown): 要求・制約・スコープの記述がcontract、実装方針の記述が実装設計になる
 - **conversation mode** (source未指定): 会話中の設計・計画を、contractと設計本文に分けて書き起こす。素材が無ければ中止する
 
-どのmodeでも、steering (`.mjun/steering/*.md`)、用語集 `CONTEXT.md` (repo直下、無ければ `.mjun/CONTEXT.md`)、ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`)、対象以外の `status: active` のspecの `spec.md` と `design.md` のパス一覧を集める。中身は、検査に関係するものをSubAgentが自分で読む。
+どのmodeでも、steering (`.mjun/steering/*.md`)、用語集 `CONTEXT.md` (repo直下、無ければ `.mjun/CONTEXT.md`)、ADR (置き場所は [共通記録規則](../mjun-steering/references/glossary_and_adr.md#置き場所の決め方) で決まる `docs/adr/` か `.mjun/steering/adr/`)、対象以外の `status: active` のspecの `spec.md` と `design.md` のパス一覧を集める。中身は、検査に関係するものをSubAgentが自分で読む。
 
 `gh` が失敗したら中止してエラーを報告する。
 

@@ -9,8 +9,8 @@ specの実体は常に `.mjun/specs/<slug>/` である。GitHub Issueは取り�
 ```text
 取り込み: Issue → .mjun/specs/<slug>/ へspec化 (このskillだけが行う)
 作業:     spec作成・task分解・実装のどの段階でもLocalのspec文書とADRを読み書きする
-投影:     承認後、Localのcontractを Issue本文へ反映 (Sourceを持つspecのみ)
-配送:     worktreeで実装 → PR (SourceがあればCloses #N)
+投影:     承認後、判断シートとACを Issue本文へ反映 (Sourceを持つspecのみ)
+完了:     worktreeで実装 → PR (SourceがあればCloses #N)
 ```
 
 task分解に未取り込みのIssue番号が渡された場合は、中止してこのskillでの取り込みを案内する。実装 (`mjun-implement`) に渡された場合は、`mjun-start` が作業の種類を振り分ける。取り込む側は、Issueが直接実装できる品質かを判断しない (spec作りに当たらない依頼は、Phase 0の振り分けで `mjun-start` へ渡す)。
@@ -19,7 +19,7 @@ task分解に未取り込みのIssue番号が渡された場合は、中止し�
 
 ```text
 .mjun/specs/<slug>/
-├── spec.md          # 必須。人間が承認するcontract
+├── spec.md          # 必須。実装者が従うcontract (人間は判断シートで承認する)
 ├── design.md        # 必須。contract内の実装設計。承認前に書く
 ├── tasks.md         # taskと実装状態。承認後に作り、単一taskでも持つ
 ├── prototype/       # artifact自体を一次資料として残す場合だけ
@@ -32,7 +32,7 @@ task分解に未取り込みのIssue番号が渡された場合は、中止し�
 
 ## ライフサイクル状態 (`status`)
 
-増えていくspecを整理するための状態で、承認とは別に持つ。作成・取り込み時に `status: active` を書き、配送の完了時に実装側が `status: done` へ更新する。一覧と進行中spec間の比較は `active` だけを対象にし、明示的にパスを渡されたspecはstatusを問わず読む。放棄したspecは手動でdoneにするか削除する。
+specは作業中だけ使う文書である。作成・取り込み時に `status: active` を書き、PR作成などを終えた時点で実装側が `status: done` へ更新する。その後も残す価値があるものは、コードとテスト、ADR、用語集、Issue、PR、commitに移っている。そのため `status: done` のspecは、どのskillも逆引き・一覧・比較・依存の判定に使わず、ユーザーが手で削除する。残っていても削除されていても、skillの挙動は変わらない。一覧と進行中spec間の比較は `active` だけを対象にし、明示的にパスを渡されたspecはstatusを問わず読む。放棄したspecは手で削除する。
 
 ## Contract承認状態 (`approval`)
 
@@ -50,7 +50,7 @@ grep -m1 "^Source: " <spec.md>                    # 投影先 (あれば)
 
 複数のspecが同時にactiveになり、別々の会話で並行して実装される前提で扱う。
 
-- 他のactive specの成果に依存するspecは、BoundariesのDependenciesに `spec: <slug>` の行を書く。実装側はそのspecが `status: done` になるまで実装を始めない
+- 他のactive specの成果に依存するspecは、BoundariesのDependenciesに `spec: <slug>` の行を書く。実装側はそのspecが `status: active` のあいだ実装を始めない (doneになるか、作業を終えた後に削除されたら始める)
 - 境界の重なり (Ownsの重なり、Public Contracts Affectedが同じ公開interfaceを指す、`design.md` のChange Outlineのdirectoryの重なり) は、spec作成時の調査とspec reviewで見つける。並行実装で衝突するので、どちらのspecが所有するか、分割・統合するかは人間が決める (Human-owned)
 
 ## `Source:` 行
@@ -67,8 +67,8 @@ Source: #123
 
 Issue番号からspecを逆引きするときは、activeなspecから `Source: #<N>` を検索する。
 
-- 複数ヒットすれば一覧を示して選んでもらい、選ばれなかった方の整理 (doneへの変更または統合) を促す
-- activeに無ければdoneからも検索し、あれば実装済みの可能性と再開方法 (activeへ戻す、または取り込み直し) を案内する。未取り込みと誤認して取り込み直すと、同じIssueのspecが2本になる
+- 複数ヒットすれば一覧を示して選んでもらい、選ばれなかった方の整理 (統合または削除) を促す
+- activeに無ければ未取り込みとして扱う。doneのspecは検索しない
 
 `Source:` を持つspecは、contract承認後に [issue-projection.md](issue-projection.md) に従ってIssue本文へ投影する。
 

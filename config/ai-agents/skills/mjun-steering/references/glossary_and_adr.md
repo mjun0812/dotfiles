@@ -4,9 +4,20 @@ mjun-steeringのほか、spec・tasks・実装・レビューのskillが用語�
 
 ## 保存先と責務
 
-- 用語集はrepo直下の `CONTEXT.md` を優先し、無ければ `.mjun/CONTEXT.md` を使う (どちらも無ければ `.mjun/CONTEXT.md` を作る)。用語が確定したら `**用語**: 定義 (1〜2文)` と `_Avoid_: 使わない言い換え` を追記する。実装詳細は書かない。
-- ADRはADRディレクトリ (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) に1件1ファイル (`NNNN-<slug>.md`) で置く。ディレクトリは最初のADRを書くときに作る。
-- Git管理へ移行済みとは、`docs/adr/` に `# ADR-NNNN:` 見出しを持つファイルがある状態を指す。他の形式の既存ADRだけがある `docs/adr/` は移行済みと見なさない。
+- 用語集とADRは、spec・brief・runのような使い捨ての作業文書と違い、作業を終えた後も残す記録である。置き場所はrepositoryごとに、Git管理 (repo直下の `CONTEXT.md` と `docs/adr/`) かローカル (`.mjun/CONTEXT.md` と `.mjun/steering/adr/`) のどちらかに決まる。決め方は次の「置き場所の決め方」に従う。
+- 用語集は置き場所の `CONTEXT.md` に、用語が確定したら `**用語**: 定義 (1〜2文)` と `_Avoid_: 使わない言い換え` を追記する。実装詳細は書かない。
+- ADRは置き場所のADRディレクトリに1件1ファイル (`NNNN-<slug>.md`) で置く。ディレクトリは最初のADRを書くときに作る。
+
+## 置き場所の決め方
+
+ADRや用語集をcommitしてよいかは、repositoryの持ち主や公開範囲で決まり、コードからは分からないので人間に聞く。ただし聞くのはrepositoryごとに1回だけで、答えは最初に書いたファイルの場所に残り、以後はそれで判定する。
+
+1. `docs/adr/` に `# ADR-NNNN:` 見出しを持つファイルがあるか、repo直下に `CONTEXT.md` があれば、Git管理である。他の形式の既存ADRだけがある `docs/adr/` は判定に使わない
+2. 1に当たらず、`.mjun/steering/adr/` にADRがあるか `.mjun/CONTEXT.md` があれば、ローカルである
+3. どちらにも当たらなければ未決定である。読むときは、どちらも無いものとして扱う。書く必要が出たら、書く前に「Git管理 (commitしてrepositoryで残す) / ローカル (`.mjun/` に置き、commitしない)」を選択肢で聞き、選ばれた場所へ書く
+
+聞く時機は、人間の手が止まらないように選ぶ。対話の途中で書くskillは、その時点のほかの質問とまとめて聞く。長い自律実行を始めるskill (`mjun-implement`) は、開始前の確認でどこまで進めるかと一緒に聞く。自律実行の途中で未決定のまま書く必要が出たら、書かずに結果の報告でADRの案を示し、置き場所を聞く。
+
 - specの中で閉じる判断はADRにせず、そのspecの `design.md` の `## Decisions` に書く。
 - core / custom steeringは現在の実装に裏付けられたパターンを、ADRは判断の理由を記録する。理由はコードに残らないので、ADRをコードから再生成したり、コードに合わせて理由を書き換えたりしない。
 
@@ -31,18 +42,20 @@ mjun-steeringのほか、spec・tasks・実装・レビューのskillが用語�
 ```
 
 - 番号はADRディレクトリ内の既存ファイル (他の形式の既存ADRを含む) の最大番号 + 1とする。ファイル名は4桁ゼロ埋めの番号と、タイトルを英小文字・数字・ハイフンで要約したslugにする。並行作業との衝突を避けるため、作成直前にディレクトリを読み直す。branchのmergeで番号が重複した場合は、後から追加された側を最大値 + 1へ振り直して参照を揃える
-- 次の節は価値があるときだけ足す: `Status:` 行 (`accepted` 以外になったときだけ。`superseded by ADR-NNNN` / `deprecated`)、`## Considered Options` (却下案を覚えておく価値があるとき)、`## Consequences` (自明でない波及があるとき)
+- 次の節は価値があるときだけ足す: `Status:` 行 (`accepted` 以外になったときだけ。`superseded by ADR-NNNN` / `deprecated`)、`Enforced by:` 行 (判断を機械的なチェックで強制するようになったとき。下の「読み取りと変更」を参照)、`## Considered Options` (却下案を覚えておく価値があるとき)、`## Consequences` (自明でない波及があるとき)
 - 内部文書 (`.mjun/` 配下) のパスを根拠として書かない。Git管理へ移ったADRは内部文書を参照できない場所で読まれるので、必要な根拠は本文に要約する
 
 ## 読み取りと変更
 
 - 読み手は `Status:` が `superseded` / `deprecated` のADRを現在の規約として適用しない。それ以外のADRはプロジェクト全体の制約として読む。
 - ADRに反する要求はHuman-owned decisionとして確認する。ADRを覆す場合は新しいADRを書き、旧ADRには `Status: superseded by ADR-NNNN` の行だけを足す。判断の履歴を保つため、既存ADRの本文は書き換えず削除しない (保存先移行と番号の振り直しを除く)。
+- ADRの判断がlint・ast-grep・script・CIで機械的に強制されるようになっても、ADRは削除しない。本文と `Status:` は変えず、`Enforced by: <repository rootからの設定やruleのパス>` の行だけを本文の後 (`Status:` 行があればその次) に足す (同じ設定ファイルに複数のruleがあれば `<パス>#<rule ID>`、強制する場所が複数なら読点で並べる)。チェックが置き換えるのは文章の規約で、判断の理由と履歴ではない。チェックがあれば読み手は違反に気づけるが、なぜその規約なのかはADRにしか残らないためである。ADRを根拠にしたsteeringや `CLAUDE.md` の規約の文章は、チェックに置き換えて削ってよいが、理由が要る箇所ではADRへのリンクを残す
+- `Enforced by:` の参照先が消えたり、ruleが外されたりしても、行は消さない。Code Driftとして報告し、チェックを戻すか、ADRを `deprecated` にするかを人間に確認する。ADRがローカル (`.mjun/steering/adr/`) なら、`Enforced by:` に書くのはGit管理された設定のパスで構わない
 - codeとADRが食い違う場合は、未実装の計画かどうかを確かめる。実装済みの判断への違反はCode Driftとして報告して人間に確認する。
 
 ## Git管理へ移す場合
 
-ユーザーがGit管理への移行を依頼した場合だけ行う。`docs/adr/` や他の形式の既存ADRがあるだけでは切り替えない。移行は元ファイルを削除する唯一の操作で、検証前に消すと用語と判断の履歴を失う。
+ローカルを選んだrepositoryで、ユーザーがGit管理への移行を依頼した場合だけ行う。`docs/adr/` や他の形式の既存ADRがあるだけでは切り替えない。移行は元ファイルを削除する唯一の操作で、検証前に消すと用語と判断の履歴を失う。
 
 - 対応は `.mjun/CONTEXT.md` からrepo直下の `CONTEXT.md`、`.mjun/steering/adr/` の各ファイルから `docs/adr/` の同名ファイル。
 - 移行はメインrepositoryの作業ツリーで行う。supersededを含む全ADRを移し、番号と履歴を維持する。移行先の既存ADRは削除・上書きしない。番号が衝突するADRは移行先の最大番号 + 1から振り直し、ファイル名・H1・`superseded by`・steeringからのリンク・specの `design.md` の `ADR:` 行を新番号へ揃える。定義・判断内容の衝突は人間へ確認する。

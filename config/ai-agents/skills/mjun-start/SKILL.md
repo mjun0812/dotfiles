@@ -4,7 +4,6 @@ description: >-
   開発作業の依頼を、軽微な修正・バグ修正・refactoring・性能改善・新規機能のどれかに振り分け、種類に合った重さの流れで進めるSkill。
   ユーザーが「これを直して」「この不具合を修正して」「ここを整理して」「遅いので速くして」「この機能を足して」のように作業を依頼したときや、
   mjun-specify・mjun-implementから前提に合わない依頼を渡されたときに使うこと。
-  「specを作って」のようにspec作りを明示した依頼と、承認済みspecの実装の依頼は、mjun-specify・mjun-implementが直接受ける。調査や質問への回答だけの依頼には使わない。
 allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(git:*), Bash(gh:*), Bash(zsh:*), Bash(ls:*), Bash(cat:*), Bash(mkdir:*), Skill(mjun-specify), Skill(mjun-implement), Skill(git-commit), Skill(github-pr-create)
 ---
 
@@ -36,15 +35,15 @@ allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(git:*), Bash
 1. 依頼を読む。Issue番号なら `gh issue view <N> --json number,state,title,body,labels,comments,url` で取得し、closedなら中止して報告する。`.mjun/specs/` に `Source: #N` を持つactiveなspecがあれば、そのspecの作業である。`approval: approved` ならmjun-implementへ、そうでなければmjun-specifyへ渡す
 2. 種類を決める。判断に要る範囲だけコードを読み、調べれば分かることは人間に聞かない
 3. 新規機能 (広範囲のrefactoringを含む) になるときと、種類の判断に迷うときだけ、理由を添えてAskUserQuestionで確認する。新規機能はspec作りと承認で人間の時間を使うので、入る前に確かめる価値がある。それ以外は、選んだ種類と理由を1行で伝えて進む
-4. 新規機能以外は、配送方法をここで1回だけ聞く。軽微なら「PRを作る / commitまで」、それ以外はmjun-implementの `--pr` / `--no-pr` / `--merge` から選んでもらう。`gh repo view` が失敗する (GitHub remoteが無い) ならPRの選択肢を出さない。最初にまとめて聞けば、以降は止まらずに最後まで進められる。新規機能の配送方法は、spec承認後にmjun-implementが聞く
+4. 新規機能以外は、どこまで進めるか (PRまでか、commitまでか) をここで1回だけ聞く。軽微なら「PRを作る / commitまで」、それ以外はmjun-implementの `--pr` / `--no-pr` / `--merge` から選んでもらう。`gh repo view` が失敗する (GitHub remoteが無い) ならPRの選択肢を出さない。最初にまとめて聞けば、以降は止まらずに最後まで進められる。新規機能でどこまで進めるかは、spec承認後にmjun-implementが聞く
 5. 種類ごとのreferenceを読んで進める
 6. 結果を報告する。選んだ種類と理由、途中で種類を切り替えた場合はその経緯、成果 (PRのURLやcommit)、briefのパスを含める
 
 ## brief
 
-バグ修正、refactoring、性能改善では、依頼から集めた事実をbriefに書き、mjun-implementへ渡す。briefは、implementerとreviewerが従う成功の定義になる。形式は [references/brief.md](references/brief.md) に従い、`.mjun/briefs/<slug>.md` に置く (slugはタイトルの英語kebab-case。既存のファイルと重なれば末尾に `-2` を付ける)。配送の後も残し、mjun-implementがRun Logを追記する。
+バグ修正、refactoring、性能改善では、依頼から集めた事実をbriefに書き、mjun-implementへ渡す。briefは、implementerとreviewerが従う成功の定義になる。形式は [references/brief.md](references/brief.md) に従い、`.mjun/briefs/<slug>.md` に置く (slugはタイトルの英語kebab-case。既存のファイルと重なれば末尾に `-2` を付ける)。作業を終えた後も残し、mjun-implementがRun Logを追記する。
 
-mjun-implementは、Skill toolで `mjun-implement .mjun/briefs/<slug>.md <配送のflag>` の形で呼ぶ。
+mjun-implementは、Skill toolで `mjun-implement .mjun/briefs/<slug>.md <どこまで進めるかのflag>` の形で呼ぶ。
 
 ## 重い種類へ切り替える
 

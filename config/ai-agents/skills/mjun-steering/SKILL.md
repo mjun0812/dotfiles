@@ -1,7 +1,7 @@
 ---
 name: mjun-steering
 description: >-
-  `.mjun/steering/` のプロジェクトメモリ (product.md、tech.md、structure.md、ドメイン別のcustom steering) と、用語集 `CONTEXT.md`・ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`) を、コードベースと履歴から作成・更新するSkill。
+  `.mjun/steering/` のプロジェクトメモリ (product.md、tech.md、structure.md、ドメイン別のcustom steering) と、用語集 `CONTEXT.md`・ADR (repositoryごとに決めたGit管理の `docs/adr/` かローカルの `.mjun/steering/adr/`) を、コードベースと履歴から作成・更新するSkill。
   ユーザーが「steeringを作って」「steeringを更新して」「プロジェクトメモリを整備して」のように依頼したら使うこと。
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls:*), Bash(find:*), Bash(rg:*), Bash(git:*), Bash(cat:*), Bash(head:*), Bash(tail:*), Bash(wc:*), Bash(tree:*), Bash(mkdir:*), Bash(gh pr list:*), Bash(gh pr view:*), Bash(gh issue list:*), Bash(gh issue view:*)
 ---
@@ -23,7 +23,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls:*), Bash(find:*), Bash(rg:
 
 - secret (API key、パスワード、認証情報、DBのURL、内部IP) を書かない。steeringはagentのcontextへ毎回読み込まれ、Git管理されることもあるので、書いた時点で流出する
 - ユーザーが書いた記述を置換・削除しない。更新は追記を基本にし、変えた理由をサマリに書く。ユーザーの記述とコードが食い違い、どちらが正か判断できないときは、書き換えずに両方の状態を報告して確認する
-- `CONTEXT.md` とADRは追記専用にする。例外 (supersededの追記、Git管理への移行、番号の振り直し) は [共通記録規則](references/glossary_and_adr.md) に従う。判断の理由は失うと取り戻せず、捏造すると将来の判断を誤らせるので、理由が明文でない履歴から判断を作らない
+- `CONTEXT.md` とADRは追記専用にする。例外 (supersededと `Enforced by:` の追記、Git管理への移行、番号の振り直し) は [共通記録規則](references/glossary_and_adr.md) に従う。判断の理由は失うと取り戻せず、捏造すると将来の判断を誤らせるので、理由が明文でない履歴から判断を作らない
 
 ## 作業の選び方
 
@@ -51,7 +51,7 @@ coreの分析結果 (技術スタック、構成パターン) をcustomの判断
 
 ### Phase 3: 用語集とADRの発掘
 
-全件は読まず、理由が書かれている履歴に絞る。対象は本文に理由があるmerged PR、議論のあるclosed Issue、README・docsの設計記述、既存の `docs/adr/` である。GitHubリポジトリでなく `gh` が使えなければ、docsとcommit messageを対象にする。用語集とADRへ入れる内容の基準は [履歴の発掘](references/glossary_and_adr.md#履歴の発掘) と [ADRにする基準](references/glossary_and_adr.md#adrにする基準) を参照する。
+全件は読まず、理由が書かれている履歴に絞る。対象は本文に理由があるmerged PR、議論のあるclosed Issue、README・docsの設計記述、既存の `docs/adr/` である。GitHubリポジトリでなく `gh` が使えなければ、docsとcommit messageを対象にする。用語集とADRの置き場所が未決定なら、Phase 1を始める前に [置き場所の決め方](references/glossary_and_adr.md#置き場所の決め方) に従って1回聞く。用語集とADRへ入れる内容の基準は [履歴の発掘](references/glossary_and_adr.md#履歴の発掘) と [ADRにする基準](references/glossary_and_adr.md#adrにする基準) を参照する。
 
 Phase 1〜3の結果は1つのサマリにまとめて [出力](#出力) する。
 
@@ -60,7 +60,7 @@ Phase 1〜3の結果は1つのサマリにまとめて [出力](#出力) する�
 1. 既存の `.mjun/steering/*.md` をすべて読み、コードベースの変更を調べる
 2. core / customとコードのdriftを調べる。steeringにあってコードに無い要素はWarningにし、コードに現れた新しいパターンは追記で反映する。customファイルはまだ有効かを確かめる
 3. [作成基準](#customファイルの作成基準) を新たに満たしたドメインがあれば、候補の提示で止めずにcustomファイルを作る
-4. 既存ADRと判断が重複しないmerged PRとclosed Issueから、Bootstrap Phase 3と同じ基準で用語とADRを追記する。コードが有効なADRに反していれば、未実装の計画かどうかを確かめ、実装済みならCode Driftとして報告する
+4. 既存ADRと判断が重複しないmerged PRとclosed Issueから、Bootstrap Phase 3と同じ基準で用語とADRを追記する。コードが有効なADRに反していれば、未実装の計画かどうかを確かめ、実装済みならCode Driftとして報告する。`Enforced by:` を持つADRは、参照先のファイルと (書いてあれば) rule IDが今も存在するかを確かめ、消えていればCode Driftとして報告する
 5. [出力](#出力) する
 
 ## customファイルの作成基準

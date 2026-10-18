@@ -15,4 +15,6 @@
 
 結果は、答え・決め手になった観察・見つかった問題・方針の修正点に要約し、試作なら該当decisionのEvidenceへ、最小実装なら `design.md` のTrial Implementation Notesへ書く。diff全文は載せず、鍵になる数行だけを引く。操作できる状態機械やUI比較のように試作品そのものが文章より伝わる場合だけ、コピーを `.mjun/specs/<slug>/prototype/` に残して記録から参照する。方針に問題が見つかれば、該当decisionを解決し直して `design.md` を更新する。
 
+見た目や操作感を人間に選んでもらった試作では、比べた各案のスクリーンショットか動画を `.mjun/specs/<slug>/prototype/` に必ず残す (動きの差は動画で撮る)。選ばれた案の画像は、判断シートの「動作の例」と、Test Strategyの目視の確認シナリオの見本になる。実装後の目視では、この見本と実装の画像を並べて比べる。
+
 一時ディレクトリ・worktree・branchは、試作の成否や中断にかかわらず削除する (`git worktree remove --force <path>` → `git branch -D <branch>`、一時ディレクトリは `rm -rf`)。残すと次の試作のbranch名と衝突するうえ、使い捨てのコードと本物の作業の区別がつかなくなる。削除できなければユーザーへ伝える。

@@ -35,7 +35,7 @@ groupの全taskを1つのimplementerに渡し、親の検査とreviewerを通っ
 2. `## Status Report` の `- STATUS:` をパースする
    - `READY_FOR_REVIEW`: reviewerの時間を、親の検査で落ちる実装に使わない。次の順に確かめ、どこかで失敗したらreviewerを起動せずに同じimplementerを継続して直させる (原因がgroupの外にあれば `BLOCKED` で返させる)。この差し戻しは周回に数えず、回数を `precheck=` に残す。同じ項目で2回戻しても残るなら、`BLOCKED` と同じ原因調査へ進む。変更前から同じように失敗していた証拠がある項目と、Implementation Notesにある既知のflakyテストは除く
      1. `CHECKS_RUN` と `TESTS_RUN` に、FAILや完了しなかった実行 (hang、timeout、途中で止めたもの) が無い
-     2. 報告の内容を採用できる。`CHECK_FILES` は検査・fixture・テストヘルパーだけでproduction codeを含まず、`CHECK_COMMANDS` はtask / Acceptance Criterionに対応している。事前検査のコマンドは残っている。採用済みコマンドを削除・変更していれば、Acceptance Criteriaに基づく理由があり、変更前後と理由をreviewerへ渡す。コマンドの無いcriterionのtaskと、implementerの `REVIEW_ONLY` は、review-onlyに加える。バグ修正では `REPRODUCTION` に修正前の失敗と修正後の成功がある。不足はimplementerに1回だけ補わせ、それでも足りなければ `BLOCKED` と同じ原因調査へ進む。採用した内容で `brief.md` を書き直す
+     2. 報告の内容を採用できる。`CHECK_FILES` は検査・fixture・テストヘルパーだけでproduction codeを含まず、`CHECK_COMMANDS` はtask / Acceptance Criterionに対応している。事前検査のコマンドは残っている。採用済みコマンドを削除・変更していれば、Acceptance Criteriaに基づく理由があり、変更前後と理由をreviewerへ渡す。コマンドの無いcriterionのtaskと、implementerの `REVIEW_ONLY` は、review-onlyに加える。バグ修正では `REPRODUCTION` に証拠の段階と修正前後の出力があり、testより下の段階のtaskはreview-onlyに加わっている。不足はimplementerに1回だけ補わせ、それでも足りなければ `BLOCKED` と同じ原因調査へ進む。採用した内容で `brief.md` を書き直す
      3. 採用した `CHECK_COMMANDS` とgroupに関係する検証コマンドが、親の `run_checks.sh` (`<name>` は `<group>-r<周回>`) で通る。変更と無関係に見えるテストだけが落ちたら、そのテストを単独で2回まで実行し直す。単独では通り、失敗が変更ファイルを通らないと示せれば、flakyとしてImplementation Notesと `brief.md` に記録して先へ進む
 
      すべて通れば、採用した検査一覧をユーザーに簡潔に示して手順3へ進む

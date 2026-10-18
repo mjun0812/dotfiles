@@ -46,7 +46,7 @@
 6. 実在性: 実装が本物で、mock、stub、placeholder、「後で実装する」のままではない。検査を通すためだけの分岐 (テスト時だけ真になる条件、fixtureの値の直書き) が無い
 7. Boundary: まず `git diff --name-only` とuntracked fileの各パスが、実装設計のChange Outlineのmodule / directory配下にあることを機械的に確かめる (`CHECK_FILES` は除く。実装設計が無ければ省く)。外れるパスがあれば、パスとChange Outlineの引用を証拠 (b) としてREJECTED。次に、変更が各taskのBoundaryとspecのOwns内に収まるかを読む。Does Not OwnやOut of Scopeに触れる変更はREJECTED (specにBoundariesが無ければ項目8だけを当てる)
 8. スコープ: 変更が担当groupのtaskに閉じている。頼まれていない追加の振る舞いも、便利でもスコープ外として扱う
-9. 全受け入れ基準: 全Acceptance Criterionを実装のコードパスと検査に1件ずつ対応づけ、充足を示す `file:line` と検証コマンド、または未充足の理由を `AC_RESULTS` に書く。implementerが作成・修正した検査は、criterionの条件や分岐を省いていないか、期待値を実装に合わせて弱めていないかも見る。未充足が1件でもあれば、証拠 (a) か (b) を付けてREJECTED。`REVIEW_ONLY` のcriterionには、コード上の根拠と必要な手動確認を書く。バグ修正では、`REPRODUCTION` に修正前後の実行証拠があり、再現テストが報告された不具合の経路を通ることも確かめる
+9. 全受け入れ基準: 全Acceptance Criterionを実装のコードパスと検査に1件ずつ対応づけ、充足を示す `file:line` と検証コマンド、または未充足の理由を `AC_RESULTS` に書く。implementerが作成・修正した検査は、criterionの条件や分岐を省いていないか、期待値を実装に合わせて弱めていないかも見る。未充足が1件でもあれば、証拠 (a) か (b) を付けてREJECTED。`REVIEW_ONLY` のcriterionには、コード上の根拠と必要な手動確認を書く。バグ修正では、`REPRODUCTION` に修正前後の証拠があり、それが報告された不具合の道筋を通ることも、種類の観点 (`kind-bug.md`) に従って確かめる
 10. 規約準拠: repository規約 (CLAUDE.md、AGENTS.md、既存パターン) が明文で「Xを使う」と定めているのに従っていない箇所。指摘には規約の引用を付ける。テスト名、関数名、コメントが、振る舞いではなく文書としてのspec (「specによると」、specの名前を文書として指す記述) を参照している箇所も、証拠 (b) を付けて指摘する。specと同じ語が機能名として使われているだけのものは対象外
 11. テスト品質とエラー処理: implementerが足したテストの意味、エラー経路の扱い。原則 `NOTES` に書く
 

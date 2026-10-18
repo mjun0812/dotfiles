@@ -23,7 +23,7 @@ description: >-
 - コードベース、既存の規約、ドキュメント
 - `.mjun/steering/`
 - 用語集 `CONTEXT.md` (repo直下にあればそれ、無ければ `.mjun/CONTEXT.md`)
-- ADR (Git管理へ移行済みなら `docs/adr/`、それ以外は `.mjun/steering/adr/`)
+- ADR (置き場所は [共通記録規則](../mjun-steering/references/glossary_and_adr.md#置き場所の決め方) で決まる `docs/adr/` か `.mjun/steering/adr/`)
 - 対象specの `design.md` の `## Decisions`
 
 superseded / deprecatedのADRと `Status: tentative` のdecisionは確定した規約ではないので、前提にしない。用語の衝突や有効なADRとの矛盾が見つかれば、それ自体を質問の論点にする。

@@ -1,6 +1,6 @@
 # spec.md Template
 
-人間が承認するcontract。frontmatterにはライフサイクル状態 (`status: active | done`) とcontract承認状態 (`approval: pending | approved`) を持つ。
+実装者とreviewerが従うcontract。人間はこれを読まず、Phase 5の判断シートで承認する。frontmatterにはライフサイクル状態 (`status: active | done`) とcontract承認状態 (`approval: pending | approved`) を持つ。
 
 `Source:` 行は投影先のGitHub Issueがある場合だけ書く (純Localのspecでは省略する)。調査しても埋まらないセクションは省略する (空セクションやプレースホルダーを残さない)。小規模な修正ではBoundariesを丸ごと省略してよい。RequirementsとAcceptance Criteriaは、task分解と実装の検証が直接使うので省略しない。
 
@@ -38,7 +38,7 @@ Source: #<N>
 
 ### Dependencies
 
-<依存してよい既存の仕組み・モジュール。進行中の他specの成果に依存する場合は `spec: <slug>` の行で書く (そのspecが `status: done` になるまで実装を開始しない)>
+<依存してよい既存の仕組み・モジュール。進行中の他specの成果に依存する場合は `spec: <slug>` の行で書く (そのspecが `status: active` のあいだは実装を開始しない)>
 
 ### Public Contracts Affected
 
@@ -50,7 +50,7 @@ Source: #<N>
 
 ## Acceptance Criteria
 
-- [ ] <機械的に判定できる完了条件。「操作 → 観察できる結果」の形で、1件が1つの検査コマンドに落とせるように書く>
+- [ ] <機械的に判定できる完了条件。「操作 → 観察できる結果」の形で、1件が1つの検査コマンドに落とせるように書く。見た目や操作感のように人間の目でしか判定できない品質はACにせず、design.mdのTest Strategyに目視の確認シナリオとして書く>
 
 ## Out of Scope
 

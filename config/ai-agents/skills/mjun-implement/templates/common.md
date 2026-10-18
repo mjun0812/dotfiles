@@ -14,7 +14,7 @@ mjun-implementのSubAgent (implementer、reviewer、verifier、debugger、refact
 - commit、push、PR作成をしない。commitは、親が検査とレビューを確かめた後に行う (taskのdoneは「commit済み」を意味する)
 - contractのBoundaries (Does Not Own) とOut of Scopeの領域を変更しない。必要になったら、触れる前に構造化ブロックで報告する。contractは人間が承認した範囲である
 - 実行していないものの結果を書かない。結果欄には、この応答の中で実際に実行して出力を確かめたものだけを書き、それ以外は `NOT_RUN (理由)` とする。推測や前回の結果を書くと、検証を経ていない変更が通ってしまう。親は報告にあるコマンドを自分でも実行し、結果が一致するかを確かめる
-- repositoryに残るもの (テスト名、関数名、ファイル名、fixture名、コメント、ログ、エラーメッセージ) に、task ID (`T-NNN`)、`AC-n`、未移行のADR番号、Requirement番号、`spec.md` / `tasks.md`、「specによると」のようなspecへの言及を書かない。specはrepositoryに無い内部文書で、番号は再分解で変わる。テスト名とコメントは、検証する振る舞いで書く。Git管理へ移行済みの `docs/adr/` のADR自体は、番号と履歴を持つ文書なのでこの対象外である
+- repositoryに残るもの (テスト名、関数名、ファイル名、fixture名、コメント、ログ、エラーメッセージ) に、task ID (`T-NNN`)、`AC-n`、ローカルのADR番号、Requirement番号、`spec.md` / `tasks.md`、「specによると」のようなspecへの言及を書かない。specはrepositoryに無い内部文書で、番号は再分解で変わる。テスト名とコメントは、検証する振る舞いで書く。Git管理の `docs/adr/` のADR自体は、番号と履歴を持つ文書なのでこの対象外である
 - 言語や書き方 (コメントの量、命名) は、repositoryの規約と周りのコードに合わせる
 
 ## 構造化ブロックの返し方

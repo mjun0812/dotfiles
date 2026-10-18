@@ -26,7 +26,7 @@
 ### 2. 実装する
 
 - taskを依存順に進める。実装と検査のどちらを先にするかは任せる (TDDを強制しない)。期待する振る舞いを先に固めたほうが進めやすければ、検査から書いてよい
-- バグ修正だけは、production codeを直す前に、報告された不具合を再現するテストを書いて失敗を確かめ、修正後に同じテストを通す。修正前後の結果を `REPRODUCTION` に書く。再現できなければ、推測で直さず `BLOCKED` で返す。再現しないまま直すと、直ったかどうかを示せない
+- バグ修正だけは、production codeを直す前に、報告された不具合の修正前の証拠を取り、修正後に同じ手順で直ったことを示す。証拠の段階 (test / observation / instrumentation) と取り方は、種類の観点 (`kind-bug.md`) に従う。修正前後の結果を `REPRODUCTION` に書く
 - 検査の期待値は、Acceptance Criteriaから実装と独立に決める。実装の計算を写すだけの検査や、振る舞いを確かめず文言だけを固定する検査は、何も保証しない。回帰検査のGREENを保ち、失敗させるための期待値の反転やproduction codeの破壊をしない
 - 実装設計と設計制約に従い、変更を担当groupのtaskに閉じる。BoundariesやOut of Scopeの外の変更が要る場合と、sourceやrepositoryの規約と矛盾する場合は、回避せず `BLOCKED` で返す
 - 修正中のlint、型検査、テストは、変更したファイルと対象のテストに絞る。全体のテストスイートは親がfeature単位の検証で実行するので、ここでは回さない
@@ -49,7 +49,7 @@
 - CHECK_COMMANDS: <各T-NNN/AC-nに対応する検証コマンド。渡された事前検査も含める>
 - CHECKS_RUN: <各CHECK_COMMAND (T-NNN/AC-n) と結果 (PASS | FAIL | NOT_RUN (理由))>
 - REVIEW_ONLY: <自動検査で覆えないcriterionがあるtask ID。無ければ none>
-- REPRODUCTION: <バグ修正のtaskごとの再現テスト、修正前の失敗出力と原因、修正後の結果。バグ修正が無ければ N/A>
+- REPRODUCTION: <バグ修正のtaskごとの証拠の段階 (test | observation | instrumentation。testでなければ届かない理由)、再現の手順、修正前の出力と原因、修正後の結果。バグ修正が無ければ N/A>
 - FILES_CHANGED: <変更ファイルのカンマ区切り一覧>
 - TESTS_RUN: <実行した検証コマンドと最終結果。実行していないものは NOT_RUN (理由)>
 - CONCERNS: <任意。reviewerに注意してほしい非ブロッキングの懸念>

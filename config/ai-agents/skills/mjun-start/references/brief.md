@@ -36,4 +36,4 @@ Source: #<Issue番号> (Issueから始めた場合だけ)
 - `kind: refactor`: `## 目的` (変更後に観察できる形)、`## 変えない振る舞い`
 - `kind: perf`: `## 計測方法` (コマンドと条件)、`## 変更前の値`、`## 目標値`、`## 変えない振る舞い`
 
-`status` は、配送を終えた時点でmjun-implementが `done` にする。`## Run Log` には、mjun-implementがgroupごとの結果を追記する。briefは配送の後も残し、同じ作業の再実行と、種類ごとの結果の振り返りに使う。
+`status` は、作業を終えた時点でmjun-implementが `done` にする。`## Run Log` には、mjun-implementがgroupごとの結果を追記する。briefは作業を終えた後も残し、同じ作業の再実行と、種類ごとの結果の振り返りに使う。
