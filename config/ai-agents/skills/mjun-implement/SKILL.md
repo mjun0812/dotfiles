@@ -119,6 +119,7 @@ SubAgentへの文脈は、親が書いたファイルのパスで渡す。LLMは
   - 使うroleのテンプレート (`<skill-dir>/templates/<role>-prompt.md`) と、全roleに共通の約束 `<skill-dir>/templates/common.md`
   - contract (spec modeでは `spec.md`、doc modeではsourceのMarkdown) を `contract.md` として
   - spec modeでは `design.md`。親が `design.md` を更新したら置き直す
+  - コードの書き方の原則 `<skill-dir>/principles/*.md` を `<run-dir>/principles/` に。どのroleにどの原則を渡すかは [references/subagent.md](references/subagent.md) の表で決まり、起動promptで渡す
   - briefなら、`kind` に対応する観点 `<skill-dir>/templates/kind-<kind>.md`。spec modeでも、バグ修正のtaskを含むgroupでは `kind-bug.md` を置く。種類ごとに重視する確かめ方 (バグ修正の再現と原因、refactoringの振る舞い不変、性能改善の計測) を、implementerとreviewerにそろえて渡すためである
 - groupごとに `<run-dir>/<group>/brief.md` を書く。中身は、groupの各task (ID、説明、Boundary、Done when、Seam、Blocked by、Acceptance Criteria)、Phase 1の実装方針、`TASK_BRIEF`、採用済みの `CHECK_FILES` / `CHECK_COMMANDS`、`PROTECTED_CHECK_FILES` とハッシュ、事前検査の `CHECK_BASELINES`、review-onlyのtask、関係するdecisionと有効なADR、`design.md` で読むべきセクション名、groupに関係する検証コマンド、Implementation Notes (既知のflakyテストを含む)。検査の一覧などが変わったら、次のSubAgentを起動する前に書き直す
 - `design.md` で読むべきセクションは、groupのtaskのBoundaryに対応するModules、Seamに対応するInterfaces & Seams、それらを通るData Flow、Test Strategy、Change Outlineの全体とする。対応を判断できないセクションは含める
@@ -130,6 +131,7 @@ SubAgentへの文脈は、親が書いたファイルのパスで渡す。LLMは
   - contract: <run-dir>/contract.md
   - 実装設計: <run-dir>/design.md (spec modeのみ)
   - 種類の観点: <run-dir>/kind-<kind>.md (置いた場合だけ。implementerとreviewer)
+  - 原則: <run-dir>/principles/ の <このroleに渡す原則のファイル名をカンマ区切りで>
   - group: <run-dir>/<group>/brief.md
   <このroleへの差分: 対象task、周回、前回のFINDINGSとREMEDIATION、親の検査結果のパスなど>
   ```

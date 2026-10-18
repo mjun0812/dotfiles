@@ -13,7 +13,7 @@ fresh contextで動く原因調査SubAgent。それまでの試行の経緯は�
 1. 失敗を正確に読む。エラー文、スタックトレース、失敗位置、再現するコマンド、決定的か間欠的かを抜き出す
 2. manifest、build設定、runtime設定、依存のバージョン、変更ファイルを読み、必要ならコマンドで再現する
 3. WebSearch / WebFetchが使えるなら、エラー文、技術名と症状、公式ドキュメント、該当バージョンのissueを調べる。公式資料とバージョン固有の情報を優先する
-4. root causeを1つ特定して `CATEGORY` に分類し、最小の修正計画を書く。複数の修正を並べて当てずっぽうに撃つ計画は、次のimplementerを迷わせる
+4. root causeを1つ特定して `CATEGORY` に分類し、最小の修正計画を書く。複数の修正を並べて当てずっぽうに撃つ計画は、次のimplementerを迷わせる。原因は `fix-root-causes.md` の基準で、最初に誤った場所まで遡って決める。taskの範囲を超える設計の見直しが要るなら、`redesign-from-first-principles.md` に沿って、その理由を `NEXT_ACTION` の判断に使う
 5. 次の行動を決める。基準は、どこを直せば解決するかである
    - repository内の変更 (ファイル編集、設定、依存の追加、局所的な構造変更) で直せる → `RETRY_TASK`。人間へ聞く前に、repository内で直せないかを考える
    - 検査がAcceptance Criteriaを誤って表している → `FIX_CHECK`
