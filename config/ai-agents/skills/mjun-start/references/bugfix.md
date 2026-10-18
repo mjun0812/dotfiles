@@ -12,4 +12,4 @@
 
 ## 実装で確かめられること
 
-mjun-implementは、briefが `kind: bug` のとき、implementerとreviewerに [バグ修正の観点](../../mjun-implement/templates/kind-bug.md) を読ませる。修正前後の証拠は、届く中で最も上の段階で取る ([原則](../principles/evidence-levels.md))。テストに届かないときも止まらずに進み、結果は人間が確かめる項目として報告に残る。reviewerは、その証拠が報告の道筋で不具合を起こしていることと、修正が原因に当たっていることを確かめる。
+mjun-implementは、briefが `kind: bug` のとき、implementerとreviewerに [バグ修正の観点](../../mjun-implement/templates/kind-bug.md) を読ませる。修正前後の証拠は、再現テスト、実物での観察、計測の順に、届く中で最も上のもので取る。テストに届かないときも止まらずに進み、結果は人間が確かめる項目として報告に残る。reviewerは、その証拠が報告の道筋で不具合を起こしていることと、修正が原因に当たっていることを確かめる。
