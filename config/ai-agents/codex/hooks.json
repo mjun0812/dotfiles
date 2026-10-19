@@ -69,6 +69,16 @@
           }
         ],
         "matcher": "spawn_agent$"
+      },
+      {
+        "hooks": [
+          {
+            "command": "echo 'request_user_input_asyncは使わないこと。同じ質問をrequest_user_inputで出し直し、回答を待つこと。' >&2; exit 2",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "^request_user_input_async$"
       }
     ],
     "SessionStart": [
