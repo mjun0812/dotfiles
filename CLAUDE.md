@@ -80,7 +80,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 - このリポジトリに残る私用skill (`mjun-*`) は `config/ai-agents/skills/` に一元管理され、`~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` の3箇所へsymlinkされる。Codexは `~/.agents/skills/` を直接読むため `~/.codex/skills/` には展開しない。1箇所の編集が全agentに反映される。
 - skillの一覧と依存関係は `doc/skills.md` (英語) と `doc/skills_ja.md` に記載されている。skillを追加・変更したらここも更新する (`doc-sync` skillがこの同期を担う)。
 - Codexの `~/.codex/config.toml` だけはsymlinkではなく、`script/setup/rewrite_config.py` (tomlkit) がテンプレート (`config/ai-agents/codex/config.toml`) 側のキーだけを既存ファイルへマージする方式。Codexが自動生成する `[projects.*]` や `[hooks.state]` などのローカル状態を温存するため。キーの上書きのみでキーの削除はできない点に注意。
-- Codexのhookは `config/ai-agents/codex/hooks.json` で管理され、`~/.codex/hooks.json` へsymlinkされる。hook定義を変更すると `[hooks.state]` の `trusted_hash` が無効になり、TUIの `/hooks` で再承認が必要になる。そのため通知の条件や文言はhooks.jsonではなくシェルスクリプト側に置く。
+- Codexのhookは `config/ai-agents/codex/hooks.json` で管理され、`~/.codex/hooks.json` へsymlinkされる。hook定義を変更すると `[hooks.state]` の `trusted_hash` が無効になり、TUIの `/hooks` で再承認が必要になる。
 - agentが編集したファイルには、Claude Code・Codex共通のPostToolUse hookが2つかかる (編集されたファイルの取り出しは `script/hooks/edited-files.sh` で共通)。両hookは並列に起動される。
   - `script/hooks/format-hook.sh`: formatterと自動修正だけをかけ、指摘はagentへ返さない。Markdownには `textlint --fix` (`textlintrc.fix.json`: 全角括弧) をかけてから `oxfmt` を通す。
   - `script/hooks/textlint-report-hook.sh`: Markdownの今回変わった行 (git追跡中ならHEADとの差分、それ以外は全行) にある自動修正できない指摘 (`textlintrc.report.json`: `preset-ai-words-ja`、`@textlint-ja/preset-ai-writing` (`no-ai-list-formatting` と `no-ai-colon-continuation` は無効)、`preset-ja-technical-writing` (`sentence-length` は無効)、`no-kangxi-radicals`) を、exit 2でagentへ返す。`.mjun/` 配下 (mjun系skillのspec・tasks・brief) を対象から外している。tasksがspecのAcceptance Criteriaを文言のまま写すので、言い換えを促すと食い違うためである。
