@@ -68,7 +68,7 @@ Run Logの `feature:` 行に `validation=<GO | MANUAL_VERIFY_REQUIRED | NO-GO>` 
 - Run Log: 周回数と差し戻しの要約 (`tasks.md` の `## Run Log` から)
 - Blocked Tasks: task IDとタイトル、直接原因、再開条件、これに依存して未実行のtask。無ければ「なし」
 - ADR: 書いたADRの番号。無ければ「なし」。置き場所が未決定で書かなかったADRの案があれば、その案
-- Follow-ups: 今回の範囲では扱わず、後で取り組む価値のあるもの。specのOut of Scopeのうち別の作業として検討すると書かれたもの、見送ったNOTES、implementerの `CONCERNS` (範囲外の同じ誤りなど) を1行ずつ並べる。Out of Scopeのうち「やらない」と決めたもの (変えてはいけない振る舞いなど) は含めない。無ければ「なし」
+- Follow-ups: 今回の範囲では扱わず、後で取り組む価値のあるもの。specのOut of Scopeのうち別の作業として検討すると書かれたものと、implementerの `CONCERNS` (範囲外の同じ誤りなど) を1行ずつ並べる。Out of Scopeのうち「やらない」と決めたもの (変えてはいけない振る舞いなど) と、reviewerの `NOTES` は含めない。`NOTES` はverdictに影響させなかった指摘で、PRレビューで扱う前提だからである (見送ったものはRefactorの行に出る)。無ければ「なし」
 - modelやeffortを指定できなかった場合は、その旨
 
 結果を示したら、次を1回の確認にまとめて聞く。どちらも無ければ聞かずに終える。
