@@ -3,7 +3,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
+# Claude CodeはこのPATHをsnapshotして使い回すため、versionを都度解決するshimsにする
+if [[ -n "$CLAUDECODE" ]]; then
+    command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh --shims)"
+else
+    command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
+fi
 command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 export PATH="$HOME/.venv/bin:$PATH"
 
