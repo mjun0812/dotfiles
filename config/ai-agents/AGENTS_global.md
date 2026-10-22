@@ -4,6 +4,9 @@
 - 文章中に「?」、「？」などの疑問符がある場合や、文章が疑問形の場合には回答のみを行い、編集を行わないこと。
 - 常に半角括弧を使用すること。全角括弧は使わないこと。
 - ユーザーのタイムゾーンはJST (UTC+9)。時刻をユーザーに伝えるときはJSTに変換すること。
+- CLIでの会話中に図を示すときは、Codexの端末が見やすく描画できる範囲だけMermaidを使い、それ以外はアスキーアート(AA)で描くこと。範囲を外れたMermaidはソースのまま表示されるか、読みにくく崩れる。PR・Issueへ書く図はGitの節に従う。
+  - Mermaidで描く: 参加者4つまでの `sequenceDiagram`、ノード6つ程度までの `flowchart TD` / `stateDiagram-v2`。ラベルは全角20字以内にする。
+  - AAで描く: 分岐や並列を横に並べて見せたい図 (Codexはノードを縦一列に並べる)、`flowchart LR`、`subgraph`、入れ子のstate、`style` / `classDef` / `%%{init}` を使う図、端末幅(目安100桁)を超える図。
 
 ## Development Principles
 
