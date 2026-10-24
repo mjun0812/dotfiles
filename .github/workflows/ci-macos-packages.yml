@@ -73,3 +73,17 @@ jobs:
             .[$manager].available and
             ([.[$manager].packages[].state | startswith("installed")] | all)
           '
+
+      - name: Verify MacTeX and AeroSpace
+        shell: bash
+        run: |
+          df -h /
+          /Library/TeX/texbin/latex --version
+          # aerospace --version はAeroSpace.appのサーバーへ接続するため、配置だけを確かめる
+          test -d /Applications/AeroSpace.app
+          command -v aerospace
+          # caskのpkg installer choicesにより、TeX Liveだけが入りGhostscriptとGUI appは入らない
+          pkgutil --pkgs | grep -E '^org\.tug\.mactex\.texlive[0-9]+$'
+          if pkgutil --pkgs | grep -E '^org\.tug\.mactex\.(ghostscript|gui)'; then
+            exit 1
+          fi

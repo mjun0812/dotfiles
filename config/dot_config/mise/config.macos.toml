@@ -74,10 +74,13 @@ container system kernel set --recommended --force
 "brew-cask:raycast" = "latest"
 "brew-cask:omniwm" = "latest"
 "brew-cask:xquartz" = "latest"
+"brew-cask:mactex-no-gui" = "latest"
+"brew-cask:nikitabobko/tap/aerospace" = "latest"
 
 [bootstrap.brew.taps]
 "ci7lus/miraktest" = "https://github.com/ci7lus/homebrew-miraktest.git"
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
+"nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
 
 [tasks.no-sleep-mac]
 description = "No Sleep Mode for macOS (runs in background)"
