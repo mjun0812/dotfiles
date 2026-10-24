@@ -139,7 +139,6 @@ apm update -g
 | oxfmt           | JS/TS/Markdown/JSON/YAML formatter                    |
 | playwriter      | Browser automation via an extension in your Chrome    |
 | pnpm            | Node.js package manager                               |
-| powershell      | PowerShell (macOS)                                    |
 | prek            | pre-commit runner in Rust                             |
 | resvg           | SVG renderer (macOS)                                  |
 | ripgrep         | Modern `grep`                                         |
