@@ -79,6 +79,16 @@
           }
         ],
         "matcher": "^request_user_input_async$"
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/script/hooks/gh-issue-edit-guard-hook.sh",
+            "timeout": 15,
+            "type": "command"
+          }
+        ],
+        "matcher": "^Bash$"
       }
     ],
     "SessionStart": [

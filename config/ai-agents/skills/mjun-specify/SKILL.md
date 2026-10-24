@@ -52,7 +52,7 @@ contractを作成・更新する前に、`spec.md` のfrontmatterを `approval: 
 
 - **取り込み** (新規specになったIssue、または `.mjun/specs/` 外のMarkdown): 原文 (Issueは本文とコメント) を `.mjun/specs/<slug>/spec.md` へ機械的に構造化する。slugはタイトルの英語kebab-case、frontmatterは `status: active` と `approval: pending`。Issue由来はH1直下に `Source: #<number>` を書く。Markdown由来は純Localとし、元ファイルは変更しない
 - **新規作成** (sourceなし): 依頼内容を素材に、[references/spec-template.md](references/spec-template.md) の骨子で `spec.md` を作る
-- **実装済みの機能の拡張**: 実装済みの振る舞いを定めるのはコードとテストで、作業を終えたspecではない。既存の機能を拡張するspecも、今のコード・テスト・Issueから新しく作り、増分だけをRequirementsとAcceptance Criteriaにする。既存のテストが固定している振る舞いを変える要求は、期待する振る舞いを変えるのでHuman-owned decisionにする。取り込むIssueの本文に区切り行 `<!-- projected-spec -->` があれば、その下は前回の投影 (実装済みの判断と完了条件) なので、Requirementsへ写さずContextとして扱う
+- **実装済みの機能の拡張**: 実装済みの振る舞いを定めるのはコードとテストで、作業を終えたspecではない。既存の機能を拡張するspecも、今のコード・テスト・Issueから新しく作り、増分だけをRequirementsとAcceptance Criteriaにする。既存のテストが固定している振る舞いを変える要求は、期待する振る舞いを変えるのでHuman-owned decisionにする。取り込むIssueの本文の区切り行 `<!-- projected-spec -->` より下と、先頭行が区切り行のコメント (投影コメント) は、前回の投影 (実装済みの判断と完了条件) なので、Requirementsへ写さずContextとして扱う
 - **activeなspecの拡張**: `tasks.md` に `done` のtaskがあるactiveなspec (PR作成などの前) を拡張するときは、既存のRequirementsとAcceptance Criteriaの意味を変えず、増分を新しい項目として足す。doneのtaskはcommit済みで、その意味を変えると完了済みの作業が誰も気づかないまま無効になるためである。意味を変えて再検証へ戻すかはHuman-owned decisionにする
 
 ### Phase 2: 調査と論点整理
@@ -141,7 +141,7 @@ specを、source・steering・ADR・用語集・他のactiveなspec・既存の�
 
 ### Phase 7: Issueへの投影
 
-`Source:` の無いspecでは投影先Issueを作るかを確認し、作らない場合とGitHub remoteが無い場合は純LocalのままこのPhaseを終える。Issueを作る場合は、起票を `github-issue-create` に任せる。それ以外は [references/issue-projection.md](references/issue-projection.md) に従ってIssueを作成・投影する。投影直前の確認でLocal specに無い内容を取り込むなら、承認していない内容になるので `approval: pending` へ戻してPhase 3へ戻る。
+`Source:` の無いspecでは投影先Issueを作るかを確認し、作らない場合とGitHub remoteが無い場合は純LocalのままこのPhaseを終える。Issueを作る場合は、起票を `github-issue-create` に任せる。それ以外は [references/issue-projection.md](references/issue-projection.md) に従ってIssueを作成・投影する。作成者が認証ユーザーでないIssueは、本文を書き換えず、投影コメントへ投影する。投影直前の確認でLocal specに無い内容を取り込むなら、承認していない内容になるので `approval: pending` へ戻してPhase 3へ戻る。
 
 ### Phase 8: 結果報告
 
