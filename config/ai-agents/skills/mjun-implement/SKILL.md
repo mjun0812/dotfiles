@@ -60,7 +60,7 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
    - spec modeで、`spec.md` が `approval: approved` でない、または `design.md` か `tasks.md` が無い。中止して、contractの承認、実装設計の作成、`mjun-to-tasks` での分解のうち足りないものを案内する
    - doc modeで、Goal、受け入れ基準、実装方針など、方針の判断に要る情報が欠けている。コードを読めば分かる事実は自分で調べる。方針を推測で補わず、欠けている項目を具体的に挙げて中止する。briefでは、種類ごとの節、`完了条件`、`範囲` がそろっていれば足りる (実装方針はimplementerが決める)。spec modeのcontractの十分性は承認で確定済みなので、ここで判定し直さない
    - `## Decisions` (doc modeでは本文の要確認の記載) に `Status: tentative` が残っている。承認前に解消されるはずのものなので、一覧を示して進めてよいかをユーザーに確認する。続行が選ばれたら、該当decisionの `Status:` 行を消して `Owner: human` にする。再実行のたびに同じ箇所で止まらないためである
-   - `Source: #N` を持つspecで、`gh issue view <N> --json state,body,comments` が取り込み後の変化を示す。closedなら実装済みの可能性を警告して続行を確認する。新しいコメントや本文の変更があれば内容を示し、specへ反映するかを確認する。反映するなら `approval: pending` へ戻してから反映し、更新後のcontractの承認を得て `approved` に戻す。承認されなければ中止する
+   - `Source: #N` を持つspecで、`gh issue view <N> --json state,body,comments` が取り込み後の変化を示す。closedなら実装済みの可能性を警告して続行を確認する。新しいコメントや本文の変更があれば内容を示し、specへ反映するかを確認する。mjun-specifyの投影 (本文の区切り行 `<!-- projected-spec -->` より下と、先頭行が区切り行のコメント) は、変化に数えない。反映するなら `approval: pending` へ戻してから反映し、更新後のcontractの承認を得て `approved` に戻す。承認されなければ中止する
    - `Source: #N` を持つbriefで、Issueがclosedになっている。実装済みの可能性を警告して続行を確認する
    - spec modeで、BoundariesのDependenciesにある `spec: <slug>` のspecが `status: active` のまま残っている。先にそのspecの実装を終える必要があると案内して中止する。`status: done` か、存在しない (作業を終えた後に手で削除された) specは、依存を満たしたものとして扱い、そう判断したことを実装方針と一緒に示す
 4. taskキューを組む

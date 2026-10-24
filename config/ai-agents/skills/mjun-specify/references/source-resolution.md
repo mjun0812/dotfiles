@@ -9,7 +9,7 @@ specの実体は常に `.mjun/specs/<slug>/` である。GitHub Issueは取り�
 ```text
 取り込み: Issue → .mjun/specs/<slug>/ へspec化 (このskillだけが行う)
 作業:     spec作成・task分解・実装のどの段階でもLocalのspec文書とADRを読み書きする
-投影:     承認後、判断シートとACを Issue本文へ反映 (Sourceを持つspecのみ)
+投影:     承認後、判断シートとACを Issue本文 (作成者が自分でなければ投影コメント) へ反映 (Sourceを持つspecのみ)
 完了:     worktreeで実装 → PR (SourceがあればCloses #N)
 ```
 
@@ -70,7 +70,7 @@ Issue番号からspecを逆引きするときは、activeなspecから `Source: 
 - 複数ヒットすれば一覧を示して選んでもらい、選ばれなかった方の整理 (統合または削除) を促す
 - activeに無ければ未取り込みとして扱う。doneのspecは検索しない
 
-`Source:` を持つspecは、contract承認後に [issue-projection.md](issue-projection.md) に従ってIssue本文へ投影する。
+`Source:` を持つspecは、contract承認後に [issue-projection.md](issue-projection.md) に従ってIssueへ投影する。投影先は、作成者が自分なら本文、自分でなければ投影コメントである。
 
 ## git管理外であることの影響
 
