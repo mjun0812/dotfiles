@@ -47,3 +47,11 @@ repos:
         types: [zsh]
         exclude: ^config/dot/p10k\.zsh$
         pass_filenames: true
+
+      # agent向けruleのfrontmatterは、Claude CodeとCodexのhookが同じ意味で読める書式に限る
+      - id: agent-rule-frontmatter
+        name: agent rule frontmatter
+        entry: script/tools/rule-paths.sh
+        language: system
+        files: ^config/ai-agents/rules/.*\.md$
+        pass_filenames: true

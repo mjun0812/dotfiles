@@ -21,6 +21,17 @@
         ]
       }
     ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/script/hooks/codex-rules-hook.sh",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "hooks": [
@@ -59,6 +70,16 @@
           }
         ],
         "matcher": "^(apply_patch|Bash)$"
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/script/hooks/codex-rules-hook.sh",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "^apply_patch$"
       },
       {
         "hooks": [

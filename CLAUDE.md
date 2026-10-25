@@ -52,7 +52,8 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/dot_config/<name>`                                                                                                            | `~/.config/<name>`                                                            |
 | `config/dot_config/{herdr,hunk}/config.toml`, `config/dot_config/cli-proxy-api/config.yaml`, `config/dot_config/omniwm/settings.toml` | `~/.config/<name>/` 配下にファイル単位でsymlink (ディレクトリは実体)          |
 | `config/dot_config/herdr/plugins/<plugin>`                                                                                            | `herdr plugin link` で登録 (symlinkではない。`setup_herdr.sh` が実行)         |
-| `config/ai-agents/claude/{CLAUDE.md,settings.json,statusline.py,subagent_statusline.py,rules/*}`                                      | `~/.claude/` 配下                                                             |
+| `config/ai-agents/claude/{CLAUDE.md,settings.json,statusline.py,subagent_statusline.py}`                                              | `~/.claude/` 配下                                                             |
+| `config/ai-agents/rules/*`                                                                                                            | `~/.claude/rules/`(Codexへは `codex-rules-hook.sh` が渡す)                    |
 | `config/ai-agents/skills/<skill>`                                                                                                     | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
 | `config/ai-agents/codex/hooks.json`                                                                                                   | `~/.codex/hooks.json`                                                         |
 | `config/ai-agents/AGENTS_global.md`                                                                                                   | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                   |
@@ -85,6 +86,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 - このリポジトリに残る私用skill (`mjun-*`) は `config/ai-agents/skills/` に一元管理され、`~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` の3箇所へsymlinkされる。Codexは `~/.agents/skills/` を直接読むため `~/.codex/skills/` には展開しない。1箇所の編集が全agentに反映される。
 - skillの一覧と依存関係は `doc/skills.md` (英語) と `doc/skills_ja.md` に記載されている。skillを追加・変更したらここも更新する (`doc-sync` skillがこの同期を担う)。
 - Codexの `~/.codex/config.toml` だけはsymlinkではなく、`script/setup/rewrite_config.py` (tomlkit) がテンプレート (`config/ai-agents/codex/config.toml`) 側のキーだけを既存ファイルへマージする方式。Codexが自動生成する `[projects.*]` や `[hooks.state]` などのローカル状態を温存するため。キーの上書きのみでキーの削除はできない点に注意。
+- agent向けのrule(`config/ai-agents/rules/*.md`)は、Claude CodeとCodexで同じファイルを使う。Claude Codeは `~/.claude/rules/` のsymlinkからfrontmatterの `paths` を見て自分で読み込む。Codexには同じ機能が無いので、`script/hooks/codex-rules-hook.sh` が `apply_patch` の対象ファイルが `paths` に合うかを調べ、合うruleの本文をadditionalContextで渡す。同じsessionでは1回だけ渡し、PostCompactで記録を消す。frontmatterは、両方が同じ意味で読める書式に限る。書式は `script/tools/rule-paths.sh` が定義し、prekが確かめる。
 - Codexのhookは `config/ai-agents/codex/hooks.json` で管理され、`~/.codex/hooks.json` へsymlinkされる。hook定義を変更すると `[hooks.state]` の `trusted_hash` が無効になり、TUIの `/hooks` で再承認が必要になる。
 - agentが編集したファイルには、Claude Code・Codex共通のPostToolUse hookが2つかかる。編集されたファイルの取り出しは `script/hooks/edited-files.sh` で共通にしている。2つのhookは並列に起動される。
   - `script/hooks/format-hook.sh`: formatterと自動修正だけをかけ、指摘はagentへ返さない。Markdownには `textlint --fix` (`textlintrc.fix.json`: 全角括弧) をかけてから `oxfmt` を通す。

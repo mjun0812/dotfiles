@@ -64,31 +64,8 @@
   - 画像: UI変更の前後比較、ベンチマークのグラフ、エラーの再現画面。スクリーンショットは `agent-browser` / `playwriter` skillで撮る。
   - 画像は `gh {pr,issue} {create,edit,comment}` の `--attach '<path>#<alt>'` でアップロードする。本文の `![alt](./path.png)` がその位置に差し替わる。リポジトリへはcommitしない。
 
-## Python
-
-- 環境およびパッケージ管理には `uv` を使用すること。
-- コードの型チェックには`uvx ty check` を使用すること。
-- SQLAlchemy ORMは **2.0 スタイル**の記法を使用してください。
-
-## Markdown
-
-- 区切り線 `---` を多用しないこと。節の区切りは見出しで表す。文書の中で性質が大きく変わる境界(例: 現行の手順と旧構成の記録の間)にだけ使う
-- コマンドがbashとzshで異なる場合は、同じコードブロックに `# bash` と `# zsh` のコメントで分けて両方を書くこと。共通の部分は1つにまとめる
-
 ## Japanese Writing
 
 - Markdownファイルを経由せずに外部へ送る日本語(PR本文、Issue、コメント、commitメッセージなど)だけ、
   送る前に `printf '%s\n' "<本文>" | textlint --stdin --stdin-filename body.md` にかけ、指摘箇所を文意を保ったまま書き直すこと。
 - チャットの応答にはtextlintをかけない。
-
-## ShellScript
-
-- シェルスクリプトは関数をあまり使用せず、シンプルで手続き型な構造にしてください。
-- 関数を使用する場合は、3回以上呼び出されるコードに対してのみ使用してください。
-
-## Jupyter Notebook
-
-- `.ipynb`の作成・編集・実行には`nb-cli` (`nb`コマンド) を最優先で使う。
-- `nb-cli`で行えない操作にだけJupytextを使い、`py:percent`の`.py`を編集してから`.ipynb`へ反映する。未pairedなら`jupytext --to py:percent`で変換し、編集後に`jupytext --to ipynb --update`で出力を残したまま戻す。
-- Jupytextのpaired `.py`がある場合も`.ipynb`は`nb-cli`で編集し、編集後に`jupytext --sync <notebook>.ipynb`で`.py`へ反映する。
-- 同じNotebookをJupytext、`nb-cli`から同時に書き換えない。
