@@ -17,6 +17,17 @@
         "strict": false
       }
     },
-    "no-kangxi-radicals": true
+    "no-kangxi-radicals": true,
+    "ja-space-between-half-and-full-width": {
+      "space": "never"
+    },
+    "@textlint-rule/pattern": {
+      "patterns": [
+        {
+          "message": "日本語と半角括弧の間に空白を入れない",
+          "pattern": "/[\\p{sc=Han}\\p{sc=Hiragana}\\p{sc=Katakana}ー] \\(|\\) [\\p{sc=Han}\\p{sc=Hiragana}\\p{sc=Katakana}ー]/u"
+        }
+      ]
+    }
   }
 }
