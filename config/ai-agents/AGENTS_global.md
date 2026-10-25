@@ -4,9 +4,7 @@
 - 文章中に「?」、「？」などの疑問符がある場合や、文章が疑問形の場合には回答のみを行い、編集を行わないこと。
 - 常に半角括弧を使用すること。全角括弧は使わないこと。
 - ユーザーのタイムゾーンはJST (UTC+9)。時刻をユーザーに伝えるときはJSTに変換すること。
-- CLIでの会話中に図を示すときは、Codexの端末が見やすく描画できる範囲だけMermaidを使い、それ以外はアスキーアート(AA)で描くこと。範囲を外れたMermaidはソースのまま表示されるか、読みにくく崩れる。PR・Issueへ書く図はGitの節に従う。
-  - Mermaidで描く: 参加者4つまでの `sequenceDiagram`、ノード6つ程度までの `flowchart TD` / `stateDiagram-v2`。ラベルは全角20字以内にする。
-  - AAで描く: 分岐や並列を横に並べて見せたい図 (Codexはノードを縦一列に並べる)、`flowchart LR`、`subgraph`、入れ子のstate、`style` / `classDef` / `%%{init}` を使う図、端末幅(目安100桁)を超える図。
+- リポジトリ内のドキュメントと既存コードの内容が矛盾する場合は、既存コードで実際に採用されている規約や実装方針を優先し、発見したドキュメントとコードの不一致をすべて最終回答で報告してください。
 
 ## Development Principles
 
@@ -40,15 +38,15 @@
 - SubAgentの完了は `wait_agent` で待つ。`sleep` や `list_agents` の繰り返しでpollingしない。
 - 実行中のSubAgentへ進捗確認の `send_message` を送らない。結果はSubAgentの最終応答で受け取る。
 - SubAgentとして動くときは、親へ途中経過のmessageを送らず、結果は最終応答だけで返す。
-- SubAgentへタスクを移譲する際は、タスクの性質に応じて呼び出し時にmodelとthinking effortを指定する
+- SubAgentのmodelは、タスクの性質に応じて次の基準で選ぶ。
   - Luna: 決定的・機械的な定型作業や標準的な実装・調査。
   - Sol: 設計判断や曖昧な要件(アーキ設計、複数ファイル横断リファクタ、難しいデバッグ)を伴う作業。迷ったらこのモデルを作成する
-  - Astra: Solが達成できない、またはSolの判断が不十分な場合、人間の専門家の判断を必要とする作業に使用する。SubAgentの結果が不十分な場合に、より高性能なモデルで再実行する。
+  - Astra: Solが達成できない、またはSolの判断が不十分な場合、人間の専門家の判断を必要とする作業に使用する。
 
 ## Tool
 
 - skillや指示に登場する `AskUserQuestion` は `request_user_input` に読み替えること。
-- 選択肢付きの質問には同期の `request_user_input` を使用し、`request_user_input_async` は使用しないこと。
+- 選択肢付きの質問には `request_user_input` を使用すること。
 - 選択肢付きの質問後は、回答を受け取るまで作業を進めないこと。
 - ブラウザ操作では、ログイン状態が必要な操作とユーザーのChromeでの操作には `playwriter` skillを、ログインが不要な操作には `agent-browser` skillを使うこと。
 - CSV・TSV・Parquet・JSONL・レコード配列のJSONなどのデータファイルを集計・変換・調査するときは、awkやPythonのscriptを書かずにduckdb CLIを使うこと (`duckdb` skill)。単一のJSONオブジェクトから値を取り出すだけならjqでよい。プロジェクトのコードに組み込むデータ処理は、そのプロジェクトの既存の依存に従うこと。
@@ -57,60 +55,17 @@
 
 - リポジトリに `.mjun/steering/` が存在する場合、配下の `*.md` をすべてプロジェクトメモリとして読み込むこと。
 - steeringの作成・更新は `mjun-steering` skillで行うこと。
-- 用語集 `CONTEXT.md` はセッション開始時にcontextへ注入される。注入された場合は、定義された語彙を使うこと。
+- リポジトリ直下に用語集 `CONTEXT.md` があればそれを、無ければ `.mjun/CONTEXT.md` を読み、定義された語彙を使うこと。
 
 ## Git
 
-GitHub操作は必ず `git, gh` CLIで行うこと。
-
-- `gh` コマンドでCIやPRの完了などを長時間待機する場合は、Rate Limitの消費を抑えるため、適切な間隔を空けて明示的に状態を再取得すること。
 - PR・Issue・コメントでは、文章だけでは伝わりにくい内容を図や画像で示すこと。文章の言い換えにしかならない図は入れない。
   - Mermaid: 処理の流れ、依存関係、状態遷移、変更前後の構造。1図1論点で小さく保つ。
   - 画像: UI変更の前後比較、ベンチマークのグラフ、エラーの再現画面。スクリーンショットは `agent-browser` / `playwriter` skillで撮る。
   - 画像は `gh {pr,issue} {create,edit,comment}` の `--attach '<path>#<alt>'` でアップロードする。本文の `![alt](./path.png)` がその位置に差し替わる。リポジトリへはcommitしない。
 
-## Python
-
-- 環境およびパッケージ管理には `uv` を使用すること。
-- コードのリンターには`uvx ruff check --fix` を使用すること。
-- コードの型チェックには`uvx ty check` を使用すること。
-- SQLAlchemy ORMは **2.0 スタイル**の記法を使用してください。
-
-## Markdown
-
-- 英数字と日本語の間、および半角括弧 `()` の外側に半角スペースを入れないこと。inline codeの前後には入れてよい。コードブロックの中は対象外
-  - 良い例: MLflowサーバをECS(arm64)で動かす。`mlflow-server` のrepoを使う。
-  - 悪い例: MLflow サーバを ECS (arm64) で動かす。
-- 区切り線 `---` を多用しないこと。節の区切りは見出しで表す。文書の中で性質が大きく変わる境界(例: 現行の手順と旧構成の記録の間)にだけ使う
-- コマンドがbashとzshで異なる場合は、同じコードブロックに `# bash` と `# zsh` のコメントで分けて両方を書くこと。共通の部分は1つにまとめる
-
 ## Japanese Writing
 
 - Markdownファイルを経由せずに外部へ送る日本語(PR本文、Issue、コメント、commitメッセージなど)だけ、
   送る前に `printf '%s\n' "<本文>" | textlint --stdin --stdin-filename body.md` にかけ、指摘箇所を文意を保ったまま書き直すこと。
-  `--stdin` と `--fix` は併用しない (`--stdin-filename` の名前でファイルが書き出される)。
 - チャットの応答にはtextlintをかけない。
-
-## ShellScript
-
-- シェルスクリプトのリンターには `shellcheck` を使用してください。
-- `zsh`のリンター時は`shellcheck -s bash`を使用してください。zshには対応していませんが、bashとして解析可能です。
-- シェルスクリプトは関数をあまり使用せず、シンプルで手続き型な構造にしてください。
-- 関数を使用する場合は、3回以上呼び出されるコードに対してのみ使用してください。
-- シェルスクリプト内に他の言語 (Python、JavaScriptなど) のコードをheredocや `-c` でべた書きしないでください。別ファイルのスクリプトにして呼び出してください。
-
-## Skill
-
-- Agent skillを作成・編集するときは、コマンド例を最小限にする。
-- コマンド例は、次のいずれかを明確にする場合にだけ追加する。
-  - 入力・出力の形式
-  - 操作の順序
-  - 境界ケース
-- 網羅性のためだけに具体例を追加しない。
-
-## Jupyter Notebook
-
-- `.ipynb`の作成・編集・実行には`nb-cli` (`nb`コマンド) を最優先で使う。
-- `nb-cli`で行えない操作にだけJupytextを使い、`py:percent`の`.py`を編集してから`.ipynb`へ反映する。未pairedなら`jupytext --to py:percent`で変換し、編集後に`jupytext --to ipynb --update`で出力を残したまま戻す。
-- Jupytextのpaired `.py`がある場合も`.ipynb`は`nb-cli`で編集し、編集後に`jupytext --sync <notebook>.ipynb`で`.py`へ反映する。
-- 同じNotebookをJupytext、`nb-cli`から同時に書き換えない。

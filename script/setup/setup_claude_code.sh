@@ -37,7 +37,7 @@ for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
 done
 
 # Rules
-CLAUDE_RULES_SOURCE_DIR="$DOTPATH/config/ai-agents/claude/rules"
+CLAUDE_RULES_SOURCE_DIR="$DOTPATH/config/ai-agents/rules"
 for rule_file in "$CLAUDE_RULES_SOURCE_DIR"/*.md(N); do
     rule_name=$(basename "$rule_file")
     rm -rf "$HOME/.claude/rules/$rule_name"

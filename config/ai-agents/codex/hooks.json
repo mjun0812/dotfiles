@@ -21,6 +21,17 @@
         ]
       }
     ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/script/hooks/codex-rules-hook.sh",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "hooks": [
@@ -30,7 +41,7 @@
             "type": "command"
           },
           {
-            "command": "~/.dotfiles/script/hooks/textlint-report-hook.sh",
+            "command": "~/.dotfiles/script/hooks/report-hook.sh",
             "timeout": 30,
             "type": "command"
           }
@@ -63,7 +74,17 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/codex-spawn-agent-guard-hook.sh",
+            "command": "~/.dotfiles/script/hooks/codex-rules-hook.sh",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "^apply_patch$"
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/script/hooks/codex-spawn-agent-hook.sh",
             "timeout": 10,
             "type": "command"
           }
@@ -104,15 +125,6 @@
         "hooks": [
           {
             "command": "bash ~/.codex/herdr-agent-state.sh session",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.dotfiles/script/hooks/glossary-context-hook.sh",
             "timeout": 10,
             "type": "command"
           }
