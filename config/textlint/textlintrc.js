@@ -7,11 +7,12 @@ const path = require("node:path");
 
 // symlink経由で読まれ __dirname がホームになるため、実体のディレクトリから相対パスを解決する
 const dir = path.dirname(fs.realpathSync(__filename));
+const report = require(path.join(dir, "textlintrc.report.json"));
 const rules = {
   ...require(path.join(dir, "textlintrc.fix.json")).rules,
-  ...require(path.join(dir, "textlintrc.report.json")).rules,
+  ...report.rules,
 };
 // prhの辞書パスは設定ファイルのあるディレクトリ (ホーム) から解決されるため、絶対パスにする
 rules.prh.rulePaths = rules.prh.rulePaths.map((p) => path.resolve(dir, p));
 
-module.exports = { rules };
+module.exports = { plugins: report.plugins, rules };

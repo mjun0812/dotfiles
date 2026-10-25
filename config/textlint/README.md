@@ -34,6 +34,7 @@ use the JSON profiles through the wrapper for explicit configuration selection.
 ```sh
 textlint document.md
 printf '%s\n' '日本語の本文です。' | textlint --stdin --stdin-filename body.md
+textlint page.html
 
 # Agent hooks use these explicit profiles from any working directory.
 ~/.dotfiles/script/tools/textlint.sh fix --fix document.md
@@ -62,7 +63,8 @@ Rules in `bun_args` are installation arguments, not separately tracked mise
 tools. `mise upgrade` does not bump their pinned versions. The migration preserves
 the four direct rule versions from the former `bun.lock`, and the Japanese rules
 (`preset-ja-technical-writing`, `no-kangxi-radicals`, `ja-space-between-half-and-full-width`)
-and the pattern rule (`@textlint-rule/textlint-rule-pattern`) are pinned the same way; transitive dependencies
+the pattern rule (`@textlint-rule/textlint-rule-pattern`), and the HTML plugin
+(`textlint-plugin-html`, enabled by the report profile) are pinned the same way; transitive dependencies
 are no longer frozen by a repository lockfile. This is a personal global-tool
 setup, not a fully locked project dependency graph. Installation stays outside
 agent hooks; ordinary lint invocations do not install or update packages.
