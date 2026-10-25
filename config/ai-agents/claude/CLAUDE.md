@@ -37,10 +37,12 @@
 ## SubAgent
 
 - FableはSubAgentとして使用しない。
-- SubAgentへタスクを移譲する際は、タスクの性質に応じて呼び出し時にmodelとthinking effortを指定する
-  - haiku: 決定的・機械的な定型作業。
-  - sonnet: 標準的な実装・調査。
-  - opus: 設計判断が必要な時やアーキテクチャ設計、曖昧な要件の場合。迷ったらこのモデルを使う。
+- SubAgentへタスクを移譲する際は、タスクの性質に応じて呼び出し時にmodelとthinking effortを指定する。
+  - haiku (`medium`): 決定的・機械的な定型作業。
+  - sonnet (`high`): 標準的な実装・調査。
+  - sonnet (`xhigh`): 標準的な実装・調査のうち、変更範囲が広いものや手順が長いもの。
+  - opus (`high`): 設計判断が必要な時やアーキテクチャ設計、曖昧な要件の場合。迷ったらこのモデルを使う。
+  - opus (`xhigh`): `high` のopusで解決できなかった作業、または判断が不十分と分かった作業。
 
 ## Tool
 
