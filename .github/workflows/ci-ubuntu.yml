@@ -160,9 +160,6 @@ jobs:
               check_link "$base/$name"
             done
           done
-          for base in "$home/.agents/skills" "$home/.claude/skills" "$home/.gemini/antigravity-cli/skills"; do
-            check_link "$base/hunk-review"
-          done
 
       - name: Verify mise installation
         run: |

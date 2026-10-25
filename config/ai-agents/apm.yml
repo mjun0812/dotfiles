@@ -48,6 +48,7 @@ dependencies:
         - agent-browser
     - remorses/playwriter/skills/playwriter
     - herdrdev/herdr/skills/herdr#>=0.8.0
+    - modem-dev/hunk/packages/hunk/skills/hunk-review#>=0.24.0
     - github/gh-stack/skills/gh-stack#>=0.1.0
     - jupyter-ai-contrib/nb-cli/skills/notebook-cli#>=0.0.10
   # Written into each target's own MCP config (~/.claude.json, ~/.codex/config.toml,
