@@ -32,6 +32,9 @@ CODEX_TEMPLATE = "config/ai-agents/codex/config.toml"
 APM_LOCK = HOME / ".apm/apm.lock.yaml"
 # rewrite_config.py の LOCAL_STATE_TABLES と同じ。Codex が書くローカル状態で、テンプレートの管理外
 CODEX_LOCAL_STATE_TABLES = frozenset({"desktop", "projects"})
+# /model などlocalで選んだ値を setup_codex.sh に上書きさせないため、テンプレートから外したキー。
+# 値が昔のテンプレートと同じでも、消し忘れではない
+CODEX_LOCAL_CHOICE_KEYS = frozenset({"model", "model_reasoning_effort", "service_tier"})
 # apm が展開するskill・agentの置き場。dotfiles 自身のsymlinkも同じ場所に置かれる
 SKILL_DIRS = (".agents/skills", ".claude/skills", ".gemini/antigravity-cli/skills")
 AGENT_DIRS = (".claude/agents", ".codex/agents")
@@ -333,6 +336,7 @@ def check_codex_stale_keys() -> Iterator[str]:
             key in current
             or value not in past.get(key, [])
             or parts[0] in CODEX_LOCAL_STATE_TABLES
+            or key in CODEX_LOCAL_CHOICE_KEYS
         ):
             continue
         if parts[0] == "mcp_servers" and parts[1] in apm_mcp:
