@@ -133,9 +133,12 @@ cd "$DOTPATH"
 
 ################ [Neovim] ################
 log_section "Setting up Neovim plugins..."
+# parserは明示的なinstallで1回だけ入れる。起動時の自動installと重なると、同じparserを二重にcompileする
+export NVIM_TS_AUTO_INSTALL=0
 nvim --headless "+Lazy! restore" +qa
 nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa
 nvim --headless -c "lua require('config.mason-preinstall')()" +qa
+unset NVIM_TS_AUTO_INSTALL
 
 ################ [Node] ################
 # macOS installs vp with mise bootstrap (brew:vite-plus)
