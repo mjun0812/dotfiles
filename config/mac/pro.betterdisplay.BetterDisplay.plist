@@ -2,28 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSStatusItem Preferred Position Item-0</key>
-	<real>5641</real>
-	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>648 616 624 402 0 0 1920 1205 </string>
-	<key>NSWindow Frame SUUpdateAlert2</key>
-	<string>694 616 578 402 0 0 1920 1205 </string>
-	<key>NSWindow Frame Settings</key>
-	<string>64 106 800 600 0 0 1920 1205 </string>
 	<key>Paddle-BetterDisplay-762421-SD</key>
 	<string>7e0aa157b67a34939bb57b4207a501854057f16d7fef3d60297e877845b4adc8</string>
-	<key>SUAutomaticallyUpdate</key>
-	<true/>
-	<key>SUEnableAutomaticChecks</key>
-	<true/>
-	<key>SUHasLaunchedBefore</key>
-	<true/>
-	<key>SULastCheckTime</key>
-	<date>2026-08-18T18:06:28Z</date>
-	<key>SUSendProfileInfo</key>
-	<false/>
-	<key>SUUpdateGroupIdentifier</key>
-	<integer>324075257</integer>
 	<key>activationPriority@DisplayGroup:-1001</key>
 	<integer>0</integer>
 	<key>airPlay@Display:2</key>
@@ -46,6 +26,8 @@
 	<false/>
 	<key>appDisconnected@Display:3</key>
 	<false/>
+	<key>appDisconnected@Display:30</key>
+	<false/>
 	<key>appDisconnected@Display:4</key>
 	<false/>
 	<key>appDisconnected@Display:5</key>
@@ -58,6 +40,8 @@
 	<false/>
 	<key>appleCapable@Display:3</key>
 	<false/>
+	<key>appleCapable@Display:30</key>
+	<false/>
 	<key>appleCapable@Display:4</key>
 	<true/>
 	<key>appleCapable@Display:5</key>
@@ -69,6 +53,8 @@
 	<key>appleMade@Display:27</key>
 	<false/>
 	<key>appleMade@Display:3</key>
+	<false/>
+	<key>appleMade@Display:30</key>
 	<false/>
 	<key>appleMade@Display:4</key>
 	<true/>
@@ -89,10 +75,12 @@
 	<key>builtIn@Display:2</key>
 	<false/>
 	<key>builtIn@Display:21</key>
-	<true/>
+	<false/>
 	<key>builtIn@Display:27</key>
 	<false/>
 	<key>builtIn@Display:3</key>
+	<false/>
+	<key>builtIn@Display:30</key>
 	<false/>
 	<key>builtIn@Display:4</key>
 	<true/>
@@ -116,6 +104,8 @@
 	<true/>
 	<key>colorProfilesSupported@Display:3</key>
 	<true/>
+	<key>colorProfilesSupported@Display:30</key>
+	<true/>
 	<key>colorProfilesSupported@Display:4</key>
 	<true/>
 	<key>colorProfilesSupported@Display:5</key>
@@ -128,34 +118,40 @@
 	<false/>
 	<key>colorTableCapable@Display:3</key>
 	<true/>
+	<key>colorTableCapable@Display:30</key>
+	<true/>
 	<key>colorTableCapable@Display:4</key>
 	<true/>
 	<key>colorTableCapable@Display:5</key>
 	<true/>
 	<key>configuredPotentialEDR@Display:2</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>configuredPotentialEDR@Display:21</key>
-	<real>1</real>
+	<real>4.0</real>
 	<key>configuredPotentialEDR@Display:27</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>configuredPotentialEDR@Display:3</key>
-	<real>1</real>
+	<real>1.0</real>
+	<key>configuredPotentialEDR@Display:30</key>
+	<real>1.0</real>
 	<key>configuredPotentialEDR@Display:4</key>
-	<real>2</real>
+	<real>2.0</real>
 	<key>configuredPotentialEDR@Display:5</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>configuredReferenceEDR@Display:2</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>configuredReferenceEDR@Display:21</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>configuredReferenceEDR@Display:27</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>configuredReferenceEDR@Display:3</key>
-	<real>1</real>
+	<real>1.0</real>
+	<key>configuredReferenceEDR@Display:30</key>
+	<real>1.0</real>
 	<key>configuredReferenceEDR@Display:4</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>configuredReferenceEDR@Display:5</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>connected@Display:2</key>
 	<true/>
 	<key>connected@Display:21</key>
@@ -164,6 +160,8 @@
 	<false/>
 	<key>connected@Display:3</key>
 	<true/>
+	<key>connected@Display:30</key>
+	<false/>
 	<key>connected@Display:4</key>
 	<false/>
 	<key>connected@Display:5</key>
@@ -190,6 +188,8 @@
 	<integer>10</integer>
 	<key>defaultBitsPerSample@Display:3</key>
 	<integer>10</integer>
+	<key>defaultBitsPerSample@Display:30</key>
+	<integer>10</integer>
 	<key>defaultBitsPerSample@Display:4</key>
 	<integer>10</integer>
 	<key>defaultBitsPerSample@Display:5</key>
@@ -201,6 +201,8 @@
 	<key>defaultHeight@Display:27</key>
 	<integer>240</integer>
 	<key>defaultHeight@Display:3</key>
+	<integer>1080</integer>
+	<key>defaultHeight@Display:30</key>
 	<integer>1080</integer>
 	<key>defaultHeight@Display:4</key>
 	<integer>956</integer>
@@ -214,6 +216,8 @@
 	<false/>
 	<key>defaultIsHiDPI@Display:3</key>
 	<true/>
+	<key>defaultIsHiDPI@Display:30</key>
+	<true/>
 	<key>defaultIsHiDPI@Display:4</key>
 	<true/>
 	<key>defaultIsHiDPI@Display:5</key>
@@ -225,6 +229,8 @@
 	<key>defaultModeNumber@Display:27</key>
 	<integer>0</integer>
 	<key>defaultModeNumber@Display:3</key>
+	<integer>48</integer>
+	<key>defaultModeNumber@Display:30</key>
 	<integer>48</integer>
 	<key>defaultModeNumber@Display:4</key>
 	<integer>6</integer>
@@ -238,6 +244,8 @@
 	<integer>60</integer>
 	<key>defaultRefreshRate@Display:3</key>
 	<integer>60</integer>
+	<key>defaultRefreshRate@Display:30</key>
+	<integer>60</integer>
 	<key>defaultRefreshRate@Display:4</key>
 	<integer>60</integer>
 	<key>defaultRefreshRate@Display:5</key>
@@ -247,6 +255,8 @@
 	<key>defaultRefreshString@Display:21</key>
 	<string>60Hz</string>
 	<key>defaultRefreshString@Display:3</key>
+	<string>60Hz</string>
+	<key>defaultRefreshString@Display:30</key>
 	<string>60Hz</string>
 	<key>defaultRefreshString@Display:4</key>
 	<string>60Hz</string>
@@ -260,24 +270,28 @@
 	<integer>320</integer>
 	<key>defaultWidth@Display:3</key>
 	<integer>1920</integer>
+	<key>defaultWidth@Display:30</key>
+	<integer>1920</integer>
 	<key>defaultWidth@Display:4</key>
 	<integer>1470</integer>
 	<key>defaultWidth@Display:5</key>
 	<integer>2560</integer>
 	<key>displayConfigurationId</key>
-	<integer>719</integer>
+	<integer>976</integer>
 	<key>displayConfigurationId@Display:2</key>
-	<integer>719</integer>
+	<integer>976</integer>
 	<key>displayConfigurationId@Display:21</key>
-	<integer>716</integer>
+	<integer>975</integer>
 	<key>displayConfigurationId@Display:27</key>
 	<integer>699</integer>
 	<key>displayConfigurationId@Display:3</key>
-	<integer>719</integer>
+	<integer>976</integer>
+	<key>displayConfigurationId@Display:30</key>
+	<integer>724</integer>
 	<key>displayConfigurationId@Display:4</key>
-	<integer>718</integer>
+	<integer>976</integer>
 	<key>displayConfigurationId@Display:5</key>
-	<integer>685</integer>
+	<integer>967</integer>
 	<key>displayIsTV_overrideUndo@v1552m41058</key>
 	<integer>0</integer>
 	<key>displayModeMenuActiveFilterTagIds@Display:2</key>
@@ -301,7 +315,7 @@
 	<key>displayName_overrideUndo@v1552m41058</key>
 	<string></string>
 	<key>displayTagIDs</key>
-	<string>[2,3,4,5,21,27]</string>
+	<string>[2,3,4,5,21,27,30]</string>
 	<key>factoryColorProfileURL@Display:2</key>
 	<string>file:///Library/ColorSync/Profiles/Displays/DELL%20U2720QM-415B1165-6C8C-4D9B-80BC-7CFB1696D5E5.icc</string>
 	<key>factoryColorProfileURL@Display:27</key>
@@ -313,17 +327,19 @@
 	<key>factoryColorProfileURL@Display:5</key>
 	<string>file:///Library/ColorSync/Profiles/Displays/PHL%20258B6QU-EB5B2120-9914-4F9B-BE71-352A339697BB.icc</string>
 	<key>firstAdded@Display:2</key>
-	<real>795330928.12082303</real>
+	<real>795330928.120823</real>
 	<key>firstAdded@Display:21</key>
-	<real>803814225.85151303</real>
+	<real>803814225.851513</real>
 	<key>firstAdded@Display:27</key>
-	<real>808362895.94132197</real>
+	<real>808362895.941322</real>
 	<key>firstAdded@Display:3</key>
-	<real>795330928.15264201</real>
+	<real>795330928.152642</real>
+	<key>firstAdded@Display:30</key>
+	<real>808996238.142919</real>
 	<key>firstAdded@Display:4</key>
-	<real>795503624.43053997</real>
+	<real>795503624.43054</real>
 	<key>firstAdded@Display:5</key>
-	<real>795765010.02130604</real>
+	<real>795765010.021306</real>
 	<key>hasAutoBrightness@Display:2</key>
 	<false/>
 	<key>hasAutoBrightness@Display:21</key>
@@ -332,6 +348,8 @@
 	<false/>
 	<key>hasAutoBrightness@Display:3</key>
 	<false/>
+	<key>hasAutoBrightness@Display:30</key>
+	<false/>
 	<key>hasAutoBrightness@Display:4</key>
 	<true/>
 	<key>hasAutoBrightness@Display:5</key>
@@ -339,10 +357,12 @@
 	<key>hasHDR@Display:2</key>
 	<true/>
 	<key>hasHDR@Display:21</key>
-	<false/>
+	<true/>
 	<key>hasHDR@Display:27</key>
 	<false/>
 	<key>hasHDR@Display:3</key>
+	<true/>
+	<key>hasHDR@Display:30</key>
 	<true/>
 	<key>hasHDR@Display:4</key>
 	<false/>
@@ -356,6 +376,8 @@
 	<false/>
 	<key>hasHiDPI@Display:3</key>
 	<true/>
+	<key>hasHiDPI@Display:30</key>
+	<true/>
 	<key>hasHiDPI@Display:4</key>
 	<true/>
 	<key>hasHiDPI@Display:5</key>
@@ -367,6 +389,8 @@
 	<key>hasNotch@Display:27</key>
 	<false/>
 	<key>hasNotch@Display:3</key>
+	<false/>
+	<key>hasNotch@Display:30</key>
 	<false/>
 	<key>hasNotch@Display:4</key>
 	<true/>
@@ -384,14 +408,18 @@
 	<false/>
 	<key>heightMillimeters@Display:2</key>
 	<real>340.24185535519626</real>
+	<key>heightMillimeters@Display:21</key>
+	<real>340.24185535519626</real>
 	<key>heightMillimeters@Display:27</key>
 	<real>150.51851625795717</real>
 	<key>heightMillimeters@Display:3</key>
 	<real>340.24185535519626</real>
+	<key>heightMillimeters@Display:30</key>
+	<real>340.24185535519626</real>
 	<key>heightMillimeters@Display:4</key>
 	<real>188.92842525622518</real>
 	<key>heightMillimeters@Display:5</key>
-	<real>311.72726804559881</real>
+	<real>311.7272680455988</real>
 	<key>identificationMethod@Display:27</key>
 	<string>vendorModelSerial</string>
 	<key>intelEDIDOverride_overrideUndo@v1552m41058</key>
@@ -409,29 +437,33 @@
 	<key>isUnavailable@temperature-OverlayController@Display:27</key>
 	<true/>
 	<key>lastConnected@Display:2</key>
-	<real>808739331.63969195</real>
+	<real>814590193.1437</real>
 	<key>lastConnected@Display:21</key>
-	<real>808704668.41220796</real>
+	<real>814590180.963309</real>
 	<key>lastConnected@Display:27</key>
-	<real>808362895.94279802</real>
+	<real>808362895.942798</real>
 	<key>lastConnected@Display:3</key>
-	<real>808739332.06478906</real>
+	<real>814590192.979886</real>
+	<key>lastConnected@Display:30</key>
+	<real>808996238.144468</real>
 	<key>lastConnected@Display:4</key>
-	<real>808739326.24994898</real>
+	<real>814590184.769168</real>
 	<key>lastConnected@Display:5</key>
-	<real>807867255.81466603</real>
+	<real>814505119.076411</real>
 	<key>lastUnseen@Display:2</key>
-	<real>808739329.79365301</real>
+	<real>814422967.325818</real>
 	<key>lastUnseen@Display:21</key>
-	<real>808704668.415537</real>
+	<real>814590187.622393</real>
 	<key>lastUnseen@Display:27</key>
-	<real>808362900.35614896</real>
+	<real>808362900.356149</real>
 	<key>lastUnseen@Display:3</key>
-	<real>808704632.70984805</real>
+	<real>814422967.326894</real>
+	<key>lastUnseen@Display:30</key>
+	<real>808996838.075107</real>
 	<key>lastUnseen@Display:4</key>
-	<real>808739329.79409897</real>
+	<real>814590193.821217</real>
 	<key>lastUnseen@Display:5</key>
-	<real>807868101.77701998</real>
+	<real>814506444.569421</real>
 	<key>manualResolutionList_overrideUndo@v1552m41058</key>
 	<string>[]</string>
 	<key>manualResolutions_overrideUndo@v1552m41058</key>
@@ -515,11 +547,13 @@
 	<key>name@Display:2</key>
 	<string>DELL U2720QM</string>
 	<key>name@Display:21</key>
-	<string>Generic Display 2</string>
+	<string>Generic Display 1</string>
 	<key>name@Display:27</key>
 	<string>Thaw Resolver</string>
 	<key>name@Display:3</key>
 	<string>DELL U2723QX</string>
+	<key>name@Display:30</key>
+	<string>Generic Display 2</string>
 	<key>name@Display:4</key>
 	<string>Color LCD</string>
 	<key>name@Display:5</key>
@@ -531,6 +565,8 @@
 	<key>nativeHeight@Display:27</key>
 	<integer>480</integer>
 	<key>nativeHeight@Display:3</key>
+	<integer>2160</integer>
+	<key>nativeHeight@Display:30</key>
 	<integer>2160</integer>
 	<key>nativeHeight@Display:4</key>
 	<integer>1664</integer>
@@ -544,6 +580,8 @@
 	<integer>0</integer>
 	<key>nativeModeNumber@Display:3</key>
 	<integer>76</integer>
+	<key>nativeModeNumber@Display:30</key>
+	<integer>76</integer>
 	<key>nativeModeNumber@Display:4</key>
 	<integer>15</integer>
 	<key>nativeModeNumber@Display:5</key>
@@ -556,22 +594,24 @@
 	<integer>640</integer>
 	<key>nativeWidth@Display:3</key>
 	<integer>3840</integer>
+	<key>nativeWidth@Display:30</key>
+	<integer>3840</integer>
 	<key>nativeWidth@Display:4</key>
 	<integer>2560</integer>
 	<key>nativeWidth@Display:5</key>
 	<integer>2560</integer>
 	<key>nitsHDRMaxAvgReported@Display:2</key>
-	<real>320</real>
+	<real>320.0</real>
 	<key>nitsHDRMaxAvgReported@Display:3</key>
-	<real>415</real>
+	<real>415.0</real>
 	<key>nitsHDRMinReported@Display:2</key>
-	<real>0.098390173189898525</real>
+	<real>0.09839017318989852</real>
 	<key>nitsHDRMinReported@Display:3</key>
 	<real>0.20140383001449608</real>
 	<key>nitsHDRPeakReported@Display:2</key>
-	<real>400</real>
+	<real>400.0</real>
 	<key>nitsHDRPeakReported@Display:3</key>
-	<real>415</real>
+	<real>415.0</real>
 	<key>nonAppleRealDisplay@Display:2</key>
 	<true/>
 	<key>nonAppleRealDisplay@Display:21</key>
@@ -579,6 +619,8 @@
 	<key>nonAppleRealDisplay@Display:27</key>
 	<false/>
 	<key>nonAppleRealDisplay@Display:3</key>
+	<true/>
+	<key>nonAppleRealDisplay@Display:30</key>
 	<true/>
 	<key>nonAppleRealDisplay@Display:4</key>
 	<false/>
@@ -597,6 +639,8 @@
 	<key>overrideCapable@Display:27</key>
 	<false/>
 	<key>overrideCapable@Display:3</key>
+	<true/>
+	<key>overrideCapable@Display:30</key>
 	<true/>
 	<key>overrideCapable@Display:4</key>
 	<true/>
@@ -625,11 +669,11 @@
 	<key>overridesRequireApply_overrideUndo@v1552m41058</key>
 	<false/>
 	<key>persistedDisplayID@Display:2</key>
-	<string>2</string>
+	<string>3</string>
 	<key>persistedDisplayID@Display:27</key>
 	<string>13</string>
 	<key>persistedDisplayID@Display:3</key>
-	<string>3</string>
+	<string>2</string>
 	<key>persistedDisplayID@Display:4</key>
 	<string>1</string>
 	<key>protectSDRColorMode@Display:2</key>
@@ -663,24 +707,28 @@
 	<key>smoothScaling_overrideUndo@v1552m41058</key>
 	<false/>
 	<key>storedIdentifiers@Display:2</key>
-	<string>[{"edidData":"AP\/\/\/\/\/\/\/wAQrLpBTFFNQSUeAQOAPCJ47u6Vo1RMmSYPUFSlSwDhwNEA0cCzAKlAgYCBAHFPCOgAMPJwWoCwWIoAVVAhAAAeAAAA\/wBKWVNSMDIzCiAgICAgAAAA\/ABERUxMIFUyNzIwUU0KAAAA\/QAYSx6MPAAKICAgICAgASICA0PxUmFgX15dEB8FFAQTEhEDAgcGASMJfweDAQAAbQMMABAAODwgAGABAgNn2F3EAXiAA+IPA+MF\/wHmBgcBYFYoVl4AoKCgKVAwIDUAVVAhAAAaEUQAoIAAJVAwIDYAVVAhAAAaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfQ==","ioDisplayLocation":"IOService:\/AppleARMPE\/arm-io@10F00000\/AppleSoCIO\/dispext1@98000000\/IOMobileFramebufferShim","vendorNumber":4268,"infoDictionaryModelNumber":16826,"portID":209756176,"weekOfManufacture":37,"systemUUID":"415B1165-6C8C-4D9B-80BC-7CFB1696D5E5","productName":"DELL U2720QM","infoDictionarySerial":1095586124,"alphanumericSerialNumber":"JYSR023","edidProductName":"DELL U2720QM","serial":1095586124,"yearOfManufacture":2020,"modelNumber":16826,"infoDictionaryVendorNumber":4268}]</string>
+	<string>[{"alphanumericSerialNumber":"JYSR023","yearOfManufacture":2020,"infoDictionaryVendorNumber":4268,"vendorNumber":4268,"infoDictionarySerial":1095586124,"serial":1095586124,"ioDisplayLocation":"IOService:\/AppleARMPE\/arm-io@10F00000\/AppleSoCIO\/dispext1@98000000\/IOMobileFramebufferShim","edidData":"AP\/\/\/\/\/\/\/wAQrLpBTFFNQSUeAQOAPCJ47u6Vo1RMmSYPUFSlSwDhwNEA0cCzAKlAgYCBAHFPCOgAMPJwWoCwWIoAVVAhAAAeAAAA\/wBKWVNSMDIzCiAgICAgAAAA\/ABERUxMIFUyNzIwUU0KAAAA\/QAYSx6MPAAKICAgICAgASICA0PxUmFgX15dEB8FFAQTEhEDAgcGASMJfweDAQAAbQMMABAAODwgAGABAgNn2F3EAXiAA+IPA+MF\/wHmBgcBYFYoVl4AoKCgKVAwIDUAVVAhAAAaEUQAoIAAJVAwIDYAVVAhAAAaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfQ==","modelNumber":16826,"weekOfManufacture":37,"portID":209756176,"edidProductName":"DELL U2720QM","systemUUID":"415B1165-6C8C-4D9B-80BC-7CFB1696D5E5","infoDictionaryModelNumber":16826,"productName":"DELL U2720QM"}]</string>
 	<key>storedIdentifiers@Display:21</key>
-	<string>[{"systemUUID":"UNKNOWN","productName":"Generic Display","vendorNumber":4268,"serial":1095586124,"modelNumber":16826}]</string>
+	<string>[{"systemUUID":"UNKNOWN","vendorNumber":4268,"productName":"Generic Display","serial":1145321548,"modelNumber":17005}]</string>
 	<key>storedIdentifiers@Display:27</key>
 	<string>[{"productName":"Thaw Resolver","systemUUID":"FFC11C4B-7FD9-4055-9360-315614468D23","modelNumber":4660,"weekOfManufacture":0,"serial":1,"infoDictionaryVendorNumber":13398,"infoDictionarySerial":1,"yearOfManufacture":0,"infoDictionaryModelNumber":4660,"vendorNumber":13398}]</string>
 	<key>storedIdentifiers@Display:3</key>
-	<string>[{"edidData":"AP\/\/\/\/\/\/\/wAQrG1CTDhERB0hAQS1PCJ4Ot8VrVBErSUPUFSlSwDRANHAswCpQIGAgQBxT+HATdAAoPBwPoAwIDUAVVAhAAAaAAAA\/wBHMkhENlAzCiAgICAgAAAA\/ABERUxMIFUyNzIzUVgKAAAA\/QAXVg+MNgEKICAgICAgATsCAyLxShAfIAQTEhEDAgEjCQcHgwEAAOMFwADmBgUBYmI4o2YAoPBwH4AwIDUAVVAhAAAaVl4AoKCgKVAwIDUAVVAhAAAaEUQAoIAAH1AwIDYAVVAhAAAavxYAoIA4E0AwIDoAVVAhAAAaAAAAAAAAAAAAAAAAAAAAAAAAAAAACA==","ioDisplayLocation":"IOService:\/AppleARMPE\/arm-io@10F00000\/AppleSoCIO\/dispext0@F4000000\/IOMobileFramebufferShim","vendorNumber":4268,"infoDictionaryModelNumber":17005,"portID":209760272,"weekOfManufacture":29,"systemUUID":"E344219E-5110-4A0B-9349-C167AD00F612","productName":"DELL U2723QX","infoDictionarySerial":1145321548,"alphanumericSerialNumber":"G2HD6P3","edidProductName":"DELL U2723QX","serial":1145321548,"yearOfManufacture":2023,"modelNumber":17005,"infoDictionaryVendorNumber":4268}]</string>
+	<string>[{"alphanumericSerialNumber":"G2HD6P3","yearOfManufacture":2023,"infoDictionaryVendorNumber":4268,"vendorNumber":4268,"infoDictionarySerial":1145321548,"serial":1145321548,"ioDisplayLocation":"IOService:\/AppleARMPE\/arm-io@10F00000\/AppleSoCIO\/dispext0@F4000000\/IOMobileFramebufferShim","edidData":"AP\/\/\/\/\/\/\/wAQrG1CTDhERB0hAQS1PCJ4Ot8VrVBErSUPUFSlSwDRANHAswCpQIGAgQBxT+HATdAAoPBwPoAwIDUAVVAhAAAaAAAA\/wBHMkhENlAzCiAgICAgAAAA\/ABERUxMIFUyNzIzUVgKAAAA\/QAXVg+MNgEKICAgICAgATsCAyLxShAfIAQTEhEDAgEjCQcHgwEAAOMFwADmBgUBYmI4o2YAoPBwH4AwIDUAVVAhAAAaVl4AoKCgKVAwIDUAVVAhAAAaEUQAoIAAH1AwIDYAVVAhAAAavxYAoIA4E0AwIDoAVVAhAAAaAAAAAAAAAAAAAAAAAAAAAAAAAAAACA==","modelNumber":17005,"weekOfManufacture":29,"portID":209760272,"edidProductName":"DELL U2723QX","systemUUID":"E344219E-5110-4A0B-9349-C167AD00F612","infoDictionaryModelNumber":17005,"productName":"DELL U2723QX"}]</string>
+	<key>storedIdentifiers@Display:30</key>
+	<string>[{"serial":1145321548,"systemUUID":"UNKNOWN","productName":"Generic Display","vendorNumber":4268,"modelNumber":17005}]</string>
 	<key>storedIdentifiers@Display:4</key>
-	<string>[{"serial":4251086178,"ioDisplayLocation":"IOService:\/AppleARMPE\/arm-io@10F00000\/AppleSoCIO\/disp0@74000000\/IOMobileFramebufferShim","modelNumber":41058,"productName":"Color LCD","infoDictionaryVendorNumber":1552,"infoDictionarySerial":4251086178,"infoDictionaryModelNumber":41058,"edidProductName":"Color LCD","systemUUID":"37D8832A-2D66-02CA-B9F7-8F30A301B230","vendorNumber":1552}]</string>
+	<string>[{"modelNumber":41058,"infoDictionarySerial":4251086178,"systemUUID":"37D8832A-2D66-02CA-B9F7-8F30A301B230","ioDisplayLocation":"IOService:\/AppleARMPE\/arm-io@10F00000\/AppleSoCIO\/disp0@74000000\/IOMobileFramebufferShim","serial":4251086178,"infoDictionaryVendorNumber":1552,"productName":"Color LCD","infoDictionaryModelNumber":41058,"edidProductName":"Color LCD","vendorNumber":1552}]</string>
 	<key>storedIdentifiers@Display:5</key>
-	<string>[{"serial":9989,"infoDictionaryVendorNumber":16652,"infoDictionaryModelNumber":2293,"ioDisplayLocation":"IOService:\/AppleARMPE\/arm-io@10F00000\/AppleSoCIO\/dispext0@F4000000\/IOMobileFramebufferShim","edidData":"AP\/\/\/\/\/\/\/wBBDPUIBScAAA4bAQSlNx94OkRVqVVNnSYPUFS9SwDRwIGAgUCVD5UAswCBwAEBVl4AoKCgKVAwIDUAKTchAAAeAAAA\/wBVSEIxNzE0MDA5OTg5AAAA\/ABQSEwgMjU4QjZRVQogAAAA\/QAXTA9jHgEKICAgICAgAQ8CAxj0SwECAwQFkBESExQfIwkHB4MBAAACOoDQcjgtQBAsloApNyEAABgCOoAYcTgtQFgslgApNyEAABgoPICgcLAjQDAgNgApNyEAABoBHQC8UtAeILgoVUApNyEAAB6MCtCQIEAxIAxAVQApNyEAABgAAAAAAAAAAAAAAAAAXA==","yearOfManufacture":2017,"productName":"PHL 258B6QU","portID":16,"modelNumber":2293,"vendorNumber":16652,"infoDictionarySerial":9989,"alphanumericSerialNumber":"UHB1714009989","weekOfManufacture":14,"systemUUID":"EB5B2120-9914-4F9B-BE71-352A339697BB","edidProductName":"PHL 258B6QU"}]</string>
+	<string>[{"alphanumericSerialNumber":"UHB1714009989","yearOfManufacture":2017,"infoDictionaryVendorNumber":16652,"vendorNumber":16652,"infoDictionarySerial":9989,"ioDisplayLocation":"IOService:\/AppleARMPE\/arm-io@10F00000\/AppleSoCIO\/dispext0@F4000000\/IOMobileFramebufferShim","serial":9989,"edidData":"AP\/\/\/\/\/\/\/wBBDPUIBScAAA4bAQSlNx94OkRVqVVNnSYPUFS9SwDRwIGAgUCVD5UAswCBwAEBVl4AoKCgKVAwIDUAKTchAAAeAAAA\/wBVSEIxNzE0MDA5OTg5AAAA\/ABQSEwgMjU4QjZRVQogAAAA\/QAXTA9jHgEKICAgICAgAQ8CAxj0SwECAwQFkBESExQfIwkHB4MBAAACOoDQcjgtQBAsloApNyEAABgCOoAYcTgtQFgslgApNyEAABgoPICgcLAjQDAgNgApNyEAABoBHQC8UtAeILgoVUApNyEAAB6MCtCQIEAxIAxAVQApNyEAABgAAAAAAAAAAAAAAAAAXA==","modelNumber":2293,"weekOfManufacture":14,"portID":16,"edidProductName":"PHL 258B6QU","systemUUID":"EB5B2120-9914-4F9B-BE71-352A339697BB","infoDictionaryModelNumber":2293,"productName":"PHL 258B6QU"}]</string>
 	<key>supportsHDR@Display:2</key>
 	<true/>
 	<key>supportsHDR@Display:21</key>
-	<false/>
+	<true/>
 	<key>supportsHDR@Display:27</key>
 	<false/>
 	<key>supportsHDR@Display:3</key>
+	<true/>
+	<key>supportsHDR@Display:30</key>
 	<true/>
 	<key>supportsHDR@Display:4</key>
 	<false/>
@@ -694,12 +742,14 @@
 	<true/>
 	<key>systemVirtual@Display:3</key>
 	<false/>
+	<key>systemVirtual@Display:30</key>
+	<false/>
 	<key>systemVirtual@Display:4</key>
 	<false/>
 	<key>systemVirtual@Display:5</key>
 	<false/>
 	<key>tagIDCounter</key>
-	<integer>29</integer>
+	<integer>36</integer>
 	<key>thirdPartyVirtual@Display:2</key>
 	<false/>
 	<key>thirdPartyVirtual@Display:27</key>
@@ -735,11 +785,11 @@
 	<key>unknownDisplay@Display:5</key>
 	<false/>
 	<key>updateBuild</key>
-	<string>50105</string>
+	<string>53784</string>
 	<key>updateFound</key>
 	<true/>
 	<key>updateVersion</key>
-	<string>4.3.5</string>
+	<string>5.1.1</string>
 	<key>uuid@Display:0</key>
 	<integer>0</integer>
 	<key>uuid@Display:2</key>
@@ -750,6 +800,8 @@
 	<integer>27</integer>
 	<key>uuid@Display:3</key>
 	<integer>3</integer>
+	<key>uuid@Display:30</key>
+	<integer>30</integer>
 	<key>uuid@Display:4</key>
 	<integer>4</integer>
 	<key>uuid@Display:5</key>
@@ -759,35 +811,37 @@
 	<key>value@blueLight-BlueLightController</key>
 	<real>0.5</real>
 	<key>value@combinedBrightness-CombinedController@Display:2</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>value@combinedBrightness-CombinedController@Display:3</key>
-	<real>0.875</real>
+	<real>0.6875</real>
 	<key>value@combinedBrightness-CombinedController@Display:4</key>
-	<real>0.9358309489307981</real>
+	<real>0.9838420839020701</real>
 	<key>value@hardwareBrightness-AppleController@Display:2</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>value@hardwareBrightness-AppleController@Display:21</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>value@hardwareBrightness-AppleController@Display:3</key>
-	<real>0.83499997854232788</real>
+	<real>0.8349999785423279</real>
 	<key>value@hardwareBrightness-AppleController@Display:4</key>
-	<real>0.91529685258865356</real>
+	<real>0.9786715507507324</real>
 	<key>value@hardwareBrightness-DDCController@Display:2</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>value@hardwareBrightness-DDCController@Display:3</key>
-	<real>0.75</real>
+	<real>0.375</real>
 	<key>value@softwareBrightness-ColorController@Display:2</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>value@softwareBrightness-ColorController@Display:21</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>value@softwareBrightness-ColorController@Display:3</key>
-	<real>1</real>
+	<real>1.0</real>
+	<key>value@softwareBrightness-ColorController@Display:30</key>
+	<real>1.0</real>
 	<key>value@softwareBrightness-ColorController@Display:4</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>value@softwareBrightness-ColorController@Display:5</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>value@softwareBrightness-OverlayController@Display:27</key>
-	<real>1</real>
+	<real>1.0</real>
 	<key>virtualScreenLinked@Display:2</key>
 	<false/>
 	<key>virtualScreenLinked@Display:21</key>
@@ -796,20 +850,26 @@
 	<false/>
 	<key>virtualScreenLinked@Display:3</key>
 	<false/>
+	<key>virtualScreenLinked@Display:30</key>
+	<false/>
 	<key>virtualScreenLinked@Display:4</key>
 	<false/>
 	<key>virtualScreenLinked@Display:5</key>
 	<false/>
 	<key>widthMillimeters@Display:2</key>
 	<real>599.2995301699309</real>
+	<key>widthMillimeters@Display:21</key>
+	<real>599.2995301699309</real>
 	<key>widthMillimeters@Display:27</key>
 	<real>200.69135501060956</real>
 	<key>widthMillimeters@Display:3</key>
 	<real>599.2995301699309</real>
+	<key>widthMillimeters@Display:30</key>
+	<real>599.2995301699309</real>
 	<key>widthMillimeters@Display:4</key>
-	<real>290.52842373034628</real>
+	<real>290.5284237303463</real>
 	<key>widthMillimeters@Display:5</key>
-	<real>547.95504795031604</real>
+	<real>547.955047950316</real>
 	<key>xdrPresetsSupported@Display:2</key>
 	<false/>
 	<key>xdrPresetsSupported@Display:21</key>
@@ -817,6 +877,8 @@
 	<key>xdrPresetsSupported@Display:27</key>
 	<false/>
 	<key>xdrPresetsSupported@Display:3</key>
+	<false/>
+	<key>xdrPresetsSupported@Display:30</key>
 	<false/>
 	<key>xdrPresetsSupported@Display:4</key>
 	<false/>

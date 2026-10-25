@@ -78,6 +78,16 @@ jobs:
             fi
           done
 
+      - name: Verify macOS app settings
+        run: |
+          echo "=== Checking macOS app settings ==="
+          source "$HOME/.zshrc"
+          set -e
+          test -L "$HOME/Library/Application Support/iTerm2/DynamicProfiles/dotfiles.json"
+          jq -e . "$HOME/Library/Application Support/iTerm2/DynamicProfiles/dotfiles.json" >/dev/null
+          mise bootstrap macos defaults status --json | jq -e '[.macos_defaults.entries[].state == "set"] | all'
+          echo "✓ iTerm2 dynamic profile is linked and mise defaults are applied"
+
       - name: Verify symlinks (AI agents)
         run: |
           echo "=== Checking AI agent symlinks ==="

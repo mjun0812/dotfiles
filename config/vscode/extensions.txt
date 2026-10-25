@@ -61,8 +61,10 @@ ms-vscode.remote-server
 ms-vscode.vscode-chat-customizations-evaluations
 ms-vsliveshare.vsliveshare
 mushan.vscode-paste-image
+mxschmitt.postscript
 njpwerner.autodocstring
 openai.chatgpt
+openai.codex-audio
 oxc.oxc-vscode
 powertech.powercpp
 prisma.prisma

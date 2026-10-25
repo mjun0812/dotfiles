@@ -11,6 +11,9 @@ DOTPATH=$(cd $(dirname $0) && pwd)
 
 if [ "$(uname -s)" = "Darwin" ]; then
     $DOTPATH/script/tools/dump_mac_tools_config.sh
+
+    log_section "Drift from [bootstrap.macos.defaults] (update config.macos.toml by hand):"
+    python3 "$DOTPATH/script/tools/mac_defaults.py" report
 fi
 
 $DOTPATH/script/tools/dump_vscode_extensions.sh

@@ -82,6 +82,112 @@ container system kernel set --recommended --force
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
 "nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
 
+# アプリの設定 (設定ファイルを持たないアプリはここで宣言し、宣言できないものだけconfig/mac/のplistを使う)
+# UIで変えた設定とのずれは ./update.sh が報告する (script/tools/mac_defaults.py)
+[bootstrap.macos.defaults."com.superultra.Homerow"]
+auto-activate-mission-control = false
+launch-at-login = true
+theme-id = "dark"
+
+# AltTabは数値や真偽値の多くを文字列で保存する
+[bootstrap.macos.defaults."com.lwouis.alt-tab-macos"]
+appearanceSize = "1"
+crashPolicy = "1"
+hideAppBadges = "true"
+hideColoredCircles = "true"
+hideSpaceNumberLabels = "true"
+hideStatusIcons = "true"
+hideWindowlessApps = "true"
+menubarIconShown = "false"
+screensToShow = "1"
+settingsWindowShownOnFirstLaunch = "true"
+shortcutCount = "3"
+showFullscreenWindows = "1"
+showHiddenWindows = "1"
+showMinimizedWindows = "1"
+showWindowlessApps = 1
+showWindowlessApps2 = 1
+showWindowlessApps3 = 1
+showWindowlessApps10 = "1"
+spacesToShow = "1"
+updatePolicy = "2"
+windowMaxWidthInRow = "30"
+
+[bootstrap.macos.defaults."com.googlecode.iterm2"]
+# プロファイルはconfig/mac/iterm2/DynamicProfiles/dotfiles.jsonで管理し、既定にする
+"Default Bookmark Guid" = "9A7E9C53-9775-459D-A60E-85F3CFBD44DB"
+LoadPrefsFromCustomFolder = false
+AboutToPasteTabsWithCancel = true
+AboutToPasteTabsWithCancel_selection = 0
+AIFeatureFunctionCalling = true
+AIFeatureHostedCodeInterpeter = true
+AIFeatureHostedFileSearch = true
+AIFeatureHostedWebSearch = true
+AIFeatureStreamingResponses = true
+AiMaxTokens = 400000
+AiModel = "gpt-5.2"
+AiResponseMaxTokens = 128000
+AITermAPI = 2
+AitermURL = "https://api.openai.com/v1/responses"
+AIVectorStore = 0
+AllowClipboardAccess = false
+AlternateMouseScroll = true
+ConvertDosNewlines = true
+DrawBottomLineForHorizontalTabBar = false
+EnableDivisionView = false
+EscapeShellCharsWithBackslash = false
+HapticFeedbackForEsc = false
+HideScrollbar = true
+HideTab = false
+HideTabNumber = true
+IRMemory = 4
+MinimalSplitPaneDividerProminence = 0.0
+MinimalTabStyleBackgroundColorDifference = 0.0
+MinimalTabStyleOutlineStrength = 0.0
+MinimalTabStyleTreatLeftInsetAsPartOfFirstTab = false
+OnlyWhenMoreTabs = true
+OpenFileInNewWindows = true
+PasteSpecialChunkDelay = 0.01
+PasteSpecialChunkSize = 1024
+PasteSpecialRegex = ""
+PasteSpecialSubstitution = ""
+PasteSpecialUseRegexSubstitution = false
+"Print In Black And White" = true
+PromptForPasteWhenNotAtPrompt = true
+PromptOnQuit = true
+ShowFullScreenTabBar = true
+SmartPlacement = true
+SoundForEsc = false
+TabStyleWithAutomaticOption = 5
+UseLionStyleFullscreen = false
+VisualIndicatorForEsc = false
+WindowNumber = false
+
+[bootstrap.macos.defaults."com.googlecode.iterm2".GlobalKeyMap]
+0x19-0x60000 = { Action = 39, Text = "" }
+0x9-0x40000 = { Action = 32, Text = "" }
+0xd-0x20000-0x24-0x1 = { Action = 12, Keycode = 13, Modifiers = 131072, Text = "\\n", Version = 1 }
+0xf700-0x300000 = { Action = 7, Text = "" }
+0xf701-0x300000 = { Action = 6, Text = "" }
+0xf702-0x300000 = { Action = 2, Text = "" }
+0xf702-0x320000 = { Action = 33, Text = "" }
+0xf703-0x300000 = { Action = 0, Text = "" }
+0xf703-0x320000 = { Action = 34, Text = "" }
+0xf729-0x100000 = { Action = 5, Text = "" }
+0xf72b-0x100000 = { Action = 4, Text = "" }
+0xf72c-0x100000 = { Action = 9, Text = "" }
+0xf72c-0x20000 = { Action = 9, Text = "" }
+0xf72d-0x100000 = { Action = 8, Text = "" }
+0xf72d-0x20000 = { Action = 8, Text = "" }
+
+[bootstrap.macos.defaults."com.googlecode.iterm2".PointerActions]
+"Button,1,1,," = { Action = "kContextMenuPointerAction" }
+"Button,2,1,," = { Action = "kPasteFromClipboardPointerAction" }
+"Gesture,ThreeFingerSwipeDown,," = { Action = "kPrevWindowPointerAction" }
+"Gesture,ThreeFingerSwipeLeft,," = { Action = "kPrevTabPointerAction" }
+"Gesture,ThreeFingerSwipeRight,," = { Action = "kNextTabPointerAction" }
+"Gesture,ThreeFingerSwipeUp,," = { Action = "kNextWindowPointerAction" }
+
 [tasks.no-sleep-mac]
 description = "No Sleep Mode for macOS (runs in background)"
 run = "nohup caffeinate -dims >/dev/null 2>&1 &"

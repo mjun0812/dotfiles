@@ -2,26 +2,41 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSStatusItem VisibleCC Item-0</key>
+	<key>addNumericKeyEquivalents</key>
 	<false/>
-	<key>NSWindow Frame SUStatusFrame</key>
-	<string>1080 970 400 135 0 0 2560 1410 </string>
-	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>970 772 620 398 0 0 2560 1410 </string>
-	<key>SUAutomaticallyUpdate</key>
+	<key>appMigrationUserDefaultsCodable</key>
 	<true/>
-	<key>SUEnableAutomaticChecks</key>
-	<true/>
-	<key>SUHasLaunchedBefore</key>
-	<true/>
-	<key>SULastCheckTime</key>
-	<date>2026-08-18T04:03:39Z</date>
-	<key>SUScheduledCheckInterval</key>
-	<real>86400</real>
-	<key>SUUpdateGroupIdentifier</key>
-	<integer>2501954509</integer>
-	<key>SUUpdateRelaunchingMarker</key>
-	<true/>
+	<key>clearHistoryKeyCombo</key>
+	<data>
+	bnVsbA==
+	</data>
+	<key>clearsHistoryOnQuit</key>
+	<false/>
+	<key>clearsHistoryPeriodically</key>
+	<false/>
+	<key>editSnippetsKeyCombo</key>
+	<data>
+	bnVsbA==
+	</data>
+	<key>excludedApplications</key>
+	<data>
+	W10=
+	</data>
+	<key>folderKeyCombos</key>
+	<data>
+	e30=
+	</data>
+	<key>historyClearInterval</key>
+	<integer>3600</integer>
+	<key>historyKeyCombo</key>
+	<data>
+	eyJtb2RpZmllcnMiOjQzNTIsImtleSI6InYiLCJkb3VibGVkTW9kaWZpZXJzIjpmYWxz
+	ZX0=
+	</data>
+	<key>ignoresUniversalClipboard</key>
+	<false/>
+	<key>kCPYBetaObserveScreenshot</key>
+	<false/>
 	<key>kCPYBetaPastePlainText</key>
 	<false/>
 	<key>kCPYCollectCrashReport</key>
@@ -55,21 +70,72 @@
 	</data>
 	<key>kCPYMigrateNewKeyCombo</key>
 	<true/>
+	<key>kCPYPrefAddClearHistoryMenuItemKey</key>
+	<true/>
+	<key>kCPYPrefCopySameHistroy</key>
+	<true/>
+	<key>kCPYPrefIgnoreConcealedPasteboardType</key>
+	<false/>
+	<key>kCPYPrefInputPasteCommandKey</key>
+	<true/>
 	<key>kCPYPrefMaxHistorySizeKey</key>
 	<integer>50</integer>
 	<key>kCPYPrefMaxMenuItemTitleLengthKey</key>
 	<integer>30</integer>
+	<key>kCPYPrefMenuItemsTitleStartWithZeroKey</key>
+	<false/>
 	<key>kCPYPrefNumberOfItemsPlaceInlineKey</key>
 	<integer>20</integer>
 	<key>kCPYPrefNumberOfItemsPlaceInsideFolderKey</key>
 	<integer>20</integer>
+	<key>kCPYPrefOverwriteSameHistroy</key>
+	<true/>
+	<key>kCPYPrefReorderClipsAfterPasting</key>
+	<true/>
+	<key>kCPYPrefShowAlertBeforeClearHistoryKey</key>
+	<true/>
+	<key>kCPYPrefShowColorPreviewInTheMenu</key>
+	<true/>
 	<key>kCPYPrefShowIconInTheMenuKey</key>
 	<false/>
 	<key>kCPYPrefShowStatusItemKey</key>
 	<integer>0</integer>
 	<key>loginItem</key>
 	<true/>
+	<key>mainKeyCombo</key>
+	<data>
+	eyJtb2RpZmllcnMiOjc2OCwia2V5IjoidiIsImRvdWJsZWRNb2RpZmllcnMiOmZhbHNl
+	fQ==
+	</data>
+	<key>maxLengthOfToolTipKey</key>
+	<integer>200</integer>
+	<key>menuItemsAreMarkedWithNumbers</key>
+	<true/>
+	<key>pasteboardTypeSettings</key>
+	<data>
+	eyJ2YWx1ZXMiOnt9fQ==
+	</data>
+	<key>settingsKeyCombo</key>
+	<data>
+	eyJtb2RpZmllcnMiOjY5MTIsImtleSI6InYiLCJkb3VibGVkTW9kaWZpZXJzIjpmYWxz
+	ZX0=
+	</data>
+	<key>showImageInTheMenu</key>
+	<true/>
+	<key>showToolTipOnMenuItem</key>
+	<true/>
+	<key>showsSnippetsAboveHistory</key>
+	<false/>
+	<key>snippetKeyCombo</key>
+	<data>
+	eyJtb2RpZmllcnMiOjc2OCwia2V5IjoiYiIsImRvdWJsZWRNb2RpZmllcnMiOmZhbHNl
+	fQ==
+	</data>
 	<key>suppressAlertForLoginItem</key>
 	<true/>
+	<key>thumbnailHeight</key>
+	<integer>32</integer>
+	<key>thumbnailWidth</key>
+	<integer>100</integer>
 </dict>
 </plist>
