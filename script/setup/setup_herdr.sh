@@ -16,9 +16,11 @@ set -euo pipefail
 
 DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 
-# フレッシュ環境の mise install 中は ~/.claude / ~/.codex がまだ無く、
-# herdr integration install が失敗する。install.sh が Claude Code / Codex の
+# フレッシュ環境の mise install 中は ~/.claude がまだ無く、
+# herdr integration install が失敗する。install.sh が Claude Code の
 # 設定後に本スクリプトを再実行するので、その時点ではスキップしてよい。
+# ~/.codex は install.sh が mise install より前に作る (mise dot apply が
+# config.toml を書く) が、install.sh を経ずに mise から呼ばれたときのために同じく確かめる。
 if [ -d "$HOME/.claude" ]; then
     herdr integration install claude
 else

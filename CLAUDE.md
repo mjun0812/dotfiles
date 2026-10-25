@@ -51,7 +51,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 以下のように展開する。展開先を直接編集しても実体はこのリポジトリ内のファイルである。
 
 - `config/dot`・`config/dot_config`・`config/{vscode,cursor}` の行とCodexの `config.toml` は、`config/dot_config/mise/conf.d/dotfiles.toml` の `[dotfiles]` に宣言し、`install.sh` が `mise dot apply` で展開する。VSCode / Cursorの展開先は `variants` でOSごとに分けている。miseがこの宣言を読めるように、`~/.config/mise` だけは `install.sh` が先に手でlinkする
-- `config/dot` や `config/dot_config` にファイルを足したら、`dotfiles.toml` にもエントリを足す。ファイルかディレクトリ1つにつき1エントリで並べ、`dot_prefix` は使わない
+- `config/dot` や `config/dot_config` にファイルを足したら、`dotfiles.toml` にもエントリを足す。ファイルかディレクトリ1つにつき1エントリで並べ、`dot_prefix` は使わない。足し忘れは `script/tools/check-dotfiles-entries.sh` をprekが実行して検出する
 - それ以外の行は、`install.sh` と `script/setup/setup_*.sh` が展開する
 
 | リポジトリ内                                                                                                                          | 展開先                                                                        |
