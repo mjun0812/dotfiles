@@ -19,7 +19,16 @@ macOS's own preferences that were changed from the defaults (Dock, Finder, keybo
 - Things that change as the machine is used are not declared: the apps pinned in the Dock, the login items, recent items, and other state that macOS records. Language and region, input sources, and text replacements are left to the macOS setup assistant and iCloud.
 - Values that System Settings stores as reals (`KeyRepeat`, `InitialKeyRepeat`, Dock `tilesize`, `largesize`) are declared as raw defaults with float values; the named sections write integers, which would never match.
 - mise does not restart Dock, Finder, or the menu bar. Changes show after they relaunch or on the next login.
-- `./update.sh` reports only `[differs]` for these domains (`NSGlobalDomain` and `com.apple.*`). They hold too much state for `[undeclared]` to be useful, so add a setting changed in System Settings to the TOML by hand (find its key with `defaults read` before and after the change).
+- `./update.sh` reports only `[differs]` for these domains (`NSGlobalDomain` and `com.apple.*`); they hold too much state for `[undeclared]` to be useful. A declared value changed in System Settings must be copied into the TOML, or the next `install.sh` reverts it.
+- To find the keys of a setting you are about to change, take a snapshot of every defaults domain first, change the setting, then list what changed as TOML tables to paste into `config.macos.toml`:
+
+  ```sh
+  python3 script/tools/mac_defaults.py snapshot   # saved to ~/.cache/dotfiles/mac_defaults_snapshot.plist
+  # change the setting in System Settings or the app
+  python3 script/tools/mac_defaults.py changes
+  ```
+
+  `changes` skips date values and app-state keys, and marks values that cannot be declared (binary data, dates inside a value) and removed keys as comments. Keys that macOS or apps changed in the background between the two commands show up too, so keep only the ones that belong to the setting.
 
 ## AeroSpace
 

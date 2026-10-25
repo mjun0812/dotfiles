@@ -20,8 +20,12 @@ bash script/setup/setup_hunk.sh         # hunk-gh extensionのinstall (miseのpo
 zsh script/setup/setup_codex_daemon.sh pin   # Codex daemonをmise管理のバージョンに固定 (miseのpostinstallからも呼ばれる。migrate/runも有り)
 script/setup/update_completions.sh      # zsh補完の更新
 
-# VSCode拡張リストをリポジトリへ逆同期し、miseで宣言したmacOSのapp設定とのずれを報告
+# VSCode拡張リストをリポジトリへ逆同期し、miseで宣言したmacOSの設定とのずれを報告
 ./update.sh
+
+# macOSの設定を変える前後の差分を、config.macos.toml に貼れる形で表示
+python3 script/tools/mac_defaults.py snapshot   # 設定を変える前に実行
+python3 script/tools/mac_defaults.py changes
 
 # フォーマット (pre-commit hookでも実行される)
 prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt + stylua (lua)
