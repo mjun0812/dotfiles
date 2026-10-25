@@ -50,6 +50,7 @@ jobs:
       CI: "true"
       GITHUB_TOKEN: ${{ github.token }}
       MISE_CONFIG_DIR: ${{ github.workspace }}/config/dot_config/mise
+      EXCLUDED_CASK: mactex-no-gui
 
     steps:
       - name: Checkout repository
@@ -61,29 +62,28 @@ jobs:
           install: false
           cache: false
 
+      # MacTeXはdownloadとpkgのinstallで約10分かかるため、CIでは除外する
+      - name: List packages to apply
+        run: |
+          mise bootstrap packages status --json | jq -r --arg skip "$EXCLUDED_CASK" '
+            .["brew-cask"].packages[].package | select(. != $skip) | "brew-cask:\(.)"
+          ' > "$RUNNER_TEMP/packages.txt"
+
       - name: Apply mise bootstrap packages
-        run: mise bootstrap packages apply --manager brew-cask --yes
+        run: xargs mise bootstrap packages apply --yes < "$RUNNER_TEMP/packages.txt"
 
       - name: Re-apply mise bootstrap packages (idempotency)
-        run: mise bootstrap packages apply --manager brew-cask --yes
+        run: xargs mise bootstrap packages apply --yes < "$RUNNER_TEMP/packages.txt"
 
       - name: Verify mise bootstrap packages
         run: |
-          mise bootstrap packages status --json | jq -e --arg manager brew-cask '
+          mise bootstrap packages status --json | jq -e --arg manager brew-cask --arg skip "$EXCLUDED_CASK" '
             .[$manager].available and
-            ([.[$manager].packages[].state | startswith("installed")] | all)
+            ([.[$manager].packages[] | select(.package != $skip) | .state | startswith("installed")] | all)
           '
 
-      - name: Verify MacTeX and AeroSpace
-        shell: bash
+      # aerospace --version はAeroSpace.appのサーバーへ接続するため、配置だけを確かめる
+      - name: Verify AeroSpace
         run: |
-          df -h /
-          /Library/TeX/texbin/latex --version
-          # aerospace --version はAeroSpace.appのサーバーへ接続するため、配置だけを確かめる
           test -d /Applications/AeroSpace.app
           command -v aerospace
-          # caskのpkg installer choicesにより、TeX Liveだけが入りGhostscriptとGUI appは入らない
-          pkgutil --pkgs | grep -E '^org\.tug\.mactex\.texlive[0-9]+$'
-          if pkgutil --pkgs | grep -E '^org\.tug\.mactex\.(ghostscript|gui)'; then
-            exit 1
-          fi
