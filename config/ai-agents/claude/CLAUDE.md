@@ -64,6 +64,8 @@
 
 ## Japanese Writing
 
-- Markdownファイルを経由せずに外部へ送る日本語(PR本文、Issue、コメント、commitメッセージなど)だけ、
-  送る前に `printf '%s\n' "<本文>" | textlint --stdin --stdin-filename body.md` にかけ、指摘箇所を文意を保ったまま書き直すこと。
+- PR・Issueの本文やコメント、HTMLページ、playwriterなどでwebへ入力する文のように、外へ出す日本語の文章は、出す前にtextlintにかけ、指摘箇所を文意を保ったまま書き直すこと。commitメッセージやひと言のコメントのような短い文はかけなくてよい。
+  - PR・Issueの本文とコメント: `.md` ファイルに書き、`gh` へ `--body-file` で渡す。ファイルの編集時と `gh` の実行時に、hookがtextlintをかける。
+  - webへ入力する文: `.md` ファイルに書いてから入力する。ファイルの編集時に、hookがtextlintをかける。
+  - HTMLページ: 公開や共有の前に `~/.dotfiles/script/tools/textlint.sh report <file>` にかける。Astroなどのテンプレート (`.astro`・`.vue`・`.tsx` など) に書いた日本語は、ビルドしたHTMLのうち変えたページをかける。どちらも、自分が書いた・変えた文への指摘だけを直す。
 - チャットの応答にはtextlintをかけない。
