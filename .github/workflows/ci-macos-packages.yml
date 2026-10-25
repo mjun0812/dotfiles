@@ -8,8 +8,16 @@ on:
   workflow_dispatch:
 
 jobs:
+  changes:
+    uses: ./.github/workflows/changes.yml
+    with:
+      paths: ^config/dot_config/mise/|^\.github/workflows/(ci-macos-packages|changes)\.yml$
+
   test-macos-brew-packages:
     name: Test macOS packages
+    needs: changes
+    # 判定のjobが失敗したとき (outputが空) は、skipせずに実行する
+    if: ${{ !cancelled() && needs.changes.outputs.run != 'false' }}
     runs-on: macos-latest
     timeout-minutes: 45
     env:
@@ -43,6 +51,9 @@ jobs:
 
   test-macos-brew-cask-packages:
     name: Test macOS packages
+    needs: changes
+    # 判定のjobが失敗したとき (outputが空) は、skipせずに実行する
+    if: ${{ !cancelled() && needs.changes.outputs.run != 'false' }}
     runs-on: macos-latest
     timeout-minutes: 45
     env:

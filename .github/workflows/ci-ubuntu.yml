@@ -8,8 +8,14 @@ on:
   workflow_dispatch:
 
 jobs:
+  changes:
+    uses: ./.github/workflows/changes.yml
+
   test-ubuntu:
     name: Test on Ubuntu ${{ matrix.ubuntu }}
+    needs: changes
+    # 判定のjobが失敗したとき (outputが空) は、skipせずに実行する
+    if: ${{ !cancelled() && needs.changes.outputs.run != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
@@ -220,7 +226,7 @@ jobs:
   test-ubuntu-summary:
     name: Test on Ubuntu
     runs-on: ubuntu-latest
-    needs: test-ubuntu
+    needs: [changes, test-ubuntu]
     if: always()
     steps:
-      - run: test "${{ needs.test-ubuntu.result }}" = "success"
+      - run: test "${{ needs.changes.outputs.run }}" = "false" || test "${{ needs.test-ubuntu.result }}" = "success"
