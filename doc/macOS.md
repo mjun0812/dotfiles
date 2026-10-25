@@ -12,6 +12,24 @@ GUI app settings are managed as config files when the app reads one, and as mise
    - Values stored as binary data cannot be declared (Clipy's shortcuts, which are not used). Clipy snippets live in a Realm DB and are not covered.
    - `./update.sh` reports settings that drifted from the declarations (`script/tools/mac_defaults.py`): `[differs]` for declared values changed in the UI, `[undeclared]` for keys set in the UI but not declared. Update the TOML by hand.
 
+## System Settings
+
+macOS's own preferences that were changed from the defaults (Dock, Finder, keyboard, trackpad, hot corners, menu bar clock, screenshots, Stage Manager, ...) are declared in `config/dot_config/mise/config.macos.toml`, with the named sections (`[bootstrap.macos.dock]`, `finder`, `keyboard`, `trackpad`) where they fit and `[bootstrap.macos.defaults]` otherwise. `install.sh` applies them together with the app settings.
+
+- Things that change as the machine is used are not declared: the apps pinned in the Dock, the login items, recent items, and other state that macOS records. Language and region, input sources, and text replacements are left to the macOS setup assistant and iCloud.
+- Values that System Settings stores as reals (`KeyRepeat`, `InitialKeyRepeat`, Dock `tilesize`, `largesize`) are declared as raw defaults with float values; the named sections write integers, which would never match.
+- mise does not restart Dock, Finder, or the menu bar. Changes show after they relaunch or on the next login.
+- `./update.sh` reports only `[differs]` for these domains (`NSGlobalDomain` and `com.apple.*`); they hold too much state for `[undeclared]` to be useful. A declared value changed in System Settings must be copied into the TOML, or the next `install.sh` reverts it.
+- To find the keys of a setting you are about to change, take a snapshot of every defaults domain first, change the setting, then list what changed as TOML tables to paste into `config.macos.toml`:
+
+  ```sh
+  python3 script/tools/mac_defaults.py snapshot   # saved to ~/.cache/dotfiles/mac_defaults_snapshot.plist
+  # change the setting in System Settings or the app
+  python3 script/tools/mac_defaults.py changes
+  ```
+
+  `changes` skips date values and app-state keys, and marks values that cannot be declared (binary data, dates inside a value) and removed keys as comments. Keys that macOS or apps changed in the background between the two commands show up too, so keep only the ones that belong to the setting.
+
 ## AeroSpace
 
 See [doc/aerospace.md](aerospace.md) for AeroSpace window manager configuration and keyboard shortcuts.

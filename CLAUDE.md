@@ -20,8 +20,12 @@ bash script/setup/setup_hunk.sh         # hunk-gh extensionのinstall (miseのpo
 zsh script/setup/setup_codex_daemon.sh pin   # Codex daemonをmise管理のバージョンに固定 (miseのpostinstallからも呼ばれる。migrate/runも有り)
 script/setup/update_completions.sh      # zsh補完の更新
 
-# VSCode拡張リストをリポジトリへ逆同期し、miseで宣言したmacOSのapp設定とのずれを報告
+# VSCode拡張リストをリポジトリへ逆同期し、miseで宣言したmacOSの設定とのずれを報告
 ./update.sh
+
+# macOSの設定を変える前後の差分を、config.macos.toml に貼れる形で表示
+python3 script/tools/mac_defaults.py snapshot   # 設定を変える前に実行
+python3 script/tools/mac_defaults.py changes
 
 # フォーマット (pre-commit hookでも実行される)
 prek run --all-files              # oxfmt (md/json/yaml/js/css) + shfmt + stylua (lua)
@@ -70,7 +74,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/dot/zshrc`            | 対話shell                   | p10k instant prompt、`mise activate`、`sheldon source`、`~/.zshrc.local`、`~/.config/zsh/profiles/*.zsh` (マシン固有設定、zsh-defer) |
 | `config/dot_config/zsh/*.zsh` | sheldonがlocal pluginとして | options / completion (即時)、functions / aliases (zsh-defer)                                                                         |
 | `config/dot_config/sheldon/`  | zshrcから1回                | サードパーティpluginと上記ファイルの読み込み順序・遅延指定                                                                           |
-| `config/dot_config/mise/`     | tool解決時                  | toolとバージョン、postinstall、`[settings]`、task、macOSのbrewパッケージ・常駐サービス定義 (`bootstrap.*`)                           |
+| `config/dot_config/mise/`     | tool解決時                  | toolとバージョン、postinstall、`[settings]`、task、macOSのbrewパッケージ・常駐サービス・設定の定義 (`bootstrap.*`)                   |
 
 順序の制約 (zsh-completionsのfpath追加 → compinit、history設定は即時、syntax-highlightingは最後) は `plugins.toml` 冒頭のコメントにある。tool別の補完ファイル (`_mise`, `_docker`, `_kubectl`) は `script/setup/update_completions.sh` が `~/.config/zsh_completions/` に生成し、`.zcompdump` を削除して次回起動で再構築させる。
 

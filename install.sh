@@ -179,6 +179,8 @@ if [ "$(uname -s)" = "Darwin" ]; then
     ITERM2_PROFILES_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
     mkdir -p "$ITERM2_PROFILES_DIR"
     ln -snfv "$DOTPATH/config/mac/iterm2/DynamicProfiles/dotfiles.json" "$ITERM2_PROFILES_DIR/dotfiles.json"
+    # スクリーンショットの保存先 (config.macos.toml の com.apple.screencapture location)
+    mkdir -p "$HOME/Pictures/ScreenShot"
 
     cp -aLf "$CONFIG_DIR/karabiner" "$DOTPATH/.backup/karabiner" 2>/dev/null || true
     rm -rf "$CONFIG_DIR/karabiner"
