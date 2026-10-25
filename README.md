@@ -69,13 +69,11 @@ gh auth login
 
 # First Install Only: Install VS Code extensions
 ./script/setup/install_vscode_extensions.sh
-# First Install Only: For macOS
-./script/setup/setup_macos_apps.sh
 ```
 
 ## Update
 
-To sync local app settings (macOS app defaults and the VS Code extension list) back into this repository, run:
+To sync the VS Code extension list back into this repository and report macOS app settings that drifted from the mise declarations, run:
 
 ```bash
 ./update.sh

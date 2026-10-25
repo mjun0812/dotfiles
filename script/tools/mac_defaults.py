@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""macOSのapp設定 (defaults) を、dotfilesでの管理に合わせて扱う。
+"""mise の [bootstrap.macos.defaults] と、appのUIで変えた設定のずれを報告する。
 
-report: mise の [bootstrap.macos.defaults] とUIで変えた設定のずれを報告する
-strip:  stdinのplistから状態のキー (更新確認・ウィンドウ位置など) を除き、stdoutへ書く
+[differs] などは宣言したキーの値が違うもの、[undeclared] は宣言していないキーを表す。
+TOMLへの反映は人が判断する。
 """
 
 import json
 import plistlib
+import re
 import subprocess
-import sys
 
-# 設定ではなくappやAppKitが記録する状態のキーの接頭辞 (更新確認・ウィンドウ位置・起動回数など)
-IGNORED_PREFIXES = ("Apple", "MSAppCenter", "NS", "SU")
-IGNORED_PREFIXES_BY_DOMAIN = {
+# 設定ではなくappやAppKitが記録する状態のキー (更新確認・ウィンドウ位置・起動回数など)。keyの先頭から照合する
+IGNORED_PATTERNS = ("Apple", "MSAppCenter", "NS", "SU")
+IGNORED_PATTERNS_BY_DOMAIN = {
     "com.lwouis.alt-tab-macos": ("preferencesVersion",),
     "com.superultra.Homerow": ("activation-count",),
     # プロファイルはDynamic Profilesで管理する。NoSyncはiTerm2自身が同期対象から外している状態のキー
@@ -25,21 +25,43 @@ IGNORED_PREFIXES_BY_DOMAIN = {
         "iTerm Version",
         "kCPK",
     ),
+    # key@対象 はディスプレイなどの機器ごとの情報や状態で、別のMacでは合わない
+    "pro.betterdisplay.BetterDisplay": (
+        ".*@",
+        "Paddle-",
+        "appAlreadyLaunched",
+        "buildNumber",
+        "displayConfigurationId",
+        "displayTagIDs",
+        "onboarding",
+        "overrideSettingsLast",
+        "settings.*Pane",
+        "sheetSizeSaveEntries",
+        "showProLicenseError",
+        "singleMoreMenuTagID",
+        "tagIDCounter",
+        "tools(MenuCollapsed|MoreOptions)",
+        "update(Build|Found|Version)",
+    ),
+    "com.clipy-app.Clipy": ("appMigrationUserDefaultsCodable", "kCPYMigrate"),
 }
 
 
 def is_ignored(domain: str, key: str) -> bool:
     """keyが設定ではなく状態のキーならTrueを返す。"""
-    return key.startswith(IGNORED_PREFIXES + IGNORED_PREFIXES_BY_DOMAIN.get(domain, ()))
+    patterns = IGNORED_PATTERNS + IGNORED_PATTERNS_BY_DOMAIN.get(domain, ())
+    return any(re.match(p, key) for p in patterns)
 
 
 def read_domain(domain: str) -> dict:
     """domainの現在の設定を読む。domainが無ければ空のdictを返す。"""
-    out = subprocess.run(["defaults", "export", domain, "-"], capture_output=True, check=False)
+    out = subprocess.run(
+        ["defaults", "export", domain, "-"], capture_output=True, check=False
+    )
     return plistlib.loads(out.stdout) if out.returncode == 0 else {}
 
 
-def report() -> None:
+def main() -> None:
     """宣言と値が違うキーと、宣言していないキーを表示する。"""
     status = subprocess.run(
         ["mise", "bootstrap", "macos", "defaults", "status", "--json"],
@@ -59,17 +81,14 @@ def report() -> None:
 
     for domain, keys in declared.items():
         for key, value in sorted(read_domain(domain).items()):
-            if key not in keys and not is_ignored(domain, key):
+            # バイナリの値はmiseで宣言できないので報告しない (Clipyのショートカットなど)
+            if (
+                key not in keys
+                and not isinstance(value, bytes)
+                and not is_ignored(domain, key)
+            ):
                 print(f"[undeclared] {domain} {key} = {value!r}")
 
 
-def strip() -> None:
-    """stdinのplistから状態のキーを除いてstdoutへ書く。"""
-    data = plistlib.loads(sys.stdin.buffer.read())
-    domain = sys.argv[2]
-    kept = {k: v for k, v in data.items() if not is_ignored(domain, k)}
-    plistlib.dump(kept, sys.stdout.buffer, fmt=plistlib.FMT_XML)
-
-
 if __name__ == "__main__":
-    {"report": report, "strip": strip}[sys.argv[1]]()
+    main()

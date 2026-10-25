@@ -82,7 +82,7 @@ container system kernel set --recommended --force
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
 "nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
 
-# アプリの設定 (設定ファイルを持たないアプリはここで宣言し、宣言できないものだけconfig/mac/のplistを使う)
+# 設定ファイルを持たないアプリの設定 (状態のキーや機器ごとの値は宣言しない)
 # UIで変えた設定とのずれは ./update.sh が報告する (script/tools/mac_defaults.py)
 [bootstrap.macos.defaults."com.superultra.Homerow"]
 auto-activate-mission-control = false
@@ -112,6 +112,77 @@ showWindowlessApps10 = "1"
 spacesToShow = "1"
 updatePolicy = "2"
 windowMaxWidthInRow = "30"
+
+# メニューに出す項目だけを宣言する。他のキーはディスプレイごとの情報や状態で、別のMacでは合わない
+[bootstrap.macos.defaults."pro.betterdisplay.BetterDisplay"]
+menuLevelBlueLight = "less"
+menuLevelBrightness = "less"
+menuLevelCheckForUpdates = "less"
+menuLevelColorDepth = "more"
+menuLevelColorMode = "more"
+menuLevelColorProfile = "more"
+menuLevelConfigProtection = "more"
+menuLevelContrast = "hide"
+menuLevelDDCAdjustments = "more"
+menuLevelDDCInput = "more"
+menuLevelDisplayConnect = "less"
+menuLevelDisplayDisconnect = "more"
+menuLevelDisplayMode = "more"
+menuLevelDisplaysAndVirtualScreens = "less"
+menuLevelGroups = "less"
+menuLevelImageAdjustments = "more"
+menuLevelManageDisplay = "more"
+menuLevelManageVirtualScreen = "more"
+menuLevelMirror = "more"
+menuLevelMove = "more"
+menuLevelPIP = "more"
+menuLevelQuit = "less"
+menuLevelRefreshRate = "more"
+menuLevelResolution = "less"
+menuLevelRotation = "more"
+menuLevelSettings = "less"
+menuLevelStream = "more"
+menuLevelToggles = "more"
+menuLevelVideoFilterWindow = "less"
+menuLevelVirtualScreenConnect = "less"
+menuLevelVirtualScreenDisconnect = "more"
+menuLevelVolume = "more"
+menuLevelXDRPreset = "more"
+
+# ショートカット・除外するapp・保存する種類はバイナリで保存され宣言できない (ショートカットは使わない)
+[bootstrap.macos.defaults."com.clipy-app.Clipy"]
+addNumericKeyEquivalents = false
+clearsHistoryOnQuit = false
+clearsHistoryPeriodically = false
+historyClearInterval = 3600
+ignoresUniversalClipboard = false
+kCPYBetaObserveScreenshot = false
+kCPYBetaPastePlainText = false
+kCPYCollectCrashReport = false
+kCPYPrefAddClearHistoryMenuItemKey = true
+kCPYPrefCopySameHistroy = true
+kCPYPrefIgnoreConcealedPasteboardType = false
+kCPYPrefInputPasteCommandKey = true
+kCPYPrefMaxHistorySizeKey = 50
+kCPYPrefMaxMenuItemTitleLengthKey = 30
+kCPYPrefMenuItemsTitleStartWithZeroKey = false
+kCPYPrefNumberOfItemsPlaceInlineKey = 20
+kCPYPrefNumberOfItemsPlaceInsideFolderKey = 20
+kCPYPrefOverwriteSameHistroy = true
+kCPYPrefReorderClipsAfterPasting = true
+kCPYPrefShowAlertBeforeClearHistoryKey = true
+kCPYPrefShowColorPreviewInTheMenu = true
+kCPYPrefShowIconInTheMenuKey = false
+kCPYPrefShowStatusItemKey = 0
+loginItem = true
+maxLengthOfToolTipKey = 200
+menuItemsAreMarkedWithNumbers = true
+showImageInTheMenu = true
+showsSnippetsAboveHistory = false
+showToolTipOnMenuItem = true
+suppressAlertForLoginItem = true
+thumbnailHeight = 32
+thumbnailWidth = 100
 
 [bootstrap.macos.defaults."com.googlecode.iterm2"]
 # プロファイルはconfig/mac/iterm2/DynamicProfiles/dotfiles.jsonで管理し、既定にする

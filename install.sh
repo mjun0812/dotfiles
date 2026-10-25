@@ -172,12 +172,17 @@ rm -f "$CURSOR_USER_DIR/settings.json" "$CURSOR_USER_DIR/keybindings.json"
 ln -snfv "$DOTPATH/config/cursor/settings.json" "$CURSOR_USER_DIR/settings.json"
 ln -snfv "$DOTPATH/config/cursor/keybindings.json" "$CURSOR_USER_DIR/keybindings.json"
 
-################ [iTerm2] ################
+################ [macOS apps] ################
+# 設定ファイルを読むapp。他のappの設定は config.macos.toml の [bootstrap.macos.defaults]
 if [ "$(uname -s)" = "Darwin" ]; then
-    log_section "Setting up iTerm2 dynamic profiles..."
+    log_section "Setting up macOS app configs..."
     ITERM2_PROFILES_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
     mkdir -p "$ITERM2_PROFILES_DIR"
     ln -snfv "$DOTPATH/config/mac/iterm2/DynamicProfiles/dotfiles.json" "$ITERM2_PROFILES_DIR/dotfiles.json"
+
+    cp -aLf "$CONFIG_DIR/karabiner" "$DOTPATH/.backup/karabiner" 2>/dev/null || true
+    rm -rf "$CONFIG_DIR/karabiner"
+    ln -snfv "$DOTPATH/config/mac/karabiner" "$CONFIG_DIR/karabiner"
 fi
 
 ################ [Agent Skills] ################

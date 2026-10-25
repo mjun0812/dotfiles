@@ -2,13 +2,15 @@
 
 ## App Settings
 
-GUI app settings are managed in the first way that the app supports, in this order:
+GUI app settings are managed as config files when the app reads one, and as mise defaults otherwise. Nothing is kept as a `defaults` plist dump.
 
-1. **Config files**: the app reads a text file from the repo.
-   - **iTerm2 profiles**: `config/mac/iterm2/DynamicProfiles/dotfiles.json` is a [Dynamic Profile](https://iterm2.com/documentation-dynamic-profiles.html), linked into `~/Library/Application Support/iTerm2/DynamicProfiles/` by `install.sh`. iTerm2 reloads it when the file changes. Changes made in the Settings UI are not written back: use _Other Actions > Save Profile as JSON_ and copy the keys into the file.
-   - **Karabiner-Elements**: `config/mac/karabiner/` is linked to `~/.config/karabiner` by `script/setup/setup_macos_apps.sh`, so UI changes land in the repo directly.
-2. **mise defaults**: preferences declared in `[bootstrap.macos.defaults]` of `config/dot_config/mise/config.macos.toml` (AltTab, Homerow, and the iTerm2 global settings). `install.sh` applies them with `mise bootstrap macos defaults apply`; apps read them on their next launch. `./update.sh` reports settings that drifted from the declarations (`script/tools/mac_defaults.py report`): `[differs]` for declared values changed in the UI, `[undeclared]` for keys set in the UI but not declared. Update the TOML by hand. Keys that only record app state (update checks, window frames, `NoSync*` in iTerm2, ...) are ignored.
-3. **plist**: apps whose settings cannot be declared — BetterDisplay (mostly per-display state) and Clipy (shortcuts stored as binary data) — are kept as `defaults` plists in `config/mac/`. `./update.sh` dumps them without the app-state keys, and `script/setup/setup_macos_apps.sh` imports them on a new machine (quits the app, `defaults import`, restarts `cfprefsd`). Clipy snippets live in a Realm DB and are not covered.
+1. **Config files**: the app reads a text file from the repo. `install.sh` links them.
+   - **iTerm2 profiles**: `config/mac/iterm2/DynamicProfiles/dotfiles.json` is a [Dynamic Profile](https://iterm2.com/documentation-dynamic-profiles.html), linked into `~/Library/Application Support/iTerm2/DynamicProfiles/`. iTerm2 reloads it when the file changes. Changes made in the Settings UI are not written back: use _Other Actions > Save Profile as JSON_ and copy the keys into the file.
+   - **Karabiner-Elements**: `config/mac/karabiner/` is linked to `~/.config/karabiner`, so UI changes land in the repo directly.
+2. **mise defaults**: preferences declared in `[bootstrap.macos.defaults]` of `config/dot_config/mise/config.macos.toml` (AltTab, BetterDisplay, Clipy, Homerow, and the iTerm2 global settings). `install.sh` applies them with `mise bootstrap macos defaults apply`; apps read them on their next launch.
+   - Only settings are declared. Keys that record app state (update checks, window frames, launch counts, `NoSync*` in iTerm2) and per-device values (BetterDisplay's `key@Display:N`) are left out, so BetterDisplay declares only its menu layout (`menuLevel*`).
+   - Values stored as binary data cannot be declared (Clipy's shortcuts, which are not used). Clipy snippets live in a Realm DB and are not covered.
+   - `./update.sh` reports settings that drifted from the declarations (`script/tools/mac_defaults.py`): `[differs]` for declared values changed in the UI, `[undeclared]` for keys set in the UI but not declared. Update the TOML by hand.
 
 ## AeroSpace
 
