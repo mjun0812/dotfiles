@@ -33,7 +33,6 @@ hunk = { version = "latest", postinstall = '"$HOME"/.dotfiles/script/setup/setup
 
 # Dev tool
 ast-grep = "latest"
-duckdb = "latest"
 fzf = "latest"
 gitleaks = "latest"
 herdr = { version = "latest", minimum_release_age = "0s", postinstall = '"$HOME"/.dotfiles/script/setup/setup_herdr.sh' }
@@ -51,6 +50,7 @@ taplo = "latest"
 ty = "latest"
 "aqua:aws/aws-cli" = "latest"
 "aqua:neovim/neovim" = "latest"
+"github:duckdb/duckdb" = "latest"
 "github:rtk-ai/rtk" = "latest"
 "github:nwiizo/suiko" = "latest"
 "github:runpod/runpodctl" = "latest"
