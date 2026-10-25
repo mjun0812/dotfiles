@@ -190,10 +190,10 @@ fi
 ################ [Agent Skills] ################
 log_section "Setting up agent skills..."
 AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
-# Purge dangling symlinks (left after their sources were removed) in every directory APM deploys to.
-# They make the backup cp -L fail, and APM aborts the whole package when a skill it deploys collides with one.
+# Purge every symlink in the directories APM deploys to; only dotfiles creates them, and it recreates its own below.
+# Leftover links (dangling, or ones whose skill moved to APM) make the backup cp -L fail and APM abort the update.
 for link in "$HOME/.agents/skills"/*(@N) "$HOME/.claude/skills"/*(@N) "$HOME/.gemini/antigravity-cli/skills"/*(@N); do
-    [ -e "$link" ] || rm -f "$link"
+    rm -f "$link"
 done
 cp -aLf "$HOME/.agents/skills" "$DOTPATH/.backup/agents_skills" 2>/dev/null || true
 mkdir -p "$HOME/.agents/skills"
