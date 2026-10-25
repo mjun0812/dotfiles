@@ -12,6 +12,15 @@ GUI app settings are managed as config files when the app reads one, and as mise
    - Values stored as binary data cannot be declared (Clipy's shortcuts, which are not used). Clipy snippets live in a Realm DB and are not covered.
    - `./update.sh` reports settings that drifted from the declarations (`script/tools/mac_defaults.py`): `[differs]` for declared values changed in the UI, `[undeclared]` for keys set in the UI but not declared. Update the TOML by hand.
 
+## System Settings
+
+macOS's own preferences that were changed from the defaults (Dock, Finder, keyboard, trackpad, hot corners, menu bar clock, screenshots, Stage Manager, ...) are declared in `config/dot_config/mise/config.macos.toml`, with the named sections (`[bootstrap.macos.dock]`, `finder`, `keyboard`, `trackpad`) where they fit and `[bootstrap.macos.defaults]` otherwise. `install.sh` applies them together with the app settings.
+
+- Things that change as the machine is used are not declared: the apps pinned in the Dock, the login items, recent items, and other state that macOS records. Language and region, input sources, and text replacements are left to the macOS setup assistant and iCloud.
+- Values that System Settings stores as reals (`KeyRepeat`, `InitialKeyRepeat`, Dock `tilesize`, `largesize`) are declared as raw defaults with float values; the named sections write integers, which would never match.
+- mise does not restart Dock, Finder, or the menu bar. Changes show after they relaunch or on the next login.
+- `./update.sh` reports only `[differs]` for these domains (`NSGlobalDomain` and `com.apple.*`). They hold too much state for `[undeclared]` to be useful, so add a setting changed in System Settings to the TOML by hand (find its key with `defaults read` before and after the change).
+
 ## AeroSpace
 
 See [doc/aerospace.md](aerospace.md) for AeroSpace window manager configuration and keyboard shortcuts.

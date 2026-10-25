@@ -82,6 +82,135 @@ container system kernel set --recommended --force
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
 "nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
 
+# macOSの設定 (初期値から変えたもの)。Dockに固定するappやログイン時に開くappなど、使ううちに変わるものは宣言しない
+# Dock・Finder・メニューバーは次の起動から反映される (mise は再起動しない)
+[bootstrap.macos.dock]
+autohide = false
+magnification = true
+
+[bootstrap.macos.finder]
+show_extensions_warning = false
+sort_folders_first = true
+preferred_view_style = "list"
+
+[bootstrap.macos.keyboard]
+automatic_capitalization = false
+automatic_spelling_correction = false
+
+[bootstrap.macos.trackpad]
+tap_to_click = true
+three_finger_drag = false
+
+[bootstrap.macos.defaults."NSGlobalDomain"]
+# System Settingsは実数で保存するので、整数で書く [bootstrap.macos.keyboard] は使わない
+InitialKeyRepeat = 15.0
+KeyRepeat = 2.0
+AppleInterfaceStyle = "Dark"
+AppleKeyboardUIMode = 2 # Tabキーですべてのコントロールを移動する
+AppleMiniaturizeOnDoubleClick = false
+AppleShowAllExtensions = true
+"com.apple.sound.beep.flash" = 0
+"com.apple.springing.delay" = 0.5
+"com.apple.springing.enabled" = true
+"com.apple.trackpad.forceClick" = false
+"com.apple.trackpad.scaling" = 2.5
+KB_DoubleQuoteOption = "“abc”"
+KB_SingleQuoteOption = "‘abc’"
+NSAutomaticPeriodSubstitutionEnabled = true
+NSGlassDiffusionSetting = true
+WebAutomaticSpellingCorrectionEnabled = false
+
+[bootstrap.macos.defaults."com.apple.dock"]
+# System Settingsは実数で保存するので、整数で書く [bootstrap.macos.dock] は使わない
+largesize = 128.0
+tilesize = 35.0
+expose-group-apps = true
+showAppExposeGestureEnabled = true
+wvous-br-corner = 14 # 右下のホットコーナーでクイックメモ
+
+[bootstrap.macos.defaults."com.apple.finder"]
+FinderSpawnTab = true
+FXArrangeGroupViewBy = "Name"
+FXDefaultSearchScope = "SCcf" # 検索は現在のフォルダ
+NewWindowTarget = "PfHm" # 新規ウィンドウはホーム
+ShowExternalHardDrivesOnDesktop = true
+ShowHardDrivesOnDesktop = true
+ShowMountedServersOnDesktop = true
+ShowRemovableMediaOnDesktop = true
+
+# トラックパッドの設定は内蔵 (AppleMultitouchTrackpad) とBluetooth (AppleBluetoothMultitouch) の両方に書く
+[bootstrap.macos.defaults."com.apple.AppleMultitouchTrackpad"]
+ActuateDetents = 1
+FirstClickThreshold = 0
+ForceSuppressed = false
+SecondClickThreshold = 0
+Dragging = true
+DragLock = true
+TrackpadCornerSecondaryClick = 0
+TrackpadFiveFingerPinchGesture = 2
+TrackpadFourFingerHorizSwipeGesture = 2
+TrackpadFourFingerPinchGesture = 2
+TrackpadFourFingerVertSwipeGesture = 2
+TrackpadHandResting = true
+TrackpadHorizScroll = 1
+TrackpadMomentumScroll = true
+TrackpadPinch = 1
+TrackpadRightClick = true
+TrackpadRotate = 1
+TrackpadScroll = true
+TrackpadThreeFingerHorizSwipeGesture = 2
+TrackpadThreeFingerTapGesture = 0
+TrackpadThreeFingerVertSwipeGesture = 0
+TrackpadTwoFingerDoubleTapGesture = 1
+TrackpadTwoFingerFromRightEdgeSwipeGesture = 3
+USBMouseStopsTrackpad = 0
+
+[bootstrap.macos.defaults."com.apple.driver.AppleBluetoothMultitouch.trackpad"]
+Dragging = true
+DragLock = true
+TrackpadCornerSecondaryClick = 0
+TrackpadFiveFingerPinchGesture = 2
+TrackpadFourFingerHorizSwipeGesture = 2
+TrackpadFourFingerPinchGesture = 2
+TrackpadFourFingerVertSwipeGesture = 2
+TrackpadHandResting = true
+TrackpadHorizScroll = 1
+TrackpadMomentumScroll = true
+TrackpadPinch = 1
+TrackpadRightClick = true
+TrackpadRotate = 1
+TrackpadScroll = true
+TrackpadThreeFingerHorizSwipeGesture = 2
+TrackpadThreeFingerTapGesture = 0
+TrackpadThreeFingerVertSwipeGesture = 0
+TrackpadTwoFingerDoubleTapGesture = 1
+TrackpadTwoFingerFromRightEdgeSwipeGesture = 3
+USBMouseStopsTrackpad = 0
+
+[bootstrap.macos.defaults."com.apple.screencapture"]
+location = "~/Pictures/ScreenShot"
+name = "ScreenShot"
+target = "file"
+
+[bootstrap.macos.defaults."com.apple.menuextra.clock"]
+IsAnalog = false
+ShowAMPM = true
+ShowDate = 0
+ShowDayOfWeek = true
+ShowSeconds = true
+
+[bootstrap.macos.defaults."com.apple.WindowManager"]
+AppWindowGroupingBehavior = 1
+AutoHide = false
+EnableStandardClickToShowDesktop = false
+EnableTiledWindowMargins = false
+HideDesktop = true
+StageManagerHideWidgets = false
+StandardHideWidgets = false
+
+[bootstrap.macos.defaults."com.apple.HIToolbox"]
+AppleFnUsageType = 0 # 地球儀キーを押しても何もしない
+
 # 設定ファイルを持たないアプリの設定 (状態のキーや機器ごとの値は宣言しない)
 # UIで変えた設定とのずれは ./update.sh が報告する (script/tools/mac_defaults.py)
 [bootstrap.macos.defaults."com.superultra.Homerow"]

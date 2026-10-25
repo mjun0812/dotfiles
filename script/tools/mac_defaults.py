@@ -2,7 +2,7 @@
 """mise の [bootstrap.macos.defaults] と、appのUIで変えた設定のずれを報告する。
 
 [differs] などは宣言したキーの値が違うもの、[undeclared] は宣言していないキーを表す。
-TOMLへの反映は人が判断する。
+macOS自身のdomainは状態のキーが多いため、[undeclared] を報告しない。TOMLへの反映は人が判断する。
 """
 
 import json
@@ -47,6 +47,11 @@ IGNORED_PATTERNS_BY_DOMAIN = {
 }
 
 
+def is_system_domain(domain: str) -> bool:
+    """domainがappではなくmacOS自身の設定ならTrueを返す。"""
+    return domain == "NSGlobalDomain" or domain.startswith("com.apple.")
+
+
 def is_ignored(domain: str, key: str) -> bool:
     """keyが設定ではなく状態のキーならTrueを返す。"""
     patterns = IGNORED_PATTERNS + IGNORED_PATTERNS_BY_DOMAIN.get(domain, ())
@@ -80,6 +85,8 @@ def main() -> None:
             )
 
     for domain, keys in declared.items():
+        if is_system_domain(domain):
+            continue
         for key, value in sorted(read_domain(domain).items()):
             # バイナリの値はmiseで宣言できないので報告しない (Clipyのショートカットなど)
             if (
