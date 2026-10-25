@@ -14,6 +14,12 @@
 !.pre-commit-config.yaml
 !.oxfmtrc.json
 !.editorconfig
+!.agents
+!.agents/skills
+!.agents/skills/**
+!.claude
+!.claude/skills
+!.claude/skills/**
 
 !assets
 !assets/**

@@ -23,6 +23,10 @@ script/setup/update_completions.sh      # zsh補完の更新
 # VSCode拡張リストをリポジトリへ逆同期し、miseで宣言したmacOSの設定とのずれを報告
 ./update.sh
 
+# dotfilesの更新にlocal環境が追従しているかを調べる (直し方の判断は .agents/skills/doctor)
+python3 script/tools/doctor.py        # ずれと、前回の確認以降のcommitを表示
+python3 script/tools/doctor.py mark   # 確認を終えたcommitを記録
+
 # macOSの設定を変える前後の差分を、config.macos.toml に貼れる形で表示
 python3 script/tools/mac_defaults.py snapshot   # 設定を変える前に実行
 python3 script/tools/mac_defaults.py changes
