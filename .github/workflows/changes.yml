@@ -1,7 +1,7 @@
 name: Detect changes
 
 # 重いCIのjobを、今回の変更がそのjobの結果を変えうるときだけ動かすための判定。
-# 判定できない場合 (workflow_dispatch、push前のcommitを取得できない場合) は実行する。
+# 判定するのはpull_requestだけで、mainへのpushとworkflow_dispatchでは常に実行する。
 on:
   workflow_call:
     inputs:
@@ -33,18 +33,12 @@ jobs:
         id: detect
         env:
           EVENT_NAME: ${{ github.event_name }}
-          BEFORE: ${{ github.event.before }}
           PATHS: ${{ inputs.paths }}
         run: |
           run=true
-          case "$EVENT_NAME" in
-          pull_request) base=HEAD^1 ;;
-          push) git fetch --depth=1 origin "$BEFORE" && base=$BEFORE ;;
-          esac
-
-          if [[ -n ${base:-} ]]; then
+          if [[ $EVENT_NAME == pull_request ]]; then
             # renameは移動元の削除と移動先の追加として扱う
-            changes=$(git diff --name-status --no-renames "$base" HEAD)
+            changes=$(git diff --name-status --no-renames HEAD^1 HEAD)
             echo "$changes"
             run=false
             if [[ -n $PATHS ]]; then
