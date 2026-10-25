@@ -20,7 +20,7 @@ bash script/setup/setup_hunk.sh         # hunk-gh extensionのinstall (miseのpo
 zsh script/setup/setup_codex_daemon.sh pin   # Codex daemonをmise管理のバージョンに固定 (miseのpostinstallからも呼ばれる。migrate/runも有り)
 script/setup/update_completions.sh      # zsh補完の更新
 
-# ローカルのapp設定 (macOS app defaults・VSCode拡張リスト) をリポジトリへ逆同期
+# VSCode拡張リストをリポジトリへ逆同期し、miseで宣言したmacOSのapp設定とのずれを報告
 ./update.sh
 
 # フォーマット (pre-commit hookでも実行される)
@@ -56,6 +56,8 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/ai-agents/gemini/antigravity-cli/settings.json`                                                                               | `~/.gemini/antigravity-cli/settings.json`                                     |
 | `config/ai-agents/apm.yml`                                                                                                            | `~/.apm/apm.yml`                                                              |
 | `config/textlint/textlintrc.js`                                                                                                       | `~/.textlintrc.js` (CLIはmiseのPATH / shimから公開)                           |
+| `config/mac/iterm2/DynamicProfiles/dotfiles.json` (macOS)                                                                             | `~/Library/Application Support/iTerm2/DynamicProfiles/dotfiles.json`          |
+| `config/mac/karabiner` (macOS)                                                                                                        | `~/.config/karabiner`                                                         |
 | `config/{vscode,cursor}/{settings.json,keybindings.json}`                                                                             | 各アプリのUserディレクトリ (`extensions.txt` は展開されず参照専用)            |
 
 上書き前の既存ファイルは `.backup/` に退避される。
