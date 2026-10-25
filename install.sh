@@ -136,8 +136,11 @@ log_section "Setting up Neovim plugins..."
 # parserは明示的なinstallで1回だけ入れる。起動時の自動installと重なると、同じparserを二重にcompileする
 export NVIM_TS_AUTO_INSTALL=0
 nvim --headless "+Lazy! restore" +qa
-nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa
+# treesitterのparserとmasonのLSP serverは互いに依存しないので、並列に入れる
+nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa &
+treesitter_pid=$!
 nvim --headless -c "lua require('config.mason-preinstall')()" +qa
+wait $treesitter_pid
 unset NVIM_TS_AUTO_INSTALL
 
 ################ [Node] ################
