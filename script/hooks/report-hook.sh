@@ -24,7 +24,7 @@ embedded="${interp}[[:space:]]+-[ce]([[:space:]]|\$)|${interp}[[:space:]]*<<"
 
 report=()
 for file in "${(@f)$("$DOTPATH/script/hooks/edited-files.sh")}"; do
-    # "行番号<TAB>指摘" を集め、変わった行のものだけ残す
+    # "行番号<TAB>指摘" を1件1行で集め、変わった行のものだけ残す
     findings=()
     case $file in
     *.md)
@@ -32,7 +32,7 @@ for file in "${(@f)$("$DOTPATH/script/hooks/edited-files.sh")}"; do
         # Boundaryのような決まった書式の行もあるので、言い換えを促す指摘を返さない。人が読む文章は判断シートやPRで別に見る
         [[ $file == */.mjun/* || ${file:A} == */.mjun/* ]] && continue
         findings=("${(@f)$("$DOTPATH/script/tools/textlint.sh" report --format json "$file" 2>/dev/null |
-            jq -r --arg file "$file" '.[0].messages[] | "\(.line)\t\($file):\(.line):\(.column): \(.message) [\(.ruleId)]"' 2>/dev/null)}")
+            jq -r --arg file "$file" '.[0].messages[] | "\(.line)\t\($file):\(.line):\(.column): \(.message | gsub("\n"; " ")) [\(.ruleId)]"' 2>/dev/null)}")
         ;;
     *.sh | *.bash | *.zsh)
         read -r shebang <"$file"
