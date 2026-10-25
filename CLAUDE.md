@@ -54,27 +54,27 @@ script/tools/sync_vscode_extensions.sh --dry-run
 
 以下のように展開する。展開先を直接編集しても実体はこのリポジトリ内のファイルである。
 
-- `config/dot`・`config/dot_config`・`config/{vscode,cursor}` の行とCodexの `config.toml` は、`config/dot_config/mise/conf.d/dotfiles.toml` の `[dotfiles]` に宣言し、`install.sh` が `mise dot apply` で展開する。VSCode / Cursorの展開先は `variants` でOSごとに分けている。miseがこの宣言を読めるように、`~/.config/mise` だけは `install.sh` が先に手でlinkする
+- `config/dot`・`config/dot_config`・`config/vscode` の行とCodexの `config.toml` は、`config/dot_config/mise/conf.d/dotfiles.toml` の `[dotfiles]` に宣言し、`install.sh` が `mise dot apply` で展開する。VSCodeの展開先は `variants` でOSごとに分けている。miseがこの宣言を読めるように、`~/.config/mise` だけは `install.sh` が先に手でlinkする
 - `config/dot` や `config/dot_config` にファイルを足したら、`dotfiles.toml` にもエントリを足す。ファイルかディレクトリ1つにつき1エントリで並べ、`dot_prefix` は使わない。足し忘れは `script/tools/check-dotfiles-entries.sh` をprekが実行して検出する
 - それ以外の行は、`install.sh` と `script/setup/setup_*.sh` が展開する
 
-| リポジトリ内                                                                                                                          | 展開先                                                                        |
-| ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `config/dot/<name>`                                                                                                                   | `~/.<name>`                                                                   |
-| `config/dot_config/<name>`                                                                                                            | `~/.config/<name>`                                                            |
-| `config/dot_config/{herdr,hunk}/config.toml`, `config/dot_config/cli-proxy-api/config.yaml`, `config/dot_config/omniwm/settings.toml` | `~/.config/<name>/` 配下にファイル単位でsymlink (ディレクトリは実体)          |
-| `config/dot_config/herdr/plugins/<plugin>`                                                                                            | `herdr plugin link` で登録 (symlinkではない。`setup_herdr.sh` が実行)         |
-| `config/ai-agents/claude/{CLAUDE.md,settings.json,statusline.py,subagent_statusline.py}`                                              | `~/.claude/` 配下                                                             |
-| `config/ai-agents/rules/*`                                                                                                            | `~/.claude/rules/`(Codexへは `codex-rules-hook.sh` が渡す)                    |
-| `config/ai-agents/skills/<skill>`                                                                                                     | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
-| `config/ai-agents/codex/hooks.json`                                                                                                   | `~/.codex/hooks.json`                                                         |
-| `config/ai-agents/AGENTS_global.md`                                                                                                   | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                   |
-| `config/ai-agents/gemini/antigravity-cli/settings.json`                                                                               | `~/.gemini/antigravity-cli/settings.json`                                     |
-| `config/ai-agents/apm.yml`                                                                                                            | `~/.apm/apm.yml`                                                              |
-| `config/textlint/textlintrc.js`                                                                                                       | `~/.textlintrc.js` (CLIはmiseのPATH / shimから公開)                           |
-| `config/mac/iterm2/DynamicProfiles/dotfiles.json` (macOS)                                                                             | `~/Library/Application Support/iTerm2/DynamicProfiles/dotfiles.json`          |
-| `config/mac/karabiner` (macOS)                                                                                                        | `~/.config/karabiner`                                                         |
-| `config/{vscode,cursor}/{settings.json,keybindings.json}`                                                                             | 各アプリのUserディレクトリ (`extensions.txt` は展開されず参照専用)            |
+| リポジトリ内                                                                                | 展開先                                                                        |
+| ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `config/dot/<name>`                                                                         | `~/.<name>`                                                                   |
+| `config/dot_config/<name>`                                                                  | `~/.config/<name>`                                                            |
+| `config/dot_config/{herdr,hunk}/config.toml`, `config/dot_config/cli-proxy-api/config.yaml` | `~/.config/<name>/` 配下にファイル単位でsymlink (ディレクトリは実体)          |
+| `config/dot_config/herdr/plugins/<plugin>`                                                  | `herdr plugin link` で登録 (symlinkではない。`setup_herdr.sh` が実行)         |
+| `config/ai-agents/claude/{CLAUDE.md,settings.json,statusline.py,subagent_statusline.py}`    | `~/.claude/` 配下                                                             |
+| `config/ai-agents/rules/*`                                                                  | `~/.claude/rules/`(Codexへは `codex-rules-hook.sh` が渡す)                    |
+| `config/ai-agents/skills/<skill>`                                                           | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
+| `config/ai-agents/codex/hooks.json`                                                         | `~/.codex/hooks.json`                                                         |
+| `config/ai-agents/AGENTS_global.md`                                                         | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                   |
+| `config/ai-agents/gemini/antigravity-cli/settings.json`                                     | `~/.gemini/antigravity-cli/settings.json`                                     |
+| `config/ai-agents/apm.yml`                                                                  | `~/.apm/apm.yml`                                                              |
+| `config/textlint/textlintrc.js`                                                             | `~/.textlintrc.js` (CLIはmiseのPATH / shimから公開)                           |
+| `config/mac/iterm2/DynamicProfiles/dotfiles.json` (macOS)                                   | `~/Library/Application Support/iTerm2/DynamicProfiles/dotfiles.json`          |
+| `config/mac/karabiner` (macOS)                                                              | `~/.config/karabiner`                                                         |
+| `config/vscode/{settings.json,keybindings.json}`                                            | VSCodeのUserディレクトリ (`extensions.txt` は展開されず参照専用)              |
 
 展開先にある実ファイルは、置き換える前に `.backup/` へ退避される。`mise dot apply` の展開先は、`install.sh` がHOMEからの相対パスのまま `.backup/` 以下へ移す。
 
@@ -109,7 +109,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
   - 人が手で使う `textlint` も同じ本体とルールを使う。CLIはmiseのPATH / shimから公開され、ルールは同じinstall先の `node_modules` から解決される。`setup_textlint.sh` はdotfilesが作った旧 `~/.local/bin/textlint` のsymlinkだけを撤去する。設定の `~/.textlintrc.js` (`textlintrc.js`) はfix側とreport側のルールをまとめたもので、textlintが設定をカレントディレクトリから親へ探すため、自前の設定を持たないホーム配下のディレクトリから実行したときだけ使われる (対象のファイルはホームの外でもよい)。`--config` には渡せない (rc-config-loaderが拡張子付きのJSをYAMLとして読む)。
 - `gh pr|issue create|edit|comment` と `gh pr review` で送る本文には、Claude Code・Codex共通のPreToolUse hook `script/hooks/gh-body-textlint-hook.sh` がreport側の設定でtextlintをかけ、指摘があれば一度だけ止める。誤検知で先へ進めなくならないように、同じ本文での再実行は通す。300バイト (日本語でおよそ100文字) 未満の本文は検査しない。`$(...)` や `--body-file -` で渡す本文はhookから展開結果が見えないので、ファイルに書いて `--body-file` で渡させる。
 - textlintの導入・更新手順とBun backendへの依存は `config/textlint/README.md` に記載する。ルールは `bun_args` の固定版を明示的に変更する。旧 `package.json` / `bun.lock` は使わず、推移依存の完全固定は行わない。
-- `templates/` にはMarkdownのPDF出力用CSSと設定、`repo: local` のpre-commit設定テンプレート、agentsviewのリモートホスト定義 (`~/.agentsview/remotes.toml`) のplaceholderがある。PDF用ファイルはVS Code・Cursorの設定と `md-to-pdf` のaliasから参照される。commit・PR・Issue・レビュー用テンプレートは各skillに同梱される。
+- `templates/` にはMarkdownのPDF出力用CSSと設定、`repo: local` のpre-commit設定テンプレート、agentsviewのリモートホスト定義 (`~/.agentsview/remotes.toml`) のplaceholderがある。PDF用ファイルはVS Codeの設定と `md-to-pdf` のaliasから参照される。commit・PR・Issue・レビュー用テンプレートは各skillに同梱される。
 
 ## 規約
 

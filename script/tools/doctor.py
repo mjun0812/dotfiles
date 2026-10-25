@@ -160,14 +160,9 @@ def expected_links() -> Iterator[tuple[Path, Path]]:
     yield DOTPATH / "config/textlint/textlintrc.js", HOME / ".textlintrc.js"
 
     app_support = HOME / "Library/Application Support"
-    for app in ("vscode", "cursor"):
-        user_dir = (
-            (app_support if DARWIN else HOME / ".config")
-            / ("Code" if app == "vscode" else "Cursor")
-            / "User"
-        )
-        for name in ("settings.json", "keybindings.json"):
-            yield DOTPATH / "config" / app / name, user_dir / name
+    vscode_user_dir = (app_support if DARWIN else HOME / ".config") / "Code/User"
+    for name in ("settings.json", "keybindings.json"):
+        yield DOTPATH / "config/vscode" / name, vscode_user_dir / name
     if DARWIN:
         profile = "iTerm2/DynamicProfiles/dotfiles.json"
         yield (
@@ -206,7 +201,7 @@ def check_mise() -> Iterator[str]:
     pinned = re.search(
         r'^MISE_VERSION="(.+)"',
         (DOTPATH / "script/setup/install_mise.sh").read_text(),
-        re.M,
+        re.MULTILINE,
     )
     current = subprocess.run(
         ["mise", "--version"], capture_output=True, text=True
@@ -325,7 +320,7 @@ def check_codex_stale_keys() -> Iterator[str]:
         re.findall(
             r"^\s+- name: (\S+)",
             (DOTPATH / "config/ai-agents/apm.yml").read_text(),
-            re.M,
+            re.MULTILINE,
         )
     )
     for key, value in sorted(

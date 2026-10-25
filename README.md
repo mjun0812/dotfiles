@@ -34,7 +34,6 @@
   <!-- Editor -->
   <img src="https://shieldcn.dev/badge/Neovim-57A143.svg?size=xs&logo=neovim&logoColor=white" alt="Neovim">
   <img src="https://shieldcn.dev/badge/VS%20Code-0078d7.svg?size=xs&logo=vscodium&logoColor=white" alt="VS Code">
-  <img src="https://shieldcn.dev/badge/Cursor-000000.svg?size=xs&logo=cursor&logoColor=white" alt="Cursor">
   <br>
   <!-- Terminal -->
   <img src="https://shieldcn.dev/badge/Ghostty-1D2021.svg?size=xs&logo=ghostty&logoColor=white" alt="Ghostty">
@@ -95,7 +94,6 @@ apm update -g
 | mise   | Package manager |
 | Neovim | Editor          |
 | VSCode | IDE             |
-| Cursor | IDE             |
 
 ### CLI
 
@@ -192,7 +190,6 @@ Details of configuration and keyboard shortcuts are documented in [doc/macOS.md]
 | Claude             | Anthropic desktop client          |
 | Clipy              | Clipboard manager                 |
 | CodexBar           | Menu bar usage monitor for agents |
-| Cursor             | AI-powered IDE                    |
 | DeepL              | Translator                        |
 | Discord            | Chat                              |
 | draw.io            | Diagram editor                    |
@@ -209,7 +206,6 @@ Details of configuration and keyboard shortcuts are documented in [doc/macOS.md]
 | Notion             | Notes and knowledge base          |
 | Obsidian           | Markdown knowledge base           |
 | Ollama             | Local LLM runtime                 |
-| OmniWM             | Tiling window manager             |
 | Raycast            | Launcher                          |
 | Thaw               | Menu bar manager                  |
 | Visual Studio Code | Code editor                       |

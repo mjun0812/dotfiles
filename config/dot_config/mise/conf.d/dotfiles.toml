@@ -35,7 +35,6 @@
 "~/.config/cli-proxy-api/config.yaml" = "~/.dotfiles/config/dot_config/cli-proxy-api/config.yaml"
 "~/.config/herdr/config.toml" = "~/.dotfiles/config/dot_config/herdr/config.toml"
 "~/.config/hunk/config.toml" = "~/.dotfiles/config/dot_config/hunk/config.toml"
-"~/.config/omniwm/settings.toml" = "~/.dotfiles/config/dot_config/omniwm/settings.toml"
 
 # Codexが書き足すローカル状態 ([projects.*] や [hooks.state]) を残し、テンプレートのキーだけを書き込む
 "~/.codex/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex/config.toml", merge = true }
@@ -52,18 +51,4 @@ source = "~/.dotfiles/config/vscode/keybindings.json"
 variants = [
     { os = "macos", target = "~/Library/Application Support/Code/User/keybindings.json" },
     { os = "linux", target = "~/.config/Code/User/keybindings.json" },
-]
-
-[dotfiles.cursor-settings]
-source = "~/.dotfiles/config/cursor/settings.json"
-variants = [
-    { os = "macos", target = "~/Library/Application Support/Cursor/User/settings.json" },
-    { os = "linux", target = "~/.config/Cursor/User/settings.json" },
-]
-
-[dotfiles.cursor-keybindings]
-source = "~/.dotfiles/config/cursor/keybindings.json"
-variants = [
-    { os = "macos", target = "~/Library/Application Support/Cursor/User/keybindings.json" },
-    { os = "linux", target = "~/.config/Cursor/User/keybindings.json" },
 ]
