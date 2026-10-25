@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## リポジトリ概要
 
-macOS / Linux向けのdotfiles。`install.sh` がリポジトリ内のファイルをホームディレクトリへsymlinkとして展開する方式で、リポジトリ内のファイルを編集すればそのまま実環境に反映される。
+macOS / Linux向けのdotfiles。リポジトリ内のファイルをホームディレクトリへsymlinkとして展開する方式で、リポジトリ内のファイルを編集すればそのまま実環境に反映される。展開の大部分はmiseの `[dotfiles]` に宣言し、`install.sh` が `mise dot apply` で展開する。
 
 ## コマンド
 
@@ -14,11 +14,15 @@ macOS / Linux向けのdotfiles。`install.sh` がリポジトリ内のファイ�
 
 # 個別セットアップ (install.shから呼ばれる。対象部分だけ再実行したいとき)
 zsh script/setup/setup_claude_code.sh   # Claude Code設定のsymlink・plugin
-zsh script/setup/setup_codex.sh         # Codex設定 (config.tomlはキー単位マージ、他はsymlink)
+zsh script/setup/setup_codex.sh         # Codex設定のsymlink (config.tomlのマージはmise dot applyが行う)
 bash script/setup/setup_herdr.sh        # herdr integration・plugin link (miseのpostinstallからも呼ばれる)
 bash script/setup/setup_hunk.sh         # hunk-gh extensionのinstall (miseのpostinstallからも呼ばれる)
 zsh script/setup/setup_codex_daemon.sh pin   # Codex daemonをmise管理のバージョンに固定 (miseのpostinstallからも呼ばれる。migrate/runも有り)
 script/setup/update_completions.sh      # zsh補完の更新
+
+# [dotfiles] の展開 (install.shから呼ばれる)。statusは展開の状態を一覧し、--missingなら未適用で終了コード1
+mise dot status
+mise dot apply
 
 # VSCode拡張リストをリポジトリへ逆同期し、miseで宣言したmacOSの設定とのずれを報告
 ./update.sh
@@ -48,7 +52,11 @@ script/tools/sync_vscode_extensions.sh --dry-run
 
 ### symlink展開の対応関係
 
-`install.sh` と `script/setup/setup_*.sh` が以下のように展開する。展開先を直接編集しても実体はこのリポジトリ内のファイルである。
+以下のように展開する。展開先を直接編集しても実体はこのリポジトリ内のファイルである。
+
+- `config/dot`・`config/dot_config`・`config/{vscode,cursor}` の行とCodexの `config.toml` は、`config/dot_config/mise/conf.d/dotfiles.toml` の `[dotfiles]` に宣言し、`install.sh` が `mise dot apply` で展開する。VSCode / Cursorの展開先は `variants` でOSごとに分けている。miseがこの宣言を読めるように、`~/.config/mise` だけは `install.sh` が先に手でlinkする
+- `config/dot` や `config/dot_config` にファイルを足したら、`dotfiles.toml` にもエントリを足す。ファイルかディレクトリ1つにつき1エントリで並べ、`dot_prefix` は使わない。足し忘れは `script/tools/check-dotfiles-entries.sh` をprekが実行して検出する
+- それ以外の行は、`install.sh` と `script/setup/setup_*.sh` が展開する
 
 | リポジトリ内                                                                                                                          | 展開先                                                                        |
 | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
@@ -68,7 +76,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/mac/karabiner` (macOS)                                                                                                        | `~/.config/karabiner`                                                         |
 | `config/{vscode,cursor}/{settings.json,keybindings.json}`                                                                             | 各アプリのUserディレクトリ (`extensions.txt` は展開されず参照専用)            |
 
-上書き前の既存ファイルは `.backup/` に退避される。
+展開先にある実ファイルは、置き換える前に `.backup/` へ退避される。`mise dot apply` の展開先は、`install.sh` がHOMEからの相対パスのまま `.backup/` 以下へ移す。
 
 ### zsh起動ファイルの役割分担
 
@@ -89,7 +97,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 - MCPサーバーも `config/ai-agents/apm.yml` の `dependencies.mcp` で一元管理する。apmが各agentの設定 (`~/.claude.json` の `mcpServers`、`~/.codex/config.toml` の `[mcp_servers.*]`、`~/.gemini/config/mcp_config.json`) へ直接書き込むので、symlinkや `--mcp-config` は使わない。Codexのテンプレートには `[mcp_servers.*]` を書かない (apmの書き込みと二重管理になるため)。
 - このリポジトリに残る私用skill (`mjun-*`) は `config/ai-agents/skills/` に一元管理され、`~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` の3箇所へsymlinkされる。Codexは `~/.agents/skills/` を直接読むため `~/.codex/skills/` には展開しない。1箇所の編集が全agentに反映される。
 - skillの一覧と依存関係は `doc/skills.md` (英語) と `doc/skills_ja.md` に記載されている。skillを追加・変更したらここも更新する (`doc-sync` skillがこの同期を担う)。
-- Codexの `~/.codex/config.toml` だけはsymlinkではなく、`script/setup/rewrite_config.py` (tomlkit) がテンプレート (`config/ai-agents/codex/config.toml`) 側のキーだけを既存ファイルへマージする方式。Codexが自動生成する `[projects.*]` や `[hooks.state]` などのローカル状態を温存するため。キーの上書きのみでキーの削除はできない点に注意。
+- Codexの `~/.codex/config.toml` だけはsymlinkではなく、`conf.d/dotfiles.toml` の `merge = true` のエントリで、`mise dot apply` がテンプレート(`config/ai-agents/codex/config.toml`)側のキーだけを既存ファイルへマージする方式。ファイルが無ければテンプレートから作る。Codexが自動生成する `[projects.*]` や `[hooks.state]` などのローカル状態を温存するため。テーブルは再帰的にマージし、配列などテーブル以外の値は置き換える。キーの上書きのみでキーの削除はできない点に注意。テンプレートには `[projects]` や `[desktop]` のようなローカル状態のテーブルを書かない(手元の状態を上書きするため)。
 - agent向けのrule(`config/ai-agents/rules/*.md`)は、Claude CodeとCodexで同じファイルを使う。Claude Codeは `~/.claude/rules/` のsymlinkからfrontmatterの `paths` を見て自分で読み込む。Codexには同じ機能が無いので、`script/hooks/codex-rules-hook.sh` が `apply_patch` の対象ファイルが `paths` に合うかを調べ、合うruleの本文をadditionalContextで渡す。同じsessionでは1回だけ渡し、PostCompactで記録を消す。frontmatterは、両方が同じ意味で読める書式に限る。書式は `script/tools/rule-paths.sh` が定義し、prekが確かめる。
 - Codexのhookは `config/ai-agents/codex/hooks.json` で管理され、`~/.codex/hooks.json` へsymlinkされる。hook定義を変更すると `[hooks.state]` の `trusted_hash` が無効になり、TUIの `/hooks` で再承認が必要になる。
 - agentが編集したファイルには、Claude Code・Codex共通のPostToolUse hookが2つかかる。編集されたファイルの取り出しは `script/hooks/edited-files.sh` で共通にしている。2つのhookは並列に起動される。

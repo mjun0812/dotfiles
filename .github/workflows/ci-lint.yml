@@ -30,7 +30,7 @@ jobs:
             node = "latest"
             "npm:oxfmt" = "latest"
 
-      # agent向けruleのfrontmatterの検査 (script/tools/rule-paths.sh) がzshで動くため
+      # agent向けruleのfrontmatterの検査 (script/tools/rule-paths.sh) と、dotfiles.tomlの宣言の検査 (script/tools/check-dotfiles-entries.sh) がzshで動くため
       - name: Install zsh
         run: sudo apt-get update && sudo apt-get install -y zsh
 

@@ -71,6 +71,8 @@ gh auth login
 ./script/setup/install_vscode_extensions.sh
 ```
 
+`install.sh` deploys the dotfiles declared in `config/dot_config/mise/conf.d/dotfiles.toml` with `mise dot apply`, after moving conflicting files to `.backup/`. `mise dot status` lists their state.
+
 ## Update
 
 To sync the VS Code extension list back into this repository and report macOS app settings that drifted from the mise declarations, run:

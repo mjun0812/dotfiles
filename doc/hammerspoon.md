@@ -12,7 +12,7 @@ This document describes the Hammerspoon configuration and URL schemes.
 | `config/dot/hammerspoon/wezterm-focus.lua`              | Return to the WezTerm window/pane from a coding agent notification |
 | `config/dot/hammerspoon/aerospace-workspace-hud.lua`    | AeroSpace workspace number HUD                                     |
 | `config/dot/hammerspoon/chrome-vertical-tab-toggle.lua` | Chrome vertical tab sidebar toggle                                 |
-| `~/.hammerspoon/` (deployed)                            | Symlinked from `config/dot/hammerspoon/` by `install.sh`           |
+| `~/.hammerspoon/` (deployed)                            | Symlinked from `config/dot/hammerspoon/` by `mise dot apply`       |
 
 Edit files under `config/dot/hammerspoon/` directly. Since `~/.hammerspoon` is a symlink to the source directory, changes are picked up without re-running `install.sh` — just reload the config from the Hammerspoon menu bar (or `hs.reload()` in the console).
 

@@ -13,56 +13,35 @@ mkdir -p "$CONFIG_DIR"
 mkdir -p "$HOME/.cargo"
 mkdir -p "$HOME/.local/bin"
 
-# ############## [dotfiles] ##############
-log_section "Setting up dotfiles..."
-for f in "$DOTPATH"/config/dot/*; do
-    cp -aLf "$HOME/.$(basename $f)" "$DOTPATH/.backup/$(basename $f)" 2>/dev/null || true
-    rm -rf "$HOME/.$(basename $f)"
-    ln -snfv "$f" "$HOME/.$(basename $f)"
-done
-
-################ [~/.config] ################
-log_section "Setting up dot config..."
-for d in "$DOTPATH"/config/dot_config/*; do
-    app=$(basename "$d")
-
-    if [ "$app" = "herdr" ]; then
-        mkdir -p "$CONFIG_DIR/$app"
-        rm -rf "$CONFIG_DIR/$app/config.toml"
-        ln -snfv "$d/config.toml" "$CONFIG_DIR/$app/config.toml"
-        continue
-    fi
-
-    if [ "$app" = "cli-proxy-api" ]; then
-        mkdir -p "$CONFIG_DIR/$app"
-        rm -rf "$CONFIG_DIR/$app/config.yaml"
-        ln -snfv "$d/config.yaml" "$CONFIG_DIR/$app/config.yaml"
-        continue
-    fi
-
-    if [ "$app" = "hunk" ]; then
-        mkdir -p "$CONFIG_DIR/$app"
-        rm -rf "$CONFIG_DIR/$app/config.toml"
-        ln -snfv "$d/config.toml" "$CONFIG_DIR/$app/config.toml"
-        continue
-    fi
-
-    # OmniWM writes recovery files (settings.toml.corrupt, settings.toml.pre-v3) next to settings.toml
-    if [ "$app" = "omniwm" ]; then
-        mkdir -p "$CONFIG_DIR/$app"
-        rm -rf "$CONFIG_DIR/$app/settings.toml"
-        ln -snfv "$d/settings.toml" "$CONFIG_DIR/$app/settings.toml"
-        continue
-    fi
-
-    cp -aLf "$CONFIG_DIR/$app" "$DOTPATH/.backup/$app" 2>/dev/null || true
-    rm -rf "$CONFIG_DIR/$app"
-    ln -snfv "$d" "$CONFIG_DIR/$app"
-done
-
 ################ [mise] ################
 log_section "Setting up mise..."
+# 新しい環境ではまだ ~/.zprofile が無く、miseの導入先がPATHに無い
+export PATH="$HOME/.local/bin:$PATH"
 $DOTPATH/script/setup/install_mise.sh
+
+################ [dotfiles] ################
+log_section "Setting up dotfiles..."
+# miseが [dotfiles] の宣言 (conf.d/dotfiles.toml) を読めるように、~/.config/mise だけは先に手でlinkする
+if [ -e "$CONFIG_DIR/mise" ] && [ ! -L "$CONFIG_DIR/mise" ]; then
+    mkdir -p "$DOTPATH/.backup/.config"
+    rm -rf "$DOTPATH/.backup/.config/mise"
+    mv "$CONFIG_DIR/mise" "$DOTPATH/.backup/.config/mise"
+fi
+ln -snfv "$DOTPATH/config/dot_config/mise" "$CONFIG_DIR/mise"
+# mise dot apply は展開先の実ファイルを置き換えずに止まるので、HOMEからの相対パスのまま .backup/ へ移しておく
+# jqはまだ入っていないことがあるので、mise x で呼ぶ
+mise dot status --json |
+    mise x jq -- jq -r '.files[] | select(.reason == "exists but is not a symlink") | .target' |
+    while read -r target; do
+        backup="$DOTPATH/.backup/${target#\~/}"
+        mkdir -p "${backup:h}"
+        rm -rf "$backup"
+        mv "$HOME/${target#\~/}" "$backup"
+    done
+mise dot apply --yes
+
+################ [mise tools] ################
+log_section "Installing mise tools..."
 source "$HOME/.zprofile"
 # 旧 codex-remote-control service を先に撤去する (codex の postinstall が新 daemon を起動するため)
 zsh "$DOTPATH/script/setup/setup_codex_daemon.sh" migrate
@@ -149,34 +128,6 @@ if [ "$(uname -s)" != "Darwin" ]; then
     log_section "Setting up Vite plus..."
     $DOTPATH/script/setup/install_vp.sh || echo "vp install/upgrade failed (ignored)"
 fi
-
-################ [VSCode] ################
-log_section "Setting up VSCode..."
-if [ "$(uname -s)" = "Darwin" ]; then
-    VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
-else
-    VSCODE_USER_DIR="$CONFIG_DIR/Code/User"
-fi
-cp -aLf "$VSCODE_USER_DIR/settings.json" "$DOTPATH/.backup/vscode_settings.json" 2>/dev/null || true
-cp -aLf "$VSCODE_USER_DIR/keybindings.json" "$DOTPATH/.backup/vscode_keybindings.json" 2>/dev/null || true
-mkdir -p "$VSCODE_USER_DIR"
-rm -f "$VSCODE_USER_DIR/settings.json" "$VSCODE_USER_DIR/keybindings.json"
-ln -snfv "$DOTPATH/config/vscode/settings.json" "$VSCODE_USER_DIR/settings.json"
-ln -snfv "$DOTPATH/config/vscode/keybindings.json" "$VSCODE_USER_DIR/keybindings.json"
-
-################ [Cursor] ################
-log_section "Setting up Cursor..."
-if [ "$(uname -s)" = "Darwin" ]; then
-    CURSOR_USER_DIR="$HOME/Library/Application Support/Cursor/User"
-else
-    CURSOR_USER_DIR="$CONFIG_DIR/Cursor/User"
-fi
-cp -aLf "$CURSOR_USER_DIR/settings.json" "$DOTPATH/.backup/cursor_settings.json" 2>/dev/null || true
-cp -aLf "$CURSOR_USER_DIR/keybindings.json" "$DOTPATH/.backup/cursor_keybindings.json" 2>/dev/null || true
-mkdir -p "$CURSOR_USER_DIR"
-rm -f "$CURSOR_USER_DIR/settings.json" "$CURSOR_USER_DIR/keybindings.json"
-ln -snfv "$DOTPATH/config/cursor/settings.json" "$CURSOR_USER_DIR/settings.json"
-ln -snfv "$DOTPATH/config/cursor/keybindings.json" "$CURSOR_USER_DIR/keybindings.json"
 
 ################ [macOS apps] ################
 # 設定ファイルを読むapp。他のappの設定は config.macos.toml の [bootstrap.macos.defaults]

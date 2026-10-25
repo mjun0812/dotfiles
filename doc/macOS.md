@@ -96,7 +96,7 @@ The generated plists are `~/Library/LaunchAgents/<label>.plist`.
 
 ### CLIProxyAPI configuration
 
-The config is tracked at `config/dot_config/cli-proxy-api/config.yaml` and linked to `~/.config/cli-proxy-api/config.yaml` by `install.sh`. Only the file is linked (like herdr) because the app downloads runtime assets (`static/`) next to it; the directory itself stays real.
+The config is tracked at `config/dot_config/cli-proxy-api/config.yaml` and linked to `~/.config/cli-proxy-api/config.yaml` by `mise dot apply` (declared in `config/dot_config/mise/conf.d/dotfiles.toml`). Only the file is linked (like herdr) because the app downloads runtime assets (`static/`) next to it; the directory itself stays real.
 
 Tracking it is safe only while the config holds no secrets: credentials live in `auth-dir` (`~/.cli-proxy-api/`, outside the repo). Keep it that way — do not add client `api-keys` values or a `remote-management.secret-key` (the management API rewrites the config in place, which would dirty the repo through the symlink). If either becomes necessary, move the config out of the repo first.
 

@@ -1,0 +1,69 @@
+#:schema https://mise.en.dev/schema/mise.json
+
+# config/dot と config/dot_config にファイルを足したら、ここにもエントリを足す
+[dotfiles]
+"~/.editorconfig" = "~/.dotfiles/config/dot/editorconfig"
+"~/.emacs" = "~/.dotfiles/config/dot/emacs"
+"~/.gitconfig" = "~/.dotfiles/config/dot/gitconfig"
+"~/.gitignore" = "~/.dotfiles/config/dot/gitignore"
+"~/.hammerspoon" = "~/.dotfiles/config/dot/hammerspoon"
+"~/.npmrc" = "~/.dotfiles/config/dot/npmrc"
+"~/.p10k.zsh" = "~/.dotfiles/config/dot/p10k.zsh"
+"~/.python-version" = "~/.dotfiles/config/dot/python-version"
+"~/.tmux.conf" = "~/.dotfiles/config/dot/tmux.conf"
+"~/.wezterm.lua" = "~/.dotfiles/config/dot/wezterm.lua"
+"~/.zlogin" = "~/.dotfiles/config/dot/zlogin"
+"~/.zlogout" = "~/.dotfiles/config/dot/zlogout"
+"~/.zprofile" = "~/.dotfiles/config/dot/zprofile"
+"~/.zshenv" = "~/.dotfiles/config/dot/zshenv"
+"~/.zshrc" = "~/.dotfiles/config/dot/zshrc"
+
+"~/.config/aerospace" = "~/.dotfiles/config/dot_config/aerospace"
+"~/.config/bat" = "~/.dotfiles/config/dot_config/bat"
+"~/.config/bun" = "~/.dotfiles/config/dot_config/bun"
+"~/.config/eza" = "~/.dotfiles/config/dot_config/eza"
+"~/.config/ghostty" = "~/.dotfiles/config/dot_config/ghostty"
+"~/.config/mise" = "~/.dotfiles/config/dot_config/mise"
+"~/.config/nvim" = "~/.dotfiles/config/dot_config/nvim"
+"~/.config/pnpm" = "~/.dotfiles/config/dot_config/pnpm"
+"~/.config/ruff" = "~/.dotfiles/config/dot_config/ruff"
+"~/.config/sheldon" = "~/.dotfiles/config/dot_config/sheldon"
+"~/.config/starship.toml" = "~/.dotfiles/config/dot_config/starship.toml"
+"~/.config/uv" = "~/.dotfiles/config/dot_config/uv"
+"~/.config/zsh" = "~/.dotfiles/config/dot_config/zsh"
+# アプリが同じディレクトリに状態を書くので、ディレクトリは実体にしてファイルだけをlinkする
+"~/.config/cli-proxy-api/config.yaml" = "~/.dotfiles/config/dot_config/cli-proxy-api/config.yaml"
+"~/.config/herdr/config.toml" = "~/.dotfiles/config/dot_config/herdr/config.toml"
+"~/.config/hunk/config.toml" = "~/.dotfiles/config/dot_config/hunk/config.toml"
+"~/.config/omniwm/settings.toml" = "~/.dotfiles/config/dot_config/omniwm/settings.toml"
+
+# Codexが書き足すローカル状態 ([projects.*] や [hooks.state]) を残し、テンプレートのキーだけを書き込む
+"~/.codex/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex/config.toml", merge = true }
+
+[dotfiles.vscode-settings]
+source = "~/.dotfiles/config/vscode/settings.json"
+variants = [
+    { os = "macos", target = "~/Library/Application Support/Code/User/settings.json" },
+    { os = "linux", target = "~/.config/Code/User/settings.json" },
+]
+
+[dotfiles.vscode-keybindings]
+source = "~/.dotfiles/config/vscode/keybindings.json"
+variants = [
+    { os = "macos", target = "~/Library/Application Support/Code/User/keybindings.json" },
+    { os = "linux", target = "~/.config/Code/User/keybindings.json" },
+]
+
+[dotfiles.cursor-settings]
+source = "~/.dotfiles/config/cursor/settings.json"
+variants = [
+    { os = "macos", target = "~/Library/Application Support/Cursor/User/settings.json" },
+    { os = "linux", target = "~/.config/Cursor/User/settings.json" },
+]
+
+[dotfiles.cursor-keybindings]
+source = "~/.dotfiles/config/cursor/keybindings.json"
+variants = [
+    { os = "macos", target = "~/Library/Application Support/Cursor/User/keybindings.json" },
+    { os = "linux", target = "~/.config/Cursor/User/keybindings.json" },
+]
