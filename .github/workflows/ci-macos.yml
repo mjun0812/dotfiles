@@ -8,8 +8,14 @@ on:
   workflow_dispatch:
 
 jobs:
+  changes:
+    uses: ./.github/workflows/changes.yml
+
   test-macos:
     name: Test on macOS
+    needs: changes
+    # 判定のjobが失敗したとき (outputが空) は、skipせずに実行する
+    if: ${{ !cancelled() && needs.changes.outputs.run != 'false' }}
     runs-on: macos-latest
     timeout-minutes: 45
     defaults:

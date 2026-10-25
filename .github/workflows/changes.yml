@@ -1,0 +1,51 @@
+name: Detect changes
+
+# 重いCIのjobを、今回の変更がそのjobの結果を変えうるときだけ動かすための判定。
+# 判定するのはpull_requestだけで、mainへのpushとworkflow_dispatchでは常に実行する。
+on:
+  workflow_call:
+    inputs:
+      paths:
+        description: 変更されたパスがこのEREに1つでも一致したときだけ実行する。省略時は、既存のMarkdownとdoc/の編集だけの変更をskipする
+        type: string
+        default: ""
+    outputs:
+      run:
+        description: 後続のjobを実行するなら "true"、skipするなら "false"
+        value: ${{ jobs.detect.outputs.run }}
+
+jobs:
+  detect:
+    name: Detect
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.detect.outputs.run }}
+
+    steps:
+      # pull_requestでcheckoutされるmerge commitは、1つ目の親がbase branchの先端になる
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+
+      - name: Detect changes
+        id: detect
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PATHS: ${{ inputs.paths }}
+        run: |
+          run=true
+          if [[ $EVENT_NAME == pull_request ]]; then
+            # renameは移動元の削除と移動先の追加として扱う
+            changes=$(git diff --name-status --no-renames HEAD^1 HEAD)
+            echo "$changes"
+            run=false
+            if [[ -n $PATHS ]]; then
+              grep -qE "$PATHS" <<<"$(cut -f2 <<<"$changes")" && run=true
+            else
+              # ファイルの追加・削除はsymlinkの対象を変えうるので、既存ファイルの編集だけをskipする
+              grep -qvE $'^M\t(.*\\.md|doc/.*)$' <<<"$changes" && run=true
+            fi
+          fi
+          echo "run=$run" | tee -a "$GITHUB_OUTPUT"
