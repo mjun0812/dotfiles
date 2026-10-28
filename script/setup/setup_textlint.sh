@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-# textlint本体・ルールのinstallはmiseが担当する。ここでは共通設定と旧リンクだけを移行する。
+# textlint本体・ルールのinstallはmiseが担当する。ここでは旧リンクの撤去だけを行う。
 
 set -eu
 
@@ -15,4 +15,3 @@ legacy_cli="$HOME/.local/bin/textlint"
 if [[ -L $legacy_cli && $(readlink "$legacy_cli") == "$DOTPATH/config/textlint/node_modules/.bin/textlint" ]]; then
     rm -f -- "$legacy_cli"
 fi
-ln -snfv "$DOTPATH/config/textlint/textlintrc.js" "$HOME/.textlintrc.js"
