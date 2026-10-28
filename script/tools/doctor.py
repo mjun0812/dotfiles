@@ -23,16 +23,15 @@ from pathlib import Path
 
 DOTPATH = Path(__file__).resolve().parents[2]
 HOME = Path.home()
-DARWIN = sys.platform == "darwin"
 STATE_FILE = (
     Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state"))
     / "dotfiles/doctor-last-sync"
 )
 CODEX_TEMPLATE = "config/ai-agents/codex/config.toml"
 APM_LOCK = HOME / ".apm/apm.lock.yaml"
-# rewrite_config.py の LOCAL_STATE_TABLES と同じ。Codex が書くローカル状態で、テンプレートの管理外
+# Codex が書くローカル状態で、テンプレートの管理外 (テンプレートには書かない)
 CODEX_LOCAL_STATE_TABLES = frozenset({"desktop", "projects"})
-# /model などlocalで選んだ値を setup_codex.sh に上書きさせないため、テンプレートから外したキー。
+# /model などlocalで選んだ値を mise dot apply のマージに上書きさせないため、テンプレートから外したキー。
 # 値が昔のテンプレートと同じでも、消し忘れではない
 CODEX_LOCAL_CHOICE_KEYS = frozenset({"model", "model_reasoning_effort", "service_tier"})
 # apm が展開するskill・agentの置き場。dotfiles 自身のsymlinkも同じ場所に置かれる
@@ -105,31 +104,34 @@ def print_commits() -> None:
 
 
 def check_expected_links() -> Iterator[str]:
-    """install.shとsetupスクリプトが張るはずのsymlinkが無いものを探す。"""
-    for source, target in expected_links():
+    """宣言どおりに展開されていないものと、setupスクリプトが張るはずのsymlinkが無いものを探す。"""
+    # conf.d/dotfiles.toml の宣言は、mise の判定に任せる
+    status = json.loads(
+        subprocess.run(
+            ["mise", "dot", "status", "--json"],
+            cwd=HOME,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    )
+    for entry in status["files"]:
+        if entry["state"] not in ("applied", "tracked"):
+            reason = f" ({entry['reason']})" if "reason" in entry else ""
+            yield f"[dotfiles-unapplied] {entry['target']} が {entry['state']}{reason}"
+    for entry in status["edits"]:
+        if entry["state"] != "applied":
+            yield f"[dotfiles-unapplied] {entry['path']} の {entry['edit']} が {entry['state']}"
+
+    for source, target in script_links():
         if not source.exists():
             continue
         if not (target.is_symlink() and target.resolve() == source.resolve()):
             yield f"[symlink-missing] {target} が {source} を指していない"
 
-    # ~/.config/<app> は、dir ごとのsymlinkか、dir の中に置いたファイル単位のsymlink (herdr など) のどちらか
-    for source in sorted((DOTPATH / "config/dot_config").iterdir()):
-        target = HOME / ".config" / source.name
-        if target.is_symlink() and target.resolve() == source.resolve():
-            continue
-        if target.is_dir() and any(
-            child.is_symlink() and child.resolve().is_relative_to(source)
-            for child in target.iterdir()
-        ):
-            continue
-        yield f"[symlink-missing] {target} が {source} を指していない"
 
-
-def expected_links() -> Iterator[tuple[Path, Path]]:
-    """dotfilesのファイルと、それを指すはずの展開先の組を返す。"""
-    for source in sorted((DOTPATH / "config/dot").iterdir()):
-        yield source, HOME / f".{source.name}"
-
+def script_links() -> Iterator[tuple[Path, Path]]:
+    """Setupスクリプトが張るsymlinkの、dotfilesのファイルと展開先の組を返す。"""
     agents = DOTPATH / "config/ai-agents"
     for name in (
         "CLAUDE.md",
@@ -146,30 +148,6 @@ def expected_links() -> Iterator[tuple[Path, Path]]:
         for skill_dir in SKILL_DIRS:
             yield source, HOME / skill_dir / source.name
     yield agents / "codex/hooks.json", HOME / ".codex/hooks.json"
-    yield (
-        agents / "codex/rules/manual-approval.rules",
-        HOME / ".codex/rules/manual-approval.rules",
-    )
-    yield agents / "AGENTS_global.md", HOME / ".codex/AGENTS.md"
-    yield agents / "AGENTS_global.md", HOME / ".gemini/GEMINI.md"
-    yield (
-        agents / "gemini/antigravity-cli/settings.json",
-        HOME / ".gemini/antigravity-cli/settings.json",
-    )
-    yield agents / "apm.yml", HOME / ".apm/apm.yml"
-    yield DOTPATH / "config/textlint/textlintrc.js", HOME / ".textlintrc.js"
-
-    app_support = HOME / "Library/Application Support"
-    vscode_user_dir = (app_support if DARWIN else HOME / ".config") / "Code/User"
-    for name in ("settings.json", "keybindings.json"):
-        yield DOTPATH / "config/vscode" / name, vscode_user_dir / name
-    if DARWIN:
-        profile = "iTerm2/DynamicProfiles/dotfiles.json"
-        yield (
-            DOTPATH / "config/mac/iterm2/DynamicProfiles/dotfiles.json",
-            app_support / profile,
-        )
-        yield DOTPATH / "config/mac/karabiner", HOME / ".config/karabiner"
 
 
 def check_dangling_links() -> Iterator[str]:
@@ -299,7 +277,7 @@ def check_codex_hooks() -> Iterator[str]:
 
 
 def check_codex_stale_keys() -> Iterator[str]:
-    """テンプレートから消したキーを探す。rewrite_config.py はキーを足すだけで消さないため、手で消す必要がある。
+    """テンプレートから消したキーを探す。mise dot apply のマージはキーを足すだけで消さないため、手で消す必要がある。
 
     Codex やユーザーが書き換えたキーと区別するため、過去のテンプレートと値まで一致するものだけを報告する。
     """

@@ -19,20 +19,21 @@ description: dotfilesの更新にlocal環境を追従させるため、必要な
 
 ## 変更ファイルと作業
 
-| 変わったファイル                                         | 作業                                                                                                                                |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `config/dot_config/mise/config*.toml`                    | `mise install`。`npm:textlint` の `bun_args` が変わったときは `mise install --force npm:textlint` (versionが同じだと入れ直されない) |
-| `script/setup/install_mise.sh`                           | `zsh script/setup/install_mise.sh`                                                                                                  |
-| `config/ai-agents/apm.yml`、`script/setup/setup_hunk.sh` | ホームで `apm update -g -y`                                                                                                         |
-| `config/ai-agents/codex/hooks.json`                      | Codexの `/hooks` での再承認をユーザーに頼む。定義を変えたhookの承認切れはscriptでは検出できない                                     |
-| `config/ai-agents/codex/config.toml`                     | `zsh script/setup/setup_codex.sh`                                                                                                   |
-| `script/setup/setup_*.sh`                                | 変わったscriptを再実行する                                                                                                          |
-| `install.sh`                                             | 変わった節のコマンドだけを手で実行する                                                                                              |
-| `config/mac/`、`config.macos.toml`                       | macOSでだけ作業する                                                                                                                 |
+| 変わったファイル                                                                    | 作業                                                                                                                                |
+| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `config/dot_config/mise/config*.toml`                                               | `mise install`。`npm:textlint` の `bun_args` が変わったときは `mise install --force npm:textlint` (versionが同じだと入れ直されない) |
+| `script/setup/install_mise.sh`                                                      | `zsh script/setup/install_mise.sh`                                                                                                  |
+| `config/ai-agents/apm.yml`、`script/setup/setup_hunk.sh`                            | ホームで `apm update -g -y`                                                                                                         |
+| `config/ai-agents/codex/hooks.json`                                                 | Codexの `/hooks` での再承認をユーザーに頼む。定義を変えたhookの承認切れはscriptでは検出できない                                     |
+| `config/dot_config/mise/conf.d/dotfiles.toml`、`config/ai-agents/codex/config.toml` | `mise dot diff` で差分を見てから `mise dot apply`                                                                                   |
+| `script/setup/setup_*.sh`                                                           | 変わったscriptを再実行する                                                                                                          |
+| `install.sh`                                                                        | 変わった節のコマンドだけを手で実行する                                                                                              |
+| `config/mac/`、`config.macos.toml`                                                  | macOSでだけ作業する                                                                                                                 |
 
 ## 判断の基準
 
 - ファイルを削除しない。`~/.dotfiles/.backup/` へ `mv` し、名前で元の場所が分かるようにする(例: `.backup/codex_agents_stale/`)。リンク切れのsymlinkは、参照先の一覧を `.backup/` に書いてから `unlink` する。
+- `dotfiles-unapplied` は、`mise dot diff` で差分を確かめてから `mise dot apply` で直す。展開先に実ファイルがあって止まるときは、そのファイルを `.backup/` へ `mv` してから実行し直す。
 - `apm-unmanaged` のファイルは、`~/.apm/apm_modules/` の取得元と差分を取る。取得元より古いだけなら退避してapmに入れ直させる。取得元に無い記述があれば、ユーザーに確認する。
 - 外部ツールの挙動変更による失敗(例: apmの新版が展開先を拒否する)は、引数やtargetを絞ってlocalで回避する。原因と回避方法は報告する。repoを変える直し方(版の固定、install.shの変更)は提案にとどめ、ユーザーの指示を待つ。
 - `codex-stale-key` は、キーを消したcommitの意図を読んでから消す。意図が読み取れなければユーザーに確認する。
