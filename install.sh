@@ -133,15 +133,8 @@ fi
 # 設定ファイルを読むapp。他のappの設定は config.macos.toml の [bootstrap.macos.defaults]
 if [ "$(uname -s)" = "Darwin" ]; then
     log_section "Setting up macOS app configs..."
-    ITERM2_PROFILES_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-    mkdir -p "$ITERM2_PROFILES_DIR"
-    ln -snfv "$DOTPATH/config/mac/iterm2/DynamicProfiles/dotfiles.json" "$ITERM2_PROFILES_DIR/dotfiles.json"
     # スクリーンショットの保存先 (config.macos.toml の com.apple.screencapture location)
     mkdir -p "$HOME/Pictures/ScreenShot"
-
-    cp -aLf "$CONFIG_DIR/karabiner" "$DOTPATH/.backup/karabiner" 2>/dev/null || true
-    rm -rf "$CONFIG_DIR/karabiner"
-    ln -snfv "$DOTPATH/config/mac/karabiner" "$CONFIG_DIR/karabiner"
 fi
 
 ################ [Agent Skills] ################
@@ -150,9 +143,6 @@ zsh "$DOTPATH/script/setup/setup_skills.sh"
 
 ################ [APM] ################
 log_section "Setting up APM..."
-mkdir -p "$HOME/.apm"
-cp -aLf "$HOME/.apm/apm.yml" "$DOTPATH/.backup/apm.yml" && rm -rf "$HOME/.apm/apm.yml"
-ln -snfv "$DOTPATH/config/ai-agents/apm.yml" "$HOME/.apm/apm.yml"
 apm update -g -y
 
 ################ [Claude Code] ################
@@ -170,11 +160,3 @@ bash "$DOTPATH/script/setup/setup_herdr.sh"
 ################ [hunk] ################
 log_section "Setting up hunk..."
 bash "$DOTPATH/script/setup/setup_hunk.sh"
-
-################ [Antigravity CLI] ################
-log_section "Setting up Antigravity CLI..."
-cp -aLf "$HOME/.gemini/GEMINI.md" "$DOTPATH/.backup/GEMINI.md" && rm -rf "$HOME/.gemini/GEMINI.md"
-cp -aLf "$HOME/.gemini/antigravity-cli/settings.json" "$DOTPATH/.backup/antigravity_cli_settings.json" && rm -rf "$HOME/.gemini/antigravity-cli/settings.json"
-mkdir -p "$HOME/.gemini/antigravity-cli"
-ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.gemini/GEMINI.md"
-ln -snfv "$DOTPATH/config/ai-agents/gemini/antigravity-cli/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"

@@ -39,6 +39,14 @@
 # Codexが書き足すローカル状態 ([projects.*] や [hooks.state]) を残し、テンプレートのキーだけを書き込む
 "~/.codex/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex/config.toml", merge = true }
 
+# agent向け。AGENTS_global.md はCodexとGeminiが同じファイルを読む
+"~/.apm/apm.yml" = "~/.dotfiles/config/ai-agents/apm.yml"
+"~/.codex/AGENTS.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
+"~/.codex/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
+"~/.gemini/GEMINI.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
+"~/.gemini/antigravity-cli/settings.json" = "~/.dotfiles/config/ai-agents/gemini/antigravity-cli/settings.json"
+"~/.textlintrc.js" = "~/.dotfiles/config/textlint/textlintrc.js"
+
 [dotfiles.vscode-settings]
 source = "~/.dotfiles/config/vscode/settings.json"
 variants = [
@@ -52,3 +60,11 @@ variants = [
     { os = "macos", target = "~/Library/Application Support/Code/User/keybindings.json" },
     { os = "linux", target = "~/.config/Code/User/keybindings.json" },
 ]
+
+[dotfiles.iterm2-dynamic-profile]
+source = "~/.dotfiles/config/mac/iterm2/DynamicProfiles/dotfiles.json"
+variants = [{ os = "macos", target = "~/Library/Application Support/iTerm2/DynamicProfiles/dotfiles.json" }]
+
+[dotfiles.karabiner]
+source = "~/.dotfiles/config/mac/karabiner"
+variants = [{ os = "macos", target = "~/.config/karabiner" }]

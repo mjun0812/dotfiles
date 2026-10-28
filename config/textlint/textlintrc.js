@@ -1,4 +1,4 @@
-// 手元で `textlint` を直接実行するときの設定。install.sh が ~/.textlintrc.js へsymlinkする。
+// 手元で `textlint` を直接実行するときの設定。`mise dot apply` が conf.d/dotfiles.toml の宣言に従って ~/.textlintrc.js へsymlinkする。
 // textlintは設定をカレントディレクトリから親へ探すため、ホーム配下で設定を持たないディレクトリから実行したときだけ使われる。
 // `--config` には渡せない。拡張子付きのパスを渡すと、textlintの設定読み込み (rc-config-loader) がJSをYAMLとして読み、ルールが0件になる。
 // ルールはagent用hookの2つの設定 (textlintrc.fix.json, textlintrc.report.json) をまとめたもの。
