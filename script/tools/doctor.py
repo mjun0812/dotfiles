@@ -219,7 +219,7 @@ def check_apm() -> Iterator[str]:
         yield f"[apm-missing] {APM_LOCK} が無い"
         return
     deployed = apm_deployed_files()
-    for path in sorted(deployed):
+    for path in sorted(deployed - apm_legacy_only_files()):
         if not (HOME / path).exists():
             yield f"[apm-missing] lockに記録された ~/{path} が無い"
 
@@ -259,6 +259,30 @@ def apm_deployed_files() -> set[str]:
             continue
         in_list = False
     return deployed
+
+
+def apm_legacy_only_files() -> set[str]:
+    """Lock の deployments で、旧形式から引き継いだ記録 (target: legacy) にしか無いパスを集める。
+
+    apm は、上流で消えたファイルのこの記録を update でも install でも消さないので、展開先に無くても正しい。
+    """
+    targets: dict[str, set[str]] = {}
+    in_deployments = False
+    target = ""
+    for line in APM_LOCK.read_text().splitlines():
+        if not line.startswith((" ", "-")):
+            in_deployments = line == "deployments:"
+            continue
+        if not in_deployments:
+            continue
+        if line.startswith("- "):
+            target = ""
+        key, _, value = line.removeprefix("- ").strip().partition(": ")
+        if key == "target":
+            target = value
+        elif key == "value":
+            targets.setdefault(value, set()).add(target)
+    return {path for path, names in targets.items() if names == {"legacy"}}
 
 
 def check_codex_hooks() -> Iterator[str]:
