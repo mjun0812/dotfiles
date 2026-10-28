@@ -5,10 +5,9 @@ log_section() {
 }
 
 DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
-AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
 
 # Purge dangling symlinks (left after their sources were removed); they make the backup cp -L fail
-for link in "$HOME/.claude/skills"/*(@N) "$HOME/.claude/rules"/*(@N); do
+for link in "$HOME/.claude/rules"/*(@N); do
     [ -e "$link" ] || rm -f "$link"
 done
 
@@ -16,11 +15,9 @@ done
 cp -aLf "$HOME/.claude/CLAUDE.md" "$DOTPATH/.backup/CLAUDE.md" && rm -rf "$HOME/.claude/CLAUDE.md"
 cp -aLf "$HOME/.claude/settings.json" "$DOTPATH/.backup/claude_settings.json" && rm -rf "$HOME/.claude/settings.json"
 cp -aLf "$HOME/.claude/statusline.py" "$DOTPATH/.backup/claude_statusline.py" && rm -rf "$HOME/.claude/statusline.py"
-cp -aLf "$HOME/.claude/skills" "$DOTPATH/.backup/claude_skills" 2>/dev/null || true
 cp -aLf "$HOME/.claude/rules" "$DOTPATH/.backup/claude_rules" 2>/dev/null || true
 
 # Create
-mkdir -p "$HOME/.claude/skills"
 mkdir -p "$HOME/.claude/rules"
 
 # Symlink
@@ -28,13 +25,6 @@ ln -snfv "$DOTPATH/config/ai-agents/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 ln -snfv "$DOTPATH/config/ai-agents/claude/settings.json" "$HOME/.claude/settings.json"
 ln -snfv "$DOTPATH/config/ai-agents/claude/statusline.py" "$HOME/.claude/statusline.py"
 ln -snfv "$DOTPATH/config/ai-agents/claude/subagent_statusline.py" "$HOME/.claude/subagent_statusline.py"
-
-# Skills
-for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
-    skill_name=$(basename "$skill_dir")
-    rm -rf "$HOME/.claude/skills/$skill_name"
-    ln -snfv "$skill_dir" "$HOME/.claude/skills/$skill_name"
-done
 
 # Rules
 CLAUDE_RULES_SOURCE_DIR="$DOTPATH/config/ai-agents/rules"
