@@ -146,19 +146,7 @@ fi
 
 ################ [Agent Skills] ################
 log_section "Setting up agent skills..."
-AGENT_SKILLS_SOURCE_DIR="$DOTPATH/config/ai-agents/skills"
-# Purge every symlink in the directories APM deploys to; only dotfiles creates them, and it recreates its own below.
-# Leftover links (dangling, or ones whose skill moved to APM) make the backup cp -L fail and APM abort the update.
-for link in "$HOME/.agents/skills"/*(@N) "$HOME/.claude/skills"/*(@N) "$HOME/.gemini/antigravity-cli/skills"/*(@N); do
-    rm -f "$link"
-done
-cp -aLf "$HOME/.agents/skills" "$DOTPATH/.backup/agents_skills" 2>/dev/null || true
-mkdir -p "$HOME/.agents/skills"
-for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
-    skill_name=$(basename "$skill_dir")
-    rm -rf "$HOME/.agents/skills/$skill_name"
-    ln -snfv "$skill_dir" "$HOME/.agents/skills/$skill_name"
-done
+zsh "$DOTPATH/script/setup/setup_skills.sh"
 
 ################ [APM] ################
 log_section "Setting up APM..."
@@ -185,21 +173,8 @@ bash "$DOTPATH/script/setup/setup_hunk.sh"
 
 ################ [Antigravity CLI] ################
 log_section "Setting up Antigravity CLI..."
-# Purge dangling symlinks (left after their sources were removed); they make the backup cp -L fail
-for link in "$HOME/.gemini/skills"/*(@N) "$HOME/.gemini/antigravity-cli/skills"/*(@N); do
-    [ -e "$link" ] || rm -f "$link"
-done
 cp -aLf "$HOME/.gemini/GEMINI.md" "$DOTPATH/.backup/GEMINI.md" && rm -rf "$HOME/.gemini/GEMINI.md"
-cp -aLf "$HOME/.gemini/skills" "$DOTPATH/.backup/gemini_skills" 2>/dev/null && rm -rf "$HOME/.gemini/skills"
 cp -aLf "$HOME/.gemini/antigravity-cli/settings.json" "$DOTPATH/.backup/antigravity_cli_settings.json" && rm -rf "$HOME/.gemini/antigravity-cli/settings.json"
-cp -aLf "$HOME/.gemini/antigravity-cli/skills" "$DOTPATH/.backup/antigravity_cli_skills" 2>/dev/null || true
 mkdir -p "$HOME/.gemini/antigravity-cli"
-mkdir -p "$HOME/.gemini/antigravity-cli/skills"
 ln -snfv "$DOTPATH/config/ai-agents/AGENTS_global.md" "$HOME/.gemini/GEMINI.md"
 ln -snfv "$DOTPATH/config/ai-agents/gemini/antigravity-cli/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
-# Remove only the skills we manage, then relink (keeps locally-added skills).
-for skill_dir in "$AGENT_SKILLS_SOURCE_DIR"/*(/N); do
-    skill_name=$(basename "$skill_dir")
-    rm -rf "$HOME/.gemini/antigravity-cli/skills/$skill_name"
-    ln -snfv "$skill_dir" "$HOME/.gemini/antigravity-cli/skills/$skill_name"
-done
