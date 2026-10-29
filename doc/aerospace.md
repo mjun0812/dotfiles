@@ -99,7 +99,6 @@ The following apps are configured to open in floating mode by default:
 | Finder             | com.apple.finder                |
 | LINE               | jp.naver.line.mac               |
 | Mattermost         | Mattermost.Desktop              |
-| Apple Mail         | com.apple.mail                  |
 | DeepL              | com.linguee.DeepLCopyTranslator |
 | Nani               | jp.kiok.nani                    |
 | System Preferences | com.apple.systempreferences     |
