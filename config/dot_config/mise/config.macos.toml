@@ -185,6 +185,9 @@ TrackpadTwoFingerDoubleTapGesture = 1
 TrackpadTwoFingerFromRightEdgeSwipeGesture = 3
 USBMouseStopsTrackpad = 0
 
+# 下の screencapture の location が指す保存先
+[bootstrap.directories."~/Pictures/ScreenShot"]
+
 [bootstrap.macos.defaults."com.apple.screencapture"]
 location = "~/Pictures/ScreenShot"
 name = "ScreenShot"
