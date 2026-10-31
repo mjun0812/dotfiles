@@ -31,6 +31,7 @@ jobs:
     steps:
       # curl は image 同梱の curl-minimal で足りる (curl を指定すると curl-minimal と衝突する)。
       # perl は cargo:nb-cli が vendored OpenSSL をビルドするのに必要 (git が入れる perl-interpreter では足りない)。
+      # libatomic は Node.js 26 の公式バイナリが動的リンクする。
       - name: Install prerequisites
         run: |
           dnf install -y \
@@ -43,7 +44,8 @@ jobs:
             make \
             perl \
             which \
-            procps-ng
+            procps-ng \
+            libatomic
 
       - name: Create test user
         run: |
