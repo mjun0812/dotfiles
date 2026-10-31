@@ -57,7 +57,7 @@
 
 ## Install
 
-require git, zsh, curl, unzip
+require git, zsh, curl, unzip (and libatomic on Rocky Linux for Node.js 26)
 
 ```bash
 git clone https://github.com/mjun0812/dotfiles.git ~/.dotfiles
