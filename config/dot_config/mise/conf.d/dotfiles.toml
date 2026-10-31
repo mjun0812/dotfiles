@@ -26,6 +26,7 @@
 "~/.config/mise" = "~/.dotfiles/config/dot_config/mise"
 "~/.config/nvim" = "~/.dotfiles/config/dot_config/nvim"
 "~/.config/pnpm" = "~/.dotfiles/config/dot_config/pnpm"
+"~/.config/rift" = "~/.dotfiles/config/dot_config/rift"
 "~/.config/ruff" = "~/.dotfiles/config/dot_config/ruff"
 "~/.config/sheldon" = "~/.dotfiles/config/dot_config/sheldon"
 "~/.config/starship.toml" = "~/.dotfiles/config/dot_config/starship.toml"

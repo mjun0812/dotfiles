@@ -27,11 +27,13 @@ container system kernel set --recommended --force
 
 [bootstrap.packages]
 # For macOS
+"brew:acsandmann/tap/rift" = "latest"
 "brew:coreutils" = "latest"
 "brew:curl" = "latest"
 "brew:ffmpeg" = "latest"
 "brew:git" = "latest"
 "brew:htop" = "latest"
+"brew:jq" = "latest"
 "brew:librsvg" = "latest"
 "brew:lld" = "latest"
 "brew:llvm" = "latest"
@@ -76,6 +78,7 @@ container system kernel set --recommended --force
 "brew-cask:nikitabobko/tap/aerospace" = "latest"
 
 [bootstrap.brew.taps]
+"acsandmann/tap" = "https://github.com/acsandmann/homebrew-tap.git"
 "ci7lus/miraktest" = "https://github.com/ci7lus/homebrew-miraktest.git"
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
 "nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
@@ -288,8 +291,8 @@ historyClearInterval = 3600
 ignoresUniversalClipboard = false
 kCPYBetaObserveScreenshot = false
 kCPYBetaPastePlainText = false
-kCPYCollectCrashReport = false
 kCPYPrefAddClearHistoryMenuItemKey = true
+kCPYCollectCrashReport = false
 kCPYPrefCopySameHistroy = true
 kCPYPrefIgnoreConcealedPasteboardType = false
 kCPYPrefInputPasteCommandKey = true

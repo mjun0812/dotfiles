@@ -1,0 +1,46 @@
+name: CI Rift Config
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "config/dot_config/rift/**"
+      - "config/dot_config/mise/**"
+      - "tests/test_rift.py"
+      - ".github/workflows/ci-rift.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "config/dot_config/rift/**"
+      - "config/dot_config/mise/**"
+      - "tests/test_rift.py"
+      - ".github/workflows/ci-rift.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v4
+        with:
+          mise_toml: |
+            [tools]
+            python = "3.12"
+            jq = "latest"
+      - name: Install zsh on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y zsh
+      - name: Validate config and mocked monitor operations
+        env:
+          RIFT_TEST_SHELL: /bin/zsh
+        run: |
+          zsh -n config/dot_config/rift/move-next-display.sh
+          python3 -m unittest discover -s tests -p 'test_rift.py' -v

@@ -1,0 +1,143 @@
+# Rift v0.7.1 / Traditional / mjun0812's AeroSpace-style keys
+# macOSでの実機動作は未検証。公式v0.7.1設定・ソースに照合。
+# 初回はアニメーションと外部HUDを外して比較する。
+
+[settings]
+animate = false
+animation_duration = 0.15
+animation_fps = 0.0
+default_disable = false
+focus_follows_mouse = false
+mouse_follows_focus = false
+mouse_hides_on_focus = false
+hot_reload = true
+run_on_start = []
+
+[settings.layout]
+mode = "traditional"
+window_insertion_point = "next_to_selection"
+
+[settings.layout.traditional]
+equalize_nodes = true
+
+[settings.layout.gaps.outer]
+top = 0
+bottom = 0
+left = 0
+right = 0
+
+[settings.layout.gaps.inner]
+horizontal = 0
+vertical = 0
+
+[settings.ui.menu_bar]
+enabled = true
+show_empty = false
+show_binding_mode = true
+
+[settings.ui.mission_control]
+enabled = false
+
+[settings.ui.stack_line]
+enabled = false
+
+[settings.gestures]
+enabled = false
+
+[settings.drag_drop]
+enabled = false
+
+[virtual_workspaces]
+enabled = true
+mode = "per_display"
+default_workspace_count = 9
+workspace_names = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+auto_assign_windows = true
+preserve_focus_per_workspace = true
+workspace_auto_back_and_forth = false
+prevent_wrapping = false
+workspace_rules = []
+
+# 既存AeroSpace設定のFloating対象を移植。
+app_rules = [
+  { app_id = "com.apple.finder", floating = true },
+  { app_id = "jp.naver.line.mac", floating = true },
+  { app_id = "Mattermost.Desktop", floating = true },
+  { app_id = "com.apple.mail", floating = true },
+  { app_id = "com.linguee.DeepLCopyTranslator", floating = true },
+  { app_id = "jp.kiok.nani", floating = true },
+  { app_id = "com.apple.systempreferences", floating = true },
+  { app_id = "com.mitchellh.ghostty", floating = false },
+]
+
+[keys]
+# フォーカス移動
+"Alt + Ctrl + H" = { move_focus = "left" }
+"Alt + Ctrl + J" = { move_focus = "down" }
+"Alt + Ctrl + K" = { move_focus = "up" }
+"Alt + Ctrl + L" = { move_focus = "right" }
+"Alt + Ctrl + Left" = { move_focus = "left" }
+"Alt + Ctrl + Down" = { move_focus = "down" }
+"Alt + Ctrl + Up" = { move_focus = "up" }
+"Alt + Ctrl + Right" = { move_focus = "right" }
+
+# タイルの移動
+"Alt + Shift + H" = { move_node = "left" }
+"Alt + Shift + J" = { move_node = "down" }
+"Alt + Shift + K" = { move_node = "up" }
+"Alt + Shift + L" = { move_node = "right" }
+
+# Traditionalの分割方向。AeroSpaceのtiles強制切替とは異なる。
+"Alt + Slash" = "toggle_orientation"
+# 任意で使うスタック切替。AeroSpaceのAccordion縦横循環とは異なる。
+"Alt + Comma" = "toggle_stack"
+
+# Smart resize。AeroSpaceの50ポイント刻みではなくRiftの拡大・縮小。
+"Alt + Minus" = { resize_window_shrink = "smart" }
+"Alt + Equal" = { resize_window_grow = "smart" }
+
+# 表示は1〜9だが、内部インデックスは0〜8。
+"Alt + 1" = { switch_to_workspace = 0 }
+"Alt + 2" = { switch_to_workspace = 1 }
+"Alt + 3" = { switch_to_workspace = 2 }
+"Alt + 4" = { switch_to_workspace = 3 }
+"Alt + 5" = { switch_to_workspace = 4 }
+"Alt + 6" = { switch_to_workspace = 5 }
+"Alt + 7" = { switch_to_workspace = 6 }
+"Alt + 8" = { switch_to_workspace = 7 }
+"Alt + 9" = { switch_to_workspace = 8 }
+
+# 別Workspaceへ送って、そのウィンドウを追従する。
+"Alt + Shift + 1" = { move_window_to_workspace = { workspace = 0, follow = true } }
+"Alt + Shift + 2" = { move_window_to_workspace = { workspace = 1, follow = true } }
+"Alt + Shift + 3" = { move_window_to_workspace = { workspace = 2, follow = true } }
+"Alt + Shift + 4" = { move_window_to_workspace = { workspace = 3, follow = true } }
+"Alt + Shift + 5" = { move_window_to_workspace = { workspace = 4, follow = true } }
+"Alt + Shift + 6" = { move_window_to_workspace = { workspace = 5, follow = true } }
+"Alt + Shift + 7" = { move_window_to_workspace = { workspace = 6, follow = true } }
+"Alt + Shift + 8" = { move_window_to_workspace = { workspace = 7, follow = true } }
+"Alt + Shift + 9" = { move_window_to_workspace = { workspace = 8, follow = true } }
+
+# 次のモニターへ送って追従（同梱補助スクリプト）。
+"Alt + Shift + Tab" = { exec = ["/bin/zsh", "-c", 'exec /bin/zsh "$HOME/.config/rift/move-next-display.sh"'] }
+
+# 空のモニターも選べるように追加。移動先画面だけをフォーカスする。
+"Alt + Ctrl + Shift + Left" = { focus_display = "left" }
+"Alt + Ctrl + Shift + Down" = { focus_display = "down" }
+"Alt + Ctrl + Shift + Up" = { focus_display = "up" }
+"Alt + Ctrl + Shift + Right" = { focus_display = "right" }
+
+# 現在のmacOS Spaceの管理ON/OFF。全モニター一括ではない。
+"Alt + Z" = "toggle_space_activated"
+"Alt + Shift + Semicolon" = { binding_mode = "service" }
+
+# この見出し以降はService Modeのキー。通常キーをここに追加しない。
+[binding_modes.service]
+"Escape" = ["reload_config", { binding_mode = "default" }]
+"F" = ["toggle_window_floating", { binding_mode = "default" }]
+# Rは選択中の結合解除＋サイズ均等化。全ツリーflattenではない。
+"R" = ["unjoin_windows", "balance", { binding_mode = "default" }]
+"Alt + Shift + H" = [{ join_window = "left" }, { binding_mode = "default" }]
+"Alt + Shift + J" = [{ join_window = "down" }, { binding_mode = "default" }]
+"Alt + Shift + K" = [{ join_window = "up" }, { binding_mode = "default" }]
+"Alt + Shift + L" = [{ join_window = "right" }, { binding_mode = "default" }]
