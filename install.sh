@@ -53,6 +53,8 @@ if [ "$(uname -s)" = "Darwin" ]; then
     if [ "${DOTFILES_SKIP_BOOTSTRAP_PACKAGES:-0}" != "1" ]; then
         mise bootstrap packages apply --yes
     fi
+    # defaultsが指すディレクトリを先に作る
+    mise bootstrap files apply --yes
     # appは書き換えた設定を次の起動時に読む
     mise bootstrap macos defaults apply --yes
 
@@ -127,14 +129,6 @@ unset NVIM_TS_AUTO_INSTALL
 if [ "$(uname -s)" != "Darwin" ]; then
     log_section "Setting up Vite plus..."
     $DOTPATH/script/setup/install_vp.sh || echo "vp install/upgrade failed (ignored)"
-fi
-
-################ [macOS apps] ################
-# 設定ファイルを読むapp。他のappの設定は config.macos.toml の [bootstrap.macos.defaults]
-if [ "$(uname -s)" = "Darwin" ]; then
-    log_section "Setting up macOS app configs..."
-    # スクリーンショットの保存先 (config.macos.toml の com.apple.screencapture location)
-    mkdir -p "$HOME/Pictures/ScreenShot"
 fi
 
 ################ [Agent Skills] ################
