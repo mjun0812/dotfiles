@@ -5,7 +5,8 @@
 [settings]
 animate = false
 animation_duration = 0.15
-animation_fps = 0.0
+# 0.0にするとRift 0.7.2は起動時に落ちる (animate = falseでも 1.0 / animation_fps を計算する)
+animation_fps = 100.0
 default_disable = false
 focus_follows_mouse = false
 mouse_follows_focus = false
