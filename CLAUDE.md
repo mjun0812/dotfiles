@@ -18,7 +18,7 @@ zsh script/setup/setup_claude_code.sh   # Claude Code設定のsymlink・plugin
 zsh script/setup/setup_codex.sh         # Codexのhooks.jsonのsymlink (config.toml・AGENTS.md・rulesはmise dot applyが展開する)
 bash script/setup/setup_herdr.sh        # herdr integration・plugin link (miseのpostinstallからも呼ばれる)
 bash script/setup/setup_hunk.sh         # hunk-gh extensionのinstall (miseのpostinstallからも呼ばれる)
-zsh script/setup/setup_codex_daemon.sh pin   # Codex daemonをmise管理のバージョンに固定 (miseのpostinstallからも呼ばれる。migrate/runも有り)
+zsh script/setup/setup_codex_daemon.sh pin   # Codex daemonをmise管理のバージョンに固定 (miseのpostinstallからも呼ばれる。runも有り)
 script/setup/update_completions.sh      # zsh補完の更新
 
 # [dotfiles] の展開 (install.shから呼ばれる)。statusは展開の状態を一覧し、--missingなら未適用で終了コード1

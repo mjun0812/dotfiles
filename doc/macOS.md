@@ -163,11 +163,10 @@ mise/Aqua Codex package
 
 `script/setup/setup_codex_daemon.sh` drives the lifecycle:
 
-| Subcommand | Called from                          | Action                                                                                                  |
-| ---------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| `pin`      | Codex postinstall, `install.sh`      | Enable Remote Control, start the daemon, and pin the mise-installed package (restarts a running daemon) |
-| `run`      | `codex-app-server-daemon` service    | Start the daemon at login, then idle so the service manager does not reap it                            |
-| `migrate`  | `install.sh` (before `mise install`) | Remove the old `codex-remote-control` service and the `~/.codex/packages/standalone/current` link       |
+| Subcommand | Called from                       | Action                                                                                                  |
+| ---------- | --------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `pin`      | Codex postinstall, `install.sh`   | Enable Remote Control, start the daemon, and pin the mise-installed package (restarts a running daemon) |
+| `run`      | `codex-app-server-daemon` service | Start the daemon at login, then idle so the service manager does not reap it                            |
 
 The daemon is a pidfile-backed detached process and does not survive a reboot, so the `codex-app-server-daemon` mise user service (LaunchAgent on macOS, systemd user service on Linux) starts it at login. Pinning disables the daemon's own updater; `mise upgrade` runs the postinstall, which pins the new version and restarts the daemon. Run it when no active Codex turn should be interrupted.
 
@@ -178,7 +177,5 @@ codex app-server daemon version   # status and versions as JSON
 codex app-server daemon stop
 codex app-server daemon start
 ```
-
-Migrating an existing machine: rerun `./install.sh`. `migrate` removes the old service (`mise bootstrap services remove codex-remote-control`), so the old definition is not restored by `mise bootstrap services apply`, and the legacy `standalone/current` link, so only one daemon runs.
 
 Start a new Remote Control session with `codex --remote unix://`. Add `resume` or `fork` to the command to resume or fork a stored session.

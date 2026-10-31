@@ -43,8 +43,6 @@ mise dot apply --yes
 ################ [mise tools] ################
 log_section "Installing mise tools..."
 source "$HOME/.zprofile"
-# 旧 codex-remote-control service を先に撤去する (codex の postinstall が新 daemon を起動するため)
-zsh "$DOTPATH/script/setup/setup_codex_daemon.sh" migrate
 mise install
 mise reshim
 
