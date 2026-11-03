@@ -64,7 +64,19 @@ auto_assign_windows = true
 preserve_focus_per_workspace = true
 workspace_auto_back_and_forth = false
 prevent_wrapping = false
-workspace_rules = []
+# AeroSpaceと同じく1〜5を左、6〜9を右のディスプレイに置く (workspaceは0始まり)。
+# 1台だけのときはleftもrightも同じディスプレイを指すので、1〜9がすべてそこに集まる。
+workspace_rules = [
+  { workspace = 0, display = "left" },
+  { workspace = 1, display = "left" },
+  { workspace = 2, display = "left" },
+  { workspace = 3, display = "left" },
+  { workspace = 4, display = "left" },
+  { workspace = 5, display = "right" },
+  { workspace = 6, display = "right" },
+  { workspace = 7, display = "right" },
+  { workspace = 8, display = "right" },
+]
 
 # 既存AeroSpace設定のFloating対象を移植。
 app_rules = [
