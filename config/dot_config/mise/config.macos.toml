@@ -83,6 +83,13 @@ container system kernel set --recommended --force
 "mjun0812/roboto-mono-jp" = "https://github.com/mjun0812/homebrew-roboto-mono-jp.git"
 "nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
 
+[bootstrap.services.rift]
+scope = "user"
+description = "Start the Rift window manager"
+command = "~/.dotfiles/script/services/rift.sh"
+# メニューの Quit Rift で正常終了したときは起動し直さない
+restart = "on-failure"
+
 # macOSの設定 (初期値から変えたもの)。Dockに固定するappやログイン時に開くappなど、使ううちに変わるものは宣言しない
 # Dock・Finder・メニューバーは次の起動から反映される (mise は再起動しない)
 [bootstrap.macos.dock]
