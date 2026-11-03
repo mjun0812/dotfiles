@@ -399,3 +399,21 @@ run = "nohup caffeinate -dims >/dev/null 2>&1 &"
 [tasks.no-sleep-mac-stop]
 description = "Stop No Sleep Mode for macOS"
 run = "pkill -f 'caffeinate -dims'"
+
+# caffeinateはアイドルスリープしか止めないので、蓋を閉じたときのスリープはpmsetで止める。
+# disablesleepはプロセスに紐づかず、stopを実行するまで有効なまま残る
+[tasks.no-sleep-mac-closed]
+description = "Keep macOS awake even with the lid closed (needs sudo)"
+run = "sudo pmset disablesleep 1"
+
+[tasks.no-sleep-mac-closed-stop]
+description = "Allow macOS to sleep on lid close again"
+run = "sudo pmset disablesleep 0"
+
+[tasks.no-sleep-mac-status]
+description = "Show whether no-sleep-mac and no-sleep-mac-closed are active"
+# pmset -gはdisablesleepが0のときSleepDisabledの行を出さない
+run = """
+pgrep -fl 'caffeinate -dims' || echo 'caffeinate -dims: not running'
+pmset -g | grep SleepDisabled || echo 'SleepDisabled 0'
+"""
