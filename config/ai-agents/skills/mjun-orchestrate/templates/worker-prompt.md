@@ -11,7 +11,7 @@ orchestratorが下表のplaceholderを埋め、本文をquoted heredocでshell�
 | `{{location_note}}` | taskのkindに対応する下の文面                   |
 | `{{report_path}}`   | 報告ファイルの絶対パス (`<run-dir>/<slug>.md`) |
 | `{{worker_name}}`   | worker agent名 (`<orch名>-<slug>`)             |
-| `{{orch_name}}`     | orchestratorのagent名                          |
+| `{{orch_pane}}`     | orchestratorのpane ID (`$HERDR_PANE_ID`)       |
 
 `{{location_note}}` はkindで決まる。`<branch>` と `<checkout_path>` はPhase 2とPhase 3で記録した値。どちらの文面も、並列に動く他のworkerと同じcheckoutを書き換えないためのものである。
 
@@ -47,8 +47,8 @@ Status values:
     NEEDS_CONTEXT        Stopped because you need information or a decision you cannot get yourself. Put the question in Result.
     BLOCKED              Stopped because you cannot proceed, for example a broken environment or a repeated failure. Put the cause in Result.
 
-When you finish with DONE or DONE_WITH_CONCERNS, send one line to Herdr agent {{orch_name}}:
+When you finish with DONE or DONE_WITH_CONCERNS, send one line to the Herdr pane {{orch_pane}}:
 
     report="DONE {{worker_name}}: <one-line result, with the PR URL or branch if any>"
-    herdr agent prompt {{orch_name}} "$report"
+    herdr agent prompt {{orch_pane}} "$report"
 ```

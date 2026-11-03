@@ -47,7 +47,8 @@ agent種別はAskUserQuestionで選んでもらい、モデルはその後にユ
 
 ## 名前とlabel
 
-- orchestratorのagent名: `orch` (使用中なら `orch-2`, `orch-3`)。tab labelは `🧭 orch` にし、元のlabelはPhase 8で戻すためにboardへ記録する
+- orchestratorの名前: `orch` (tab labelが `🧭 orch` のtabがすでにあれば `orch-2`, `orch-3`)。worker名の接頭辞とrun dirに使い、tab labelは `🧭 <orch名>` にする。元のtab labelはPhase 8で戻すためにboardへ記録する
+- orchestrator自身のHerdrのagent名は変えない。サイドバーのagent欄に出るagentの種類(claude・codexなど)が名前で隠れるためである。workerからの報告の宛先には、agent名の代わりに自分のpane ID (`$HERDR_PANE_ID`)を使う
 - worker tab (kind `tab` のtask): `⚙️ workers` のpaneを分割してworkerを増やす。1 tabのpaneは4つまでとし、空きが無ければ `⚙️ workers 2`, `⚙️ workers 3` と新しいtabを作る。同時に動かすworker数に上限は設けない
 - worktree workspace (kind `worktree` のtask): taskごとに1つ。Herdrがorchestratorのworkspaceの子としてbranch名で表示する
 - workerのagent名: `<orch名>-<slug>`。32文字以内、`[a-z][a-z0-9_-]*`
@@ -133,7 +134,7 @@ Phase 1を終えるとmodeに入り、ユーザーが終了を指示するまで
    - 現在のtab label: `herdr tab list --workspace "$HERDR_WORKSPACE_ID"`
    - リポジトリのroot: `git rev-parse --show-toplevel`
    - default branch: `git symbolic-ref --short refs/remotes/origin/HEAD` (`origin/main` の形)。失敗したら現在のbranch
-3. 自分に名前を付ける: `herdr agent rename "$HERDR_PANE_ID" orch`、`herdr tab rename "$HERDR_TAB_ID" "🧭 orch"`
+3. 自分の名前を決め、tab labelにする: `herdr tab rename "$HERDR_TAB_ID" "🧭 <orch名>"`
 4. run dirを作る: `mkdir -p <repo-root>/.mjun/orchestrate/<orch名>-$(date +%Y%m%d-%H%M%S)`。続けて `<run-dir>/board.md` を作り、2で取得した値と自分の名前を「board」の書式で書く
 5. workerのagent種別をAskUserQuestionで確認する。選択肢は `claude` (既定、先頭)、`codex`、`opencode`、`agy`
 6. workerのモデル名をチャットで自由入力してもらい、入力を待つ。決まったagent種別とモデルをboardの `Workers` に書いてから次へ進む
@@ -182,7 +183,7 @@ waitが返ったら、`herdr agent get <worker>` と `herdr agent read <worker> 
 
 完了と停止の判定では、次の点を誤りやすい。
 
-- workerの `DONE` 報告は `herdr agent prompt <orch名>` 経由でuser messageとして届く。`DONE` が届き、stateが `idle` / `done` になっていれば完了としてPhase 6へ進む。stateが `working` のままなら、まだ終わっていない
+- workerの `DONE` 報告は `herdr agent prompt <orchestratorのpane ID>` 経由でuser messageとして届く。`DONE` が届き、stateが `idle` / `done` になっていれば完了としてPhase 6へ進む。stateが `working` のままなら、まだ終わっていない
 - `idle` / `done` なのに `DONE` が無ければ、報告ファイルの `Status:` で止まった理由を判断する。報告ファイルか `Status:` が無ければ、transcriptの最後を読んで同じように判断する
   - `NEEDS_CONTEXT`: workerは、自分では得られない情報か判断を待っている。ユーザーの依頼と会話から答えが決まるなら、その情報を添えて続きを頼む。決まらなければ `needs-user` にする
   - `BLOCKED`: workerは自力では進めない。元の依頼文や「続けて」は送らず、`needs-user` として報告に書かれた原因を伝える。同じ指示では同じところで止まるためである。ユーザーが原因を取り除いたら、そのことを添えて続きを頼む
@@ -216,4 +217,4 @@ modeの終了時だけ行う。
 
 1. worker tabが残っていれば、閉じるかをAskUserQuestionで1回だけ確認する。閉じる場合は `herdr pane close` → `herdr tab close` で閉じ、残す場合は次回のmodeで再利用する
 2. `🔴` で残したworktreeは削除せず、`herdr worktree remove --workspace <workspace-id> --force` で消せることをユーザーに伝える。kind `tab` のtaskでworkerやskillが作ったworktreeと、すべてのbranchは、orchestratorは削除しない
-3. `herdr tab rename "$HERDR_TAB_ID" "<boardのOriginal tab label>"` と `herdr agent rename "$HERDR_PANE_ID" --clear` で自分を元に戻し、modeを抜けたことを伝える。以後のmessageは通常の会話として扱う
+3. `herdr tab rename "$HERDR_TAB_ID" "<boardのOriginal tab label>"` でtab labelを元に戻し、modeを抜けたことを伝える。以後のmessageは通常の会話として扱う
