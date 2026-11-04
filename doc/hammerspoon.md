@@ -38,7 +38,7 @@ open -g "hammerspoon://aerospace-workspace?ws=3"
 
 ### `hammerspoon://wezterm-capture` / `hammerspoon://wezterm-focus`
 
-`wezterm-capture` records the currently focused WezTerm window together with the `pane` id under the `session` key (re-captured when the recorded window is gone). `wezterm-focus` activates the recorded window and pane. Both are called from the Claude Code and Codex hook scripts under `script/hooks/` and `script/notify/`, not by hand.
+`wezterm-capture` records the currently focused WezTerm window together with the `pane` id under the `session` key (re-captured when the recorded window is gone). `wezterm-focus` activates the recorded window and pane. Both are called from the Claude Code and Codex hook scripts under `config/ai-agents/hooks/` and `script/notify/`, not by hand.
 
 ## Window Manager Integration
 

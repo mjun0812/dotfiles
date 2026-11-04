@@ -11,7 +11,7 @@ set -u
 
 command -v jq >/dev/null 2>&1 || exit 0
 
-DOTPATH=${0:A:h:h:h}
+DOTPATH=${0:A:h:h:h:h}
 # この長さ未満の本文はtextlintにかけない (日本語でおよそ100文字)
 min_bytes=300
 

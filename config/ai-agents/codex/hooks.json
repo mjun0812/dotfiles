@@ -15,7 +15,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/notify-codex-hook.sh permission",
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-codex-hook.sh permission",
             "type": "command"
           }
         ]
@@ -25,7 +25,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/codex-rules-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/codex-rules-hook.sh",
             "timeout": 10,
             "type": "command"
           }
@@ -36,12 +36,12 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/format-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/format-hook.sh",
             "timeout": 30,
             "type": "command"
           },
           {
-            "command": "~/.dotfiles/script/hooks/report-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/report-hook.sh",
             "timeout": 30,
             "type": "command"
           }
@@ -64,7 +64,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/codex-deny-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/codex-deny-hook.sh",
             "timeout": 10,
             "type": "command"
           }
@@ -74,7 +74,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/codex-rules-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/codex-rules-hook.sh",
             "timeout": 10,
             "type": "command"
           }
@@ -84,7 +84,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/codex-spawn-agent-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/codex-spawn-agent-hook.sh",
             "timeout": 10,
             "type": "command"
           }
@@ -104,7 +104,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/gh-body-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/gh-body-hook.sh",
             "timeout": 45,
             "type": "command"
           }
@@ -116,7 +116,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/capture-wezterm-pane-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/capture-wezterm-pane-hook.sh",
             "type": "command"
           }
         ]
@@ -135,7 +135,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/notify-codex-hook.sh stop",
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-codex-hook.sh stop",
             "type": "command"
           }
         ]
@@ -154,7 +154,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/notify-codex-hook.sh turn_start",
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-codex-hook.sh turn_start",
             "type": "command"
           }
         ]
