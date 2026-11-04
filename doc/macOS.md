@@ -30,11 +30,9 @@ macOS's own preferences that were changed from the defaults (Dock, Finder, keybo
 
   `changes` skips date values and app-state keys, and marks values that cannot be declared (binary data, dates inside a value) and removed keys as comments. Keys that macOS or apps changed in the background between the two commands show up too, so keep only the ones that belong to the setting.
 
-## AeroSpace
+## Window Managers
 
-See [doc/aerospace.md](aerospace.md) for AeroSpace window manager configuration and keyboard shortcuts.
-
-AeroSpace is still installed and its config is linked, but `after-startup-command = ['enable off']` in `aerospace.toml` turns its window management off at startup.
+See [doc/window_manager.md](window_manager.md) for the Rift and AeroSpace configuration and keyboard shortcuts. Rift is in use, and AeroSpace stays installed but turns its window management off at startup.
 
 ## Hammerspoon
 
