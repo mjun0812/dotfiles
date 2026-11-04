@@ -64,7 +64,7 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/codex-patch-guard-hook.sh",
+            "command": "~/.dotfiles/script/hooks/codex-deny-hook.sh",
             "timeout": 10,
             "type": "command"
           }
