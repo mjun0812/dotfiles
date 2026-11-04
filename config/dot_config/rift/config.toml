@@ -39,6 +39,7 @@ enabled = true
 show_empty = false
 show_binding_mode = false
 current_display_only = false
+mode = "active"
 display_style = "label"
 active_label = "index"
 show_fullscreen_indicator = false
