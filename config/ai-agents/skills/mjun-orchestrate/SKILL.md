@@ -49,7 +49,7 @@ agent種別はAskUserQuestionで選んでもらい、モデルはその後にユ
 
 - orchestratorの名前: `orch` (tab labelが `🧭 orch` のtabがすでにあれば `orch-2`, `orch-3`)。worker名の接頭辞とrun dirに使い、tab labelは `🧭 <orch名>` にする。元のtab labelはPhase 8で戻すためにboardへ記録する
 - orchestrator自身のHerdrのagent名は変えない。サイドバーのagent欄に出るagentの種類(claude・codexなど)が名前で隠れるためである。workerからの報告の宛先には、agent名の代わりに自分のpane ID (`$HERDR_PANE_ID`)を使う
-- worker tab (kind `tab` のtask): `⚙️ workers` のpaneを分割してworkerを増やす。1 tabのpaneは4つまでとし、空きが無ければ `⚙️ workers 2`, `⚙️ workers 3` と新しいtabを作る。同時に動かすworker数に上限は設けない
+- worker tab (kind `tab` のtask): `⚙️ workers` のpaneを分割してworkerを増やす。1 tabのpaneは8つまでとし、空きが無ければ `⚙️ workers 2`, `⚙️ workers 3` と新しいtabを作る。同時に動かすworker数に上限は設けない
 - worktree workspace (kind `worktree` のtask): taskごとに1つ。Herdrがorchestratorのworkspaceの子としてbranch名で表示する
 - workerのagent名: `<orch名>-<slug>`。32文字以内、`[a-z][a-z0-9_-]*`
 - pane label: 先頭の絵文字で状態を示し、ユーザーが画面を見ただけで判断待ちのworkerを見つけられるようにする
@@ -161,7 +161,7 @@ Phase 1を終えるとmodeに入り、ユーザーが終了を指示するまで
 起動できるtask (依存なし、または依存先が終わっている) すべてにpaneを用意する。
 
 - kind `worktree`: 最初の1回だけ `git fetch origin <default branchのbranch部分>` を実行し、taskごとに `herdr worktree create --workspace "$HERDR_WORKSPACE_ID" --branch <branch> --base <default branch> --no-focus` を実行する。応答の `.result.workspace.workspace_id`、`.result.root_pane.pane_id`、`.result.workspace.worktree.checkout_path` を記録し、root paneをworkerに使う
-- kind `tab`: paneが4つ未満のworker tabがあれば再利用する。無ければ `herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd <repo-root> --label "<label>" --no-focus` で作り、応答の `.result.tab.tab_id` と `.result.root_pane.pane_id` を記録して、root paneを1つ目のworkerに使う。2つ目以降は `herdr pane split <同じtabのpane-id> --direction right --cwd <repo-root> --no-focus` で分割し (`right` と `down` を交互に使う)、応答の `.result.pane.pane_id` を記録する
+- kind `tab`: paneが8つ未満のworker tabがあれば再利用する。無ければ `herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd <repo-root> --label "<label>" --no-focus` で作り、応答の `.result.tab.tab_id` と `.result.root_pane.pane_id` を記録して、root paneを1つ目のworkerに使う。2つ目以降は `herdr pane split <同じtabのpane-id> --direction right --cwd <repo-root> --no-focus` で分割し (`right` と `down` を交互に使う)、応答の `.result.pane.pane_id` を記録する
 
 各paneを `herdr pane rename <pane-id> "🟡 <slug>"` にする。
 
