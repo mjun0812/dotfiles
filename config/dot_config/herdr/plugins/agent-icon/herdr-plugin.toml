@@ -1,0 +1,13 @@
+id = "agent-icon"
+name = "Agent icon"
+version = "0.1.0"
+min_herdr_version = "0.8.2"
+description = "Prefix claude and codex agent names with their Nerd Font icons"
+platforms = ["macos", "linux"]
+
+[[startup]]
+command = ["./sync.sh"]
+
+[[events]]
+on = "pane.agent_detected"
+command = ["./sync.sh"]
