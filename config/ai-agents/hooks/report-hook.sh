@@ -13,7 +13,7 @@
 
 set -u
 
-DOTPATH=${0:A:h:h:h}
+DOTPATH=${0:A:h:h:h:h}
 
 command -v jq >/dev/null 2>&1 || exit 0
 
@@ -23,7 +23,7 @@ interp='(^|[^[:alnum:]_.-])(python3?|node|bun|deno|ruby)([[:space:]]+-[^[:space:
 embedded="${interp}[[:space:]]+-[ce]([[:space:]]|\$)|${interp}[[:space:]]*<<"
 
 report=()
-for file in "${(@f)$("$DOTPATH/script/hooks/edited-files.sh")}"; do
+for file in "${(@f)$("$DOTPATH/config/ai-agents/hooks/edited-files.sh")}"; do
     # "行番号<TAB>指摘" を1件1行で集め、変わった行のものだけ残す
     findings=()
     case $file in

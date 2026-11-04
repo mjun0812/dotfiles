@@ -7,11 +7,11 @@
 
 set -u
 
-DOTPATH=${0:A:h:h:h}
+DOTPATH=${0:A:h:h:h:h}
 
 command -v jq >/dev/null 2>&1 || exit 0
 
-files=("${(@f)$("$DOTPATH/script/hooks/edited-files.sh")}")
+files=("${(@f)$("$DOTPATH/config/ai-agents/hooks/edited-files.sh")}")
 
 # 以降のformatterの出力はagentに見せない
 exec >/dev/null 2>&1

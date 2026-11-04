@@ -9,7 +9,7 @@
 set -u
 setopt extended_glob
 
-DOTPATH=${0:A:h:h:h}
+DOTPATH=${0:A:h:h:h:h}
 
 command -v jq >/dev/null 2>&1 || exit 0
 

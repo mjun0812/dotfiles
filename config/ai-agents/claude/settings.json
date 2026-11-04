@@ -118,7 +118,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/gh-body-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/gh-body-hook.sh",
             "timeout": 45
           }
         ]
@@ -130,12 +130,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/format-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/format-hook.sh",
             "timeout": 30
           },
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/report-hook.sh",
+            "command": "~/.dotfiles/config/ai-agents/hooks/report-hook.sh",
             "timeout": 30
           }
         ]
@@ -147,7 +147,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/capture-wezterm-pane-hook.sh"
+            "command": "~/.dotfiles/config/ai-agents/hooks/capture-wezterm-pane-hook.sh"
           }
         ]
       },
@@ -167,7 +167,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh turn_start"
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh turn_start"
           }
         ]
       }
@@ -177,7 +177,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh permission_request"
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh permission_request"
           }
         ]
       }
@@ -188,7 +188,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh notification"
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh notification"
           }
         ]
       }
@@ -198,7 +198,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh pre_compact"
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh pre_compact"
           }
         ]
       }
@@ -209,7 +209,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh stop"
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh stop"
           }
         ]
       }
@@ -220,7 +220,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/script/hooks/notify-claude-hook.sh stop_failure"
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh stop_failure"
           }
         ]
       }
