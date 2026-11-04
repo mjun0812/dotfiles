@@ -1,10 +1,29 @@
 -- snacks.nvim の explorer を、以前使っていた fern.vim と同じ操作体系で使うための設定。
 -- snacks.lua の opts に lazy.nvim がマージするので、ここでは explorer 関連だけを書く。
+
+-- git dir -> fs_event。Neovim を終えるまで同じ worktree を二重に監視しない
+local worktree_watches = {}
+
 return {
   "folke/snacks.nvim",
   init = function()
     -- dotfile のファイル名は灰色 (NonText) にせず通常色にする。gitignore 対象は灰色のまま
     vim.api.nvim_set_hl(0, "SnacksPickerPathHidden", { link = "SnacksPickerFile" })
+
+    -- snacks は git status を最大15分使い回し、.git/index の変化を見たときだけ読み直す。
+    -- 監視が通知を取りこぼすことがあるので、Neovim に戻ったときにも読み直させる。
+    -- herdr は同じ tab の中で pane を移ったときだけ FocusGained を送り、tab の切り替えでは送らない
+    vim.api.nvim_create_autocmd("FocusGained", {
+      callback = function()
+        local pickers = Snacks.picker.get({ source = "explorer", tab = false })
+        for _, picker in ipairs(pickers) do
+          require("snacks.explorer.git").refresh(Snacks.git.get_root(picker:cwd()) or picker:cwd())
+        end
+        if #pickers > 0 then
+          require("snacks.explorer.watch").refresh()
+        end
+      end,
+    })
 
     vim.api.nvim_create_autocmd("QuitPre", {
       callback = function()
@@ -103,6 +122,24 @@ return {
           -- fern#hide_cursor 相当: list にいる間はカーソルを透明にして cursorline だけ見せる
           -- (win.list.on_win は snacks の list 実装が上書きするので picker の on_show を使う)
           on_show = function(picker)
+            -- git worktree では .git が gitdir を指すファイルになり、snacks の .git 監視では index の変化に気づけない。
+            -- 本当の git dir (.git/worktrees/<名前>) の index を監視して、commit などで git status を読み直させる
+            local root = Snacks.git.get_root(picker:cwd())
+            if root and vim.fn.filereadable(root .. "/.git") == 1 then
+              local git_dir = vim.trim(vim.fn.system({ "git", "-C", root, "rev-parse", "--absolute-git-dir" }))
+              if vim.v.shell_error == 0 and not worktree_watches[git_dir] then
+                worktree_watches[git_dir] = vim.uv.new_fs_event()
+                worktree_watches[git_dir]:start(git_dir, {}, function(_, file)
+                  if file and vim.fs.basename(file) == "index" then
+                    vim.schedule(function()
+                      require("snacks.explorer.git").refresh(root)
+                      require("snacks.explorer.watch").refresh()
+                    end)
+                  end
+                end)
+              end
+            end
+
             Snacks.util.set_hl(
               { TransparentCursor = { strikethrough = true, blend = 100 } },
               { prefix = "SnacksExplorer" }
