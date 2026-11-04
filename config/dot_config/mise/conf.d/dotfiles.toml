@@ -42,7 +42,13 @@
 
 # agent向け。AGENTS_global.md はCodexとGeminiが同じファイルを読む
 "~/.apm/apm.yml" = "~/.dotfiles/config/ai-agents/apm.yml"
+"~/.claude/CLAUDE.md" = "~/.dotfiles/config/ai-agents/claude/CLAUDE.md"
+"~/.claude/rules" = "~/.dotfiles/config/ai-agents/rules"
+"~/.claude/settings.json" = "~/.dotfiles/config/ai-agents/claude/settings.json"
+"~/.claude/statusline.py" = "~/.dotfiles/config/ai-agents/claude/statusline.py"
+"~/.claude/subagent_statusline.py" = "~/.dotfiles/config/ai-agents/claude/subagent_statusline.py"
 "~/.codex/AGENTS.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
+"~/.codex/hooks.json" = "~/.dotfiles/config/ai-agents/codex/hooks.json"
 "~/.codex/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
 "~/.gemini/GEMINI.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
 "~/.gemini/antigravity-cli/settings.json" = "~/.dotfiles/config/ai-agents/gemini/antigravity-cli/settings.json"
