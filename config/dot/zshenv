@@ -11,6 +11,10 @@ export VISUAL='vi'
 export PAGER='less'
 [[ "$OSTYPE" == darwin* ]] && export BROWSER='open'
 
+# Ubuntuの /etc/zsh/zshrc は ~/.zshrc より先に compinit を実行し、~/.config/zsh_completions の無い .zcompdump を作る。
+# completion.zsh の compinit -C がその作りたての dump を使うので _mise などが登録されない。compinit は completion.zsh だけで行う
+skip_global_compinit=1
+
 # Tool settings
 export CUDA_HOME="/usr/local/cuda"
 
