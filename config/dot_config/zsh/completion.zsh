@@ -9,6 +9,11 @@ if [[ -n $(print -r -- "${ZDOTDIR:-$HOME}/.zcompdump"(N.mh-24)) ]]; then
 else
     compinit
 fi
+# zshrc の仮の compdef が記録した呼び出しを、compinit が定義した本物の compdef で登録し直す
+for __compdef_args in $__pending_compdefs; do
+    eval "compdef $__compdef_args"
+done
+unset __compdef_args __pending_compdefs
 autoload -Uz bashcompinit && bashcompinit
 # AWS CLI completion
 if command -v aws_completer >/dev/null 2>&1; then
