@@ -79,6 +79,8 @@
       "Bash(sudo *)",
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
+      "Read(~/.zshrc.local)",
+      "Bash(*zshrc.local*)",
       "Bash(rm -rf /)",
       "Bash(rm -rf /*)",
       "Bash(rm -rf ~)",
