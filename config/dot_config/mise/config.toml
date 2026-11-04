@@ -75,7 +75,7 @@ textlint-rule-prh@6.1.0
 """ }
 
 # AI coding agents
-opencode = "latest"
+"aqua:anomalyco/opencode" = "latest"
 "npm:agent-browser" = { version = "latest", postinstall = "agent-browser install || echo 'agent-browser browser install skipped'" }
 "npm:playwriter" = { version = "latest", postinstall = '''
 # agent-browser install が入れた Chrome for Testing を共有する
