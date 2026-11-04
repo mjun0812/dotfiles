@@ -125,7 +125,6 @@ apm update -g
 | imagemagick     | Image processing                                      |
 | jactionlint     | GitHub Actions workflow linter                        |
 | jq              | JSON processor                                        |
-| keychain        | ssh-agent / gpg-agent manager                         |
 | kubectl         | Kubernetes CLI                                        |
 | mactop          | Apple Silicon monitor (macOS)                         |
 | md-to-pdf       | Markdown to PDF converter                             |
@@ -139,7 +138,6 @@ apm update -g
 | resvg           | SVG renderer (macOS)                                  |
 | rift            | Tiling window manager, runs as a mise service (macOS) |
 | ripgrep         | Modern `grep`                                         |
-| ripgrep-all     | `ripgrep` for PDFs, archives, and docs                |
 | rtk             | Token-reducing CLI proxy for LLMs                     |
 | ruff            | Python linter and formatter                           |
 | runpodctl       | RunPod CLI                                            |

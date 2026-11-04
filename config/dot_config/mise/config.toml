@@ -22,7 +22,6 @@ tmux = "latest"
 yq = "latest"
 zoxide = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
-"aqua:phiresky/ripgrep-all" = "latest"
 "aqua:sharkdp/bat" = "latest"
 "aqua:sharkdp/fd" = "latest"
 
@@ -53,7 +52,6 @@ ty = "latest"
 "aqua:neovim/neovim" = "latest"
 "github:duckdb/duckdb" = "latest"
 "github:rtk-ai/rtk" = "latest"
-"github:nwiizo/suiko" = "latest"
 "github:runpod/runpodctl" = "latest"
 "github:WGUNDERWOOD/tex-fmt" = "latest"
 "github:jupyter-ai-contrib/nb-cli" = { version = "latest", bin = "nb" }
@@ -97,7 +95,6 @@ ln -sfn bin/codex "$MISE_TOOL_INSTALL_PATH/codex"
 
 # Python CLI tools
 "pypi:copier" = "latest"
-"pypi:danielrobbins/keychain" = { version = "latest" }
 "pypi:glances" = "latest"
 "pypi:huggingface_hub" = "latest"
 "pypi:nvitop" = "latest"
