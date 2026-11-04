@@ -141,10 +141,6 @@ apm update -g -y
 log_section "Setting up Claude Code..."
 zsh "$DOTPATH/script/setup/setup_claude_code.sh"
 
-################ [Codex] ################
-log_section "Setting up Codex..."
-zsh "$DOTPATH/script/setup/setup_codex.sh"
-
 ################ [herdr] ################
 log_section "Setting up herdr..."
 bash "$DOTPATH/script/setup/setup_herdr.sh"

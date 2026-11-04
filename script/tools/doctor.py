@@ -132,22 +132,10 @@ def check_expected_links() -> Iterator[str]:
 
 def script_links() -> Iterator[tuple[Path, Path]]:
     """Setupスクリプトが張るsymlinkの、dotfilesのファイルと展開先の組を返す。"""
-    agents = DOTPATH / "config/ai-agents"
-    for name in (
-        "CLAUDE.md",
-        "settings.json",
-        "statusline.py",
-        "subagent_statusline.py",
-    ):
-        yield agents / "claude" / name, HOME / ".claude" / name
-    for source in sorted((agents / "rules").glob("*.md")):
-        yield source, HOME / ".claude/rules" / source.name
-    for source in sorted(
-        path for path in (agents / "skills").iterdir() if path.is_dir()
-    ):
+    skills = DOTPATH / "config/ai-agents/skills"
+    for source in sorted(path for path in skills.iterdir() if path.is_dir()):
         for skill_dir in SKILL_DIRS:
             yield source, HOME / skill_dir / source.name
-    yield agents / "codex/hooks.json", HOME / ".codex/hooks.json"
 
 
 def check_dangling_links() -> Iterator[str]:

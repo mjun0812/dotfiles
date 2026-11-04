@@ -14,8 +14,7 @@ macOS / Linux向けのdotfiles。リポジトリ内のファイルをホーム�
 
 # 個別セットアップ (install.shから呼ばれる。対象部分だけ再実行したいとき)
 zsh script/setup/setup_skills.sh        # 私用skillの3か所へのsymlink (APMの前に実行される)
-zsh script/setup/setup_claude_code.sh   # Claude Code設定のsymlink・plugin
-zsh script/setup/setup_codex.sh         # Codexのhooks.jsonのsymlink (config.toml・AGENTS.md・rulesはmise dot applyが展開する)
+zsh script/setup/setup_claude_code.sh   # Claude Codeのmarketplace・pluginの導入 (設定ファイルはmise dot applyが展開する)
 bash script/setup/setup_herdr.sh        # herdr integration・plugin link (miseのpostinstallからも呼ばれる)
 bash script/setup/setup_hunk.sh         # hunk-gh extensionのinstall (miseのpostinstallからも呼ばれる)
 zsh script/setup/setup_codex_daemon.sh pin   # Codex daemonをmise管理のバージョンに固定 (miseのpostinstallからも呼ばれる。runも有り)
@@ -55,9 +54,9 @@ script/tools/sync_vscode_extensions.sh --dry-run
 
 以下のように展開する。展開先を直接編集しても実体はこのリポジトリ内のファイルである。
 
-- `config/dot`・`config/dot_config`・`config/vscode` の行、Codexの `config.toml`、`AGENTS_global.md`・`gemini/antigravity-cli/settings.json`・`apm.yml`・`textlintrc.js`・`codex/rules/manual-approval.rules`・`mac/iterm2`・`mac/karabiner` の行は、`config/dot_config/mise/conf.d/dotfiles.toml` の `[dotfiles]` に宣言し、`install.sh` が `mise dot apply` で展開する。VSCodeの展開先は `variants` でOSごとに分け、macOS専用のiTerm2とkarabinerは `variants` に `os = "macos"` だけを書いてLinuxでは展開しない。miseがこの宣言を読めるように、`~/.config/mise` だけは `install.sh` が先に手でlinkする
+- `config/dot`・`config/dot_config`・`config/vscode` の行、Codexの `config.toml`・`hooks.json`、Claude Codeの `claude/*`・`rules`、`AGENTS_global.md`・`gemini/antigravity-cli/settings.json`・`apm.yml`・`textlintrc.js`・`codex/rules/manual-approval.rules`・`mac/iterm2`・`mac/karabiner` の行は、`config/dot_config/mise/conf.d/dotfiles.toml` の `[dotfiles]` に宣言し、`install.sh` が `mise dot apply` で展開する。VSCodeの展開先は `variants` でOSごとに分け、macOS専用のiTerm2とkarabinerは `variants` に `os = "macos"` だけを書いてLinuxでは展開しない。miseがこの宣言を読めるように、`~/.config/mise` だけは `install.sh` が先に手でlinkする
 - `config/dot` や `config/dot_config` にファイルを足したら、`dotfiles.toml` にもエントリを足す。ファイルかディレクトリ1つにつき1エントリで並べ、`dot_prefix` は使わない。足し忘れは `script/tools/check-dotfiles-entries.sh` をprekが実行して検出する
-- それ以外の行 (`herdr/plugins`、`~/.claude/` 配下、`rules/*`、`skills/<skill>`、`codex/hooks.json`) は、`install.sh` と `script/setup/setup_*.sh` が展開する
+- それ以外の行 (`herdr/plugins`、`skills/<skill>`) は、`install.sh` と `script/setup/setup_*.sh` が展開する
 
 | リポジトリ内                                                                                | 展開先                                                                        |
 | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
@@ -66,7 +65,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/dot_config/{herdr,hunk}/config.toml`, `config/dot_config/cli-proxy-api/config.yaml` | `~/.config/<name>/` 配下にファイル単位でsymlink (ディレクトリは実体)          |
 | `config/dot_config/herdr/plugins/<plugin>`                                                  | `herdr plugin link` で登録 (symlinkではない。`setup_herdr.sh` が実行)         |
 | `config/ai-agents/claude/{CLAUDE.md,settings.json,statusline.py,subagent_statusline.py}`    | `~/.claude/` 配下                                                             |
-| `config/ai-agents/rules/*`                                                                  | `~/.claude/rules/`(Codexへは `codex-rules-hook.sh` が渡す)                    |
+| `config/ai-agents/rules`                                                                    | `~/.claude/rules`(Codexへは `codex-rules-hook.sh` が渡す)                     |
 | `config/ai-agents/skills/<skill>`                                                           | `~/.agents/skills/`, `~/.claude/skills/`, `~/.gemini/antigravity-cli/skills/` |
 | `config/ai-agents/codex/hooks.json`                                                         | `~/.codex/hooks.json`                                                         |
 | `config/ai-agents/AGENTS_global.md`                                                         | `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`                                   |
