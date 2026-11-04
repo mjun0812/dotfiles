@@ -104,13 +104,8 @@
       {
         "hooks": [
           {
-            "command": "~/.dotfiles/script/hooks/gh-issue-edit-guard-hook.sh",
-            "timeout": 15,
-            "type": "command"
-          },
-          {
-            "command": "~/.dotfiles/script/hooks/gh-body-textlint-hook.sh",
-            "timeout": 30,
+            "command": "~/.dotfiles/script/hooks/gh-body-hook.sh",
+            "timeout": 45,
             "type": "command"
           }
         ],
