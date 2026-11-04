@@ -3,7 +3,7 @@ set -euo pipefail
 
 usage() {
     cat <<'EOF'
-Usage: script/sync-vscode-extensions.sh [--dry-run] [extensions-file]
+Usage: script/tools/sync_vscode_extensions.sh [--dry-run] [extensions-file]
 
 Synchronize installed VS Code extensions with extensions-file.
 EOF

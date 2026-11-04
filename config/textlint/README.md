@@ -17,7 +17,8 @@ mise reshim
 zsh script/setup/setup_textlint.sh
 ```
 
-The full `install.sh` also performs these steps. The setup script removes only
+The full `install.sh` also performs these steps. The setup script exits with an error
+when `npm:textlint` is not installed, and removes only
 `~/.local/bin/textlint` links pointing at this checkout's former
 `config/textlint/node_modules/.bin/textlint`, including dangling links. It leaves
 unrelated executables and symlinks alone. An unrelated command earlier on PATH

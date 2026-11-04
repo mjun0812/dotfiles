@@ -23,7 +23,7 @@ description: dotfilesの更新にlocal環境を追従させるため、必要な
 | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `config/dot_config/mise/config*.toml`                                               | `mise install`。`npm:textlint` の `bun_args` が変わったときは `mise install --force npm:textlint` (versionが同じだと入れ直されない) |
 | `script/setup/install_mise.sh`                                                      | `zsh script/setup/install_mise.sh`                                                                                                  |
-| `config/ai-agents/apm.yml`、`script/setup/setup_hunk.sh`                            | ホームで `apm update -g -y`                                                                                                         |
+| `config/ai-agents/apm.yml`                                                          | ホームで `apm update -g -y`                                                                                                         |
 | `config/ai-agents/codex/hooks.json`                                                 | Codexの `/hooks` での再承認をユーザーに頼む。定義を変えたhookの承認切れはscriptでは検出できない                                     |
 | `config/dot_config/mise/conf.d/dotfiles.toml`、`config/ai-agents/codex/config.toml` | `mise dot diff` で差分を見てから `mise dot apply`                                                                                   |
 | `script/setup/setup_*.sh`                                                           | 変わったscriptを再実行する                                                                                                          |

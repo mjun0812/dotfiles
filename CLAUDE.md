@@ -88,7 +88,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/dot/zshrc`            | 対話shell                   | p10k instant prompt、`mise activate`、`sheldon source`、`~/.zshrc.local`、`~/.config/zsh/profiles/*.zsh` (マシン固有設定、zsh-defer) |
 | `config/dot_config/zsh/*.zsh` | sheldonがlocal pluginとして | options / completion (即時)、functions / aliases (zsh-defer)                                                                         |
 | `config/dot_config/sheldon/`  | zshrcから1回                | サードパーティpluginと上記ファイルの読み込み順序・遅延指定                                                                           |
-| `config/dot_config/mise/`     | tool解決時                  | toolとバージョン、postinstall、`[settings]`、task、macOSのbrewパッケージ・常駐サービス・設定の定義 (`bootstrap.*`)                   |
+| `config/dot_config/mise/`     | tool解決時                  | toolとバージョン、postinstall、`[settings]`、task、常駐サービス、macOSのbrewパッケージ・設定の定義(`bootstrap.*`)                    |
 
 順序の制約 (zsh-completionsのfpath追加 → compinit、history設定は即時、syntax-highlightingは最後) は `plugins.toml` 冒頭のコメントにある。tool別の補完ファイル (`_mise`, `_docker`, `_kubectl`) は `script/setup/update_completions.sh` が `~/.config/zsh_completions/` に生成し、`.zcompdump` を削除して次回起動で再構築させる。
 
@@ -109,8 +109,9 @@ script/tools/sync_vscode_extensions.sh --dry-run
   - textlintの設定と辞書は `config/textlint/` にあり、`script/tools/textlint.sh <fix|report>` 経由で実行する。`config/textlint/ignore-files.txt` に書いたファイル(global指示のCLAUDE.md・AGENTS_global.md)は、symlink経由で渡しても指摘と自動修正の対象から外れる。本体とルール、HTML用の `textlint-plugin-html` はmiseの `npm:textlint` と `bun_args` で同じBun prefixに導入する。report側の設定はこのpluginを読み込むので、HTMLも `textlint.sh report <file>` で検査できる。wrapperはdotfilesのディレクトリから `mise where npm:textlint` で解決し、呼び出し元projectの別バージョンを使わない。`--fix` で直せるルールはfix側、直せないルールはreport側に置く。ただし空白のルールは直せてもreport側に置く。fix側はファイル全体を書き換えるので、他のrepoの文書の既存の行まで一斉に変わるためである。
   - 人が手で使う `textlint` も同じ本体とルールを使う。CLIはmiseのPATH / shimから公開され、ルールは同じinstall先の `node_modules` から解決される。`setup_textlint.sh` はdotfilesが作った旧 `~/.local/bin/textlint` のsymlinkだけを撤去する。設定の `~/.textlintrc.js` (`textlintrc.js`) はfix側とreport側のルールをまとめたもので、textlintが設定をカレントディレクトリから親へ探すため、自前の設定を持たないホーム配下のディレクトリから実行したときだけ使われる (対象のファイルはホームの外でもよい)。`--config` には渡せない (rc-config-loaderが拡張子付きのJSをYAMLとして読む)。
 - `gh pr|issue create|edit|comment` と `gh pr review` で送る本文には、Claude Code・Codex共通のPreToolUse hook `script/hooks/gh-body-textlint-hook.sh` がreport側の設定でtextlintをかけ、指摘があれば一度だけ止める。誤検知で先へ進めなくならないように、同じ本文での再実行は通す。300バイト (日本語でおよそ100文字) 未満の本文は検査しない。`$(...)` や `--body-file -` で渡す本文はhookから展開結果が見えないので、ファイルに書いて `--body-file` で渡させる。
+- 同じPreToolUse hookとして `script/hooks/gh-issue-edit-guard-hook.sh` が、他人が作成したIssueの本文を `gh issue edit --body` / `--body-file` で書き換える呼び出しを拒否する。追記や提案はコメントで行わせる。題名・label・assigneeの変更と、botが作成したIssueは通す。
 - textlintの導入・更新手順とBun backendへの依存は `config/textlint/README.md` に記載する。ルールは `bun_args` の固定版を明示的に変更する。旧 `package.json` / `bun.lock` は使わず、推移依存の完全固定は行わない。
-- `templates/` にはMarkdownのPDF出力用CSSと設定、`repo: local` のpre-commit設定テンプレート、agentsviewのリモートホスト定義 (`~/.agentsview/remotes.toml`) のplaceholderがある。PDF用ファイルはVS Codeの設定と `md-to-pdf` のaliasから参照される。commit・PR・Issue・レビュー用テンプレートは各skillに同梱される。
+- `templates/` にはMarkdownのPDF出力用CSSと設定、agentsviewのリモートホスト定義(`~/.agentsview/remotes.toml`)のplaceholderがある。PDF用ファイルはVS Codeの設定と `md-to-pdf` のaliasから参照される。commit・PR・Issue・レビュー用テンプレートは各skillに同梱される。
 
 ## 規約
 

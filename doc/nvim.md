@@ -122,6 +122,15 @@ GitHub Copilot is not a plugin here: the `copilot` language server is installed 
 Language servers that are also used from the shell or pre-commit (`oxfmt`, `ruff`, `taplo`, `ty`) are installed by mise
 instead of Mason and enabled from `lua/config/mise-servers.lua`, so Neovim runs the same versions as the shell.
 
+### Markdown Images and Mermaid (image.nvim / diagram.nvim)
+
+Images and Mermaid blocks in Markdown are shown in a popup when the cursor rests on them. These keys are set only in Markdown buffers (`lua/plugins/image.lua`).
+
+| Key          | Mode   | Description                                                                      |
+| ------------ | ------ | -------------------------------------------------------------------------------- |
+| `<leader>io` | Normal | Open the image or Mermaid diagram under the cursor externally                    |
+| `<leader>if` | Normal | Show the image or Mermaid diagram in a fullscreen float (`q` / `<Esc>` to close) |
+
 ### Diagnostics (Trouble)
 
 | Key          | Mode   | Description                       |

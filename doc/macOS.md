@@ -4,7 +4,7 @@
 
 GUI app settings are managed as config files when the app reads one, and as mise defaults otherwise. Nothing is kept as a `defaults` plist dump.
 
-1. **Config files**: the app reads a text file from the repo. `install.sh` links them.
+1. **Config files**: the app reads a text file from the repo. `mise dot apply` links them (declared in `[dotfiles]` of `config/dot_config/mise/conf.d/dotfiles.toml`; `install.sh` runs it).
    - **iTerm2 profiles**: `config/mac/iterm2/DynamicProfiles/dotfiles.json` is a [Dynamic Profile](https://iterm2.com/documentation-dynamic-profiles.html), linked into `~/Library/Application Support/iTerm2/DynamicProfiles/`. iTerm2 reloads it when the file changes. Changes made in the Settings UI are not written back: use _Other Actions > Save Profile as JSON_ and copy the keys into the file.
    - **Karabiner-Elements**: `config/mac/karabiner/` is linked to `~/.config/karabiner`, so UI changes land in the repo directly.
 2. **mise defaults**: preferences declared in `[bootstrap.macos.defaults]` of `config/dot_config/mise/config.macos.toml` (AltTab, BetterDisplay, Clipy, Homerow, and the iTerm2 global settings). `install.sh` applies them with `mise bootstrap macos defaults apply`; apps read them on their next launch.
@@ -34,15 +34,18 @@ macOS's own preferences that were changed from the defaults (Dock, Finder, keybo
 
 See [doc/aerospace.md](aerospace.md) for AeroSpace window manager configuration and keyboard shortcuts.
 
+AeroSpace is still installed and its config is linked, but `after-startup-command = ['enable off']` in `aerospace.toml` turns its window management off at startup.
+
 ## Hammerspoon
 
 See [doc/hammerspoon.md](hammerspoon.md) for Hammerspoon configuration and URL schemes.
 
-Hammerspoon is used for window management features that AeroSpace cannot handle natively.
+Hammerspoon is used for features that the window managers (AeroSpace and Rift) cannot handle natively.
 
 Currently configured features:
 
-- AeroSpace workspace HUD via URL scheme (`hammerspoon://aerospace-workspace?ws=<num>`)
+- Workspace HUD for AeroSpace and Rift via URL scheme (`hammerspoon://aerospace-workspace?ws=<num>`)
+- Return to the WezTerm window and pane from a coding agent notification (`hammerspoon://wezterm-capture` / `wezterm-focus`)
 - Toggle Chrome's native vertical tab sidebar via `Cmd+Shift+B` and left-edge hover
 
 ## Raycast
@@ -74,7 +77,7 @@ See [Raycast Script Commands](https://manual.raycast.com/script-commands) for th
 
 ## launchd
 
-User-level launchd agents are declared as user services (`[bootstrap.services]`) in `config/dot_config/mise/config.toml` and managed by mise. On macOS, mise generates the plist files under `~/Library/LaunchAgents/` and loads them with `launchctl`; on Linux, the same declarations become systemd user services.
+User-level launchd agents are declared as user services (`[bootstrap.services]`) in `config/dot_config/mise/config.toml` (and `config.macos.toml` for macOS-only ones) and managed by mise. On macOS, mise generates the plist files under `~/Library/LaunchAgents/` and loads them with `launchctl`; on Linux, the same declarations become systemd user services.
 
 ### Installation
 
@@ -91,6 +94,7 @@ mise bootstrap services apply --yes
 | `dev.mise.headroom-proxy`          | Run `headroom proxy` on `127.0.0.1:8787` at login |
 | `dev.mise.cli-proxy-api`           | Run CLIProxyAPI on `127.0.0.1:8317` at login      |
 | `dev.mise.codex-app-server-daemon` | Start the Codex app-server daemon at login        |
+| `dev.mise.rift`                    | Run the Rift window manager at login (macOS only) |
 
 The generated plists are `~/Library/LaunchAgents/<label>.plist`.
 

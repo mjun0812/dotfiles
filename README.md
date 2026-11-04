@@ -137,6 +137,7 @@ apm update -g
 | pnpm            | Node.js package manager                               |
 | prek            | pre-commit runner in Rust                             |
 | resvg           | SVG renderer (macOS)                                  |
+| rift            | Tiling window manager, runs as a mise service (macOS) |
 | ripgrep         | Modern `grep`                                         |
 | ripgrep-all     | `ripgrep` for PDFs, archives, and docs                |
 | rtk             | Token-reducing CLI proxy for LLMs                     |

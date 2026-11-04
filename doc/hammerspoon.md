@@ -2,7 +2,7 @@
 
 This document describes the Hammerspoon configuration and URL schemes.
 
-[Hammerspoon](https://www.hammerspoon.org/) is a macOS automation tool that bridges the operating system and a Lua scripting engine. In this dotfiles setup, Hammerspoon supplements [AeroSpace](https://github.com/nikitabobko/AeroSpace) with a window management feature that AeroSpace cannot handle natively (displaying a workspace HUD), and adds a toggle for Chrome's native vertical-tab sidebar.
+[Hammerspoon](https://www.hammerspoon.org/) is a macOS automation tool that bridges the operating system and a Lua scripting engine. In this dotfiles setup, Hammerspoon supplements the window managers [AeroSpace](https://github.com/nikitabobko/AeroSpace) and [Rift](https://github.com/acsandmann/rift) with a feature they cannot handle natively (displaying a workspace HUD), and adds a toggle for Chrome's native vertical-tab sidebar.
 
 ## Configuration Location
 
@@ -22,7 +22,7 @@ Hammerspoon registers URL handlers via `hs.urlevent.bind`. They can be invoked f
 
 | URL                                                    | Description                                                             |
 | ------------------------------------------------------ | ----------------------------------------------------------------------- |
-| `hammerspoon://aerospace-workspace?ws=<num>`           | Show a transient HUD with the AeroSpace workspace number                |
+| `hammerspoon://aerospace-workspace?ws=<num>`           | Show a transient HUD with the workspace number (AeroSpace and Rift)     |
 | `hammerspoon://wezterm-capture?session=<id>&pane=<id>` | Remember the focused WezTerm window and pane for a coding agent session |
 | `hammerspoon://wezterm-focus?session=<id>&pane=<id>`   | Bring back the WezTerm window and pane recorded for that session        |
 
@@ -40,13 +40,14 @@ open -g "hammerspoon://aerospace-workspace?ws=3"
 
 `wezterm-capture` records the currently focused WezTerm window together with the `pane` id under the `session` key (re-captured when the recorded window is gone). `wezterm-focus` activates the recorded window and pane. Both are called from the Claude Code and Codex hook scripts under `script/hooks/` and `script/notify/`, not by hand.
 
-## AeroSpace Integration
+## Window Manager Integration
 
-The AeroSpace configuration (`config/dot_config/aerospace/aerospace.toml`) calls into Hammerspoon at one point:
+The AeroSpace configuration (`config/dot_config/aerospace/aerospace.toml`) and the Rift configuration (`config/dot_config/rift/config.toml`) each call into Hammerspoon at one point:
 
-| Trigger                    | URL invoked                                  | Purpose                                         |
-| -------------------------- | -------------------------------------------- | ----------------------------------------------- |
-| `exec-on-workspace-change` | `hammerspoon://aerospace-workspace?ws=<num>` | Display workspace HUD on every workspace switch |
+| Config                     | Trigger                                                                | URL invoked                                  | Purpose                                         |
+| -------------------------- | ---------------------------------------------------------------------- | -------------------------------------------- | ----------------------------------------------- |
+| `aerospace/aerospace.toml` | `exec-on-workspace-change`                                             | `hammerspoon://aerospace-workspace?ws=<num>` | Display workspace HUD on every workspace switch |
+| `rift/config.toml`         | `run_on_start` (`rift-cli subscribe` to the `workspace_changed` event) | `hammerspoon://aerospace-workspace?ws=<num>` | Display workspace HUD on every workspace switch |
 
 ## Workspace HUD Customization
 
@@ -65,7 +66,7 @@ The workspace HUD is rendered with `hs.canvas`. Adjust the following local value
 | Auto-hide delay (`hs.timer.doAfter`) | `0.7` seconds                  | Time before the HUD starts fading out            |
 | Hide fade-out (`canvas:delete`)      | `0.15` seconds                 | HUD fade-out duration                            |
 
-The HUD is placed on the overlay window level (`hs.canvas.windowLevels.overlay`) and joins all spaces (`canJoinAllSpaces`) so it stays visible across AeroSpace workspace transitions.
+The HUD is placed on the overlay window level (`hs.canvas.windowLevels.overlay`) and joins all spaces (`canJoinAllSpaces`) so it stays visible across workspace transitions.
 
 ## Chrome Vertical Tab Sidebar Toggle
 

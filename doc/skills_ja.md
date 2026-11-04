@@ -28,14 +28,13 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`の�
 
 ### Agents
 
-4つのagentはすべて[`mjun0812/skills`](https://github.com/mjun0812/skills/tree/main/agents)から取得します。
+3つのagentはすべて[`mjun0812/skills`](https://github.com/mjun0812/skills/tree/main/agents)から取得します。
 
-| Agent                                                                                                       | 用途                                                                                           |
-| ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [`code-reviewer-contract`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-contract.md)   | spec contractに明記されたrequirements、boundaries、acceptance criteriaとの整合だけを検査する。 |
-| [`code-reviewer-finder`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-finder.md)       | 変更が導入または露出した、対応すべき動作不良やregressionを発見する。                           |
-| [`code-reviewer-standards`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-standards.md) | 変更が導入した、リポジトリの必須規約違反とcode smellを発見する。                               |
-| [`code-reviewer-verifier`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-verifier.md)   | review候補1件の反証を試み、confirmed、refuted、uncertainのverdictを返す。                      |
+| Agent                                                                                                     | 用途                                                                                           |
+| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [`code-reviewer-contract`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-contract.md) | spec contractに明記されたrequirements、boundaries、acceptance criteriaとの整合だけを検査する。 |
+| [`code-reviewer-finder`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-finder.md)     | 変更が導入または露出した、対応すべき動作不良やregressionを発見する。                           |
+| [`code-reviewer-verifier`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-verifier.md) | review候補1件の反証を試み、confirmed、refuted、uncertainのverdictを返す。                      |
 
 ## Skill一覧
 
@@ -59,12 +58,12 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`の�
 
 ### Git
 
-| Skill                                                                                                   | 用途                                                                                                                                                    |
-| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`git-commit`](https://github.com/mjun0812/skills/blob/main/skills/git/git-commit/SKILL.md)             | 現在の変更を適切な単位でstaging・commitする                                                                                                             |
-| [`git-squash`](https://github.com/mjun0812/skills/blob/main/skills/git/git-squash/SKILL.md)             | 現在のbranchのcommitをsquash・整理し、必要なら force-with-lease でpushする                                                                              |
-| [`git-fix-conflict`](https://github.com/mjun0812/skills/blob/main/skills/git/git-fix-conflict/SKILL.md) | merge、rebase、cherry-pick、revert、apply、PR などで発生したコンフリクトを検出して解消する                                                              |
-| [`self-review`](https://github.com/mjun0812/skills/blob/main/skills/review/self-review/SKILL.md)        | 未commit変更または指定commitをsnapshot化し、独立した2つのFinderと1つのStandardsで敵対的にreviewする (`--spec` でspecとの整合を検証するContract軸を追加) |
+| Skill                                                                                                   | 用途                                                                                                                                    |
+| ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| [`git-commit`](https://github.com/mjun0812/skills/blob/main/skills/git/git-commit/SKILL.md)             | 現在の変更を適切な単位でstaging・commitする                                                                                             |
+| [`git-squash`](https://github.com/mjun0812/skills/blob/main/skills/git/git-squash/SKILL.md)             | 現在のbranchのcommitをsquash・整理し、必要なら force-with-lease でpushする                                                              |
+| [`git-fix-conflict`](https://github.com/mjun0812/skills/blob/main/skills/git/git-fix-conflict/SKILL.md) | merge、rebase、cherry-pick、revert、apply、PR などで発生したコンフリクトを検出して解消する                                              |
+| [`self-review`](https://github.com/mjun0812/skills/blob/main/skills/review/self-review/SKILL.md)        | 未commit変更または指定commitをsnapshot化し、独立した2つのFinderで敵対的にreviewする (`--spec` でspecとの整合を検証するContract軸を追加) |
 
 ### GitHub
 
@@ -73,7 +72,7 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`の�
 | [`github-issue-create`](https://github.com/mjun0812/skills/blob/main/skills/github/github-issue-create/SKILL.md)             | Todo・メモ・バグ報告を、主張の裏取り (repo、必要なら公式ドキュメント) と関連Issue検索をしてからGitHub Issueとして1件起票する (テンプレ・ラベル自動判定、承認後に作成) |
 | [`github-issue-update`](https://github.com/mjun0812/skills/blob/main/skills/github/github-issue-update/SKILL.md)             | open issueを横断的に点検してclose (解決済み・重複・stale)・コメント追記・ラベル変更の候補を提示し、承認後に一括反映する                                               |
 | [`github-pr-create`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-create/SKILL.md)                   | 現在のbranchからPull Requestを作成し、概要・背景、関連Issue、実装方針、変更内容、影響範囲、検証結果の6項目で本文を記述する                                            |
-| [`github-pr-review`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-review/SKILL.md)                   | 並列reviewerで要修正の指摘・規約違反・specとの不整合 (`--spec` または関連Issueから解決できる場合) を発見・検証し、以前のレビューを最新スナップショットへ置き換える    |
+| [`github-pr-review`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-review/SKILL.md)                   | 並列reviewerで要修正の指摘・specとの不整合 (`--spec` または関連Issueから解決できる場合) を発見・検証し、以前のレビューを最新スナップショットへ置き換える              |
 | [`github-pr-fix`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-fix/SKILL.md)                         | PRの全問題(コンフリクト、CI失敗、レビューコメント)を専用worktree内で検出・修正する                                                                                    |
 | [`github-fix-ci`](https://github.com/mjun0812/skills/blob/main/skills/github/github-fix-ci/SKILL.md)                         | CIのステータスを確認し、失敗を分析して修正を適用する                                                                                                                  |
 | [`github-resolve-pr-comment`](https://github.com/mjun0812/skills/blob/main/skills/github/github-resolve-pr-comment/SKILL.md) | PRのレビューコメントを確認し、対応・返信する                                                                                                                          |
@@ -121,6 +120,7 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`の�
 
 | Skill                                                                                                              | 用途                                                                                                                                                                                                                                                |
 | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`duckdb`](https://github.com/mjun0812/skills/blob/main/skills/tools/duckdb/SKILL.md)                              | DuckDB CLIでデータファイル(CSV、JSONL、JSON、Parquetなど)の調査・集計・結合・形式変換を行い、DuckDBの構文をdocsで確かめる                                                                                                                           |
 | [`resume-other-agent`](https://github.com/mjun0812/skills/blob/main/skills/delegation/resume-other-agent/SKILL.md) | 別のcoding agent(Codex / Claude Code)をsession IDで指定し、直前のcontextを復元してresumeする                                                                                                                                                        |
 | [`skill-review`](https://github.com/mjun0812/skills/blob/main/skills/agent-skill/skill-review/SKILL.md)            | Agent skillの仕様適合性を検証し、周辺skillとの発動競合や旧基準の痕跡を含む観点ごとの判定をレポートする。レビュー後の修正から新しい基準の候補を拾い、採用されたら自身の基準とCHANGELOGへ追記する。評価対象は編集しない                               |
 | [`test-prune`](https://github.com/mjun0812/skills/blob/main/skills/review/test-prune/SKILL.md)                     | コードベース内の全テストを精査し、削除・統合できるテストを「削除すると見逃す現実的な不具合」を基準にリストアップする                                                                                                                                |
@@ -145,10 +145,12 @@ graph LR
     mjun-specify --> mjun-spec-review
     mjun-specify --> mjun-to-tasks
     mjun-specify -. HTMLで確認 .-> exhtml
+    mjun-specify -. Issueへの投影 .-> github-issue-create
 
     mjun-implement --> git-commit
     mjun-implement --> github-pr-create
     mjun-implement --> mjun-to-tasks
+    mjun-implement -. 後続Issueの起票 .-> github-issue-create
     mjun-implement -. spec・briefの無い依頼 .-> mjun-start
 
     mjun-orchestrate --> herdr
@@ -179,7 +181,7 @@ graph LR
 
 以下のskillは他のskillへ委譲しません。
 
-`chat-note`, `claude`, `codex`, `cognitive-rhythm-writing`, `deep-research`, `doc-sync`, `exhtml`, `exmd`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `git-squash`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `mjun-grilling`, `mjun-spec-review`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `test-prune`, `wezterm-control`, `writing-skills`.
+`chat-note`, `claude`, `codex`, `cognitive-rhythm-writing`, `deep-research`, `doc-sync`, `duckdb`, `exhtml`, `exmd`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `git-squash`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `mjun-grilling`, `mjun-rule-lint`, `mjun-spec-review`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `test-prune`, `wezterm-control`, `writing-skills`.
 
 ## Conventions
 
