@@ -3,12 +3,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# mise activate の hook-env は、compdef が無いと compinit -i を実行してから packslip tool の補完を登録する。
-# その時点では sheldon が fpath を足しておらず、_mise などの無い .zcompdump ができる。
-# 仮の compdef で compinit を止めて呼び出しを記録し、completion.zsh の compinit の後で登録し直す
-typeset -ga __pending_compdefs
-compdef() { __pending_compdefs+=("${(j: :)${(@q)@}}") }
-
 # Claude CodeはこのPATHをsnapshotして使い回すため、versionを都度解決するshimsにする
 if [[ -n "$CLAUDECODE" ]]; then
     command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh --shims)"

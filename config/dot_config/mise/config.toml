@@ -13,11 +13,12 @@ python = "3.14"
 ruby = "latest"
 
 # Shell and CLI utilities
+# usage は入れない。補完を持つ packslip の tool があると、mise activate が sheldon より前に compinit -i を実行し、
+# ~/.config/zsh_completions の無い .zcompdump ができて _mise などが登録されない。mise の補完は本体だけで動く
 dust = "latest"
 jq = "latest"
 starship = "latest"
 tmux = "latest"
-usage = "latest"
 yq = "latest"
 zoxide = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
