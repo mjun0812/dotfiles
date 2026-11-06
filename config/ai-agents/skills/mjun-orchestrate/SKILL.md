@@ -41,7 +41,7 @@ agent種別はAskUserQuestionで選んでもらい、モデルはその後にユ
 - claude: `--model <model> --dangerously-skip-permissions`
 - codex: `-m <model> --dangerously-bypass-approvals-and-sandbox`。入力にeffortが添えられていれば (例: `gpt-5.5 high`) `-c model_reasoning_effort=<effort>` を足す
 - agy: `--model <model> --dangerously-skip-permissions`
-- opencode: `-m <provider/model> --auto`
+- opencode: `-m <provider/model> --auto --standalone`。既定の共有サーバー(`opencode serve --service`)で動かすと、workerの起動したbackground shellは、workerを終了してもサーバーの下に残る。専用のサーバーなら、`/exit` でサーバーごと止まる
 
 起動に失敗したとき (usage limitや認証切れを含む) は、選択したagent種別 → `claude` → `codex` → `opencode` の順に失敗した種別を飛ばして起動し直す。切り替え先ではモデルの指定を省き、CLIの既定モデルで起動したことをユーザーに伝える。3種類とも失敗したら中止して報告する。モデル名が存在しない場合だけは切り替えず、ユーザーにモデル名を入力し直してもらう。
 
@@ -58,14 +58,14 @@ agent種別はAskUserQuestionで選んでもらい、モデルはその後にユ
 
 ## workerの終了
 
-paneを閉じる前に、workerのagentを自分の終了コマンドで終わらせる。paneごと閉じると、agentが後始末できないまま止まる。codexは共有のdaemonで動くので、TUIが切れてもdaemonの側でturnとbackground terminalが動き続ける。claudeも、自分で起動したbackground shellは終了の手順でしか止めない。
+paneを閉じる前に、workerのagentを自分の終了コマンドで終わらせる。paneごと閉じると、agentが後始末できないまま止まる。codexは共有のdaemonで動くので、TUIが切れてもdaemonの側でturnとbackground terminalが動き続ける。claude・agy・opencodeも、自分で起動したbackground shellは終了の手順でしか止めない。
 
-1. stateが `working` か `blocked` なら、`herdr agent send-keys <worker> esc` で中断し、`herdr agent wait <worker> --until idle --until done --timeout 20000` で待つ。codexは作業中に `ctrl+c` を送っても終了しないので、まず `esc` でturnを止める
+1. stateが `working` か `blocked` なら、中断のキーを送り、`herdr agent wait <worker> --until idle --until done --timeout 20000` で待つ。まだ `working` か `blocked` なら、もう一度送る。agyは質問の画面で `esc` を押すと質問を飛ばして作業を続けるので、2回目が要る
+   - claude・codex・agy: `herdr agent send-keys <worker> esc`。codexは作業中に `ctrl+c` を送っても終了しないので、`esc` でturnを止める
+   - opencode: `herdr agent send-keys <worker> esc esc`。2回目の `esc` は1回目の直後でないと受け付けられないので、1回のsend-keysで続けて送る
 2. codexで、画面に `background terminal running` があれば `herdr agent prompt <worker> "/stop"` を送る。`/exit` だけではbackground terminalが残る
 3. `herdr agent prompt <worker> "/exit"` を送る。claudeでbackground shellが動いていると `Background work is running` の確認が出るので、既定の `Exit and stop tasks` のまま `herdr agent send-keys <worker> enter` で答える
 4. `herdr pane process-info --pane <pane-id>` で、`foreground_processes` がshell(`shell_pid` のprocess)だけになるまで10秒ほど待つ。戻らなければ画面を読み、自動で答えてよいdialogなら答える。それでも戻らなければそのまま閉じ、shellに戻せなかったことをユーザーに伝える
-
-claude・codex以外のagent種別(agy、opencode)では、この手順を確かめていない。そのため終了の操作はせず、paneをそのまま閉じる。
 
 ## 報告ファイル
 
