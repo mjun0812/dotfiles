@@ -56,6 +56,17 @@ agent種別はAskUserQuestionで選んでもらい、モデルはその後にユ
   - `🟡 <slug>`: 作業中
   - `🔴 <slug> <次の行動>`: ユーザーの判断待ち、または止まっている
 
+## workerの終了
+
+paneを閉じる前に、workerのagentを自分の終了コマンドで終わらせる。paneごと閉じると、agentが後始末できないまま止まる。codexは共有のdaemonで動くので、TUIが切れてもdaemonの側でturnとbackground terminalが動き続ける。claudeも、自分で起動したbackground shellは終了の手順でしか止めない。
+
+1. stateが `working` か `blocked` なら、`herdr agent send-keys <worker> esc` で中断し、`herdr agent wait <worker> --until idle --until done --timeout 20000` で待つ。codexは作業中に `ctrl+c` を送っても終了しないので、まず `esc` でturnを止める
+2. codexで、画面に `background terminal running` があれば `herdr agent prompt <worker> "/stop"` を送る。`/exit` だけではbackground terminalが残る
+3. `herdr agent prompt <worker> "/exit"` を送る。claudeでbackground shellが動いていると `Background work is running` の確認が出るので、既定の `Exit and stop tasks` のまま `herdr agent send-keys <worker> enter` で答える
+4. `herdr pane process-info --pane <pane-id>` で、`foreground_processes` がshell(`shell_pid` のprocess)だけになるまで10秒ほど待つ。戻らなければ画面を読み、自動で答えてよいdialogなら答える。それでも戻らなければそのまま閉じ、shellに戻せなかったことをユーザーに伝える
+
+claude・codex以外のagent種別(agy、opencode)では、この手順を確かめていない。そのため終了の操作はせず、paneをそのまま閉じる。
+
 ## 報告ファイル
 
 workerは結果を `<run-dir>/<slug>.md` に書く。`<run-dir>` はPhase 1で作る `<repo-root>/.mjun/orchestrate/<orch名>-<開始時刻>/`。paneを閉じた後もorchestratorがcontextを失った後も結果が残るよう、transcriptではなくファイルを正にしている。書式 (`Status:` / `PR:` / `Branch:` / `## Result` / `## Verification` / `## Next`) と完了時の `DONE` 報告は [templates/worker-prompt.md](templates/worker-prompt.md) で指定する。
@@ -194,9 +205,9 @@ waitが返ったら、`herdr agent get <worker>` と `herdr agent read <worker> 
 ### Phase 6: 完了と次のtask
 
 1. 報告ファイルを読み、結果 (PR URL、branch、`## Next`、未解決の事項) をboardの `Result` に書き、`Status: done`、`Told: no` にする。`Status: DONE_WITH_CONCERNS` の懸念と、`## Verification` にある確かめていない事項も `Result` に残す。ユーザーが判断に使うためで、orchestratorが確かめ直すためではない。ファイルが無ければworkerに書くよう1回だけ依頼し、それでも無ければtranscriptの最後から記録する。結果をユーザーへいつ伝えるかは「ユーザーへの報告」に従う
-2. paneを閉じる。終わったpaneを残すと、ユーザーが判断待ちの `🔴` を見つけにくくなる
+2. 「workerの終了」に従ってworkerを終わらせてから、paneを閉じる。終わったpaneを残すと、ユーザーが判断待ちの `🔴` を見つけにくくなる
    - kind `tab`: `herdr pane close <pane-id>`。そのtabに残る最後のpaneなら、代わりに `herdr tab close <tab-id>` でtabごと閉じ、記録したtab IDを消す
-   - kind `worktree`: `herdr worktree remove --workspace <workspace-id>` でcheckoutを削除する (workspaceとpaneも閉じる)。`--force` は付けず、branchも削除しない。`dirty_worktree_requires_force` が返ったら未commitの変更が残っているので、paneを `🔴 <slug> 未commitの変更` にして残し、boardを `needs-user` にする
+   - kind `worktree`: workerを終わらせる前に `git -C <checkout_path> status --porcelain` で未commitの変更を確かめる。変更があれば、workerは終了させずにpaneを `🔴 <slug> 未commitの変更` にして残し、boardを `needs-user` にする。ユーザーがそのworkerに続きを頼めるようにするためである。変更が無ければworkerを終わらせ、`herdr worktree remove --workspace <workspace-id>` でcheckoutを削除する(workspaceとpaneも閉じる)。`--force` は付けず、branchも削除しない。それでも `dirty_worktree_requires_force` が返ったら、同じようにpaneを `🔴 <slug> 未commitの変更` にして残す
 3. 依存の解消したtaskがあれば、Phase 3とPhase 4を行う
 4. 全taskが `done` か `needs-user` になったらPhase 7を行い、modeを続けたまま次の依頼を待つ
 
@@ -215,6 +226,6 @@ waitが返ったら、`herdr agent get <worker>` と `herdr agent read <worker> 
 
 modeの終了時だけ行う。
 
-1. worker tabが残っていれば、閉じるかをAskUserQuestionで1回だけ確認する。閉じる場合は `herdr pane close` → `herdr tab close` で閉じ、残す場合は次回のmodeで再利用する
+1. worker tabが残っていれば、閉じるかをAskUserQuestionで1回だけ確認する。閉じる場合は、各paneのworkerを「workerの終了」に従って終わらせてから `herdr pane close` → `herdr tab close` で閉じ、残す場合は次回のmodeで再利用する
 2. `🔴` で残したworktreeは削除せず、`herdr worktree remove --workspace <workspace-id> --force` で消せることをユーザーに伝える。kind `tab` のtaskでworkerやskillが作ったworktreeと、すべてのbranchは、orchestratorは削除しない
 3. `herdr tab rename "$HERDR_TAB_ID" "<boardのOriginal tab label>"` でtab labelを元に戻し、modeを抜けたことを伝える。以後のmessageは通常の会話として扱う
