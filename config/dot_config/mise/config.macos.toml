@@ -424,3 +424,9 @@ run = """
 pgrep -fl 'caffeinate -dims' || echo 'caffeinate -dims: not running'
 pmset -g | grep SleepDisabled || echo 'SleepDisabled 0'
 """
+
+# Quit Riftの正常終了ではlaunchdが起動し直さない (restart = "on-failure") ので、手で起動し直す。
+# -kで、動いている場合も止めてから起動する
+[tasks.rift-restart]
+description = "Restart the Rift window manager via launchd"
+run = "launchctl kickstart -k gui/$(id -u)/dev.mise.rift"
