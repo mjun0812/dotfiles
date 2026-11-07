@@ -38,6 +38,7 @@ container system kernel set --recommended --force
 "brew:lld" = "latest"
 "brew:llvm" = "latest"
 "brew:mysql" = "latest"
+"brew:openssl@3" = "latest"
 "brew:subversion" = "latest"
 "brew:tree" = "latest"
 "brew:vite-plus" = "latest"
