@@ -89,7 +89,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
 | `config/dot_config/sheldon/`  | zshrcから1回                | サードパーティpluginと上記ファイルの読み込み順序・遅延指定                                                                           |
 | `config/dot_config/mise/`     | tool解決時                  | toolとバージョン、postinstall、`[settings]`、task、常駐サービス、macOSのbrewパッケージ・設定の定義(`bootstrap.*`)                    |
 
-順序の制約 (zsh-completionsのfpath追加 → compinit、history設定は即時、syntax-highlightingは最後) は `plugins.toml` 冒頭のコメントにある。tool別の補完ファイル (`_mise`, `_docker`, `_kubectl`) は `script/setup/update_completions.sh` が `~/.config/zsh_completions/` に生成し、`.zcompdump` を削除して次回起動で再構築させる。
+読み込み順序の制約(zsh-completionsのfpath追加 → compinit、history設定を即時、syntax-highlightingを最後)を、`plugins.toml` 冒頭のコメントに記載している。tool別の補完ファイル(`_mise`, `_gh`, `_uv` など)を、`script/setup/update_completions.sh` が `~/.config/zsh_completions/` に生成する。生成後に `.zcompdump` を削除し、次回起動で再構築させる。
 
 ### AI agent設定の共有構造
 
