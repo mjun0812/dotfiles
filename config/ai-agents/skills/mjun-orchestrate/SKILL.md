@@ -47,14 +47,12 @@ agent種別はAskUserQuestionで選んでもらい、モデルはその後にユ
 
 ## 名前とlabel
 
-- orchestratorの名前: `orch` (tab labelが `🧭 orch` のtabがすでにあれば `orch-2`, `orch-3`)。worker名の接頭辞とrun dirに使い、tab labelは `🧭 <orch名>` にする。元のtab labelはPhase 8で戻すためにboardへ記録する
+- orchestratorの名前: `orch` (tab labelが `orch` のtabがすでにあれば `orch-2`, `orch-3`)。worker名の接頭辞とrun dirに使い、tab labelにもする。元のtab labelはPhase 8で戻すためにboardへ記録する
 - orchestrator自身のHerdrのagent名は変えない。サイドバーのagent欄に出るagentの種類(claude・codexなど)が名前で隠れるためである。workerからの報告の宛先には、agent名の代わりに自分のpane ID (`$HERDR_PANE_ID`)を使う
-- worker tab (kind `tab` のtask): `⚙️ workers` のpaneを分割してworkerを増やす。1 tabのpaneは8つまでとし、空きが無ければ `⚙️ workers 2`, `⚙️ workers 3` と新しいtabを作る。同時に動かすworker数に上限は設けない
+- worker tab (kind `tab` のtask): `workers` のpaneを分割してworkerを増やす。1 tabのpaneは8つまでとし、空きが無ければ `workers 2`, `workers 3` と新しいtabを作る。同時に動かすworker数に上限は設けない
 - worktree workspace (kind `worktree` のtask): taskごとに1つ。Herdrがorchestratorのworkspaceの子としてbranch名で表示する
 - workerのagent名: `<orch名>-<slug>`。32文字以内、`[a-z][a-z0-9_-]*`
-- pane label: 先頭の絵文字で状態を示し、ユーザーが画面を見ただけで判断待ちのworkerを見つけられるようにする
-  - `🟡 <slug>`: 作業中
-  - `🔴 <slug> <次の行動>`: ユーザーの判断待ち、または止まっている
+- pane label: 作業中は `<slug>` だけにする。ユーザーの判断待ちか止まっているときは、`! <slug> <次の行動>` にする。作業中かどうかはHerdrのサイドバーがagentの状態として表示するが、ユーザーの判断が要るかはHerdrには分からないので、そこにだけ印を付けて画面で見つけられるようにする
 
 ## workerの終了
 
@@ -109,7 +107,7 @@ Request:
 - `Status`: 次の4つ
   - `pending`: 未起動 (依存待ちを含む)
   - `running`: workerが作業中
-  - `needs-user`: ユーザーの判断か対応を待っている (paneは `🔴`)
+  - `needs-user`: ユーザーの判断か対応を待っている。pane labelの先頭は `!`
   - `done`: 結果を記録してpaneを閉じた
 - `Told`: 今の `Status` と `Result` をユーザーへ伝えたか。`done` か `needs-user` へ変わったら `no` とし、伝えたら `yes` とする
 - `Branch` はkind `worktree` のときだけ書く。`Worker` は起動してから書く
@@ -130,7 +128,7 @@ Phase 1を終えるとmodeに入り、ユーザーが終了を指示するまで
 
 ユーザーの注意は、このmodeでいちばん足りない資源である。workerの進捗をその都度伝えると、ユーザーは自分の話を進められなくなる。そのため、ユーザーへ自分から伝えるのは次の2つだけにする。
 
-- taskが `needs-user` になったとき: 決めてほしいことを伝え、`herdr notification show "<slug>: 判断待ち" --sound request` を出す
+- taskが `needs-user` になったとき: 決めてほしいことを伝える
 - 全taskが片付いたとき: Phase 7
 
 それ以外の変化 (taskの完了、次のtaskの起動、自動で答えたdialog) はboardに書くだけにして、そのturnのユーザー向けの出力はslugと状態の1行 (例: `review-141: done`) までにする。この1行は伝えたことに数えず、`Told` は `no` のままにする。伝えていない変化は、ユーザーの次のmessageへ答えるときに返答の冒頭へ1 task 1行で添え、boardの `Told` を `yes` にする。調査やレビューのように結果そのものが回答になるtaskも同じで、要点を1〜2行にまとめ、詳細は報告ファイルのパスで示す。
@@ -145,7 +143,7 @@ Phase 1を終えるとmodeに入り、ユーザーが終了を指示するまで
    - 現在のtab label: `herdr tab list --workspace "$HERDR_WORKSPACE_ID"`
    - リポジトリのroot: `git rev-parse --show-toplevel`
    - default branch: `git symbolic-ref --short refs/remotes/origin/HEAD` (`origin/main` の形)。失敗したら現在のbranch
-3. 自分の名前を決め、tab labelにする: `herdr tab rename "$HERDR_TAB_ID" "🧭 <orch名>"`
+3. 自分の名前を決め、tab labelにする: `herdr tab rename "$HERDR_TAB_ID" "<orch名>"`
 4. run dirを作る: `mkdir -p <repo-root>/.mjun/orchestrate/<orch名>-$(date +%Y%m%d-%H%M%S)`。続けて `<run-dir>/board.md` を作り、2で取得した値と自分の名前を「board」の書式で書く
 5. workerのagent種別をAskUserQuestionで確認する。選択肢は `claude` (既定、先頭)、`codex`、`opencode`、`agy`
 6. workerのモデル名をチャットで自由入力してもらい、入力を待つ。決まったagent種別とモデルをboardの `Workers` に書いてから次へ進む
@@ -171,10 +169,12 @@ Phase 1を終えるとmodeに入り、ユーザーが終了を指示するまで
 
 起動できるtask (依存なし、または依存先が終わっている) すべてにpaneを用意する。
 
-- kind `worktree`: 最初の1回だけ `git fetch origin <default branchのbranch部分>` を実行し、taskごとに `herdr worktree create --workspace "$HERDR_WORKSPACE_ID" --branch <branch> --base <default branch> --no-focus` を実行する。応答の `.result.workspace.workspace_id`、`.result.root_pane.pane_id`、`.result.workspace.worktree.checkout_path` を記録し、root paneをworkerに使う
-- kind `tab`: paneが8つ未満のworker tabがあれば再利用する。無ければ `herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd <repo-root> --label "<label>" --no-focus` で作り、応答の `.result.tab.tab_id` と `.result.root_pane.pane_id` を記録して、root paneを1つ目のworkerに使う。2つ目以降は `herdr pane split <同じtabのpane-id> --direction right --cwd <repo-root> --no-focus` で分割し (`right` と `down` を交互に使う)、応答の `.result.pane.pane_id` を記録する
+- kind `worktree`: 最初の1回だけ `git fetch origin <default branchのbranch部分>` を実行し、taskごとに `herdr worktree create --workspace "$HERDR_WORKSPACE_ID" --branch <branch> --base <default branch> --no-focus` を実行する。応答の `.result.workspace.workspace_id`、`.result.root_pane.pane_id`、`.result.workspace.worktree.checkout_path` を記録し、root paneをworkerに使う。`herdr worktree create` には `--env` が無いので、root paneで `herdr pane run <pane-id> 'export MJUN_ORCH_WORKER=1'` を実行する
+- kind `tab`: paneが8つ未満のworker tabがあれば再利用する。無ければ `herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd <repo-root> --label "<label>" --no-focus --env MJUN_ORCH_WORKER=1` で作り、応答の `.result.tab.tab_id` と `.result.root_pane.pane_id` を記録して、root paneを1つ目のworkerに使う。2つ目以降は `herdr pane split <同じtabのpane-id> --direction right --cwd <repo-root> --no-focus --env MJUN_ORCH_WORKER=1` で分割し、応答の `.result.pane.pane_id` を記録する。分割の向きは `right` と `down` を交互に使う
 
-各paneを `herdr pane rename <pane-id> "🟡 <slug>"` にする。
+各paneを `herdr pane rename <pane-id> "<slug>"` にする。
+
+`MJUN_ORCH_WORKER` は、workerのclaude・codexのhookが通知を出さないようにする目印である。`notify-claude-hook.sh`・`notify-codex-hook.sh` がこの変数を見る。workerの状態はorchestratorが受け取ってユーザーへ伝えるので、workerごとに通知が出ると同じことが何重にも届く。ユーザーへの通知は、orchestrator自身のhookに任せる。
 
 ### Phase 4: workerの起動とdispatch
 
@@ -182,7 +182,7 @@ workerごとに次を順に行う。
 
 1. **起動する**: `herdr agent start <worker> --kind <agent種別> --pane <pane-id> --timeout 60000 -- <argv>`。`agent_not_ready` が返ったら `herdr agent read <worker> --source visible --lines 40` で画面を読む。自動応答してよいdialogなら答えて `herdr agent wait <worker> --until idle --timeout 60000` で待ち、それ以外はユーザーに確認する。usage limit、認証、model不在の文言が見えたら `herdr agent send-keys <worker> ctrl+c ctrl+c` で終了し、`herdr pane read` でshellに戻ったことを確かめてから、「workerのagent種別とモデル」に従って起動し直す
 2. **dispatchする**: `herdr agent get <worker>` の `state_change_seq` を記録してから、[templates/worker-prompt.md](templates/worker-prompt.md) を埋めた本文をquoted heredocでshell変数に入れ、`herdr agent prompt <worker> "$task_prompt"` と1引数で送る。依頼文には `$` やbacktickが入りうるので、shellに展開させると文面が変わる。`--wait` は付けない (1つ目のworkerで待ち続けてしまう)
-3. **受領を確認する**: `agent_prompted` は送信できたことしか示さないので、受領はstateで判定する。`herdr agent wait <worker> --until working --timeout 15000` が返り、`state_change_seq` が記録した値より進んでいれば受領とみなす。そうでなければ画面を読み、dialogなら答え、usage limitや認証ならagent種別を切り替えて同じ本文を再送し、変化が無ければ同じ本文を1回だけ再送する。受領したらboardを `Status: running` にして `Worker` を書く。再送後も受領しなければpaneを `🔴 <slug> 応答なし` にし、boardを `needs-user` にする
+3. **受領を確認する**: `agent_prompted` は送信できたことしか示さないので、受領はstateで判定する。`herdr agent wait <worker> --until working --timeout 15000` が返り、`state_change_seq` が記録した値より進んでいれば受領とみなす。そうでなければ画面を読み、dialogなら答え、usage limitや認証ならagent種別を切り替えて同じ本文を再送し、変化が無ければ同じ本文を1回だけ再送する。受領したらboardを `Status: running` にして `Worker` を書く。再送後も受領しなければpaneを `! <slug> 応答なし` にし、boardを `needs-user` にする
 4. **waitを張る**: 受領したworkerごとに `herdr agent wait <worker> --timeout 1800000` (`--until` なし) をbackgroundで1本実行する。`agent get` を短い間隔で繰り返すとcontextとturnを浪費するので、stateの変化はwaitで受け取る。backgroundで実行できない環境では、起動済みのworkerを順に待つ
 
 ### Phase 5: workerへの対応
@@ -190,7 +190,7 @@ workerごとに次を順に行う。
 waitが返ったら、`herdr agent get <worker>` と `herdr agent read <worker> --source recent-unwrapped --lines 80` を読み、人間がpaneを見たときと同じように対応する。workerに何か送ったらwaitを張り直す。
 
 - waitがtimeoutで返り、stateが `working` のままなら、何も送らずにwaitを張り直す。taskによっては数時間かかるので、経った時間だけでは、止まったのか長くかかっているだけかを区別できない
-- workerの質問やdialogで、ユーザーの依頼から答えが決まるものはorchestratorが答える。ユーザーにしか決められないものはpaneを `🔴 <slug> <要旨>` に、boardを `needs-user` にしてAskUserQuestionで確認し、回答を `herdr agent prompt` か `herdr agent send-keys` でそのまま渡す
+- workerの質問やdialogで、ユーザーの依頼から答えが決まるものはorchestratorが答える。ユーザーにしか決められないものはpaneを `! <slug> <要旨>` に、boardを `needs-user` にしてAskUserQuestionで確認し、回答を `herdr agent prompt` か `herdr agent send-keys` でそのまま渡す
 
 完了と停止の判定では、次の点を誤りやすい。
 
@@ -198,34 +198,34 @@ waitが返ったら、`herdr agent get <worker>` と `herdr agent read <worker> 
 - `idle` / `done` なのに `DONE` が無ければ、報告ファイルの `Status:` で止まった理由を判断する。報告ファイルか `Status:` が無ければ、transcriptの最後を読んで同じように判断する
   - `NEEDS_CONTEXT`: workerは、自分では得られない情報か判断を待っている。ユーザーの依頼と会話から答えが決まるなら、その情報を添えて続きを頼む。決まらなければ `needs-user` にする
   - `BLOCKED`: workerは自力では進めない。元の依頼文や「続けて」は送らず、`needs-user` として報告に書かれた原因を伝える。同じ指示では同じところで止まるためである。ユーザーが原因を取り除いたら、そのことを添えて続きを頼む
-- `unknown` が続く、またはpaneがshellに戻っているなら、workerが死んでいる。paneを `🔴 <slug> worker停止` にする。画面にusage limitや認証切れが見えれば、「workerのagent種別とモデル」に従って種別を切り替えて起動し直し、下の1回目と同じ文面を添えて送る。これはtaskと無関係な一時的な原因なので `Stops` に数えない。それ以外はboardの `Stops` を1増やす
+- `unknown` が続く、またはpaneがshellに戻っているなら、workerが死んでいる。paneを `! <slug> worker停止` にする。画面にusage limitや認証切れが見えれば、「workerのagent種別とモデル」に従って種別を切り替えて起動し直し、下の1回目と同じ文面を添えて送る。これはtaskと無関係な一時的な原因なので `Stops` に数えない。それ以外はboardの `Stops` を1増やす
   - 1回目: 同じpaneでworkerを起動し直し、元の依頼文に「前回のworkerが途中で止まった。作りかけのworktreeやbranchがあれば続きから進めて」と添えて送る
   - 2回目: 起動し直さず、`needs-user` として止まったときの画面の要点を伝える。同じtaskで2回止まるなら、原因はworkerの外 (taskの大きさ、環境、依頼文) にある見込みが高く、起動し直しても同じところで止まる
 
 ### Phase 6: 完了と次のtask
 
 1. 報告ファイルを読み、結果 (PR URL、branch、`## Next`、未解決の事項) をboardの `Result` に書き、`Status: done`、`Told: no` にする。`Status: DONE_WITH_CONCERNS` の懸念と、`## Verification` にある確かめていない事項も `Result` に残す。ユーザーが判断に使うためで、orchestratorが確かめ直すためではない。ファイルが無ければworkerに書くよう1回だけ依頼し、それでも無ければtranscriptの最後から記録する。結果をユーザーへいつ伝えるかは「ユーザーへの報告」に従う
-2. 「workerの終了」に従ってworkerを終わらせてから、paneを閉じる。終わったpaneを残すと、ユーザーが判断待ちの `🔴` を見つけにくくなる
+2. 「workerの終了」に従ってworkerを終わらせてから、paneを閉じる。終わったpaneを残すと、ユーザーが判断待ちの `!` を見つけにくくなる
    - kind `tab`: `herdr pane close <pane-id>`。そのtabに残る最後のpaneなら、代わりに `herdr tab close <tab-id>` でtabごと閉じ、記録したtab IDを消す
-   - kind `worktree`: workerを終わらせる前に `git -C <checkout_path> status --porcelain` で未commitの変更を確かめる。変更があれば、workerは終了させずにpaneを `🔴 <slug> 未commitの変更` にして残し、boardを `needs-user` にする。ユーザーがそのworkerに続きを頼めるようにするためである。変更が無ければworkerを終わらせ、`herdr worktree remove --workspace <workspace-id>` でcheckoutを削除する(workspaceとpaneも閉じる)。`--force` は付けず、branchも削除しない。それでも `dirty_worktree_requires_force` が返ったら、同じようにpaneを `🔴 <slug> 未commitの変更` にして残す
+   - kind `worktree`: workerを終わらせる前に `git -C <checkout_path> status --porcelain` で未commitの変更を確かめる。変更があれば、workerは終了させずにpaneを `! <slug> 未commitの変更` にして残し、boardを `needs-user` にする。ユーザーがそのworkerに続きを頼めるようにするためである。変更が無ければworkerを終わらせ、`herdr worktree remove --workspace <workspace-id>` でcheckoutを削除する(workspaceとpaneも閉じる)。`--force` は付けず、branchも削除しない。それでも `dirty_worktree_requires_force` が返ったら、同じようにpaneを `! <slug> 未commitの変更` にして残す
 3. 依存の解消したtaskがあれば、Phase 3とPhase 4を行う
 4. 全taskが `done` か `needs-user` になったらPhase 7を行い、modeを続けたまま次の依頼を待つ
 
 ### Phase 7: 結果の表示
 
-全taskが片付いたときと、modeを終了するときに行う。終了時はmode中の全taskを対象にする。`herdr notification show "Workers done" --sound done` を出してから、boardを読んで次を簡潔にまとめ、載せたtaskの `Told` を `yes` にする。
+全taskが片付いたときと、modeを終了するときに行う。終了時はmode中の全taskを対象にする。boardを読んで次を簡潔にまとめ、載せたtaskの `Told` を `yes` にする。
 
 - **Outcome**: `COMPLETE` / `PARTIAL`
 - **Tasks**: taskごとにslug、agent種別、kind、依頼文、結果 (workerが報告したPR URLやbranch)、懸念と確かめていない事項、状態、報告ファイルのパス
 - **Blocked**: `needs-user` のtask、原因、次にユーザーがすること
 - **Workers**: 残っているworker (`needs-user` のtask、agent名、pane ID)。transcriptはpaneに残っている
 - **Next**: 報告の `## Next` にあった提案。orchestratorは実行していないことが分かる形で載せる
-- **ユーザーにしかできないこと**: PRのmerge、`🔴` への回答、kind `worktree` のtaskが残したlocal branchの削除、後始末の承認。1項目1行で、コマンドかリンクを添える
+- **ユーザーにしかできないこと**: PRのmerge、`!` のtaskへの回答、kind `worktree` のtaskが残したlocal branchの削除、後始末の承認。1項目1行で、コマンドかリンクを添える
 
 ### Phase 8: 後始末とmodeの終了
 
 modeの終了時だけ行う。
 
 1. worker tabが残っていれば、閉じるかをAskUserQuestionで1回だけ確認する。閉じる場合は、各paneのworkerを「workerの終了」に従って終わらせてから `herdr pane close` → `herdr tab close` で閉じ、残す場合は次回のmodeで再利用する
-2. `🔴` で残したworktreeは削除せず、`herdr worktree remove --workspace <workspace-id> --force` で消せることをユーザーに伝える。kind `tab` のtaskでworkerやskillが作ったworktreeと、すべてのbranchは、orchestratorは削除しない
+2. `!` で残したworktreeは削除せず、`herdr worktree remove --workspace <workspace-id> --force` で消せることをユーザーに伝える。kind `tab` のtaskでworkerやskillが作ったworktreeと、すべてのbranchは、orchestratorは削除しない
 3. `herdr tab rename "$HERDR_TAB_ID" "<boardのOriginal tab label>"` でtab labelを元に戻し、modeを抜けたことを伝える。以後のmessageは通常の会話として扱う

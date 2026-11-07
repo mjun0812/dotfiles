@@ -20,6 +20,10 @@ set -euo pipefail
 # 応答がこの秒数未満で終わったターンでは stop の通知を出さない。
 MIN_ELAPSED_SEC=60
 
+# mjun-orchestrateのworkerは、orchestratorがpaneにこの変数を付けて起動する。
+# workerの状態はorchestratorが受け取ってユーザーへ伝えるので、ここでは通知しない。
+[[ -n ${MJUN_ORCH_WORKER:-} ]] && exit 0
+
 EVENT="${1:-stop}"
 INPUT="$(cat || true)"
 
