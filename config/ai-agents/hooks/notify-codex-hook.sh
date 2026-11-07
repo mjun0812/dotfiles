@@ -18,7 +18,7 @@ set -euo pipefail
 #     event: turn_start | stop | permission
 
 # 応答がこの秒数未満で終わったターンでは stop の通知を出さない。
-MIN_ELAPSED_SEC=60
+MIN_ELAPSED_SEC=300
 
 # mjun-orchestrateのworkerは、orchestratorがpaneにこの変数を付けて起動する。
 # workerの状態はorchestratorが受け取ってユーザーへ伝えるので、ここでは通知しない。

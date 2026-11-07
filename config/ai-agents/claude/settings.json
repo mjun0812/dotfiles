@@ -182,27 +182,6 @@
         ]
       }
     ],
-    "Notification": [
-      {
-        "matcher": "idle_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh notification"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh pre_compact"
-          }
-        ]
-      }
-    ],
     "Stop": [
       {
         "matcher": "",

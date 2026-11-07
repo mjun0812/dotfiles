@@ -46,7 +46,7 @@ read -r RESULT_TYPE < <(
         --title "$TITLE" \
         --message "$MESSAGE" \
         ${GROUP_ID:+--group "dotfiles-wezterm-${GROUP_ID}"} \
-        --timeout 300 \
+        --timeout 600 \
         --print result \
         2>/dev/null
 ) || true

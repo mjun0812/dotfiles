@@ -3,23 +3,22 @@ set -euo pipefail
 
 # notify-claude-hook.sh
 #
-# Claude Code の hook (UserPromptSubmit / PermissionRequest / Notification / PreCompact /
-# Stop / StopFailure) から
+# Claude Code の hook (UserPromptSubmit / PermissionRequest / Stop / StopFailure) から
 # stdin で渡される JSON を読み、リポジトリ名・セッションID短縮・実メッセージ/
 # エラー情報を含むリッチな通知を notify.sh 経由で送出する。
 #
 # Usage:
 #   notify-claude-hook.sh <event>
-#     event: turn_start | permission_request | notification | pre_compact | stop | stop_failure
+#     event: turn_start | permission_request | stop | stop_failure
 
 # 応答がこの秒数未満で終わったターンでは stop の通知を出さない。
-MIN_ELAPSED_SEC=120
+MIN_ELAPSED_SEC=300
 
 # mjun-orchestrateのworkerは、orchestratorがpaneにこの変数を付けて起動する。
 # workerの状態はorchestratorが受け取ってユーザーへ伝えるので、ここでは通知しない。
 [[ -n ${MJUN_ORCH_WORKER:-} ]] && exit 0
 
-EVENT="${1:-notification}"
+EVENT="${1:-stop}"
 INPUT="$(cat || true)"
 
 jq_get() {
@@ -35,9 +34,7 @@ sanitize() {
 CWD="$(jq_get '.cwd')"
 SESSION_ID="$(jq_get '.session_id')"
 MESSAGE="$(jq_get '.message')"
-NOTIFICATION_TYPE="$(jq_get '.notification_type')"
 TOOL_NAME="$(jq_get '.tool_name')"
-TRIGGER="$(jq_get '.trigger')"
 LAST_MESSAGE="$(jq_get '.last_assistant_message')"
 ERROR_TYPE="$(jq_get '.error_type')"
 ERROR_MESSAGE="$(jq_get '.error_message')"
@@ -70,25 +67,6 @@ case "$EVENT" in
 permission_request)
     TITLE="🔐 Claude Code [${REPO}]${SHORT_SID:+ #${SHORT_SID}}"
     BODY="$(sanitize "${TOOL_NAME:+${TOOL_NAME} の}許可を待っています" 150)"
-    ;;
-notification)
-    case "$NOTIFICATION_TYPE" in
-    idle_prompt)
-        ICON="💤"
-        DEFAULT_BODY="入力を待っています"
-        ;;
-    *)
-        ICON="🔔"
-        DEFAULT_BODY="通知があります"
-        ;;
-    esac
-    TITLE="${ICON} Claude Code [${REPO}]${SHORT_SID:+ #${SHORT_SID}}"
-    BODY="$(sanitize "$MESSAGE" 150)"
-    BODY="${BODY:-$DEFAULT_BODY}"
-    ;;
-pre_compact)
-    TITLE="🗜️ Claude Code [${REPO}]${SHORT_SID:+ #${SHORT_SID}}"
-    BODY="コンテキストを圧縮します${TRIGGER:+ (${TRIGGER})}"
     ;;
 stop)
     # 短時間で終わったターンは通知しない。開始時刻は turn_start が記録する。
