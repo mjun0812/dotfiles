@@ -18,6 +18,34 @@ if command -v docker >/dev/null 2>&1; then
     echo "Updated: _docker ($(docker version --format '{{.Client.Version}}' 2>/dev/null || echo 'unknown version'))"
 fi
 
+if command -v gh >/dev/null 2>&1; then
+    gh completion -s zsh >"$COMPLETIONS_DIR/_gh"
+    echo "Updated: _gh ($(gh --version 2>/dev/null | head -1))"
+fi
+
+# "<補完するcommand名>:<補完を出力するコマンド>"。補完ファイルは _<command名> になる
+completions=(
+    "rg:rg --generate complete-zsh"
+    "fd:fd --gen-completions zsh"
+    "bat:bat --completion zsh"
+    "codex:codex completion zsh"
+    "container:container --generate-completion-script zsh"
+    "ruff:ruff generate-shell-completion zsh"
+    "ty:ty generate-shell-completion zsh"
+    "uv:uv generate-shell-completion zsh"
+    "uvx:uvx --generate-shell-completion zsh"
+    "herdr:herdr completion zsh"
+    "hunk:hunk completion zsh"
+    "prek:env COMPLETE=zsh prek"
+)
+for entry in "${completions[@]}"; do
+    name="${entry%%:*}"
+    cmd="${entry#*:}"
+    command -v "$name" >/dev/null 2>&1 || continue
+    ${=cmd} >"$COMPLETIONS_DIR/_$name"
+    echo "Updated: _$name"
+done
+
 # 生成されるのは `mise __complete_word__` を呼ぶ薄いwrapperで、subcommand一覧は実行時にmise本体から取得される。
 # そのためmiseを更新しても再生成は不要
 if command -v mise >/dev/null 2>&1; then
