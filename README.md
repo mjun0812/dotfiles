@@ -105,7 +105,6 @@ apm update -g
 | bat             | Modern `cat` with syntax highlighting                 |
 | CLIProxyAPI     | OpenAI/Gemini/Claude compatible API proxy for AI CLIs |
 | cmake           | Build system generator                                |
-| container       | Linux containers in lightweight VMs (macOS)           |
 | copier          | Project template generator                            |
 | delta           | Git diff pager                                        |
 | duckdb          | In-process analytical SQL database                    |

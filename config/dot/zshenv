@@ -39,9 +39,6 @@ export INSTALLER_NO_MODIFY_PATH=1
 # Vite+ のsetupにrcファイルへ追記させない
 # $HOME/.vite-plus/env $HOME/.config/vite-plus/env
 
-# Apple Container で他platformのimageを使わない
-[[ "$OSTYPE" == darwin* ]] && export CONTAINER_DEFAULT_PLATFORM=linux/arm64
-
 # login shellを経由しない非対話shell (CI・エディタ・cron) でもPATHをそろえる。
 if [[ ! -o LOGIN && -z "$__ZPROFILE_SOURCED" && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
     source "${ZDOTDIR:-$HOME}/.zprofile"
