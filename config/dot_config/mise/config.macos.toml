@@ -9,10 +9,6 @@ resvg = "latest"
 swiftlint = "latest"
 tree-sitter = "latest"
 
-container = { version = "latest", postinstall = '''
-container system start --disable-kernel-install
-container system kernel set --recommended --force
-''' }
 "pypi:headroom-ai" = { version = "latest", extras = "proxy,code", postinstall = '''
     launchctl kickstart -k gui/$(id -u)/dev.mise.headroom-proxy 2>/dev/null || true
 ''' }

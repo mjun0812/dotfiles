@@ -29,7 +29,6 @@ completions=(
     "fd:fd --gen-completions zsh"
     "bat:bat --completion zsh"
     "codex:codex completion zsh"
-    "container:container --generate-completion-script zsh"
     "ruff:ruff generate-shell-completion zsh"
     "ty:ty generate-shell-completion zsh"
     "uv:uv generate-shell-completion zsh"
