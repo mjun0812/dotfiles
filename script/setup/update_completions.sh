@@ -37,6 +37,8 @@ completions=(
     "herdr:herdr completion zsh"
     "hunk:hunk completion zsh"
     "prek:env COMPLETE=zsh prek"
+    "orb:orb completion zsh"
+    "orbctl:orbctl completion zsh"
 )
 for entry in "${completions[@]}"; do
     name="${entry%%:*}"
