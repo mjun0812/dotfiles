@@ -7,20 +7,20 @@ GUI app settings are managed as config files when the app reads one, and as mise
 1. **Config files**: the app reads a text file from the repo. `mise dot apply` links them (declared in `[dotfiles]` of `config/dot_config/mise/conf.d/dotfiles.toml`; `install.sh` runs it).
    - **iTerm2 profiles**: `config/mac/iterm2/DynamicProfiles/dotfiles.json` is a [Dynamic Profile](https://iterm2.com/documentation-dynamic-profiles.html), linked into `~/Library/Application Support/iTerm2/DynamicProfiles/`. iTerm2 reloads it when the file changes. Changes made in the Settings UI are not written back: use _Other Actions > Save Profile as JSON_ and copy the keys into the file.
    - **Karabiner-Elements**: `config/mac/karabiner/` is linked to `~/.config/karabiner`, so UI changes land in the repo directly.
-2. **mise defaults**: preferences declared in `[bootstrap.macos.defaults]` of `config/dot_config/mise/config.macos.toml` (AltTab, BetterDisplay, Clipy, Homerow, and the iTerm2 global settings). `install.sh` applies them with `mise bootstrap macos defaults apply`; apps read them on their next launch.
+2. **mise defaults**: preferences declared in `[bootstrap.macos.defaults]` of `config/dot_config/mise/conf.d/macos-defaults.macos.toml` (AltTab, BetterDisplay, Clipy, Homerow, and the iTerm2 global settings). `install.sh` applies them with `mise bootstrap macos defaults apply`; apps read them on their next launch.
    - Only settings are declared. Keys that record app state (update checks, window frames, launch counts, `NoSync*` in iTerm2) and per-device values (BetterDisplay's `key@Display:N`) are left out, so BetterDisplay declares only its menu layout (`menuLevel*`).
    - Values stored as binary data cannot be declared (Clipy's shortcuts, which are not used). Clipy snippets live in a Realm DB and are not covered.
    - `./update.sh` reports settings that drifted from the declarations (`script/tools/mac_defaults.py`): `[differs]` for declared values changed in the UI, `[undeclared]` for keys set in the UI but not declared. Update the TOML by hand.
 
 ## System Settings
 
-macOS's own preferences that were changed from the defaults (Dock, Finder, keyboard, trackpad, hot corners, menu bar clock, screenshots, Stage Manager, ...) are declared in `config/dot_config/mise/config.macos.toml`, with the named sections (`[bootstrap.macos.dock]`, `finder`, `keyboard`, `trackpad`) where they fit and `[bootstrap.macos.defaults]` otherwise. `install.sh` applies them together with the app settings.
+macOS's own preferences that were changed from the defaults (Dock, Finder, keyboard, trackpad, hot corners, menu bar clock, screenshots, Stage Manager, ...) are declared in `config/dot_config/mise/conf.d/macos-defaults.macos.toml`, with the named sections (`[bootstrap.macos.dock]`, `finder`, `keyboard`, `trackpad`) where they fit and `[bootstrap.macos.defaults]` otherwise. `install.sh` applies them together with the app settings.
 
 - Things that change as the machine is used are not declared: the apps pinned in the Dock, the login items, recent items, and other state that macOS records. Language and region, input sources, and text replacements are left to the macOS setup assistant and iCloud.
 - Values that System Settings stores as reals (`KeyRepeat`, `InitialKeyRepeat`, Dock `tilesize`, `largesize`) are declared as raw defaults with float values; the named sections write integers, which would never match.
 - mise does not restart Dock, Finder, or the menu bar. Changes show after they relaunch or on the next login.
 - `./update.sh` reports only `[differs]` for these domains (`NSGlobalDomain` and `com.apple.*`); they hold too much state for `[undeclared]` to be useful. A declared value changed in System Settings must be copied into the TOML, or the next `install.sh` reverts it.
-- To find the keys of a setting you are about to change, take a snapshot of every defaults domain first, change the setting, then list what changed as TOML tables to paste into `config.macos.toml`:
+- To find the keys of a setting you are about to change, take a snapshot of every defaults domain first, change the setting, then list what changed as TOML tables to paste into `conf.d/macos-defaults.macos.toml`:
 
   ```sh
   python3 script/tools/mac_defaults.py snapshot   # saved to ~/.cache/dotfiles/mac_defaults_snapshot.plist

@@ -31,7 +31,7 @@ mise dot apply
 python3 script/tools/doctor.py        # ずれと、前回の確認以降のcommitを表示
 python3 script/tools/doctor.py mark   # 確認を終えたcommitを記録
 
-# macOSの設定を変える前後の差分を、config.macos.toml に貼れる形で表示
+# macOSの設定を変える前後の差分を、conf.d/macos-defaults.macos.toml に貼れる形で表示
 python3 script/tools/mac_defaults.py snapshot   # 設定を変える前に実行
 python3 script/tools/mac_defaults.py changes
 

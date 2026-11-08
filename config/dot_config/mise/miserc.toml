@@ -1,3 +1,6 @@
 #:schema https://mise.en.dev/schema/mise.json
 
 auto_env = true
+
+# conf.dのファイル名の.<env>を環境名として扱い、conf.d/*.macos.tomlをmacOSだけで読む
+env_conf_d = true

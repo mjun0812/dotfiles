@@ -28,7 +28,7 @@ description: dotfilesの更新にlocal環境を追従させるため、必要な
 | `config/dot_config/mise/conf.d/dotfiles.toml`、`config/ai-agents/codex/config.toml` | `mise dot diff` で差分を見てから `mise dot apply`                                                                                   |
 | `script/setup/setup_*.sh`                                                           | 変わったscriptを再実行する                                                                                                          |
 | `install.sh`                                                                        | 変わった節のコマンドだけを手で実行する                                                                                              |
-| `config/mac/`、`config.macos.toml`                                                  | macOSでだけ作業する                                                                                                                 |
+| `config/mac/`、`config.macos.toml`、`conf.d/*.macos.toml`                           | macOSでだけ作業する                                                                                                                 |
 
 ## 判断の基準
 
