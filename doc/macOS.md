@@ -44,7 +44,6 @@ Currently configured features:
 
 - Workspace HUD for AeroSpace and Rift via URL scheme (`hammerspoon://aerospace-workspace?ws=<num>`)
 - Return to the WezTerm window and pane from a coding agent notification (`hammerspoon://wezterm-capture` / `wezterm-focus`)
-- Toggle Chrome's native vertical tab sidebar via `Cmd+Shift+B` and left-edge hover
 
 ## Raycast
 

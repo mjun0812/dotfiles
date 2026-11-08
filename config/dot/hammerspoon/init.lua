@@ -5,4 +5,3 @@ require("hs.ipc")
 -- 機能ごとのモジュールを読み込む。実装は各ファイルを参照。
 require("wezterm-focus") -- coding agent (Claude Code / Codex) の通知クリックからWezTermのwindow/paneへ戻る
 require("aerospace-workspace-hud") -- hammerspoon://aerospace-workspaceでworkspace番号をHUD表示
-require("chrome-vertical-tab-toggle") -- Chromeの縦タブサイドバーをホットキー/マウスエッジでトグル
