@@ -1,4 +1,3 @@
-# ~/.config/ruff/ruff.toml: ruff設定 (pyproject.tomlの[tool.ruff]・ruff.toml) を持たないプロジェクトにだけ適用される
 [lint]
 extend-select = ["UP", "ANN", "D"]
 # D100, D104: module・packageのdocstringは求めない
