@@ -13,8 +13,6 @@ python = "3.14"
 ruby = "latest"
 
 # Shell and CLI utilities
-# usage は入れない。補完を持つ packslip の tool があると、mise activate が sheldon より前に compinit -i を実行し、
-# ~/.config/zsh_completions の無い .zcompdump ができて _mise などが登録されない。mise の補完は本体だけで動く
 dust = "latest"
 jq = "latest"
 starship = "latest"
@@ -51,14 +49,13 @@ ty = "latest"
 "aqua:aws/aws-cli" = "latest"
 "aqua:neovim/neovim" = "latest"
 "github:duckdb/duckdb" = "latest"
-"github:rtk-ai/rtk" = "latest"
+"github:rtk-ai/rtk" = { version = "latest", minimum_release_age = "0s" }
 "github:runpod/runpodctl" = "latest"
 "github:WGUNDERWOOD/tex-fmt" = "latest"
 "github:jupyter-ai-contrib/nb-cli" = { version = "latest", bin = "nb" }
 
 # npm packages
 "npm:@mermaid-js/mermaid-cli" = "latest"
-"npm:md-to-pdf" = { version = "latest", install_env = { PUPPETEER_SKIP_DOWNLOAD = "1" } }
 "npm:neovim" = "latest"
 "npm:oxfmt" = "latest"
 "npm:textlint" = { version = "latest", bun_args = """
@@ -76,19 +73,19 @@ textlint-rule-prh@6.1.0
 "aqua:anomalyco/opencode" = "latest"
 "npm:agent-browser" = { version = "latest", postinstall = "agent-browser install || echo 'agent-browser browser install skipped'" }
 "npm:playwriter" = { version = "latest", postinstall = '''
-# agent-browser install が入れた Chrome for Testing を共有する
+# agent-browser installが入れたChrome for Testingを共有する
 mkdir -p ~/.playwriter
 rm -rf ~/.playwriter/browsers
 ln -s ~/.agent-browser/browsers ~/.playwriter/browsers
-# Linux の常駐ブラウザが旧バージョンの拡張機能を読み込んだままにならないよう再起動する
+# Linuxの常駐ブラウザが旧バージョンの拡張機能を読み込んだままにならないよう再起動する
 systemctl --user try-restart dev.mise.playwriter-browser.service 2>/dev/null || true
 ''' }
 "aqua:anthropics/claude-code" = { version = "latest", minimum_release_age = "0s" }
 "aqua:openai/codex" = { version = "latest", minimum_release_age = "0s", postinstall = '''
 set -eu
+# daemonが起動するcodexとmiseのcodexが同じバイナリを参照するようにする
 ln -sfn bin/codex "$MISE_TOOL_INSTALL_PATH/codex"
 "$HOME"/.dotfiles/script/setup/setup_codex_daemon.sh pin
-"$MISE_TOOL_INSTALL_PATH/codex" --version
 ''' }
 "aqua:google-antigravity/antigravity-cli" = { version = "latest", minimum_release_age = "0s" }
 "github:kenn-io/agentsview" = "latest"
