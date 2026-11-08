@@ -9,8 +9,8 @@ config.audible_bell = "Disabled"
 config.notification_handling = "AlwaysShow"
 -- 日本語入力
 config.use_ime = true
--- kitty keyboard protocol を要求したアプリ (Claude Code, Codex など) にだけ
--- Shift+Enter / Ctrl+Enter を区別して送る。要求しないアプリの入力は変わらない
+-- kitty keyboard protocolを要求したアプリ (Claude Code, Codexなど) にだけ
+-- Shift+Enter / Ctrl+Enterを区別して送る。要求しないアプリの入力は変わらない
 config.enable_kitty_keyboard = true
 -- Windowを閉じた時にWeztermを終了しない
 config.quit_when_all_windows_are_closed = false
@@ -114,8 +114,8 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
     longest_width = math.max(longest_width, wezterm.column_width(t_title))
   end
 
-  -- 左に 1、右に最低 1 の余白を含めた目標幅。
-  -- ただし max_width は超えない。
+  -- 左に1、右に最低1の余白を含めた目標幅。
+  -- ただしmax_widthは超えない。
   local target_width = math.min(max_width, longest_width + 2)
 
   -- 左右の余白ぶんを除いた、タイトル本体に使える最大幅。
@@ -203,8 +203,8 @@ config.mouse_bindings = {
 -- key binding
 config.keys = {
   {
-    -- ctrl+` はレガシーエンコーディングでは NUL に潰れるため、
-    -- CSI-u で送って Herdr 経由でも nvim に届くようにする
+    -- ctrl+`はレガシーエンコーディングではNULに潰れるため、
+    -- CSI-uで送ってHerdr経由でもnvimに届くようにする
     key = "`",
     mods = "CTRL",
     action = wezterm.action.SendString("\x1b[96;5u"),
@@ -271,7 +271,7 @@ config.keys = {
   },
 }
 
--- Hyperlink 抽出と処理
+-- Hyperlink抽出と処理
 local function extract_path(uri)
   -- `$EDITOR:/path/to/file` → `/path/to/file`
   local s, e = uri:find("^$EDITOR:")
@@ -287,7 +287,7 @@ local function extract_path(uri)
     return slash and host_path:sub(slash) or host_path
   end
 
-  -- `http://` 等はスキップ
+  -- `http://`等はスキップ
   if uri:match("^[%w%+%-%.]+://") then
     return nil
   end
@@ -296,14 +296,14 @@ local function extract_path(uri)
   return uri
 end
 
--- 行番号 (例: :42:7 や :128) を削除して OS が理解できる形に ---------------
+-- 行番号 (例: :42:7や :128) を削除してOSが理解できる形に ---------------
 local function strip_line_numbers(path)
   return path
     :gsub(":%d+:%d+$", "") -- :行:列
     :gsub(":%d+$", "") -- :行
 end
 
--- open-uri ハンドラ
+-- open-uriハンドラ
 wezterm.on("open-uri", function(window, pane, uri)
   local raw_path = extract_path(uri)
   if raw_path then
@@ -311,7 +311,7 @@ wezterm.on("open-uri", function(window, pane, uri)
     return false
   end
 
-  -- http(s)/mailto などは wezterm 既定動作 (ブラウザ起動など) にまかせる
+  -- http(s)/mailtoなどはwezterm既定動作 (ブラウザ起動など) にまかせる
 end)
 
 -- 既定ルールをベースにする
@@ -319,11 +319,11 @@ local hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- ファイルパス検出用ルールを追加
 table.insert(hyperlink_rules, {
-  --  ~ / ./ ../ C:\     で始まり、空白や<>\"'() を除く任意文字列
+  --  ~ / ./ ../ C:\で始まり、空白や<>\"'() を除く任意文字列
   --  オプションで :行 または :行:列 を繰り返し許可
   regex = [[(?:~|/|\.{1,2}/|\w:[\\/])[^[:space:]'"<>()]+(?::\d+(?::\d+)*)?]],
-  format = "$0", -- ← `$EDITOR:` は付けない
-  highlight = 0, -- 色を変えたいときは 1
+  format = "$0", -- ← `$EDITOR:`は付けない
+  highlight = 0, -- 色を変えたいときは1
 })
 
 config.hyperlink_rules = hyperlink_rules

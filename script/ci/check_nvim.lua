@@ -1,5 +1,5 @@
--- CIで install.sh の事前install結果を検証するスクリプト
--- (nvim --headless -c "luafile script/ci/check_nvim.lua" +qa で実行する)
+-- CIでinstall.shの事前install結果を検証するスクリプト
+-- (nvim --headless -c "luafile script/ci/check_nvim.lua" +qaで実行する)
 -- treesitter parser・Mason package・miseで入れるLSP serverが1つでも欠けていればexit code 1で異常終了する
 local missing = {}
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
-# 全 pane の label を「<pane_id> · <agent>」(agent なしの pane は <pane_id> のみ)
-# に揃える。herdr の pane header は metadata title > label > agent 種別の
-# 1 つしか表示しないため、agent 種別は label 側に合成する。
-# ID 形式でない label (ユーザーの手動 rename) は上書きしない。
+# 全paneのlabelを「<pane_id> · <agent>」(agentなしのpaneは<pane_id>のみ)
+# に揃える。herdrのpane headerはmetadata title > label > agent種別の
+# 1つしか表示しないため、agent種別はlabel側に合成する。
+# ID形式でないlabel (ユーザーの手動rename) は上書きしない。
 
 herdr_bin="${HERDR_BIN_PATH:-herdr}"
 id_label_re='^w[0-9A-Za-z]+:p[0-9A-Za-z]+( · .*)?$'

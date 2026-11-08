@@ -11,8 +11,8 @@ export VISUAL='vi'
 export PAGER='less'
 [[ "$OSTYPE" == darwin* ]] && export BROWSER='open'
 
-# Ubuntuの /etc/zsh/zshrc は ~/.zshrc より先に compinit を実行し、~/.config/zsh_completions の無い .zcompdump を作る。
-# completion.zsh の compinit -C がその作りたての dump を使うので _mise などが登録されない。compinit は completion.zsh だけで行う
+# Ubuntuの/etc/zsh/zshrcは~/.zshrcより先にcompinitを実行し、~/.config/zsh_completionsの無い.zcompdumpを作る。
+# completion.zshのcompinit -Cがその作りたてのdumpを使うので_miseなどが登録されない。compinitはcompletion.zshだけで行う
 skip_global_compinit=1
 
 # Tool settings
@@ -24,19 +24,19 @@ export BUN_INSTALL_GLOBAL_DIR="$HOME/.bun/install/global"
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 
-# GCLOUD SDK の自動アップデートを無効化する
+# GCLOUD SDKの自動アップデートを無効化する
 export CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1
 
-# agentsview のテレメトリを無効化する
+# agentsviewのテレメトリを無効化する
 export AGENTSVIEW_TELEMETRY_ENABLED=0
 
-# Playwriter のテレメトリを無効化する (relay daemon が起動時に読むため、変更後は `playwriter serve restart`)
+# Playwriterのテレメトリを無効化する (relay daemonが起動時に読むため、変更後は`playwriter serve restart`)
 export PLAYWRITER_TELEMETRY=0
 
-# uv/cargo-dist 系インストーラに rc ファイルを書き換えさせない
+# uv/cargo-dist系インストーラにrcファイルを書き換えさせない
 export INSTALLER_NO_MODIFY_PATH=1
 
-# Vite+ のsetupにrcファイルへ追記させない
+# Vite+のsetupにrcファイルへ追記させない
 # $HOME/.vite-plus/env $HOME/.config/vite-plus/env
 
 # login shellを経由しない非対話shell (CI・エディタ・cron) でもPATHをそろえる。

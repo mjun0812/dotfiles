@@ -26,7 +26,7 @@ if [[ -z ${layout:-} ]]; then
     exit 1
 fi
 
-# floating でなければ floating にする
+# floatingでなければfloatingにする
 if [[ $layout != "floating" ]]; then
     aerospace layout floating
 fi

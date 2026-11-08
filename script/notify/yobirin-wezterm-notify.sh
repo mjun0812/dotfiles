@@ -23,7 +23,7 @@ fi
 [[ -n $YOBIRIN_BIN ]] || exit 0
 
 # 指定プロファイルの派生バンドルが未インストールなら、デフォルトの名義へフォールバックする
-# (yobirin list --json でインストール済みプロファイルを確認できる)。
+# (yobirin list --jsonでインストール済みプロファイルを確認できる)。
 if [[ -n $PROFILE ]] && command -v jq >/dev/null 2>&1; then
     if ! "$YOBIRIN_BIN" list --json 2>/dev/null |
         jq -e --arg p "$PROFILE" '.bundles[] | select(.profile == $p)' >/dev/null 2>&1; then
@@ -33,12 +33,12 @@ fi
 
 GROUP_ID="${SESSION_ID:-${PANE_ID:+pane-${PANE_ID}}}"
 
-# yobirin は --timeout 省略時に無期限待機するため、hook からは必ず明示指定する。
+# yobirinは--timeout省略時に無期限待機するため、hookからは必ず明示指定する。
 # $( ) はyobirinの遅延exit (結果出力後約1秒の再起動防御) までwaitpidで待ってしまい、
-# 通知クリックからpane活性化までその分遅れる。process substitution + read なら
+# 通知クリックからpane活性化までその分遅れる。process substitution + readなら
 # 結果の1行目が届いた瞬間に先へ進める (yobirinは結果を即時flushする)。
 # --print result (yobirin v1.2.0以降) で結果種別の生値だけを受け取り、jqでの解析を省く。
-# --exit-code を使わないのも同じ理由: 終了コードはプロセス終了 (遅延exit後) まで
+# --exit-codeを使わないのも同じ理由: 終了コードはプロセス終了 (遅延exit後) まで
 # 確定しないため、即時readの最適化が失われる。
 read -r RESULT_TYPE < <(
     "$YOBIRIN_BIN" \

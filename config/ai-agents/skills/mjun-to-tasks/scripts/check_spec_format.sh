@@ -3,8 +3,8 @@
 # taskの依存が実在して循環していないか、Acceptance Criteriaが多すぎるtaskや未解消のtentativeが無いかを見る。内容の妥当性は見ない。
 # 承認前 (approval: pending) のspecでは、design.mdのEvidenceとChange Outlineのパスが実在するか、依存先のspecがあるかも見る。
 # usage:
-#   check_spec_format.sh <spec-dir> [tasks-file]   # tasks-file省略時は <spec-dir>/tasks.md (無ければtaskの検査を省く)
-# exit: 0 = 問題なし、1 = 問題あり (各行が "<file>:<line>: <内容>")、2 = 使い方の誤り
+#   check_spec_format.sh <spec-dir> [tasks-file]   # tasks-file省略時は<spec-dir>/tasks.md (無ければtaskの検査を省く)
+# exit: 0 = 問題なし、1 = 問題あり (各行が"<file>:<line>: <内容>")、2 = 使い方の誤り
 set -euo pipefail
 
 (($# == 1 || $# == 2)) || {
@@ -65,12 +65,12 @@ if [[ $approval == pending ]]; then
         dep && match($0, /spec: [A-Za-z0-9._-]+/) { print NR "\t" substr($0, RSTART + 6, RLENGTH - 6) }' "$dir/spec.md")
 
     if [[ -f $dir/design.md ]]; then
-        # Evidence: Decisionsのbacktick内の "<path>:<line>" と、specの中の research/ と prototype/ のパス
+        # Evidence: Decisionsのbacktick内の"<path>:<line>"と、specの中のresearch/とprototype/のパス
         while IFS=$'\t' read -r ln p max; do
             base=$root
             [[ $p == research/* || $p == prototype/* ]] && base=$abs
             if [[ ! -e $base/$p ]]; then
-                # "/" を含まないもの (example.com:443 など) は、repository直下に無ければパスとみなさない
+                # "/"を含まないもの (example.com:443など) は、repository直下に無ければパスとみなさない
                 [[ $p == */* ]] && findings+="$dir/design.md:$ln: Evidenceの $p が無い (repository外のファイルはURLで書く)"$'\n'
                 continue
             fi
@@ -95,7 +95,7 @@ if [[ $approval == pending ]]; then
                 }
             }' "$dir/design.md")
 
-        # Change Outline: 1行1パスの "- `<path>` (新設 | 変更 | 削除): <内容>"。変更と削除は実在し、新設はまだ無い
+        # Change Outline: 1行1パスの"- `<path>` (新設 | 変更 | 削除): <内容>"。変更と削除は実在し、新設はまだ無い
         while IFS=$'\t' read -r ln kind p; do
             if [[ $kind == format ]]; then
                 findings+="$dir/design.md:$ln: Change Outlineの項目は \"- \`<path>\` (新設 | 変更 | 削除): <内容>\" の形にする"$'\n'
@@ -118,7 +118,7 @@ if [[ $approval == pending ]]; then
     fi
 fi
 
-# tasks: 見出し・フィールド・語彙、AC件数、依存の実在。依存の辺は "E <dep> <task>" で出し、循環はtsortで見る
+# tasks: 見出し・フィールド・語彙、AC件数、依存の実在。依存の辺は"E <dep> <task>"で出し、循環はtsortで見る
 if [[ -f $tasks ]]; then
     out=$(awk -v f="$tasks" '
         function close_task() {

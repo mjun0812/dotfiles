@@ -2,10 +2,10 @@
 # agent向けのrule (config/ai-agents/rules/*.md) のfrontmatterを検査し、pathsのglobを1行ずつ出力する。
 # 使い方: rule-paths.sh <rule.md>...
 # 書式が外れたファイルがあれば、stderrに理由を書いてexit 1で終える (prekの検査として使う)。
-# Claude Codeはfrontmatterを自分で読み、Codexは codex-rules-hook.sh がこのscriptで読む。同じ書式を両方が同じ意味で読めるよう、書式を次に限る。
-#   1行目 `---`、2行目 `paths:`、続けて `  - "<glob>"` を1行以上、最後に `---`
-#   globに使えるのは英数字と `_` `.` `/` `-`、`*`、`?`、ディレクトリ全体を表す `**` だけ。
-#   `{a,b}` などそれ以外のglobは、hookでClaude Codeと同じ意味に照合できないので使わない
+# Claude Codeはfrontmatterを自分で読み、Codexはcodex-rules-hook.shがこのscriptで読む。同じ書式を両方が同じ意味で読めるよう、書式を次に限る。
+#   1行目`---`、2行目`paths:`、続けて`  - "<glob>"`を1行以上、最後に`---`
+#   globに使えるのは英数字と`_` `.` `/` `-`、`*`、`?`、ディレクトリ全体を表す`**`だけ。
+#   `{a,b}`などそれ以外のglobは、hookでClaude Codeと同じ意味に照合できないので使わない
 
 set -u
 

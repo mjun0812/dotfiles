@@ -1,6 +1,6 @@
 #:schema https://mise.en.dev/schema/mise.json
 
-# config/dot と config/dot_config にファイルを足したら、ここにもエントリを足す
+# config/dotとconfig/dot_configにファイルを足したら、ここにもエントリを足す
 [dotfiles]
 "~/.editorconfig" = "~/.dotfiles/config/dot/editorconfig"
 "~/.emacs" = "~/.dotfiles/config/dot/emacs"
@@ -37,10 +37,10 @@
 "~/.config/herdr/config.toml" = "~/.dotfiles/config/dot_config/herdr/config.toml"
 "~/.config/hunk/config.toml" = "~/.dotfiles/config/dot_config/hunk/config.toml"
 
-# Codexが書き足すローカル状態 ([projects.*] や [hooks.state]) を残し、テンプレートのキーだけを書き込む
+# Codexが書き足すローカル状態 ([projects.*]や[hooks.state]) を残し、テンプレートのキーだけを書き込む
 "~/.codex/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex/config.toml", merge = true }
 
-# agent向け。AGENTS_global.md はCodexとGeminiが同じファイルを読む
+# agent向け。AGENTS_global.mdはCodexとGeminiが同じファイルを読む
 "~/.apm/apm.yml" = "~/.dotfiles/config/ai-agents/apm.yml"
 "~/.claude/CLAUDE.md" = "~/.dotfiles/config/ai-agents/claude/CLAUDE.md"
 "~/.claude/rules" = "~/.dotfiles/config/ai-agents/rules"

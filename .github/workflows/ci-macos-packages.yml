@@ -93,7 +93,7 @@ jobs:
             ([.[$manager].packages[] | select(.package != $skip) | .state | startswith("installed")] | all)
           '
 
-      # aerospace --version はAeroSpace.appのサーバーへ接続するため、配置だけを確かめる
+      # aerospace --versionはAeroSpace.appのサーバーへ接続するため、配置だけを確かめる
       - name: Verify AeroSpace
         run: |
           test -d /Applications/AeroSpace.app

@@ -3,15 +3,15 @@ set -euo pipefail
 
 # notify-claude-hook.sh
 #
-# Claude Code の hook (UserPromptSubmit / PermissionRequest / Stop / StopFailure) から
-# stdin で渡される JSON を読み、リポジトリ名・セッションID短縮・実メッセージ/
-# エラー情報を含むリッチな通知を notify.sh 経由で送出する。
+# Claude Codeのhook (UserPromptSubmit / PermissionRequest / Stop / StopFailure) から
+# stdinで渡されるJSONを読み、リポジトリ名・セッションID短縮・実メッセージ/
+# エラー情報を含むリッチな通知をnotify.sh経由で送出する。
 #
 # Usage:
 #   notify-claude-hook.sh <event>
 #     event: turn_start | permission_request | stop | stop_failure
 
-# 応答がこの秒数未満で終わったターンでは stop の通知を出さない。
+# 応答がこの秒数未満で終わったターンではstopの通知を出さない。
 MIN_ELAPSED_SEC=300
 
 # mjun-orchestrateのworkerは、orchestratorがpaneにこの変数を付けて起動する。
@@ -26,7 +26,7 @@ jq_get() {
 }
 
 # 通知本文に載せるため、改行の除去・連続空白の圧縮・長さ制限を行う。
-# head -c がマルチバイト文字の途中で切った場合の壊れたバイト列は iconv -c で落とす。
+# head -cがマルチバイト文字の途中で切った場合の壊れたバイト列はiconv -cで落とす。
 sanitize() {
     printf '%s' "$1" | tr '\n' ' ' | LC_ALL=C sed 's/  */ /g; s/^ *//; s/ *$//' | head -c "$2" | iconv -f UTF-8 -t UTF-8 -c 2>/dev/null || true
 }
@@ -47,8 +47,8 @@ if [[ $SESSION_ID =~ ^[[:alnum:]_-]+$ ]]; then
     TURN_FILE="${TMPDIR:-/tmp}/claude-turn-${SESSION_ID}"
 fi
 
-# UserPromptSubmit ではターン開始時刻の記録と、前のターンの通知の後始末を行う。
-# このイベントの stdout はプロンプトへの追加コンテキストとして扱われるため、何も出力しない。
+# UserPromptSubmitではターン開始時刻の記録と、前のターンの通知の後始末を行う。
+# このイベントのstdoutはプロンプトへの追加コンテキストとして扱われるため、何も出力しない。
 if [[ $EVENT == "turn_start" ]]; then
     if [[ -n $TURN_FILE ]]; then
         date +%s >"$TURN_FILE"
@@ -69,7 +69,7 @@ permission_request)
     BODY="$(sanitize "${TOOL_NAME:+${TOOL_NAME} の}許可を待っています" 150)"
     ;;
 stop)
-    # 短時間で終わったターンは通知しない。開始時刻は turn_start が記録する。
+    # 短時間で終わったターンは通知しない。開始時刻はturn_startが記録する。
     # 記録が無い場合 (セッション再開直後など) は通知する。
     if [[ -n $TURN_FILE && -f $TURN_FILE ]]; then
         STARTED_AT="$(cat "$TURN_FILE")"
@@ -108,15 +108,15 @@ if [[ $(uname -s) == Darwin* && -z ${SSH_CONNECTION:-} && -z ${SSH_CLIENT:-} && 
     exit 0
 fi
 
-# OSC 通知ペイロード(OSC 9/777 判定・サニタイズ・tmux パススルー込み)を生成する。
-# hook の子プロセスの stdout は TTY に繋がっておらず、OSC を直接書いても届かないため、
-# Claude Code の hook 出力プロトコルである terminalSequence JSON として返し、
-# TTY に直結した Claude Code 本体にターミナルへ送出させる。
-# (Claude Code がサポートする terminalSequence は OSC 0/1/2/9/99/777 と BEL のみ)
+# OSC通知ペイロード(OSC 9/777判定・サニタイズ・tmuxパススルー込み)を生成する。
+# hookの子プロセスのstdoutはTTYに繋がっておらず、OSCを直接書いても届かないため、
+# Claude Codeのhook出力プロトコルであるterminalSequence JSONとして返し、
+# TTYに直結したClaude Code本体にターミナルへ送出させる。
+# (Claude CodeがサポートするterminalSequenceはOSC 0/1/2/9/99/777とBELのみ)
 SEQ="$(~/.dotfiles/script/notify/notify.sh --emit-osc "$TITLE" "$BODY" 2>/dev/null || true)"
 
-# ペイロードが空なら何も出力せず正常終了する(hook を失敗させない)。
+# ペイロードが空なら何も出力せず正常終了する(hookを失敗させない)。
 [[ -z $SEQ ]] && exit 0
 
-# jq の --arg で制御文字を含む値も安全に JSON エスケープされる。
+# jqの--argで制御文字を含む値も安全にJSONエスケープされる。
 jq -n --arg seq "$SEQ" '{terminalSequence: $seq}'

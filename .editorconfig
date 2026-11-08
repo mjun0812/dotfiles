@@ -5,7 +5,7 @@ indent_style = space
 indent_size = 2
 max_line_length = 120
 
-# pre-commitの shfmt -s -i 4 に合わせる (Neovimのconformはオプションなしでshfmtを呼ぶ)
+# pre-commitのshfmt -s -i 4に合わせる (Neovimのconformはオプションなしでshfmtを呼ぶ)
 [*.{sh,bash,zsh}]
 indent_style = space
 indent_size = 4

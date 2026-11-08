@@ -1,10 +1,10 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
-# claude と codex の pane の表示名を、Nerd Font のアイコン付きの名前にする。
-# アイコンは Nerd Fonts 3.5 の codicons (cod-claude, cod-openai)。codex 専用の
-# アイコンは無いので OpenAI のロゴを使う。--agent で種類を指定しておくと、
-# pane の agent が別の種類に変わった時点で表示名が元に戻る。
+# claudeとcodexのpaneの表示名を、Nerd Fontのアイコン付きの名前にする。
+# アイコンはNerd Fonts 3.5のcodicons (cod-claude, cod-openai)。codex専用の
+# アイコンは無いのでOpenAIのロゴを使う。--agentで種類を指定しておくと、
+# paneのagentが別の種類に変わった時点で表示名が元に戻る。
 
 herdr_bin="${HERDR_BIN_PATH:-herdr}"
 typeset -A icons=(

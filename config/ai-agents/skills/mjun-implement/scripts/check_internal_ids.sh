@@ -1,8 +1,8 @@
 #!/usr/bin/env zsh
-# repositoryに残るものやGitHubへ出すものに、spec内部の識別子 (task ID、AC番号、Requirement番号、.mjun/ のパスなど) が無いかを検出する。
+# repositoryに残るものやGitHubへ出すものに、spec内部の識別子 (task ID、AC番号、Requirement番号、.mjun/のパスなど) が無いかを検出する。
 # usage:
-#   check_internal_ids.sh diff <base>   # <base> からの変更で追加した行と、変更・追加したファイルの名前 (未追跡のファイルを含む)
-#   check_internal_ids.sh log <range>   # <range> のcommit message (例: HEAD~1..HEAD)
+#   check_internal_ids.sh diff <base>   # <base>からの変更で追加した行と、変更・追加したファイルの名前 (未追跡のファイルを含む)
+#   check_internal_ids.sh log <range>   # <range>のcommit message (例: HEAD~1..HEAD)
 #   check_internal_ids.sh text [file]   # PRのタイトル・本文など (file省略時は標準入力)
 # exit: 0 = 検出なし、1 = 検出あり (場所と行を出力)、2 = 使い方の誤り
 set -euo pipefail
@@ -15,7 +15,7 @@ usage() {
     exit 2
 }
 
-# "<場所>\t<本文>" の行を受け取り、本文が識別子に一致した行を "<場所>: <本文>" で出力する
+# "<場所>\t<本文>"の行を受け取り、本文が識別子に一致した行を"<場所>: <本文>"で出力する
 match() {
     awk -F '\t' -v pat="$pattern" '{
         body = $0; sub(/^[^\t]*\t/, "", body)

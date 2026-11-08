@@ -23,7 +23,7 @@ if command -v gh >/dev/null 2>&1; then
     echo "Updated: _gh ($(gh --version 2>/dev/null | head -1))"
 fi
 
-# "<補完するcommand名>:<補完を出力するコマンド>"。補完ファイルは _<command名> になる
+# "<補完するcommand名>:<補完を出力するコマンド>"。補完ファイルは_<command名>になる
 completions=(
     "rg:rg --generate complete-zsh"
     "fd:fd --gen-completions zsh"
@@ -47,12 +47,12 @@ for entry in "${completions[@]}"; do
     echo "Updated: _$name"
 done
 
-# 生成されるのは `mise __complete_word__` を呼ぶ薄いwrapperで、subcommand一覧は実行時にmise本体から取得される。
+# 生成されるのは`mise __complete_word__`を呼ぶ薄いwrapperで、subcommand一覧は実行時にmise本体から取得される。
 # そのためmiseを更新しても再生成は不要
 if command -v mise >/dev/null 2>&1; then
     mise completion zsh >"$COMPLETIONS_DIR/_mise"
     echo "Updated: _mise ($(mise --version 2>/dev/null | head -1))"
 fi
 
-# compinit -C は24時間以内の .zcompdump をそのまま使うため、新しい補完ファイルを認識させるには削除して再構築させる
+# compinit -Cは24時間以内の.zcompdumpをそのまま使うため、新しい補完ファイルを認識させるには削除して再構築させる
 rm -f "${ZDOTDIR:-$HOME}/.zcompdump"(N) "${ZDOTDIR:-$HOME}/.zcompdump.zwc"(N)

@@ -15,8 +15,8 @@ local function isWeztermWindow(window)
 end
 
 -- 記録済みのウィンドウがまだ存在するか。
--- アプリごと終了した場合は `window:application()` がnilになる。一方ウィンドウを閉じただけでは
--- アプリが生きている限りnilにならず、`role()` が無効化されるまでにも遅延があるため、
+-- アプリごと終了した場合は`window:application()`がnilになる。一方ウィンドウを閉じただけでは
+-- アプリが生きている限りnilにならず、`role()`が無効化されるまでにも遅延があるため、
 -- アプリの現在のウィンドウ一覧にIDが残っているかで判定する
 -- (最小化ウィンドウは一覧に残り、閉じたウィンドウは即座に消える。実測)。
 local function isLiveWindow(window)

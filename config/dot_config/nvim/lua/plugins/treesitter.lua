@@ -9,7 +9,7 @@ return {
       local ts = require("nvim-treesitter")
       ts.setup()
 
-      -- FileType / buftype による除外リスト
+      -- FileType / buftypeによる除外リスト
       local ignore_ft = {
         help = true,
         lazy = true,
@@ -25,7 +25,7 @@ return {
         quickfix = true,
       }
 
-      -- NVIM_TS_AUTO_INSTALL=0 でparserの自動installを無効化 (オフライン環境向け)
+      -- NVIM_TS_AUTO_INSTALL=0でparserの自動installを無効化 (オフライン環境向け)
       local auto_install_enabled = vim.env.NVIM_TS_AUTO_INSTALL ~= "0"
 
       local ensure_installed = require("config.treesitter-langs")
@@ -43,7 +43,7 @@ return {
         return ok and parser ~= nil
       end
 
-      --- バッファに treesitter を適用
+      --- バッファにtreesitterを適用
       local function attach(buf, lang)
         if not vim.api.nvim_buf_is_valid(buf) then
           return
@@ -52,7 +52,7 @@ return {
         vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
       end
 
-      --- パーサーのインストール完了をポーリングで待ち、完了後に attach する
+      --- パーサーのインストール完了をポーリングで待ち、完了後にattachする
       local function wait_and_attach(buf, lang)
         local tries = 0
         local function poll()
@@ -87,7 +87,7 @@ return {
         wait_and_attach(buf, lang)
       end
 
-      -- ensure_installed のパーサーを自動インストール
+      -- ensure_installedのパーサーを自動インストール
       if auto_install_enabled then
         for _, lang in ipairs(ensure_installed) do
           if supported_languages[lang] and not has_parser(0, lang) then

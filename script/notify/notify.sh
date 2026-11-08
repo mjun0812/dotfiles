@@ -15,8 +15,8 @@ set -euo pipefail
 #   ./notify.sh --emit-osc "TITLE" "MESSAGE" # print raw OSC payload to stdout only
 #                                            # (for Claude Code terminalSequence; no terminal/native output)
 #
-# PROFILE は macOS の yobirin 通知プロファイル名 (claude / codex)。アイコンと名義の
-# 出し分けに使う。OSC 通知やその他の OS では無視される。
+# PROFILEはmacOSのyobirin通知プロファイル名 (claude / codex)。アイコンと名義の
+# 出し分けに使う。OSC通知やその他のOSでは無視される。
 
 # Parse force mode flag
 FORCE_MODE="auto"

@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
-# config/dot と config/dot_config の直下のファイル・ディレクトリが、conf.d/dotfiles.toml に宣言されているかを検査する。
-# 宣言が無いものは mise dot apply で展開されないので、足し忘れをprekで止める。
+# config/dotとconfig/dot_configの直下のファイル・ディレクトリが、conf.d/dotfiles.tomlに宣言されているかを検査する。
+# 宣言が無いものはmise dot applyで展開されないので、足し忘れをprekで止める。
 # ディレクトリはファイル単位のエントリ (例: herdr/config.toml) があれば宣言済みとみなす。
 
 set -u

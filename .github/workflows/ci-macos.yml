@@ -31,8 +31,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      # 実マシン・Ubuntu CIと同様に ~/.dotfiles でリポジトリを参照できるようにする
-      # (mise postinstallやnotify系スクリプトは ~/.dotfiles 配下のパスを前提とする)
+      # 実マシン・Ubuntu CIと同様に~/.dotfilesでリポジトリを参照できるようにする
+      # (mise postinstallやnotify系スクリプトは~/.dotfiles配下のパスを前提とする)
       - name: Link repository to ~/.dotfiles
         run: |
           ln -s "$GITHUB_WORKSPACE" "$HOME/.dotfiles"

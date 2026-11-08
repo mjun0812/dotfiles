@@ -3,24 +3,24 @@ set -euo pipefail
 
 # setup_herdr.sh
 #
-# herdr の agent-state hook スクリプトを Claude Code / Codex に設置し、
-# dotfiles 管理の herdr plugin を link する。
-# mise の postinstall (config/dot_config/mise/config.toml) から herdr の
-# install / upgrade 時に呼ばれる。手動で再実行してもよい。
+# herdrのagent-state hookスクリプトをClaude Code / Codexに設置し、
+# dotfiles管理のherdr pluginをlinkする。
+# miseのpostinstall (config/dot_config/mise/config.toml) からherdrの
+# install / upgrade時に呼ばれる。手動で再実行してもよい。
 #
-# hook の登録エントリは dotfiles 側 (config/ai-agents/claude/settings.json,
-# config/ai-agents/codex/hooks.json) が OS 非依存の ~ 形式で所有する。
-# herdr の installer は自分が書く quoted 絶対パス形式のエントリしか
-# 自エントリと認識せず、~ 形式が登録済みでも絶対パス形式のエントリを
-# 重複追加するため、設置後に herdr が追記したエントリを jq で除去する。
+# hookの登録エントリはdotfiles側 (config/ai-agents/claude/settings.json,
+# config/ai-agents/codex/hooks.json) がOS非依存の~形式で所有する。
+# herdrのinstallerは自分が書くquoted絶対パス形式のエントリしか
+# 自エントリと認識せず、~形式が登録済みでも絶対パス形式のエントリを
+# 重複追加するため、設置後にherdrが追記したエントリをjqで除去する。
 
 DOTPATH=$(cd "$(dirname "$0")/../.." && pwd)
 
-# フレッシュ環境の mise install 中は ~/.claude がまだ無く、
-# herdr integration install が失敗する。install.sh が Claude Code の
+# フレッシュ環境のmise install中は~/.claudeがまだ無く、
+# herdr integration installが失敗する。install.shがClaude Codeの
 # 設定後に本スクリプトを再実行するので、その時点ではスキップしてよい。
-# ~/.codex は install.sh が mise install より前に作る (mise dot apply が
-# config.toml を書く) が、install.sh を経ずに mise から呼ばれたときのために同じく確かめる。
+# ~/.codexはinstall.shがmise installより前に作る (mise dot applyが
+# config.tomlを書く) が、install.shを経ずにmiseから呼ばれたときのために同じく確かめる。
 if [ -d "$HOME/.claude" ]; then
     herdr integration install claude
 else
@@ -33,12 +33,12 @@ else
 fi
 
 normalize() {
-    # canonical は dotfiles 側が所有する ~ 形式の command の接頭辞 (引数は含まない)。
+    # canonicalはdotfiles側が所有する~形式のcommandの接頭辞 (引数は含まない)。
     local file="$1" canonical="$2"
     [ -f "$file" ] || return 0
     if ! command -v jq >/dev/null 2>&1; then
-        # フレッシュ環境の mise install 中は jq が PATH に無い場合がある。
-        # その時点の実ファイルは後段の setup_*.sh で symlink に置き換わる
+        # フレッシュ環境のmise install中はjqがPATHに無い場合がある。
+        # その時点の実ファイルは後段のsetup_*.shでsymlinkに置き換わる
         # ため、正規化はスキップしてよい。
         return 0
     fi
@@ -53,18 +53,18 @@ normalize() {
             | map(select(.hooks | length > 0))
         ))
     ' "$file" >"$tmp"
-    # file は dotfiles への symlink なので、mv で置き換えず中身だけ書き戻す
+    # fileはdotfilesへのsymlinkなので、mvで置き換えず中身だけ書き戻す
     cat "$tmp" >"$file"
     rm -f "$tmp"
 }
 
-# herdr plugin link は herdr server が古い (protocol mismatch) と失敗して
-# set -e で終了するため、integration install の後始末である正規化を先に行う。
+# herdr plugin linkはherdr serverが古い (protocol mismatch) と失敗して
+# set -eで終了するため、integration installの後始末である正規化を先に行う。
 normalize "$HOME/.claude/settings.json" 'bash ~/.claude/hooks/herdr-agent-state.sh '
 normalize "$HOME/.codex/hooks.json" 'bash ~/.codex/herdr-agent-state.sh '
 
-# dotfiles 管理の herdr plugin をすべて link する (link は冪等)。
-# 実体は config/dot_config/herdr/plugins/ にあり、編集はそのまま反映される。
+# dotfiles管理のherdr pluginをすべてlinkする (linkは冪等)。
+# 実体はconfig/dot_config/herdr/plugins/にあり、編集はそのまま反映される。
 for plugin in "$DOTPATH"/config/dot_config/herdr/plugins/*/; do
     herdr plugin link "${plugin%/}"
 done

@@ -50,7 +50,7 @@ export HISTFILE="${HISTFILE:-${ZDOTDIR:-$HOME}/.zsh_history}"
 export HISTSIZE=50000
 export SAVEHIST=$HISTSIZE
 
-# Keybindings (plugin固有のkeybind (history-substring-search) は plugins.toml の hooks.post にある)
+# Keybindings (plugin固有のkeybind (history-substring-search) はplugins.tomlのhooks.postにある)
 bindkey -e # Use Emacs key bindings
 bindkey "^[[Z" reverse-menu-complete
 WORDCHARS='*?_-.[]~&;!#$%^(){}<>'

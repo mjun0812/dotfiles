@@ -376,7 +376,7 @@ return {
         )
       end
 
-      -- カーソル行にある ![](path) のpathを返す
+      -- カーソル行にある![](path) のpathを返す
       local function find_image_url_at_cursor()
         local bufnr = vim.api.nvim_get_current_buf()
         local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1

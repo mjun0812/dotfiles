@@ -15,21 +15,21 @@ mkdir -p "$HOME/.local/bin"
 
 ################ [mise] ################
 log_section "Setting up mise..."
-# 新しい環境ではまだ ~/.zprofile が無く、miseの導入先がPATHに無い
+# 新しい環境ではまだ~/.zprofileが無く、miseの導入先がPATHに無い
 export PATH="$HOME/.local/bin:$PATH"
 $DOTPATH/script/setup/install_mise.sh
 
 ################ [dotfiles] ################
 log_section "Setting up dotfiles..."
-# miseが [dotfiles] の宣言 (conf.d/dotfiles.toml) を読めるように、~/.config/mise だけは先に手でlinkする
+# miseが[dotfiles]の宣言 (conf.d/dotfiles.toml) を読めるように、~/.config/miseだけは先に手でlinkする
 if [ -e "$CONFIG_DIR/mise" ] && [ ! -L "$CONFIG_DIR/mise" ]; then
     mkdir -p "$DOTPATH/.backup/.config"
     rm -rf "$DOTPATH/.backup/.config/mise"
     mv "$CONFIG_DIR/mise" "$DOTPATH/.backup/.config/mise"
 fi
 ln -snfv "$DOTPATH/config/dot_config/mise" "$CONFIG_DIR/mise"
-# mise dot apply は展開先の実ファイルを置き換えずに止まるので、HOMEからの相対パスのまま .backup/ へ移しておく
-# jqはまだ入っていないことがあるので、mise x で呼ぶ
+# mise dot applyは展開先の実ファイルを置き換えずに止まるので、HOMEからの相対パスのまま.backup/へ移しておく
+# jqはまだ入っていないことがあるので、mise xで呼ぶ
 mise dot status --json |
     mise x jq -- jq -r '.files[] | select(.reason == "exists but is not a symlink") | .target' |
     while read -r target; do

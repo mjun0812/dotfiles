@@ -16,5 +16,5 @@ tell application "Safari"
 end tell
 APPLESCRIPT
 
-# Raycast HUD/toast 用（silent は最後の1行がHUD表示） [oai_citation:2‡Gitee](https://gitee.com/typesugar_chenchao/script-commands?utm_source=chatgpt.com)
+# Raycast HUD/toast用（silentは最後の1行がHUD表示） [oai_citation:2‡Gitee](https://gitee.com/typesugar_chenchao/script-commands?utm_source=chatgpt.com)
 echo "Opened Safari window"

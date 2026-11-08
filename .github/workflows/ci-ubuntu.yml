@@ -30,9 +30,9 @@ jobs:
       DEBIAN_FRONTEND: noninteractive
 
     steps:
-      # python3 は asdf:mise-plugins/mise-gcloud が gcloud CLI の hard requirement として要求する。
-      # 22.04 は git-core PPA 用の software-properties-common が、26.04 は他 package の依存が
-      # python3 を引き込むが、24.04 はどちらにも該当せず明示しないと入らない。
+      # python3はasdf:mise-plugins/mise-gcloudがgcloud CLIのhard requirementとして要求する。
+      # 22.04はgit-core PPA用のsoftware-properties-commonが、26.04は他packageの依存が
+      # python3を引き込むが、24.04はどちらにも該当せず明示しないと入らない。
       - name: Install prerequisites
         run: |
           apt-get update
@@ -45,8 +45,8 @@ jobs:
             build-essential \
             python3
 
-      # 22.04 標準の git 2.34 は gitconfig の merge.conflictStyle = zdiff3 (git 2.35+) を解釈できず、
-      # lazy.nvim の git checkout がすべて失敗するため git-core PPA の git を使う
+      # 22.04標準のgit 2.34はgitconfigのmerge.conflictStyle = zdiff3 (git 2.35+) を解釈できず、
+      # lazy.nvimのgit checkoutがすべて失敗するためgit-core PPAのgitを使う
       - name: Install git from git-core PPA (Ubuntu 22.04)
         if: matrix.ubuntu == '22.04'
         run: |
@@ -219,7 +219,7 @@ jobs:
           echo "=== Checking interactive zsh ==="
           su - testuser -c 'zsh -i -c "echo ✓ interactive zsh starts successfully"'
 
-  # ruleset の必須 check 名 (Test on Ubuntu) を matrix の増減から切り離すための集約 job
+  # rulesetの必須check名 (Test on Ubuntu) をmatrixの増減から切り離すための集約job
   test-ubuntu-summary:
     name: Test on Ubuntu
     runs-on: ubuntu-latest

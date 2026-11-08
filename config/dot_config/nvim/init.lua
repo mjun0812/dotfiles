@@ -98,10 +98,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 })
 
 -- ########## Terminal ########
--- ターミナルモードで <Esc> を押したらノーマルモードに戻る
+-- ターミナルモードで<Esc>を押したらノーマルモードに戻る
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true, silent = true })
 
--- :T コマンドで水平分割＋下部に高さ20行のターミナルを開く
+-- :Tコマンドで水平分割＋下部に高さ20行のターミナルを開く
 vim.api.nvim_create_user_command("T", function(opts)
   vim.cmd("split")
   vim.cmd("wincmd j")
@@ -120,7 +120,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
 vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
 vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
 
--- Option(Alt)+hjkl でリサイズ
+-- Option(Alt)+hjklでリサイズ
 vim.keymap.set("n", "<A-j>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
 vim.keymap.set("n", "<A-k>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 vim.keymap.set("n", "<A-h>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })

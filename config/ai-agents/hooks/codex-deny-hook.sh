@@ -1,12 +1,12 @@
 #!/usr/bin/env zsh
-# Claude Codeの settings.json のdenyに当たる制限を、Codexでかける PreToolUse hook (apply_patch|Bash)。
-#   - ~/.zshrc.local の名前を含むshellコマンドを拒否する。tokenやAPIキーを置くので、中身を会話へ出さない。
-#     Claude Codeでは deny の Read(~/.zshrc.local) と Bash(*zshrc.local*) が同じ制限をかけている。
+# Claude Codeのsettings.jsonのdenyに当たる制限を、CodexでかけるPreToolUse hook (apply_patch|Bash)。
+#   - ~/.zshrc.localの名前を含むshellコマンドを拒否する。tokenやAPIキーを置くので、中身を会話へ出さない。
+#     Claude CodeではdenyのRead(~/.zshrc.local) とBash(*zshrc.local*) が同じ制限をかけている。
 #     apply_patchはpatch本文がこの名前を含む文書の編集まで止めてしまうので対象にしない
-#   - .ipynb を書き換えるpatchを拒否する。Claude Codeでは deny の Edit(//**/*.ipynb)、NotebookEdit が同じ制限をかけている
+#   - .ipynbを書き換えるpatchを拒否する。Claude CodeではdenyのEdit(//**/*.ipynb)、NotebookEditが同じ制限をかけている
 #   - shellのheredocで実行するapply_patchコマンドを拒否し、apply_patchツールを使わせる。
-#     shell経由のpatchではPostToolUseが発火せず、format-hook.sh が動かないため
-# shell経由のpatchはBashとして届き、tool_input.command にpatch本文を含むコマンドが入る。
+#     shell経由のpatchではPostToolUseが発火せず、format-hook.shが動かないため
+# shell経由のpatchはBashとして届き、tool_input.commandにpatch本文を含むコマンドが入る。
 
 set -u
 

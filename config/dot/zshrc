@@ -18,5 +18,5 @@ for f in ~/.config/zsh/profiles/*.zsh(N); do
     zsh-defer source "$f"
 done
 
-# Vite+ のsetupにrcファイルへ追記させない
+# Vite+のsetupにrcファイルへ追記させない
 # $HOME/.vite-plus/env $HOME/.config/vite-plus/env

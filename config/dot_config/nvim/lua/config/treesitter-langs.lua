@@ -1,6 +1,6 @@
 -- 事前installするtreesitter parserの一覧
--- plugins/treesitter.lua (起動時の自動install) と install.sh (headlessでの事前install) の両方から参照される
--- latex は generate = true のparserで、installにtree-sitter CLI (miseで導入) が必要
+-- plugins/treesitter.lua (起動時の自動install) とinstall.sh (headlessでの事前install) の両方から参照される
+-- latexはgenerate = trueのparserで、installにtree-sitter CLI (miseで導入) が必要
 return {
   "markdown",
   "markdown_inline",

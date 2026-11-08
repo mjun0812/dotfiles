@@ -1,10 +1,10 @@
 #!/usr/bin/env zsh
-# `gh pr|issue create|edit|comment` と `gh pr review` で送る本文を検査するClaude Code・CodexのPreToolUse hook (Bash)。
-#   1. 他人が作成したIssueの本文を `gh issue edit --body / --body-file` で書き換える呼び出しを拒否する。
+# `gh pr|issue create|edit|comment`と`gh pr review`で送る本文を検査するClaude Code・CodexのPreToolUse hook (Bash)。
+#   1. 他人が作成したIssueの本文を`gh issue edit --body / --body-file`で書き換える呼び出しを拒否する。
 #      本文は作成者の言葉なので、追記や提案はコメントで行わせる。題名・label・assigneeなどの変更と、
 #      bot (Renovateのdashboardなど) が作成したIssueは通す。作成者を確かめられないときは止めない。
 #   2. 本文にtextlintをかけ、指摘があれば一度だけ止めて書き直させる。同じ本文で再実行したら通すので、誤検知でも先へ進める。
-#      本文の展開結果はhookから見えないため、`$(...)` や `--body-file -` で渡す本文は、ファイルに書いて --body-file で渡させる。
+#      本文の展開結果はhookから見えないため、`$(...)`や`--body-file -`で渡す本文は、ファイルに書いて--body-fileで渡させる。
 #      commitメッセージやひと言のコメントのような短い本文は検査しない。textlintが失敗したときは止めない。
 
 set -u
@@ -33,7 +33,7 @@ deny() {
     exit 0
 }
 
-# shellの単語に分け (z)、引用符を外す (Q)。`;` `&&` `|` などの区切りも1つの単語になる
+# shellの単語に分け (z)、引用符を外す (Q)。`;` `&&` `|`などの区切りも1つの単語になる
 words=("${(@Q)${(z)cmd}}")
 files=() inline=() edited_issues=()
 i=1
@@ -54,8 +54,8 @@ while ((i <= ${#words})); do
             -R | --repo) repo=${words[i + 1]-} && ((i++)) ;;
             --repo=*) repo=${w#--repo=} ;;
             --remove-milestone) ;;
-            # gh issue edit の残りのflagは値を1つ取る (--add-label、-t など)。
-            # 他のsubcommandには値を取らないflag (--draft など) があるので、次の単語を飛ばさない
+            # gh issue editの残りのflagは値を1つ取る (--add-label、-tなど)。
+            # 他のsubcommandには値を取らないflag (--draftなど) があるので、次の単語を飛ばさない
             -?*) ((issue_edit)) && [[ $w != --*=* ]] && ((i++)) ;;
             *) ((issue_edit)) && issues+=("$w") ;;
             esac
@@ -84,7 +84,7 @@ fi
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
-# 検査する本文を "表示名<TAB>ファイル" で集める
+# 検査する本文を"表示名<TAB>ファイル"で集める
 targets=() dynamic=0
 for f in $files; do
     if [[ $f == - ]]; then

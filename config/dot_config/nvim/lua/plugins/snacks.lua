@@ -21,8 +21,8 @@ return {
 
     vim.keymap.set({ "n", "t" }, "<C-`>", function()
       Snacks.terminal(nil, {
-        -- bottom と float を別IDにしたいので env で分ける
-        -- terminal id は cmd/cwd/env/vim.v.count1 から決まる
+        -- bottomとfloatを別IDにしたいのでenvで分ける
+        -- terminal idはcmd/cwd/env/vim.v.count1から決まる
         env = { SNACKS_TERM = "bottom" },
         win = {
           position = "bottom",

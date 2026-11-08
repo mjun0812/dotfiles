@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""dotfiles の更新に local 環境が追従しているかを調べ、機械的に分かるずれを列挙する。
+"""dotfilesの更新にlocal環境が追従しているかを調べ、機械的に分かるずれを列挙する。
 
-check (既定): ずれを [分類] 付きで1行ずつ表示する。ずれがあれば exit 1
-mark: 確認を終えた commit (HEAD) を記録する。次回の check は、それ以降の commit を表示する
+check (既定): ずれを[分類]付きで1行ずつ表示する。ずれがあればexit 1
+mark: 確認を終えたcommit (HEAD) を記録する。次回のcheckは、それ以降のcommitを表示する
 
 ずれをどう直すかは判断が要るため、このscriptは何も変更しない。
-直し方の基準は .agents/skills/doctor/SKILL.md にある。
+直し方の基準は.agents/skills/doctor/SKILL.mdにある。
 """
 
 from __future__ import annotations
@@ -29,15 +29,15 @@ STATE_FILE = (
 )
 CODEX_TEMPLATE = "config/ai-agents/codex/config.toml"
 APM_LOCK = HOME / ".apm/apm.lock.yaml"
-# Codex が書くローカル状態で、テンプレートの管理外 (テンプレートには書かない)
+# Codexが書くローカル状態で、テンプレートの管理外 (テンプレートには書かない)
 CODEX_LOCAL_STATE_TABLES = frozenset({"desktop", "projects"})
-# /model などlocalで選んだ値を mise dot apply のマージに上書きさせないため、テンプレートから外したキー。
+# /modelなどlocalで選んだ値をmise dot applyのマージに上書きさせないため、テンプレートから外したキー。
 # 値が昔のテンプレートと同じでも、消し忘れではない
 CODEX_LOCAL_CHOICE_KEYS = frozenset({"model", "model_reasoning_effort", "service_tier"})
-# apm が展開するskill・agentの置き場。dotfiles 自身のsymlinkも同じ場所に置かれる
+# apmが展開するskill・agentの置き場。dotfiles自身のsymlinkも同じ場所に置かれる
 SKILL_DIRS = (".agents/skills", ".claude/skills", ".gemini/antigravity-cli/skills")
 AGENT_DIRS = (".claude/agents", ".codex/agents")
-# 深い階層まで辿ると時間がかかるので、dotfiles がsymlinkを置く深さに限る
+# 深い階層まで辿ると時間がかかるので、dotfilesがsymlinkを置く深さに限る
 DANGLING_SCAN_DEPTH = 3
 DANGLING_SCAN_SKIP = frozenset(
     {".cache", ".git", "node_modules", ".npm", ".bun", ".rustup", ".cargo", "go"}
@@ -105,7 +105,7 @@ def print_commits() -> None:
 
 def check_expected_links() -> Iterator[str]:
     """宣言どおりに展開されていないものと、setupスクリプトが張るはずのsymlinkが無いものを探す。"""
-    # conf.d/dotfiles.toml の宣言は、mise の判定に任せる
+    # conf.d/dotfiles.tomlの宣言は、miseの判定に任せる
     status = json.loads(
         subprocess.run(
             ["mise", "dot", "status", "--json"],
@@ -139,13 +139,13 @@ def script_links() -> Iterator[tuple[Path, Path]]:
 
 
 def check_dangling_links() -> Iterator[str]:
-    """Dotfiles から消したファイルを指したまま残ったsymlinkを探す。"""
+    """Dotfilesから消したファイルを指したまま残ったsymlinkを探す。"""
     for root, dirs, files in os.walk(HOME):
         depth = len(Path(root).relative_to(HOME).parts)
         if depth >= DANGLING_SCAN_DEPTH:
             dirs.clear()
         dirs[:] = [name for name in dirs if name not in DANGLING_SCAN_SKIP]
-        # os.walk はsymlinkのdirを dirs に入れるが辿らないので、files と合わせて調べる
+        # os.walkはsymlinkのdirをdirsに入れるが辿らないので、filesと合わせて調べる
         for name in (*dirs, *files):
             path = Path(root, name)
             if (
@@ -177,7 +177,7 @@ def check_mise() -> Iterator[str]:
 
 
 def check_textlint() -> Iterator[str]:
-    """設定が読めないと exit 2 になる。exit 1 は文章への指摘なので問題ない。"""
+    """設定が読めないとexit 2になる。exit 1は文章への指摘なので問題ない。"""
     samples = {".md": "# 確認\n\n本文です。\n", ".html": "<p>本文です。</p>\n"}
     with tempfile.TemporaryDirectory() as tmp:
         for mode in ("fix", "report"):
@@ -211,7 +211,7 @@ def check_apm() -> Iterator[str]:
         if not (HOME / path).exists():
             yield f"[apm-missing] lockに記録された ~/{path} が無い"
 
-    # apm 管理外のskill・agentは、apm の展開を止めるか、古い版のまま使われ続ける
+    # apm管理外のskill・agentは、apmの展開を止めるか、古い版のまま使われ続ける
     for skill_dir in SKILL_DIRS:
         root = HOME / skill_dir
         if not root.is_dir():
@@ -235,7 +235,7 @@ def check_apm() -> Iterator[str]:
 
 
 def apm_deployed_files() -> set[str]:
-    """Lock の deployed_files を集める。YAMLを読むためだけに依存を増やさず、行の形で取り出す。"""
+    """Lockのdeployed_filesを集める。YAMLを読むためだけに依存を増やさず、行の形で取り出す。"""
     deployed: set[str] = set()
     in_list = False
     for line in APM_LOCK.read_text().splitlines():
@@ -250,9 +250,9 @@ def apm_deployed_files() -> set[str]:
 
 
 def apm_legacy_only_files() -> set[str]:
-    """Lock の deployments で、旧形式から引き継いだ記録 (target: legacy) にしか無いパスを集める。
+    """Lockのdeploymentsで、旧形式から引き継いだ記録 (target: legacy) にしか無いパスを集める。
 
-    apm は、上流で消えたファイルのこの記録を update でも install でも消さないので、展開先に無くても正しい。
+    apmは、上流で消えたファイルのこの記録をupdateでもinstallでも消さないので、展開先に無くても正しい。
     """
     targets: dict[str, set[str]] = {}
     in_deployments = False
@@ -274,7 +274,7 @@ def apm_legacy_only_files() -> set[str]:
 
 
 def check_codex_hooks() -> Iterator[str]:
-    """hooks.json の各hookに承認の記録があるかを見る。定義の変更による承認切れは検出できない。"""
+    """hooks.jsonの各hookに承認の記録があるかを見る。定義の変更による承認切れは検出できない。"""
     hooks_file = HOME / ".codex/hooks.json"
     config_file = HOME / ".codex/config.toml"
     if not (hooks_file.exists() and config_file.exists()):
@@ -289,9 +289,9 @@ def check_codex_hooks() -> Iterator[str]:
 
 
 def check_codex_stale_keys() -> Iterator[str]:
-    """テンプレートから消したキーを探す。mise dot apply のマージはキーを足すだけで消さないため、手で消す必要がある。
+    """テンプレートから消したキーを探す。mise dot applyのマージはキーを足すだけで消さないため、手で消す必要がある。
 
-    Codex やユーザーが書き換えたキーと区別するため、過去のテンプレートと値まで一致するものだけを報告する。
+    Codexやユーザーが書き換えたキーと区別するため、過去のテンプレートと値まで一致するものだけを報告する。
     """
     config_file = HOME / ".codex/config.toml"
     if not config_file.exists():
@@ -305,7 +305,7 @@ def check_codex_stale_keys() -> Iterator[str]:
             continue
         for key, value in flatten_keys(template).items():
             past.setdefault(key, []).append(value)
-    # apm が書き込むMCPサーバーは、テンプレートから消した後も apm の管理下にある
+    # apmが書き込むMCPサーバーは、テンプレートから消した後もapmの管理下にある
     apm_mcp = set(
         re.findall(
             r"^\s+- name: (\S+)",

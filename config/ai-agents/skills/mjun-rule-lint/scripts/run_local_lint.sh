@@ -1,10 +1,10 @@
 #!/usr/bin/env zsh
-# repositoryに含めないlocalのlint (<repo>/.mjun/lint/) を、<base> から追加・変更したファイルだけに実行する。
+# repositoryに含めないlocalのlint (<repo>/.mjun/lint/) を、<base>から追加・変更したファイルだけに実行する。
 # 既存のコードにある違反で作業が止まらないよう、対象を今回の変更に絞る。
-#   .mjun/lint/sgconfig.yml があれば、ast-grepのruleを実行する
-#   .mjun/lint/scripts/*.sh があれば、それぞれを `zsh <script> <file>...` で実行する (違反は "<file>:<line>: <内容>" で出し、exit 1)
+#   .mjun/lint/sgconfig.ymlがあれば、ast-grepのruleを実行する
+#   .mjun/lint/scripts/*.shがあれば、それぞれを`zsh <script> <file>...`で実行する (違反は"<file>:<line>: <内容>"で出し、exit 1)
 # usage:
-#   run_local_lint.sh <repo-root> <base>   # <base> は比較の起点 (例: main、HEAD)。未追跡のファイルも対象にする
+#   run_local_lint.sh <repo-root> <base>   # <base>は比較の起点 (例: main、HEAD)。未追跡のファイルも対象にする
 # exit: 0 = 違反なし (localのlintが無い場合を含む)、1 = 違反あり、2 = 使い方の誤り
 set -euo pipefail
 setopt null_glob

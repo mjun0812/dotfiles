@@ -1,4 +1,4 @@
-# alias と、コマンドの代替として使う関数。zsh-defer で最初のprompt後に読み込む。
+# aliasと、コマンドの代替として使う関数。zsh-deferで最初のprompt後に読み込む。
 
 # Directory stack
 alias d='dirs -v'
@@ -84,7 +84,7 @@ claudex() (
 )
 
 # agentsview
-# serve の前に、~/.agentsview/remotes.toml に書いたリモートの session を取得する
+# serveの前に、~/.agentsview/remotes.tomlに書いたリモートのsessionを取得する
 agentsview() {
     if [[ $1 == serve ]]; then
         python3 ~/.dotfiles/script/tools/pull_agentsview_remotes.py

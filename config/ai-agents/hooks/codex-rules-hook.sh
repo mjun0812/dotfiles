@@ -23,7 +23,7 @@ if [[ $(jq -r '.hook_event_name // ""' <<<"$input") == PostCompact ]]; then
     exit 0
 fi
 
-# patchの見出しから、触るファイルをrootからの相対パスで取り出す ("Move to" は移動後のパス)。
+# patchの見出しから、触るファイルをrootからの相対パスで取り出す ("Move to"は移動後のパス)。
 # 追加するファイルはまだ無いので、存在する親ディレクトリからrootを探す
 paths=()
 for file in ${(f)"$(jq -r '.tool_input.command // ""' <<<"$input" | sed -nE 's/^\*\*\* (Add File|Update File|Move to): //p')"}; do
@@ -40,7 +40,7 @@ for rule in "$DOTPATH"/config/ai-agents/rules/*.md(N); do
     globs=(${(f)"$("$DOTPATH/script/tools/rule-paths.sh" "$rule" 2>/dev/null)"})
     ((${#globs})) || continue
 
-    # Claude Codeのglobをzshのパターンにする。`**` は0個以上のディレクトリ、`*` と `?` は `/` をまたがない
+    # Claude Codeのglobをzshのパターンにする。`**`は0個以上のディレクトリ、`*`と`?`は`/`をまたがない
     matched=0
     for glob in $globs; do
         segments=(${(s:/:)glob})

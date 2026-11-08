@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""mise の [bootstrap.macos.defaults] と、UIで変えた設定を突き合わせる。
+"""miseの[bootstrap.macos.defaults]と、UIで変えた設定を突き合わせる。
 
-report (既定): 宣言とのずれを報告する。[differs] などは宣言したキーの値が違うもの、
-    [undeclared] は宣言していないキーを表す。macOS自身のdomainは状態のキーが多いため、[undeclared] を報告しない
+report (既定): 宣言とのずれを報告する。[differs]などは宣言したキーの値が違うもの、
+    [undeclared]は宣言していないキーを表す。macOS自身のdomainは状態のキーが多いため、[undeclared]を報告しない
 snapshot: 全domainの今の設定を保存する。System Settingsなどで設定を変える前に実行する
 changes: snapshotから変わったキーを、TOMLに貼れる形で表示する
 

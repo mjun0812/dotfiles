@@ -3,7 +3,7 @@
 #
 # 編集されたファイルの受け取り方:
 #   Claude Code (Edit|Write): tool_input.file_path
-#   Codex (apply_patch|Bash): tool_input.command のpatch本文にある "*** Update File: <path>" などの行
+#   Codex (apply_patch|Bash): tool_input.commandのpatch本文にある"*** Update File: <path>"などの行
 #                             (shellのheredocでapply_patchを実行するとBashとして届き、commandにpatch本文が含まれる)
 
 set -u
@@ -17,7 +17,7 @@ if [[ -n $file_path ]]; then
     # Claude Code
     files=("$file_path")
 else
-    # Codex: patchのファイル見出しからパスを取り出す ("Move to" は移動後のパス)
+    # Codex: patchのファイル見出しからパスを取り出す ("Move to"は移動後のパス)
     patch=$(jq -r '.tool_input.command // ""' <<<"$input")
     while IFS= read -r patched_file; do
         files+=("$patched_file")

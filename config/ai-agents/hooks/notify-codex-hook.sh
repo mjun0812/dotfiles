@@ -3,21 +3,21 @@ set -euo pipefail
 
 # notify-codex-hook.sh
 #
-# Codex の hook (UserPromptSubmit / Stop / PermissionRequest) から
-# stdin で渡される JSON を読み、リポジトリ名・セッションID短縮・実メッセージを含む
-# 通知を notify.sh 経由で送出する。
+# Codexのhook (UserPromptSubmit / Stop / PermissionRequest) から
+# stdinで渡されるJSONを読み、リポジトリ名・セッションID短縮・実メッセージを含む
+# 通知をnotify.sh経由で送出する。
 #
-# Codex には Claude Code の terminalSequence に相当する hook 出力プロトコルが無いため、
-# notify.sh の自動判定 (ローカルはネイティブ通知、SSH は /dev/tty への OSC) に委ねる。
+# CodexにはClaude CodeのterminalSequenceに相当するhook出力プロトコルが無いため、
+# notify.shの自動判定 (ローカルはネイティブ通知、SSHは/dev/ttyへのOSC) に委ねる。
 #
-# hook 定義を変更すると Codex の信頼ハッシュが無効になり再承認が必要になるため、
-# 通知の条件や文言はすべてこのスクリプト側に置き、hooks.json にはパスだけを書く。
+# hook定義を変更するとCodexの信頼ハッシュが無効になり再承認が必要になるため、
+# 通知の条件や文言はすべてこのスクリプト側に置き、hooks.jsonにはパスだけを書く。
 #
 # Usage:
 #   notify-codex-hook.sh <event>
 #     event: turn_start | stop | permission
 
-# 応答がこの秒数未満で終わったターンでは stop の通知を出さない。
+# 応答がこの秒数未満で終わったターンではstopの通知を出さない。
 MIN_ELAPSED_SEC=300
 
 # mjun-orchestrateのworkerは、orchestratorがpaneにこの変数を付けて起動する。
@@ -32,7 +32,7 @@ jq_get() {
 }
 
 # 通知本文に載せるため、改行の除去・連続空白の圧縮・長さ制限を行う。
-# head -c がマルチバイト文字の途中で切った場合の壊れたバイト列は iconv -c で落とす。
+# head -cがマルチバイト文字の途中で切った場合の壊れたバイト列はiconv -cで落とす。
 sanitize() {
     printf '%s' "$1" | tr '\n' ' ' | LC_ALL=C sed 's/  */ /g; s/^ *//; s/ *$//' | head -c "$2" | iconv -f UTF-8 -t UTF-8 -c 2>/dev/null || true
 }
@@ -52,8 +52,8 @@ if [[ $SESSION_ID =~ ^[[:alnum:]_-]+$ ]]; then
     TURN_FILE="${TMPDIR:-/tmp}/codex-turn-${SESSION_ID}"
 fi
 
-# UserPromptSubmit ではターン開始時刻の記録だけを行う。
-# このイベントの stdout は追加コンテキストとして扱われるため、何も出力しない。
+# UserPromptSubmitではターン開始時刻の記録だけを行う。
+# このイベントのstdoutは追加コンテキストとして扱われるため、何も出力しない。
 if [[ $EVENT == "turn_start" ]]; then
     if [[ -n $TURN_FILE ]]; then
         date +%s >"$TURN_FILE"
@@ -63,7 +63,7 @@ fi
 
 case "$EVENT" in
 stop)
-    # 短時間で終わったターンは通知しない。開始時刻は turn_start が記録する。
+    # 短時間で終わったターンは通知しない。開始時刻はturn_startが記録する。
     # 記録が無い場合 (セッション再開直後など) は通知する。
     if [[ -n $TURN_FILE && -f $TURN_FILE ]]; then
         STARTED_AT="$(cat "$TURN_FILE")"

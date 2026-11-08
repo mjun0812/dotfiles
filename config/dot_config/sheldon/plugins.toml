@@ -1,8 +1,8 @@
 # 対話shellの初期化順序はこのファイルの並び順で決まる。
 # 順序の制約:
-#   - zsh-completions (fpath追加) は zsh-completion (compinit) より前
-#   - zsh-functions は widget を定義するので zsh-autosuggestions より前
-#   - zsh-syntax-highlighting は最後
+#   - zsh-completions (fpath追加) はzsh-completion (compinit) より前
+#   - zsh-functionsはwidgetを定義するのでzsh-autosuggestionsより前
+#   - zsh-syntax-highlightingは最後
 shell = "zsh"
 
 [templates]
@@ -38,7 +38,7 @@ export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
 hooks.post = """
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
-# enable arrow key bindings (terminfo が無い環境では skip)
+# enable arrow key bindings (terminfoが無い環境ではskip)
 [[ -n "$terminfo[kcuu1]" ]] && bindkey "$terminfo[kcuu1]" history-substring-search-up
 [[ -n "$terminfo[kcud1]" ]] && bindkey "$terminfo[kcud1]" history-substring-search-down
 # enable emacs-style keybindings

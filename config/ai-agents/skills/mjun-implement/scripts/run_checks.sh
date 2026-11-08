@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 # worktreeで検査コマンドを順に実行し、結果を要約する。同じ内容のworktreeで成功済みのコマンドは実行せず、記録を再利用する。
 # usage: run_checks.sh <worktree> <run-dir> <name> <commands-file>
-#   <commands-file>: 1行に1コマンド。worktreeのrootで `zsh -c` に渡す。空行と # で始まる行は無視する
+#   <commands-file>: 1行に1コマンド。worktreeのrootで`zsh -c`に渡す。空行と # で始まる行は無視する
 #   ログ: <run-dir>/checks/<name>/<n>.log
 #   要約: <run-dir>/checks/<name>/summary.md (標準出力にも出す)
 #   成功の記録: <run-dir>/checks/passed.tsv (指紋、コマンド、ログのパス)

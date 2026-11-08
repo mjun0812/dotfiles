@@ -56,7 +56,7 @@ repos:
         files: ^config/ai-agents/rules/.*\.md$
         pass_filenames: true
 
-      # config/dot・config/dot_config に足したものは、mise dot apply が展開するようにdotfiles.tomlにも宣言する
+      # config/dot・config/dot_configに足したものは、mise dot applyが展開するようにdotfiles.tomlにも宣言する
       - id: dotfiles-entries
         name: dotfiles entries
         entry: script/tools/check-dotfiles-entries.sh

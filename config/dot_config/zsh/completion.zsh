@@ -1,9 +1,9 @@
-# compinit と補完のzstyle。sheldonが読み込む zsh-completions (fpath追加) の後に置く。
-# tool別の補完ファイルは script/setup/update_completions.sh が ~/.config/zsh_completions/ に生成する。
+# compinitと補完のzstyle。sheldonが読み込むzsh-completions (fpath追加) の後に置く。
+# tool別の補完ファイルはscript/setup/update_completions.shが~/.config/zsh_completions/に生成する。
 [[ -d ~/.config/zsh_completions ]] && fpath=(~/.config/zsh_completions $fpath)
 
 autoload -Uz compinit
-# 24時間以内に作られた .zcompdump があれば整合性チェックを省略する
+# 24時間以内に作られた.zcompdumpがあれば整合性チェックを省略する
 if [[ -n $(print -r -- "${ZDOTDIR:-$HOME}/.zcompdump"(N.mh-24)) ]]; then
     compinit -C
 else

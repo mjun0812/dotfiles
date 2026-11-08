@@ -37,7 +37,7 @@ config/dot_config/mise/github_tokens.toml
 config/dot_config/mise/mise.lock
 config/dot_config/mise/mise.*.lock
 config/dot_config/mise/.mise/
-# ~/.config/zsh はこのディレクトリへのsymlinkなので、マシン固有のprofilesは物理的にここにできる
+# ~/.config/zshはこのディレクトリへのsymlinkなので、マシン固有のprofilesは物理的にここにできる
 config/dot_config/zsh/profiles/
 config/dot_config/uv/uv-receipt.json
 config/textlint/node_modules/

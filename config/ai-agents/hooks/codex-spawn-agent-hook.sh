@@ -2,7 +2,7 @@
 # SubAgentのmodelとreasoning effortの指定を強制するCodexのPreToolUse hook (spawn_agent)。
 # hookに届くtool名には名前空間が付く (例: collaborationspawn_agent) ため、matcherは末尾一致にする。
 # modelはLuna・Sol・Astraのいずれか (例: gpt-6.1-sol) に限り、reasoning effortはmedium以上に限る。
-# fork (fork_turnsが "none" 以外) は親の状態を引き継ぐため検査しない。
+# fork (fork_turnsが"none"以外) は親の状態を引き継ぐため検査しない。
 
 set -u
 

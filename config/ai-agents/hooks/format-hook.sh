@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 # agentが編集したファイルに、formatterと自動修正だけをかけるPostToolUse hook。
 # 自動で直らないlintエラーはagentへ返さない。
-# 編集されたファイルは edited-files.sh で取り出す。
+# 編集されたファイルはedited-files.shで取り出す。
 #
 # formatterが無い・失敗した場合もagentを止めないよう、常にexit 0で終える。
 
@@ -30,7 +30,7 @@ for file in "${files[@]}"; do
         ruff format --force-exclude --quiet "$file"
         ;;
     *.md)
-        # 全角括弧を半角に直す (ルールは config/textlint)
+        # 全角括弧を半角に直す (ルールはconfig/textlint)
         "$DOTPATH/script/tools/textlint.sh" fix --fix "$file"
         oxfmt "$file"
         ;;

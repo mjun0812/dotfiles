@@ -1,4 +1,4 @@
--- install.sh のheadless実行から呼ばれ、config/mason-servers.lua のLSP serverを同期的に事前installする
+-- install.shのheadless実行から呼ばれ、config/mason-servers.luaのLSP serverを同期的に事前installする
 -- (mason-lspconfigのensure_installedはheadlessでは動かないため、MasonInstallを直接使う)
 return function()
   require("lazy").load({ plugins = { "mason.nvim", "mason-lspconfig.nvim" } })

@@ -3,10 +3,10 @@
 # 見るもの: 保護された検査ファイルのハッシュ、Change Outlineの外のパス、足した行のTODO類、spec内部の識別子、secrets、骨組みの未実装の残り。
 # usage:
 #   check_mechanical.sh <worktree> <base> [--design <design.md>] [--exclude <paths-file>] [--protected <sha256-file>] [--final] [--out <file>]
-#   <base>: 比べる相手。groupの未commitの変更なら HEAD、branch全体なら base branch
-#   --design: Change Outlineと照らし合わせる (無ければ N/A)
+#   <base>: 比べる相手。groupの未commitの変更ならHEAD、branch全体ならbase branch
+#   --design: Change Outlineと照らし合わせる (無ければN/A)
 #   --exclude: Change Outlineとの照合から外すパス (CHECK_FILES)。1行1パス
-#   --protected: `shasum -a 256` の出力形式のファイル (worktreeのrootからのパス)
+#   --protected: `shasum -a 256`の出力形式のファイル (worktreeのrootからのパス)
 #   --final: 骨組みの未実装 (skeleton: not implemented) が残っていれば失敗にする
 #   --out: 結果を書き出すファイル (標準出力にも出す)
 # exit: 0 = 問題なし、1 = 問題あり、2 = 使い方の誤り

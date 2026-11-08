@@ -1,4 +1,4 @@
-# プロジェクト側に root = true の .editorconfig が無いときに効くglobalな既定値
+# プロジェクト側にroot = trueの.editorconfigが無いときに効くglobalな既定値
 # charset・end_of_lineはShift_JISやCRLFの既存ファイルを保存時に変換してしまうため指定しない
 root = true
 
@@ -15,7 +15,7 @@ indent_size = 2
 [*.md]
 trim_trailing_whitespace = false
 
-# shfmt -s 相当
+# shfmt -s相当
 [*.{sh,bash,zsh}]
 simplify = true
 

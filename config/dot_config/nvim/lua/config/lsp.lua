@@ -33,7 +33,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     -- Copilot等のinline completion (ghost text)
-    -- ポップアップ補完はblink.cmpが担うため vim.lsp.completion は有効化しない
+    -- ポップアップ補完はblink.cmpが担うためvim.lsp.completionは有効化しない
     if client:supports_method("textDocument/inlineCompletion") then
       vim.lsp.inline_completion.enable(true, { bufnr = buf })
       vim.keymap.set("i", "<Tab>", function()

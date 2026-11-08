@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 
-"""agentsview の Filesystem Session Sync 用に、リモートの session を rsync で手元へ取得する。
+"""agentsviewのFilesystem Session Sync用に、リモートのsessionをrsyncで手元へ取得する。
 
-aliases.zsh の agentsview() が `agentsview serve` の前に実行する。
+aliases.zshのagentsview() が`agentsview serve`の前に実行する。
 
-取得するホストと agent は ~/.agentsview/remotes.toml (git管理外) に書く。
-このファイルが無ければ templates/agentsview_remotes.toml の placeholder をコピーし、あれば上書きしない。
-agentsview は config.toml を書き換えるときにコメントを消すため、ホストの定義は別ファイルに置く。
+取得するホストとagentは~/.agentsview/remotes.toml (git管理外) に書く。
+このファイルが無ければtemplates/agentsview_remotes.tomlのplaceholderをコピーし、あれば上書きしない。
+agentsviewはconfig.tomlを書き換えるときにコメントを消すため、ホストの定義は別ファイルに置く。
 
     [devbox1]
     agents = ["claude", "codex"]
 
-テーブル名を ssh の接続先として扱い、agent ごとに決まったリモートのパスを
-~/.agentsview/remote/<host>/<agent> へ同期する。config.toml に同じ host と agent の
-[[session_sources]] が無ければ末尾へ追記し、あればその dir へ同期する。
-接続できない host は警告を出して飛ばす。
+テーブル名をsshの接続先として扱い、agentごとに決まったリモートのパスを
+~/.agentsview/remote/<host>/<agent>へ同期する。config.tomlに同じhostとagentの
+[[session_sources]]が無ければ末尾へ追記し、あればそのdirへ同期する。
+接続できないhostは警告を出して飛ばす。
 """
 
 from __future__ import annotations
@@ -29,11 +29,11 @@ from pathlib import Path
 
 TEMPLATE = Path(__file__).resolve().parents[2] / "templates" / "agentsview_remotes.toml"
 
-# agent ごとの、リモートの home からのパスと rsync の filter
+# agentごとの、リモートのhomeからのパスとrsyncのfilter
 REMOTE_SOURCES: dict[str, tuple[str, list[str]]] = {
     "claude": (".claude/projects/", []),
     "codex": (".codex/sessions/", []),
-    # ~/.gemini には認証情報もあるため、agentsview が読む session と project 対応表だけを取る
+    # ~/.geminiには認証情報もあるため、agentsviewが読むsessionとproject対応表だけを取る
     "gemini": (
         ".gemini/",
         [
@@ -46,7 +46,7 @@ REMOTE_SOURCES: dict[str, tuple[str, list[str]]] = {
             "--exclude=*",
         ],
     ),
-    # 認証トークンや実行ファイルを除き、agentsview が読む会話と project 対応表だけを取る
+    # 認証トークンや実行ファイルを除き、agentsviewが読む会話とproject対応表だけを取る
     "antigravity-cli": (
         ".gemini/antigravity-cli/",
         [
@@ -59,7 +59,7 @@ REMOTE_SOURCES: dict[str, tuple[str, list[str]]] = {
             "--exclude=*",
         ],
     ),
-    # auth.json や snapshot を除き、session の SQLite と旧形式の storage だけを取る
+    # auth.jsonやsnapshotを除き、sessionのSQLiteと旧形式のstorageだけを取る
     "opencode": (
         ".local/share/opencode/",
         [
@@ -78,7 +78,7 @@ REMOTE_SOURCES: dict[str, tuple[str, list[str]]] = {
 
 
 def main() -> None:
-    """remotes.toml のホストから session を rsync で取得し、config.toml へ取得先を登録する。"""
+    """remotes.tomlのホストからsessionをrsyncで取得し、config.tomlへ取得先を登録する。"""
     data_dir = Path(os.environ.get("AGENTSVIEW_DATA_DIR", Path.home() / ".agentsview"))
     remotes_file = data_dir / "remotes.toml"
     if not remotes_file.exists():
@@ -114,7 +114,7 @@ def main() -> None:
             targets.append((host, agent, dest))
 
     if new_sources:
-        # agentsview は既存の config.toml の権限を変えずに cursor_secret などを書き込む
+        # agentsviewは既存のconfig.tomlの権限を変えずにcursor_secretなどを書き込む
         config.touch(mode=0o600, exist_ok=True)
         with config.open("a") as f:
             for host, agent, dest in new_sources:

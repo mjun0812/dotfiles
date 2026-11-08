@@ -4,7 +4,7 @@
 "github:eza-community/eza" = "latest"
 "conda:tree-sitter-cli" = "latest"
 "pypi:apm-cli" = { version = "latest" }
-# headroom-ai は Python >= 3.10 を要求するが、uv は system の python3 (Rocky 9 では 3.9) を優先するため Python 要件を明示する
+# headroom-aiはPython >= 3.10を要求するが、uvはsystemのpython3 (Rocky 9では3.9) を優先するためPython要件を明示する
 "pypi:headroom-ai" = { version = "latest", extras = "proxy,code", postinstall = '''
     systemctl --user restart dev.mise.headroom-proxy.service 2>/dev/null || true
 ''' }
@@ -13,8 +13,8 @@
 ''' }
 "aqua:imagemagick" = "latest"
 
-# Playwriter の拡張機能入りブラウザを ~/.playwriter/browser-profile で常駐させる。
-# 画面が無ければ headless で起動する
+# Playwriterの拡張機能入りブラウザを~/.playwriter/browser-profileで常駐させる。
+# 画面が無ければheadlessで起動する
 [bootstrap.services.playwriter-browser]
 scope = "user"
 description = "Start the Playwriter browser"

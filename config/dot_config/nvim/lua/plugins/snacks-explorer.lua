@@ -1,18 +1,18 @@
--- snacks.nvim の explorer を、以前使っていた fern.vim と同じ操作体系で使うための設定。
--- snacks.lua の opts に lazy.nvim がマージするので、ここでは explorer 関連だけを書く。
+-- snacks.nvimのexplorerを、以前使っていたfern.vimと同じ操作体系で使うための設定。
+-- snacks.luaのoptsにlazy.nvimがマージするので、ここではexplorer関連だけを書く。
 
--- git dir -> fs_event。Neovim を終えるまで同じ worktree を二重に監視しない
+-- git dir -> fs_event。Neovimを終えるまで同じworktreeを二重に監視しない
 local worktree_watches = {}
 
 return {
   "folke/snacks.nvim",
   init = function()
-    -- dotfile のファイル名は灰色 (NonText) にせず通常色にする。gitignore 対象は灰色のまま
+    -- dotfileのファイル名は灰色 (NonText) にせず通常色にする。gitignore対象は灰色のまま
     vim.api.nvim_set_hl(0, "SnacksPickerPathHidden", { link = "SnacksPickerFile" })
 
-    -- snacks は git status を最大15分使い回し、.git/index の変化を見たときだけ読み直す。
-    -- 監視が通知を取りこぼすことがあるので、Neovim に戻ったときにも読み直させる。
-    -- herdr は同じ tab の中で pane を移ったときだけ FocusGained を送り、tab の切り替えでは送らない
+    -- snacksはgit statusを最大15分使い回し、.git/indexの変化を見たときだけ読み直す。
+    -- 監視が通知を取りこぼすことがあるので、Neovimに戻ったときにも読み直させる。
+    -- herdrは同じtabの中でpaneを移ったときだけFocusGainedを送り、tabの切り替えでは送らない
     vim.api.nvim_create_autocmd("FocusGained", {
       callback = function()
         local pickers = Snacks.picker.get({ source = "explorer", tab = false })
@@ -52,8 +52,8 @@ return {
     })
   end,
   keys = {
-    -- <C-e> で drawer を toggle (fern の :Fern . -reveal=% -drawer -toggle 相当。
-    -- follow_file により開いたときに現在のファイルへ移動する)
+    -- <C-e>でdrawerをtoggle (fernの :Fern . -reveal=% -drawer -toggle相当。
+    -- follow_fileにより開いたときに現在のファイルへ移動する)
     {
       "<C-e>",
       function()
@@ -65,26 +65,26 @@ return {
   opts = {
     explorer = {
       enabled = true,
-      -- fern の D (trash) と同じくシステムのゴミ箱へ送る
+      -- fernのD (trash) と同じくシステムのゴミ箱へ送る
       trash = true,
     },
     picker = {
       sources = {
         explorer = {
-          -- fern#default_hidden = true 相当。dotfile と gitignore 対象を表示する
+          -- fern#default_hidden = true相当。dotfileとgitignore対象を表示する
           hidden = true,
           ignored = true,
-          -- 検索の入力欄は普段隠し、/ を押したときだけ出す。幅は fern の drawer_width と同じ 30 列
+          -- 検索の入力欄は普段隠し、/を押したときだけ出す。幅はfernのdrawer_widthと同じ30列
           layout = { hidden = { "input" }, layout = { width = 30 } },
-          -- git 未追跡のファイル名は通常色にし、右端の ? アイコンだけで区別する。
-          -- (git_status_hl はファイル名に git status の色を乗せるかのフラグ。未追跡のときだけ切ることで、
-          -- 変更ありなど他の git status の色付けとアイコンの色は維持される)
+          -- git未追跡のファイル名は通常色にし、右端の?アイコンだけで区別する。
+          -- (git_status_hlはファイル名にgit statusの色を乗せるかのフラグ。未追跡のときだけ切ることで、
+          -- 変更ありなど他のgit statusの色付けとアイコンの色は維持される)
           format = function(item, picker)
             picker.opts.formatters.file.git_status_hl = item.status ~= "??"
             return Snacks.picker.format.file(item, picker)
           end,
           actions = {
-            -- fern の open-or-enter: ファイルなら開く、ディレクトリなら root にする
+            -- fernのopen-or-enter: ファイルなら開く、ディレクトリならrootにする
             open_or_enter = function(picker, item)
               if item and item.dir then
                 picker:action("explorer_focus")
@@ -92,38 +92,38 @@ return {
                 picker:action("confirm")
               end
             end,
-            -- fern の reveal: 編集中のファイルの位置までツリーを開く
+            -- fernのreveal: 編集中のファイルの位置までツリーを開く
             reveal = function(picker)
               local file = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(picker.main))
               if file ~= "" then
                 require("snacks.explorer.actions").update(picker, { target = file })
               end
             end,
-            -- fern の mark: カーソル行の選択を toggle (移動しない)
+            -- fernのmark: カーソル行の選択をtoggle (移動しない)
             mark = function(picker)
               picker.list:select()
             end,
-            -- fern の <C-k> (k してから mark)
+            -- fernの<C-k> (kしてからmark)
             mark_up = function(picker)
               picker.list:move(-1)
               picker.list:select()
             end,
-            -- 検索をやめる: ツリーを復元してから input を隠し、list に戻る
-            -- (explorer_update は input のバッファに触るので、隠す前に実行する)
+            -- 検索をやめる: ツリーを復元してからinputを隠し、listに戻る
+            -- (explorer_updateはinputのバッファに触るので、隠す前に実行する)
             search_leave = function(picker)
               picker:action("explorer_update")
               picker:toggle("input", { enable = false, focus = "list" })
             end,
-            -- input を隠す。フォーカスは現在の window のまま (reveal 後は list、open 後は main)
+            -- inputを隠す。フォーカスは現在のwindowのまま (reveal後はlist、open後はmain)
             hide_input = function(picker)
               picker:toggle("input", { enable = false })
             end,
           },
-          -- fern#hide_cursor 相当: list にいる間はカーソルを透明にして cursorline だけ見せる
-          -- (win.list.on_win は snacks の list 実装が上書きするので picker の on_show を使う)
+          -- fern#hide_cursor相当: listにいる間はカーソルを透明にしてcursorlineだけ見せる
+          -- (win.list.on_winはsnacksのlist実装が上書きするのでpickerのon_showを使う)
           on_show = function(picker)
-            -- git worktree では .git が gitdir を指すファイルになり、snacks の .git 監視では index の変化に気づけない。
-            -- 本当の git dir (.git/worktrees/<名前>) の index を監視して、commit などで git status を読み直させる
+            -- git worktreeでは.gitがgitdirを指すファイルになり、snacksの.git監視ではindexの変化に気づけない。
+            -- 本当のgit dir (.git/worktrees/<名前>) のindexを監視して、commitなどでgit statusを読み直させる
             local root = Snacks.git.get_root(picker:cwd())
             if root and vim.fn.filereadable(root .. "/.git") == 1 then
               local git_dir = vim.trim(vim.fn.system({ "git", "-C", root, "rev-parse", "--absolute-git-dir" }))
@@ -158,8 +158,8 @@ return {
               hide()
             end
 
-            -- fern の hover popup 相当: 幅に収まらない行にカーソルが乗ったら、
-            -- 行のテキストと extmark (右寄せの git status は除く) を複製した 1 行の float を重ねて全文を見せる
+            -- fernのhover popup相当: 幅に収まらない行にカーソルが乗ったら、
+            -- 行のテキストとextmark (右寄せのgit statusは除く) を複製した1行のfloatを重ねて全文を見せる
             local ns = vim.api.nvim_create_namespace("my.snacks.explorer.hover")
             local hover_win
             local function hover_hide()
@@ -211,15 +211,15 @@ return {
           win = {
             input = {
               keys = {
-                -- <Esc> は explorer を閉じるのではなく検索をやめる
+                -- <Esc>はexplorerを閉じるのではなく検索をやめる
                 ["<Esc>"] = "search_leave",
-                -- 検索中の <CR> は該当ファイルをツリー内で表示 (reveal) してから input を隠す
+                -- 検索中の<CR>は該当ファイルをツリー内で表示 (reveal) してからinputを隠す
                 ["<CR>"] = { { "confirm", "hide_input" }, mode = { "n", "i" } },
               },
             },
             list = {
               keys = {
-                -- 移動・展開 (l / h / <BS> は snacks のデフォルトと同じ)
+                -- 移動・展開 (l / h / <BS>はsnacksのデフォルトと同じ)
                 ["<CR>"] = "open_or_enter",
                 ["<C-h>"] = "explorer_up",
                 ["i"] = "reveal",
@@ -235,7 +235,7 @@ return {
                 ["<C-j>"] = "select_and_next",
                 ["<C-k>"] = "mark_up",
                 -- ファイル操作
-                -- N / K はどちらも同じ prompt。末尾に "/" を付けるとディレクトリになる
+                -- N / Kはどちらも同じprompt。末尾に"/"を付けるとディレクトリになる
                 ["N"] = "explorer_add",
                 ["K"] = "explorer_add",
                 ["D"] = "explorer_del",

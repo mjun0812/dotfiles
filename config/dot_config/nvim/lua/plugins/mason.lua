@@ -4,7 +4,7 @@ return {
     build = ":MasonUpdate",
     cmd = { "Mason", "MasonUpdate", "MasonLog", "MasonInstall", "MasonUninstall", "MasonUninstallAll" },
     config = function()
-      -- ~/.npmrc の min-release-age=7 はmasonがpinする新しいLSP server
+      -- ~/.npmrcのmin-release-age=7はmasonがpinする新しいLSP server
       -- (copilot-language-server等) のinstallをブロックするため、mason経由のnpm installでは無効化する
       vim.env.npm_config_min_release_age = "0"
       require("mason").setup()
