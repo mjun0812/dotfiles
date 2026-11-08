@@ -126,7 +126,6 @@ apm update -g
 | jq              | JSON processor                                        |
 | kubectl         | Kubernetes CLI                                        |
 | mactop          | Apple Silicon monitor (macOS)                         |
-| md-to-pdf       | Markdown to PDF converter                             |
 | mermaid-cli     | Mermaid diagram renderer (`mmdc`)                     |
 | ninja           | Build system                                          |
 | nvitop          | NVIDIA GPU process viewer                             |

@@ -111,7 +111,7 @@ script/tools/sync_vscode_extensions.sh --dry-run
   - 他人が作成したIssueの本文を `gh issue edit --body` / `--body-file` で書き換える呼び出しを拒否する。追記や提案はコメントで行わせる。題名・label・assigneeの変更と、botが作成したIssueは通す。
   - 本文にreport側の設定でtextlintをかけ、指摘があれば一度だけ止める。誤検知で先へ進めなくならないように、同じ本文での再実行は通す。300バイト(日本語でおよそ100文字)未満の本文にはtextlintをかけない。`$(...)` や `--body-file -` で渡す本文はhookから展開結果が見えないので、ファイルに書いて `--body-file` で渡させる。
 - textlintの導入・更新手順とBun backendへの依存は `config/textlint/README.md` に記載する。ルールは `bun_args` の固定版を明示的に変更する。旧 `package.json` / `bun.lock` は使わず、推移依存の完全固定は行わない。
-- `templates/` にはMarkdownのPDF出力用CSSと設定、agentsviewのリモートホスト定義(`~/.agentsview/remotes.toml`)のplaceholderがある。PDF用ファイルはVS Codeの設定と `md-to-pdf` のaliasから参照される。commit・PR・Issue・レビュー用テンプレートは各skillに同梱される。
+- `templates/` には、VS CodeのMarkdown PDF拡張が使うCSS(`github-markdown.css`)と、agentsviewのリモートホスト定義(`~/.agentsview/remotes.toml`)のplaceholderがある。CSSはVS Codeの設定から参照される。commit・PR・Issue・レビュー用テンプレートは各skillに同梱される。
 
 ## 規約
 

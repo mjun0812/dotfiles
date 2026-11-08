@@ -24,7 +24,6 @@ alias rsync='noglob rsync'
 alias scp='noglob scp'
 
 alias sync="~/workspace/sync.sh"
-alias md-to-pdf="md-to-pdf --config-file ~/.dotfiles/templates/md-to-pdf.json --stylesheet ~/.dotfiles/templates/md-to-pdf.css"
 alias nvs="nvidia-smi | grep -v Xorg | grep -v gnome"
 
 # Editors
