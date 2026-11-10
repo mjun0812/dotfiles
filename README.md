@@ -185,7 +185,6 @@ Details of configuration and keyboard shortcuts are documented in [doc/macOS.md]
 | Claude             | Anthropic desktop client          |
 | Clipy              | Clipboard manager                 |
 | CodexBar           | Menu bar usage monitor for agents |
-| DeepL              | Translator                        |
 | Discord            | Chat                              |
 | draw.io            | Diagram editor                    |
 | Ghostty            | Terminal emulator                 |

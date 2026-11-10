@@ -31,14 +31,13 @@ Rift numbers workspaces from 0 internally, so its config refers to workspace 1 a
 
 The following apps open in floating mode by default:
 
-| App                | Bundle ID                       |
-| ------------------ | ------------------------------- |
-| Finder             | com.apple.finder                |
-| LINE               | jp.naver.line.mac               |
-| Mattermost         | Mattermost.Desktop              |
-| DeepL              | com.linguee.DeepLCopyTranslator |
-| Nani               | jp.kiok.nani                    |
-| System Preferences | com.apple.systempreferences     |
+| App                | Bundle ID                   |
+| ------------------ | --------------------------- |
+| Finder             | com.apple.finder            |
+| LINE               | jp.naver.line.mac           |
+| Mattermost         | Mattermost.Desktop          |
+| Nani               | jp.kiok.nani                |
+| System Preferences | com.apple.systempreferences |
 
 Ghostty (`com.mitchellh.ghostty`) is set to tiling explicitly.
 
