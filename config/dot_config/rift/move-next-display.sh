@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # Move the focused window to the next managed display, then focus it.
-# Rift v0.7.1 CLI. Cycle by macOS X coordinate, then Y, then UUID.
+# Rift v0.8.1 CLI. Cycle by macOS X coordinate, then Y, then UUID.
 set -euo pipefail
 export PATH="${PATH:-/usr/bin:/bin}:/opt/homebrew/bin:/usr/local/bin"
 

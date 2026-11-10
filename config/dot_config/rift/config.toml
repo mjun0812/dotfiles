@@ -1,7 +1,7 @@
 [settings]
 animate = true
 animation_duration = 0.15
-# 0.0にするとRift 0.7.2は起動時に落ちる (animate = falseでも1.0 / animation_fpsを計算する)
+# 0.0にするとRift 0.8.1は起動時に落ちる (animate = falseでも1.0 / animation_fpsを計算する)
 animation_fps = 100.0
 focus_follows_mouse = false
 mouse_follows_focus = false
