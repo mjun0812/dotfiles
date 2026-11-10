@@ -4,6 +4,7 @@
 
 ### not ignore ###
 !README.md
+!AGENTS.md
 !CLAUDE.md
 !install.sh
 !update.sh
