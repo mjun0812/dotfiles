@@ -196,7 +196,6 @@ Details of configuration and keyboard shortcuts are documented in [doc/macOS.md]
 | KeyCastr           | Keystroke visualizer              |
 | MacTeX (no GUI)    | LaTeX distribution                |
 | Miraktest          | Mirakurun TV client               |
-| Nani               | Translator                        |
 | Notion             | Notes and knowledge base          |
 | Obsidian           | Markdown knowledge base           |
 | Ollama             | Local LLM runtime                 |
