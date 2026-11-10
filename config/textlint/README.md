@@ -50,6 +50,14 @@ running textlint, matching them by their resolved real path so symlinks such as
 Changing the package-manager backend also requires adapting the wrapper's
 `bin/textlint` and `node_modules` paths and the installation arguments.
 
+## Rule placement
+
+Put a rule that `--fix` can correct in `textlintrc.fix.json`, and a rule it cannot
+correct in `textlintrc.report.json`. Spacing rules are the exception: they stay in
+the report profile even though they are fixable. The fix profile rewrites the whole
+file, so a spacing rule there would also change existing lines in other
+repositories' documents.
+
 ## Update
 
 ```sh
