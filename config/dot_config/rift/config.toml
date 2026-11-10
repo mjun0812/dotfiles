@@ -81,7 +81,6 @@ app_rules = [
   { app_id = "com.apple.finder", floating = true },
   { app_id = "jp.naver.line.mac", floating = true },
   { app_id = "Mattermost.Desktop", floating = true },
-  { app_id = "com.linguee.DeepLCopyTranslator", floating = true },
   { app_id = "jp.kiok.nani", floating = true },
   { app_id = "com.apple.systempreferences", floating = true },
   { app_id = "com.mitchellh.ghostty", floating = false },
