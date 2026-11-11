@@ -149,7 +149,7 @@ jobs:
             exit 1
           fi
           # MCP servers come from dependencies.mcp in apm.yml (written by apm, not symlinked)
-          for s in chrome-devtools context7 drawio; do
+          for s in chrome-devtools drawio; do
             if grep -q "\"$s\"" "$home/.claude.json" && grep -q "^\[mcp_servers\.$s\]" "$home/.codex/config.toml"; then
               echo "✓ MCP server $s is configured"
             else
