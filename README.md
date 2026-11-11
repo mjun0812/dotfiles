@@ -159,12 +159,14 @@ apm update -g
 
 ### AI Agents
 
-| Name            | Description                           |
-| --------------- | ------------------------------------- |
-| Claude Code     | AI agent for daily use                |
-| Codex           | AI agent for daily use                |
-| Antigravity-cli | AI agent for generate commit messages |
-| OpenCode        | AI agent for code                     |
+| Name             | Description                            |
+| ---------------- | -------------------------------------- |
+| Claude Code      | AI agent for daily use                 |
+| Codex            | AI agent for daily use                 |
+| Antigravity-cli  | AI agent for generate commit messages  |
+| OpenCode         | AI agent for code                      |
+| Pi               | Minimal terminal coding harness        |
+| DeepSeek Harness | Plugin-based agent harness by DeepSeek |
 
 Agent skills (shared across Claude Code / Codex / Gemini / Antigravity) are documented in [doc/skills.md](doc/skills.md).
 

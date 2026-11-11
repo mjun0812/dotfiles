@@ -88,6 +88,9 @@ ln -sfn bin/codex "$MISE_TOOL_INSTALL_PATH/codex"
 "$HOME"/.dotfiles/script/setup/setup_codex_daemon.sh pin
 ''' }
 "aqua:google-antigravity/antigravity-cli" = { version = "latest", minimum_release_age = "0s" }
+"aqua:earendil-works/pi" = "latest"
+# developer previewでrc版しか公開されていないので、prereleaseを対象に含める
+"npm:@deepseek-ai/dsh" = { version = "latest", prerelease = true }
 "github:kenn-io/agentsview" = "latest"
 
 # Python CLI tools
