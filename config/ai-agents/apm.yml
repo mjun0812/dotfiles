@@ -61,12 +61,6 @@ dependencies:
       command: bunx
       args: ["chrome-devtools-mcp@latest"]
       startup_timeout_sec: 120
-    - name: context7
-      registry: false
-      transport: stdio
-      command: bunx
-      args: ["@upstash/context7-mcp@latest"]
-      startup_timeout_sec: 120
     - name: drawio
       registry: false
       transport: stdio
