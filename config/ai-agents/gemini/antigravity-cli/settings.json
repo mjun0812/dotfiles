@@ -1,12 +1,5 @@
 {
-  "general": {
-    "enableAutoUpdate": false
-  },
   "allowNonWorkspaceAccess": true,
   "colorScheme": "tokyo night",
-  "trustedWorkspaces": ["/Users/mjun/.dotfiles", "/home/mjun/.dotfiles"],
-  "ui": {
-    "inlineThinkingMode": "full"
-  },
-  "enableTelemetry": false
+  "verbosity": "high"
 }

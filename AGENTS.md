@@ -46,6 +46,7 @@ Claude Code・Codex・Geminiの設定は `config/ai-agents/` にまとめてい�
 - `rules/*.md` はClaude CodeとCodexが共有するので、frontmatterは両方が読める書式に限る。書式は `script/tools/rule-paths.sh` が定義し、prekが確かめる。
 - hookのscriptは `hooks/` に置き、`claude/settings.json` と `codex/hooks.json` から呼ぶ。Codexのhook定義を変えると、TUIの `/hooks` で再承認が必要になる。
 - `codex/config.toml` はsymlinkせず、テンプレートにあるキーだけを `~/.codex/config.toml` へマージする。Codexが書き込むローカル状態を残すためである。キーの削除はできない。`[projects]` のようなローカル状態のテーブルと、apmが書き込む `[mcp_servers.*]` はテンプレートに書かない。
+- `gemini/antigravity-cli/settings.json` も同じ方式でマージする。Antigravity CLIが起動のたびにファイルを書き直すためである。CLIが書き足す `trustedWorkspaces` はテンプレートに書かない。
 
 ## zsh
 

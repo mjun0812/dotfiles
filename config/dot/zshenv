@@ -27,6 +27,9 @@ export EZA_CONFIG_DIR="$HOME/.config/eza"
 # GCLOUD SDKの自動アップデートを無効化する
 export CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1
 
+# Antigravity CLIの自動アップデートを無効化する (miseの管理するバイナリを書き換えるため)。値はtrueだけが有効で、1は無視される
+export AGY_CLI_DISABLE_AUTO_UPDATE=true
+
 # agentsviewのテレメトリを無効化する
 export AGENTSVIEW_TELEMETRY_ENABLED=0
 

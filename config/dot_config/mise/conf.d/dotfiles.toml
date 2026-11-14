@@ -39,6 +39,8 @@
 
 # Codexが書き足すローカル状態 ([projects.*]や[hooks.state]) を残し、テンプレートのキーだけを書き込む
 "~/.codex/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex/config.toml", merge = true }
+# Antigravity CLIは起動のたびにファイルを書き直し、trustedWorkspacesを書き足すので、symlinkにできない
+"~/.gemini/antigravity-cli/settings.json/dotfiles" = { source = "~/.dotfiles/config/ai-agents/gemini/antigravity-cli/settings.json", merge = true }
 
 # agent向け。AGENTS_global.mdはCodexとGeminiが同じファイルを読む
 "~/.apm/apm.yml" = "~/.dotfiles/config/ai-agents/apm.yml"
@@ -51,7 +53,6 @@
 "~/.codex/hooks.json" = "~/.dotfiles/config/ai-agents/codex/hooks.json"
 "~/.codex/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
 "~/.gemini/GEMINI.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
-"~/.gemini/antigravity-cli/settings.json" = "~/.dotfiles/config/ai-agents/gemini/antigravity-cli/settings.json"
 "~/.textlintrc.js" = "~/.dotfiles/config/textlint/textlintrc.js"
 
 [dotfiles.vscode-settings]
