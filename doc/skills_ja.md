@@ -2,6 +2,10 @@
 
 このドキュメントは、本リポジトリから使うAI agent skillと、それらの依存関係について説明します。skillの供給元は2つあります。
 
+私用skill(`mjun-*`)は [`config/ai-agents/skills/`](../config/ai-agents/skills) に置きます。
+[`conf.d/dotfiles.toml`](../config/dot_config/mise/conf.d/dotfiles.toml) にsymlinkを宣言し、`mise dot apply` で次の場所へ展開します。
+`install.sh` もこのコマンドを実行します。
+
 - `~/.agents/skills/<skill>` — 共有skillディレクトリ (Codexはこのディレクトリを直接読む)
 - `~/.claude/skills/<skill>` — Claude Code
 - `~/.gemini/antigravity-cli/skills/<skill>` — Antigravity CLI

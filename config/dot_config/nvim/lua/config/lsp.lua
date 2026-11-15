@@ -8,8 +8,7 @@ vim.lsp.config("lua_ls", {
   },
 })
 
--- miseで入れたserverを有効化する (masonで入れたserverはmason-lspconfigが自動で有効化する)
-vim.lsp.enable(require("config.mise-servers"))
+vim.lsp.enable(vim.tbl_keys(require("config.mise-servers")))
 
 -- 言語サーバーがアタッチされた時に呼ばれる
 vim.api.nvim_create_autocmd("LspAttach", {

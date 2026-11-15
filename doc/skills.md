@@ -2,7 +2,8 @@
 
 This document describes the AI agent skills used from this repository and how they depend on each other. Skills come from two sources.
 
-Private skills (`mjun-*`) live under [`config/ai-agents/skills/`](../config/ai-agents/skills) and are deployed by `install.sh` as symlinks into:
+Private skills (`mjun-*`) live under [`config/ai-agents/skills/`](../config/ai-agents/skills).
+Their symlinks are declared in [`conf.d/dotfiles.toml`](../config/dot_config/mise/conf.d/dotfiles.toml) and deployed by `mise dot apply`, which `install.sh` runs, into:
 
 - `~/.agents/skills/<skill>` — shared skills directory (Codex reads this directory directly)
 - `~/.claude/skills/<skill>` — Claude Code

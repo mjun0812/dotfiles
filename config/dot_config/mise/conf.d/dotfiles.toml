@@ -59,6 +59,37 @@
 "~/.gemini/GEMINI.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
 "~/.textlintrc.js" = "~/.dotfiles/config/textlint/textlintrc.js"
 
+# APMと展開先を共有するため、私用skillのディレクトリだけをlinkする
+"~/.agents/skills/mjun-grilling" = "~/.dotfiles/config/ai-agents/skills/mjun-grilling"
+"~/.agents/skills/mjun-implement" = "~/.dotfiles/config/ai-agents/skills/mjun-implement"
+"~/.agents/skills/mjun-orchestrate" = "~/.dotfiles/config/ai-agents/skills/mjun-orchestrate"
+"~/.agents/skills/mjun-rule-lint" = "~/.dotfiles/config/ai-agents/skills/mjun-rule-lint"
+"~/.agents/skills/mjun-spec-review" = "~/.dotfiles/config/ai-agents/skills/mjun-spec-review"
+"~/.agents/skills/mjun-specify" = "~/.dotfiles/config/ai-agents/skills/mjun-specify"
+"~/.agents/skills/mjun-start" = "~/.dotfiles/config/ai-agents/skills/mjun-start"
+"~/.agents/skills/mjun-steering" = "~/.dotfiles/config/ai-agents/skills/mjun-steering"
+"~/.agents/skills/mjun-to-tasks" = "~/.dotfiles/config/ai-agents/skills/mjun-to-tasks"
+
+"~/.claude/skills/mjun-grilling" = "~/.dotfiles/config/ai-agents/skills/mjun-grilling"
+"~/.claude/skills/mjun-implement" = "~/.dotfiles/config/ai-agents/skills/mjun-implement"
+"~/.claude/skills/mjun-orchestrate" = "~/.dotfiles/config/ai-agents/skills/mjun-orchestrate"
+"~/.claude/skills/mjun-rule-lint" = "~/.dotfiles/config/ai-agents/skills/mjun-rule-lint"
+"~/.claude/skills/mjun-spec-review" = "~/.dotfiles/config/ai-agents/skills/mjun-spec-review"
+"~/.claude/skills/mjun-specify" = "~/.dotfiles/config/ai-agents/skills/mjun-specify"
+"~/.claude/skills/mjun-start" = "~/.dotfiles/config/ai-agents/skills/mjun-start"
+"~/.claude/skills/mjun-steering" = "~/.dotfiles/config/ai-agents/skills/mjun-steering"
+"~/.claude/skills/mjun-to-tasks" = "~/.dotfiles/config/ai-agents/skills/mjun-to-tasks"
+
+"~/.gemini/antigravity-cli/skills/mjun-grilling" = "~/.dotfiles/config/ai-agents/skills/mjun-grilling"
+"~/.gemini/antigravity-cli/skills/mjun-implement" = "~/.dotfiles/config/ai-agents/skills/mjun-implement"
+"~/.gemini/antigravity-cli/skills/mjun-orchestrate" = "~/.dotfiles/config/ai-agents/skills/mjun-orchestrate"
+"~/.gemini/antigravity-cli/skills/mjun-rule-lint" = "~/.dotfiles/config/ai-agents/skills/mjun-rule-lint"
+"~/.gemini/antigravity-cli/skills/mjun-spec-review" = "~/.dotfiles/config/ai-agents/skills/mjun-spec-review"
+"~/.gemini/antigravity-cli/skills/mjun-specify" = "~/.dotfiles/config/ai-agents/skills/mjun-specify"
+"~/.gemini/antigravity-cli/skills/mjun-start" = "~/.dotfiles/config/ai-agents/skills/mjun-start"
+"~/.gemini/antigravity-cli/skills/mjun-steering" = "~/.dotfiles/config/ai-agents/skills/mjun-steering"
+"~/.gemini/antigravity-cli/skills/mjun-to-tasks" = "~/.dotfiles/config/ai-agents/skills/mjun-to-tasks"
+
 [dotfiles.vscode-settings]
 source = "~/.dotfiles/config/vscode/settings.json"
 variants = [

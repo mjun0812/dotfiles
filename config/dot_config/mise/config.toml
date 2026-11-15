@@ -37,6 +37,7 @@ herdr = { version = "latest", minimum_release_age = "0s", postinstall = '"$HOME"
 hyperfine = "latest"
 jactionlint = { version = "latest", minimum_release_age = "0s" }
 kubectl = "latest"
+lua-language-server = "latest"
 ninja = "latest"
 stylua = "latest"
 prek = "latest"
@@ -55,6 +56,7 @@ ty = "latest"
 "github:jupyter-ai-contrib/nb-cli" = { version = "latest", bin = "nb" }
 
 # npm packages
+"npm:@github/copilot-language-server" = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
 "npm:neovim" = "latest"
 "npm:oxfmt" = "latest"

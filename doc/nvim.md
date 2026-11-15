@@ -17,8 +17,6 @@ The configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) as the pl
 | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)                                   | Git signs in gutter                                 |
 | [trouble.nvim](https://github.com/folke/trouble.nvim)                                         | Diagnostics and quickfix list                       |
 | [which-key.nvim](https://github.com/folke/which-key.nvim)                                     | Keybinding help                                     |
-| [mason.nvim](https://github.com/mason-org/mason.nvim)                                         | LSP server installation                             |
-| [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim)                     | Bridge between Mason and nvim-lspconfig             |
 | [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)                                    | LSP server configuration                            |
 | [conform.nvim](https://github.com/stevearc/conform.nvim)                                      | Formatter                                           |
 | [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)                         | Syntax highlighting                                 |
@@ -116,11 +114,11 @@ Preset: `enter`
 Formatting on save is handled by conform.nvim (`lua/plugins/conform.lua`): the formatter configured for the
 filetype (e.g. `shfmt`, `oxfmt`) runs first, and LSP formatting is used as a fallback.
 
-GitHub Copilot is not a plugin here: the `copilot` language server is installed through Mason
-(`lua/config/mason-servers.lua`) and its suggestions are shown as ghost text via `vim.lsp.inline_completion`.
+GitHub Copilot is not a plugin here: mise installs `npm:@github/copilot-language-server`,
+and its suggestions are shown as ghost text via `vim.lsp.inline_completion`.
 
-Language servers that are also used from the shell or pre-commit (`oxfmt`, `ruff`, `taplo`, `ty`) are installed by mise
-instead of Mason and enabled from `lua/config/mise-servers.lua`, so Neovim runs the same versions as the shell.
+All language servers are installed by mise
+and enabled from `lua/config/mise-servers.lua`, so Neovim runs the same versions as the shell.
 
 ### Markdown Images and Mermaid (image.nvim / diagram.nvim)
 
@@ -154,6 +152,5 @@ Images and Mermaid blocks in Markdown are shown in a popup when the cursor rests
 | ------------------------------------------ | ------------------------------------------------------------------------------------ |
 | `:T [args]`                                | Open terminal at bottom with height 20                                               |
 | `:Trouble`                                 | Open Trouble diagnostics                                                             |
-| `:Mason`                                   | Open Mason (LSP server management)                                                   |
 | `:Lazy`                                    | Open lazy.nvim plugin manager                                                        |
 | `:LspCopilotSignIn` / `:LspCopilotSignOut` | Sign in to / out of GitHub Copilot (available once the `copilot` server is attached) |

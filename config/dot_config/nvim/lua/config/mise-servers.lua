@@ -1,9 +1,10 @@
--- miseで入れたtoolを起動するLSP serverの一覧 (lspconfig名。実行ファイル名と同じ)
--- masonで入れるとnvimの中だけmason版が使われ、シェルやpre-commitとバージョンがずれるため、miseに揃える
+-- miseで入れるLSP serverのlspconfig名と実行ファイル名
 -- config/lsp.lua (有効化) とscript/ci/check_nvim.lua (CIでの存在確認) の両方から参照される
 return {
-  "oxfmt",
-  "ruff",
-  "taplo",
-  "ty",
+  copilot = "copilot-language-server",
+  lua_ls = "lua-language-server",
+  oxfmt = "oxfmt",
+  ruff = "ruff",
+  taplo = "taplo",
+  ty = "ty",
 }

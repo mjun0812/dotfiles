@@ -123,20 +123,6 @@ def check_expected_links() -> Iterator[str]:
         if entry["state"] != "applied":
             yield f"[dotfiles-unapplied] {entry['path']} の {entry['edit']} が {entry['state']}"
 
-    for source, target in script_links():
-        if not source.exists():
-            continue
-        if not (target.is_symlink() and target.resolve() == source.resolve()):
-            yield f"[symlink-missing] {target} が {source} を指していない"
-
-
-def script_links() -> Iterator[tuple[Path, Path]]:
-    """Setupスクリプトが張るsymlinkの、dotfilesのファイルと展開先の組を返す。"""
-    skills = DOTPATH / "config/ai-agents/skills"
-    for source in sorted(path for path in skills.iterdir() if path.is_dir()):
-        for skill_dir in SKILL_DIRS:
-            yield source, HOME / skill_dir / source.name
-
 
 def check_dangling_links() -> Iterator[str]:
     """Dotfilesから消したファイルを指したまま残ったsymlinkを探す。"""
