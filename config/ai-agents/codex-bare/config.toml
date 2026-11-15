@@ -1,0 +1,49 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+approval_policy = "on-request"
+approvals_reviewer = "user"
+sandbox_mode = "danger-full-access"
+web_search = "live"
+allow_login_shell = true
+suppress_unstable_features_warning = true
+
+[features]
+shell_snapshot = true
+multi_agent = true
+hooks = true
+default_mode_request_user_input = true
+daemon_auto_start = true
+
+[features.multi_agent_v2]
+enabled = true
+min_wait_timeout_ms = 600000
+default_wait_timeout_ms = 1800000
+max_wait_timeout_ms = 3600000
+
+[agents]
+max_concurrent_threads_per_session = 6
+
+[shell_environment_policy]
+inherit = "all"
+experimental_use_profile = true
+
+[notice]
+hide_rate_limit_model_nudge = true
+
+[tui]
+resume_cwd = "session"
+terminal_title = ["spinner", "project"]
+notifications = false
+auto_recap = true
+status_line = [
+  "model-with-reasoning",
+  "used-tokens",
+  "context-used",
+  "five-hour-limit",
+  "weekly-limit",
+  "current-dir",
+  "git-branch",
+]
+
+[tui.keymap.editor]
+insert_newline = ["ctrl-j", "ctrl-m", "enter", "shift-enter", "alt-enter"]

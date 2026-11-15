@@ -81,6 +81,12 @@ claudex() (
     export ANTHROPIC_DEFAULT_HAIKU_MODEL="gpt-6-luna"
     command \claude --allow-dangerously-skip-permissions "$@"
 )
+# 動作を変える設定 (CLAUDE.md、rules、skill、MCP、整形などのhook) を読まない設定ディレクトリで起動する。
+# 初回は`claude-bare auth login`でログインする
+claude-bare() (
+    export CLAUDE_CONFIG_DIR="$HOME/.claude-bare"
+    command \claude --allow-dangerously-skip-permissions "$@"
+)
 
 # agentsview
 # serveの前に、~/.agentsview/remotes.tomlに書いたリモートのsessionを取得する
@@ -106,6 +112,12 @@ codex-headroom() {
 codex-headroom-full() {
     codex-headroom --yolo --dangerously-bypass-hook-trust "$@"
 }
+# 動作を変える設定 (AGENTS.md、skill、MCP、整形などのhook) を読まない設定ディレクトリで起動する。
+# 初回は`codex-bare login`でログインし、TUIの/hooksで通知のhookを承認する
+codex-bare() (
+    export CODEX_HOME="$HOME/.codex-bare"
+    command \codex "$@"
+)
 CODEX_COMMIT_MODEL="gpt-6-luna"
 alias commit-codex='command \codex exec \
     --dangerously-bypass-approvals-and-sandbox \

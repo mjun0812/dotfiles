@@ -1,0 +1,185 @@
+{
+  "cleanupPeriodDays": 365,
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(ls *)",
+      "Bash(eza *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(rgrep *)",
+      "Bash(fd *)",
+      "Bash(cat *)",
+      "Bash(bat *)",
+      "Bash(tree *)",
+      "Bash(gh *)",
+      "Bash(bunx *)",
+      "Bash(bun *)",
+      "Bash(uvx *)",
+      "Bash(uv *)",
+      "Bash(ruff *)",
+      "Bash(ty *)",
+      "Bash(mise *)",
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(pytest *)",
+      "Bash(make *)",
+      "Bash(docker *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(touch *)",
+      "Bash(wc *)",
+      "Bash(diff *)",
+      "Bash(jq *)",
+      "Bash(which *)",
+      "Bash(echo *)",
+      "Bash(printf *)",
+      "Bash(sort *)",
+      "Bash(uniq *)",
+      "Bash(tee *)",
+      "Bash(stat *)",
+      "Bash(realpath *)",
+      "Bash(dirname *)",
+      "Bash(basename *)",
+      "Bash(date *)",
+      "Bash(sed *)",
+      "Bash(awk *)",
+      "Bash(curl *)",
+      "Bash(xargs *)",
+      "Bash(bash *)",
+      "Bash(test *)",
+      "Bash(rm /tmp/**)",
+      "Bash(rm -f /tmp/**)",
+      "Bash(rm -rf /tmp/**)",
+      "Bash(rm /private/tmp/**)",
+      "Bash(rm -f /private/tmp/**)",
+      "Bash(rm -rf /private/tmp/**)",
+      "Skill",
+      "WebFetch",
+      "WebSearch",
+      "Read",
+      "Search",
+      "Edit(./.claude/plans/**)",
+      "Read(/tmp/**)",
+      "Edit(/tmp/**)",
+      "Read(/private/tmp/**)",
+      "Edit(/private/tmp/**)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(./.env)",
+      "Bash(sudo *)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.zshrc.local)",
+      "Bash(*zshrc.local*)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/)",
+      "Bash(rm -rf ~/*)",
+      "Bash(rm -rf $HOME/**)",
+      "Bash(curl * | sh *)",
+      "Bash(wget * | sh *)",
+      "Read(./secrets/**)",
+      "Edit(//**/*.ipynb)",
+      "NotebookEdit",
+      "mcp__claude_ai_GitHub_mcp"
+    ],
+    "ask": [],
+    "defaultMode": "auto",
+    "additionalDirectories": ["/tmp", "/private/tmp"]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/config/ai-agents/hooks/capture-wezterm-pane-hook.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/herdr-agent-state.sh session",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh turn_start"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh permission_request"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh stop"
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/config/ai-agents/hooks/notify-claude-hook.sh stop_failure"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.py",
+    "padding": 0
+  },
+  "subagentStatusLine": {
+    "type": "command",
+    "command": "~/.claude/subagent_statusline.py"
+  },
+  "language": "japanese",
+  "feedbackDrafts": "off",
+  "askUserQuestionTimeout": "never",
+  "plansDirectory": "./.claude/plans",
+  "tui": "fullscreen",
+  "timeFormat": "auto",
+  "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
+  "autoCompactEnabled": true,
+  "idleCompaction": false,
+  "autoContinueAtUsageLimit": true,
+  "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true
+}
