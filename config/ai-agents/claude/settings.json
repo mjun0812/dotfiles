@@ -101,7 +101,7 @@
       "/private/tmp"
     ]
   },
-  "model": "opus",
+  "model": "claude-fable-5-2",
   "hooks": {
     "PreToolUse": [
       {
@@ -226,6 +226,12 @@
       "effortLevel": "high"
     },
     "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-fable-5-2": {
+      "effortLevel": "medium"
+    },
+    "claude-mythos-5-2": {
       "effortLevel": "high"
     }
   },
