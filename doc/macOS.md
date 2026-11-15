@@ -33,7 +33,6 @@
 | OrbStack           | Docker containers and Linux VMs           |
 | Raycast            | Launcher                                  |
 | Rift               | Tiling window manager                     |
-| Thaw               | Menu bar manager                          |
 | Visual Studio Code | Code editor                               |
 | WezTerm            | Terminal emulator                         |
 | XQuartz            | X11 for macOS                             |
