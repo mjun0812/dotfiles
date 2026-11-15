@@ -4,7 +4,7 @@ set -euo pipefail
 # setup_herdr.sh
 #
 # herdrのagent-state hookスクリプトをClaude Code / Codexに設置し、
-# dotfiles管理のherdr pluginをlinkする。
+# dotfiles管理のherdr pluginをlinkし、GitHubで配布されているpluginを入れる。
 # miseのpostinstall (config/dot_config/mise/config.toml) からherdrの
 # install / upgrade時に呼ばれる。手動で再実行してもよい。
 #
@@ -68,3 +68,14 @@ normalize "$HOME/.codex/hooks.json" 'bash ~/.codex/herdr-agent-state.sh '
 for plugin in "$DOTPATH"/config/dot_config/herdr/plugins/*/; do
     herdr plugin link "${plugin%/}"
 done
+
+# GitHubで配布されているherdr pluginを入れる。導入済みのpluginへのinstallは
+# 最新のrefへの入れ直しになるので、更新も兼ねる。
+# Heeler: iOSアプリHeelerからherdrへつなぐためのペアリングと通知を担う。
+# buildにnpmを使うが、フレッシュ環境のmise install中はまだPATHに無い場合がある。
+# install.shがmise installの後に本スクリプトを再実行するので、その時点ではスキップしてよい。
+if command -v npm >/dev/null 2>&1; then
+    herdr plugin install ZingerLittleBee/Heeler --ref plugin --yes
+else
+    echo "skip herdr plugin install ZingerLittleBee/Heeler: npm not found"
+fi
