@@ -1,5 +1,43 @@
 # macOS
 
+## Apps
+
+`mise bootstrap packages apply` installs these apps from the `[bootstrap.packages]` declarations in `config/dot_config/mise/config.macos.toml`.
+
+| Name               | Description                               |
+| ------------------ | ----------------------------------------- |
+| AeroSpace          | Tiling window manager, kept as a fallback |
+| Alt-Tab            | Windows-style window switcher             |
+| azooKey            | Japanese input method                     |
+| balenaEtcher       | USB flash tool                            |
+| BetterDisplay      | Display management                        |
+| BetterTouchTool    | Input device customization                |
+| ChatGPT            | OpenAI desktop client                     |
+| Claude             | Anthropic desktop client                  |
+| Clipy              | Clipboard manager                         |
+| CodexBar           | Menu bar usage monitor for agents         |
+| Discord            | Chat                                      |
+| draw.io            | Diagram editor                            |
+| Ghostty            | Terminal emulator                         |
+| Hammerspoon        | macOS automation                          |
+| Homerow            | Keyboard-driven mouse replacement         |
+| Inkscape           | Vector graphics editor                    |
+| iTerm2             | Terminal emulator                         |
+| Karabiner-Elements | Keyboard customization                    |
+| KeyCastr           | Keystroke visualizer                      |
+| MacTeX (no GUI)    | LaTeX distribution                        |
+| Miraktest          | Mirakurun TV client                       |
+| Notion             | Notes and knowledge base                  |
+| Obsidian           | Markdown knowledge base                   |
+| Ollama             | Local LLM runtime                         |
+| OrbStack           | Docker containers and Linux VMs           |
+| Raycast            | Launcher                                  |
+| Rift               | Tiling window manager                     |
+| Thaw               | Menu bar manager                          |
+| Visual Studio Code | Code editor                               |
+| WezTerm            | Terminal emulator                         |
+| XQuartz            | X11 for macOS                             |
+
 ## App Settings
 
 GUI app settings are managed as config files when the app reads one, and as mise defaults otherwise. Nothing is kept as a `defaults` plist dump.

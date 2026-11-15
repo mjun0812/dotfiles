@@ -63,26 +63,18 @@ require git, zsh, curl, unzip (and libatomic on Rocky Linux for Node.js 26)
 git clone https://github.com/mjun0812/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
-
-gh auth login
-
-# First Install Only: Install VS Code extensions
-./script/setup/install_vscode_extensions.sh
 ```
 
-## Update
+## Documentation
 
-To sync the VS Code extension list back into this repository and report macOS app settings that drifted from the mise declarations, run:
-
-```bash
-./update.sh
-```
-
-Agent Skills / Agents (apm)
-
-```bash
-apm update -g
-```
+| Document                                                   | Description                                                              |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------ |
+| [macOS](doc/macOS.md)                                      | macOS apps, app and system settings, Raycast scripts, and launchd agents |
+| [Window Managers](doc/window_manager.md)                   | Rift and AeroSpace configuration and keyboard shortcuts                  |
+| [Hammerspoon](doc/hammerspoon.md)                          | Hammerspoon configuration, workspace HUD, and URL schemes                |
+| [WezTerm](doc/wezterm.md)                                  | WezTerm configuration and keyboard shortcuts                             |
+| [Neovim](doc/nvim.md)                                      | Neovim plugins and keyboard shortcuts                                    |
+| [Agent Skills](doc/skills.md) ([日本語](doc/skills_ja.md)) | AI agent skills shared across Claude Code, Codex, Gemini, and others     |
 
 ## Tools
 
@@ -91,7 +83,19 @@ apm update -g
 | zsh    | Shell           |
 | mise   | Package manager |
 | Neovim | Editor          |
-| VSCode | IDE             |
+
+### AI Agents
+
+| Name             | Description                            |
+| ---------------- | -------------------------------------- |
+| Claude Code      | AI agent for daily use                 |
+| Codex            | AI agent for daily use                 |
+| Antigravity-cli  | AI agent for generate commit messages  |
+| OpenCode         | AI agent for code                      |
+| Pi               | Minimal terminal coding harness        |
+| DeepSeek Harness | Plugin-based agent harness by DeepSeek |
+
+Agent skills (shared across Claude Code / Codex / Gemini / Antigravity) are documented in [doc/skills.md](doc/skills.md).
 
 ### CLI
 
@@ -157,56 +161,6 @@ apm update -g
 | yq              | YAML processor                                        |
 | zoxide          | Smart `cd` command                                    |
 
-### AI Agents
-
-| Name             | Description                            |
-| ---------------- | -------------------------------------- |
-| Claude Code      | AI agent for daily use                 |
-| Codex            | AI agent for daily use                 |
-| Antigravity-cli  | AI agent for generate commit messages  |
-| OpenCode         | AI agent for code                      |
-| Pi               | Minimal terminal coding harness        |
-| DeepSeek Harness | Plugin-based agent harness by DeepSeek |
-
-Agent skills (shared across Claude Code / Codex / Gemini / Antigravity) are documented in [doc/skills.md](doc/skills.md).
-
-### macOS Apps
-
-Apps installed via Homebrew Cask.
-Details of configuration and keyboard shortcuts are documented in [doc/macOS.md](doc/macOS.md).
-
-| Name               | Description                       |
-| ------------------ | --------------------------------- |
-| AeroSpace          | Tiling window manager             |
-| Alt-Tab            | Windows-style window switcher     |
-| azooKey            | Japanese input method             |
-| balenaEtcher       | USB flash tool                    |
-| BetterDisplay      | Display management                |
-| BetterTouchTool    | Input device customization        |
-| ChatGPT            | OpenAI desktop client             |
-| Claude             | Anthropic desktop client          |
-| Clipy              | Clipboard manager                 |
-| CodexBar           | Menu bar usage monitor for agents |
-| Discord            | Chat                              |
-| draw.io            | Diagram editor                    |
-| Ghostty            | Terminal emulator                 |
-| Hammerspoon        | macOS automation                  |
-| Homerow            | Keyboard-driven mouse replacement |
-| Inkscape           | Vector graphics editor            |
-| iTerm2             | Terminal emulator                 |
-| Karabiner-Elements | Keyboard customization            |
-| KeyCastr           | Keystroke visualizer              |
-| MacTeX (no GUI)    | LaTeX distribution                |
-| Miraktest          | Mirakurun TV client               |
-| Notion             | Notes and knowledge base          |
-| Obsidian           | Markdown knowledge base           |
-| Ollama             | Local LLM runtime                 |
-| Raycast            | Launcher                          |
-| Thaw               | Menu bar manager                  |
-| Visual Studio Code | Code editor                       |
-| WezTerm            | Terminal emulator                 |
-| XQuartz            | X11 for macOS                     |
-
 ## Design
 
 I prefer [Tokyo Night](https://github.com/tokyo-night) color scheme.
@@ -233,69 +187,3 @@ I prefer [Tokyo Night](https://github.com/tokyo-night) color scheme.
 | Light Magenta | ![](https://shieldcn.dev/badge/%20-FF4867.svg?size=xs) `#FF4867` | ![](https://shieldcn.dev/badge/%20-EB576A.svg?size=xs) `#EB576A` |
 | Light Cyan    | ![](https://shieldcn.dev/badge/%20-69D1FA.svg?size=xs) `#69D1FA` | ![](https://shieldcn.dev/badge/%20-84CFF6.svg?size=xs) `#84CFF6` |
 | Light White   | ![](https://shieldcn.dev/badge/%20-EAEAEA.svg?size=xs) `#EAEAEA` | ![](https://shieldcn.dev/badge/%20-EAEAEA.svg?size=xs) `#EAEAEA` |
-
-## Alias
-
-```bash
-# Show NVIDIA GPUs that are not used by Xorg or gnome
-nvs
-
-# Claude Code
-commit-cc # AIが生成したコミットメッセージでコミットする
-commit-cc-ja # AIが生成した日本語のコミットメッセージでコミットする
-
-# Gemini-cli (commit-agy / commit-agy-ja の別名)
-commit-gemini # AIが生成したコミットメッセージでコミットする
-commit-gemini-ja # AIが生成した日本語のコミットメッセージでコミットする
-
-# Codex
-commit-codex # AIが生成したコミットメッセージでコミットする
-commit-codex-ja # AIが生成した日本語のコミットメッセージでコミットする
-
-# Antigravity-cli
-commit-agy # AIが生成したコミットメッセージでコミットする
-commit-agy-ja # AIが生成した日本語のコミットメッセージでコミットする
-
-# Delete local branches that are deleted and merged
-git prune-branch
-```
-
-## mise
-
-This dotfiles uses [mise](https://github.com/jdx/mise) as a package manager for CLI tools.
-
-### mise bootstrap services
-
-```bash
-mise bootstrap services status
-mise bootstrap services apply --yes
-```
-
-## Neovim
-
-See [doc/nvim.md](doc/nvim.md) for Neovim configuration and keyboard shortcuts.
-
-## VSCode
-
-VS Code extensions are managed in `config/vscode/extensions.txt`.
-
-`script/setup/install_vscode_extensions.sh` installs missing extensions only and does not uninstall local extensions.
-
-To synchronize the installed extensions exactly with `config/vscode/extensions.txt`, run:
-
-```bash
-script/tools/sync_vscode_extensions.sh
-```
-
-You can pass another extension list:
-
-```bash
-script/tools/sync_vscode_extensions.sh path/to/extensions.txt
-```
-
-Use `--dry-run` to preview installs and uninstalls without changing VS Code:
-
-```bash
-script/tools/sync_vscode_extensions.sh --dry-run
-script/tools/sync_vscode_extensions.sh --dry-run path/to/extensions.txt
-```
