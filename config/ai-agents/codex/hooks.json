@@ -129,6 +129,15 @@
             "type": "command"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/config/ai-agents/hooks/herdr-model-hook.sh",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
       }
     ],
     "Stop": [
@@ -163,6 +172,15 @@
         "hooks": [
           {
             "command": "bash ~/.codex/herdr-agent-state.sh working",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/config/ai-agents/hooks/herdr-model-hook.sh",
             "timeout": 10,
             "type": "command"
           }

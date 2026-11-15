@@ -59,9 +59,7 @@ def short_path(path, max_len=30):
     if len(parts) <= 2:
         return os.path.basename(path) or path
     head, tail = parts[0], parts[-1]
-    shortened = os.sep.join(
-        [head] + [p[:1] for p in parts[1:-1] if p] + [tail]
-    )
+    shortened = os.sep.join([head] + [p[:1] for p in parts[1:-1] if p] + [tail])
     if len(shortened) <= max_len:
         return shortened
     return tail or path
@@ -93,8 +91,34 @@ def git_branch(cwd):
 
 
 # Fields may be null (e.g. before the first API response), so coalesce with `or`.
-model = (data.get("model") or {}).get("display_name") or "Claude"
+model_name = (data.get("model") or {}).get("display_name")
+model = model_name or "Claude"
 effort = (data.get("effort") or {}).get("level")
+
+# herdrのagentsタブに出すモデル名 ($model token) を報告する。hookでは/modelでの
+# 切り替えを拾えないため、毎回呼ばれるstatuslineから送る。1回4ms程度なので
+# 変化の有無は見ない。--agentを付けると、claudeが終わった時点で表示が消える。
+herdr_pane = os.environ.get("HERDR_PANE_ID")
+if os.environ.get("HERDR_ENV") == "1" and herdr_pane and model_name:
+    try:
+        subprocess.run(
+            [
+                os.environ.get("HERDR_BIN_PATH", "herdr"),
+                "pane",
+                "report-metadata",
+                herdr_pane,
+                "--source",
+                "agent-model",
+                "--agent",
+                "claude",
+                "--token",
+                f"model={model_name}",
+            ],
+            capture_output=True,
+            timeout=1,
+        )
+    except (subprocess.SubprocessError, OSError):
+        pass
 parts = [f"{model} {effort}" if effort else model]
 
 ctx = (data.get("context_window") or {}).get("used_percentage") or 0
