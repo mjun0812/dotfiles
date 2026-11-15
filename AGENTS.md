@@ -47,6 +47,7 @@ Claude Code・Codex・Geminiの設定は `config/ai-agents/` にまとめてい�
 - hookのscriptは `hooks/` に置き、`claude/settings.json` と `codex/hooks.json` から呼ぶ。Codexのhook定義を変えると、TUIの `/hooks` で再承認が必要になる。
 - `codex/config.toml` はsymlinkせず、テンプレートにあるキーだけを `~/.codex/config.toml` へマージする。Codexが書き込むローカル状態を残すためである。キーの削除はできない。`[projects]` のようなローカル状態のテーブルと、apmが書き込む `[mcp_servers.*]` はテンプレートに書かない。
 - `gemini/antigravity-cli/settings.json` も同じ方式でマージする。Antigravity CLIが起動のたびにファイルを書き直すためである。CLIが書き足す `trustedWorkspaces` はテンプレートに書かない。
+- `claude-bare/` と `codex-bare/` は、`claude-bare`・`codex-bare` 関数が使う別の設定ディレクトリ(`~/.claude-bare`・`~/.codex-bare`)の設定である。global指示、rule、skill、MCPと、整形や指摘のようにagentの動作を変えるhookは置かない。通知やstatuslineのように動作を変えない設定と、権限、承認、言語、機能の設定だけを置く。本体の設定やhookを変えたら、bare側にも反映するかをこの基準で決める。
 
 ## zsh
 

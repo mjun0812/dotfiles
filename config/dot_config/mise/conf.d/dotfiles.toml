@@ -39,16 +39,20 @@
 
 # Codexが書き足すローカル状態 ([projects.*]や[hooks.state]) を残し、テンプレートのキーだけを書き込む
 "~/.codex/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex/config.toml", merge = true }
+"~/.codex-bare/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex-bare/config.toml", merge = true }
 # Antigravity CLIは起動のたびにファイルを書き直し、trustedWorkspacesを書き足すので、symlinkにできない
 "~/.gemini/antigravity-cli/settings.json/dotfiles" = { source = "~/.dotfiles/config/ai-agents/gemini/antigravity-cli/settings.json", merge = true }
 
 # agent向け。AGENTS_global.mdはCodexとGeminiが同じファイルを読む
 "~/.apm/apm.yml" = "~/.dotfiles/config/ai-agents/apm.yml"
+"~/.claude-bare/settings.json" = "~/.dotfiles/config/ai-agents/claude-bare/settings.json"
 "~/.claude/CLAUDE.md" = "~/.dotfiles/config/ai-agents/claude/CLAUDE.md"
 "~/.claude/rules" = "~/.dotfiles/config/ai-agents/rules"
 "~/.claude/settings.json" = "~/.dotfiles/config/ai-agents/claude/settings.json"
 "~/.claude/statusline.py" = "~/.dotfiles/config/ai-agents/claude/statusline.py"
 "~/.claude/subagent_statusline.py" = "~/.dotfiles/config/ai-agents/claude/subagent_statusline.py"
+"~/.codex-bare/hooks.json" = "~/.dotfiles/config/ai-agents/codex-bare/hooks.json"
+"~/.codex-bare/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
 "~/.codex/AGENTS.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
 "~/.codex/hooks.json" = "~/.dotfiles/config/ai-agents/codex/hooks.json"
 "~/.codex/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
