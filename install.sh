@@ -55,6 +55,7 @@ if [ "$(uname -s)" = "Darwin" ]; then
     mise bootstrap files apply --yes
     # appは書き換えた設定を次の起動時に読む
     mise bootstrap macos defaults apply --yes
+    zsh "$DOTPATH/script/setup/setup_mozkey.sh"
 
     # install Homebrew if not installed (for macOS)
     if ! command -v brew >/dev/null 2>&1; then

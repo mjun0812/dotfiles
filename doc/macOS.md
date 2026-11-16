@@ -39,7 +39,7 @@
 
 ## App Settings
 
-GUI app settings are managed as config files when the app reads one, and as mise defaults otherwise. Nothing is kept as a `defaults` plist dump.
+GUI app settings are managed as linked or copied config files when the app reads one, and as mise defaults otherwise. Nothing is kept as a `defaults` plist dump.
 
 1. **Config files**: the app reads a text file from the repo. `mise dot apply` links them (declared in `[dotfiles]` of `config/dot_config/mise/conf.d/dotfiles.toml`; `install.sh` runs it).
    - **iTerm2 profiles**: `config/mac/iterm2/DynamicProfiles/dotfiles.json` is a [Dynamic Profile](https://iterm2.com/documentation-dynamic-profiles.html), linked into `~/Library/Application Support/iTerm2/DynamicProfiles/`. iTerm2 reloads it when the file changes. Changes made in the Settings UI are not written back: use _Other Actions > Save Profile as JSON_ and copy the keys into the file.
@@ -48,6 +48,9 @@ GUI app settings are managed as config files when the app reads one, and as mise
    - Only settings are declared. Keys that record app state (update checks, window frames, launch counts, `NoSync*` in iTerm2) and per-device values (BetterDisplay's `key@Display:N`) are left out, so BetterDisplay declares only its menu layout (`menuLevel*`).
    - Values stored as binary data cannot be declared (Clipy's shortcuts, which are not used). Clipy snippets live in a Realm DB and are not covered.
    - `./update.sh` reports settings that drifted from the declarations (`script/tools/mac_defaults.py`): `[differs]` for declared values changed in the UI, `[undeclared]` for keys set in the UI but not declared. Update the TOML by hand.
+3. **Mozkey**: `config/mac/mozkey/config1.db` is a binary settings snapshot, including the custom keymap and live conversion preferences. `install.sh` runs `zsh script/setup/setup_mozkey.sh` to copy it into `~/Library/Application Support/Mozc/config1.db`. A symlink would be replaced when Mozkey saves settings. Input history, learning data, and user dictionaries are not tracked.
+   - After changing preferences, click **Apply**, then run `./update.sh` to copy the saved settings back into the repo.
+   - To restore the repo's settings, quit Mozkey and its Preferences window, run `zsh script/setup/setup_mozkey.sh`, then start Mozkey again. Unsaved local settings are overwritten. `mise dot apply` does not restore this file.
 
 ## System Settings
 
