@@ -10,6 +10,7 @@ targets:
   - antigravity
   - claude
   - codex
+  - opencode
 dependencies:
   apm:
     - git: mjun0812/skills
@@ -53,7 +54,8 @@ dependencies:
     - jupyter-ai-contrib/nb-cli/skills/notebook-cli#>=0.0.10
     - nanaism/yomiyasu/skills/yomiyasu
   # Written into each target's own MCP config (~/.claude.json, ~/.codex/config.toml,
-  # ~/.gemini/config/mcp_config.json). startup_timeout_sec is a Codex key passed
+  # ~/.gemini/config/mcp_config.json, ~/.config/opencode/opencode.json).
+  # startup_timeout_sec is a Codex key passed
   # through to every target; bunx's first download exceeds Codex's 10s default.
   mcp:
     - name: chrome-devtools

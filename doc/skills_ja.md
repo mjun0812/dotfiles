@@ -16,7 +16,7 @@ APM管理のskillとagentは [`config/ai-agents/apm.yml`](../config/ai-agents/ap
 
 ## APM管理のPrimitives
 
-APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`の各targetへデプロイします。
+APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`、`opencode`の各targetへデプロイします。
 
 ### Skills
 
