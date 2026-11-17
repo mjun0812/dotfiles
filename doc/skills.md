@@ -28,6 +28,9 @@ APM deploys these packages to the `agent-skills`, `antigravity`, `claude`, and `
 | [`modem-dev/hunk/packages/hunk/skills/hunk-review`](https://github.com/modem-dev/hunk/tree/main/packages/hunk/skills/hunk-review) | [`hunk-review`](https://github.com/modem-dev/hunk/blob/main/packages/hunk/skills/hunk-review/SKILL.md)                                                                                                                                                                                                                                                                                                                                                                                          |
 | [`github/gh-stack/skills/gh-stack`](https://github.com/github/gh-stack/tree/main/skills/gh-stack)                                 | [`gh-stack`](https://github.com/github/gh-stack/blob/main/skills/gh-stack/SKILL.md)                                                                                                                                                                                                                                                                                                                                                                                                             |
 | [`jupyter-ai-contrib/nb-cli/skills/notebook-cli`](https://github.com/jupyter-ai-contrib/nb-cli/tree/main/skills/notebook-cli)     | [`notebook-cli`](https://github.com/jupyter-ai-contrib/nb-cli/blob/main/skills/notebook-cli/SKILL.md)                                                                                                                                                                                                                                                                                                                                                                                           |
+| [`nanaism/yomiyasu/skills/yomiyasu`](https://github.com/nanaism/yomiyasu/tree/main/skills/yomiyasu)                               | [`yomiyasu`](https://github.com/nanaism/yomiyasu/blob/main/skills/yomiyasu/SKILL.md)                                                                                                                                                                                                                                                                                                                                                                                                            |
+
+`yomiyasu` is unpinned; `apm update -g -y` fetches the latest revision of its upstream default branch.
 
 ### Agents
 
@@ -98,11 +101,12 @@ The self-authored dev-flow skill suite under the `mjun-` prefix. `mjun-start` ro
 
 ### Japanese Writing
 
-| Skill                                                                                                                       | Purpose                                                                                                                                                |
-| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`cognitive-rhythm-writing`](https://github.com/mjun0812/skills/blob/main/skills/writing/cognitive-rhythm-writing/SKILL.md) | Design rhythm in Japanese explanatory prose through shifts in cognitive mode, sentence pacing, and paragraph density; diagnose and revise flat writing |
-| [`japanese-tech-writing`](https://github.com/mjun0812/skills/blob/main/skills/writing/japanese-tech-writing/SKILL.md)       | Style guide for writing and revising Japanese technical prose (formatting, paragraph-driven argument, removing LLM-flavored filler)                    |
-| [`stop-ai-slop-jp`](https://github.com/mjun0812/skills/blob/main/skills/writing/stop-ai-slop-jp/SKILL.md)                   | Edit AI-generated Japanese back into human-written prose — fixes missing authorial stance, propositional H2s, false-balance, monotone rhythm           |
+| Skill                                                                                                                       | Purpose                                                                                                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`cognitive-rhythm-writing`](https://github.com/mjun0812/skills/blob/main/skills/writing/cognitive-rhythm-writing/SKILL.md) | Design rhythm in Japanese explanatory prose through shifts in cognitive mode, sentence pacing, and paragraph density; diagnose and revise flat writing     |
+| [`japanese-tech-writing`](https://github.com/mjun0812/skills/blob/main/skills/writing/japanese-tech-writing/SKILL.md)       | Style guide for writing and revising Japanese technical prose (formatting, paragraph-driven argument, removing LLM-flavored filler)                        |
+| [`stop-ai-slop-jp`](https://github.com/mjun0812/skills/blob/main/skills/writing/stop-ai-slop-jp/SKILL.md)                   | Edit AI-generated Japanese back into human-written prose — fixes missing authorial stance, propositional H2s, false-balance, monotone rhythm               |
+| [`yomiyasu`](https://github.com/nanaism/yomiyasu/blob/main/skills/yomiyasu/SKILL.md)                                        | Refine AI-generated Japanese while preserving meaning and conditions; fix unnatural metaphors, unclear subjects and predicates, and unnecessary decoration |
 
 Sources:
 
@@ -185,6 +189,8 @@ graph LR
 These skills do not delegate to other skills:
 
 `chat-note`, `claude`, `codex`, `cognitive-rhythm-writing`, `deep-research`, `doc-sync`, `duckdb`, `exhtml`, `exmd`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `git-squash`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `mjun-grilling`, `mjun-rule-lint`, `mjun-spec-review`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `test-prune`, `wezterm-control`, `writing-skills`.
+
+`yomiyasu` also runs without delegating to another skill.
 
 ## Conventions
 

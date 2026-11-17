@@ -29,6 +29,9 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`の�
 | [`modem-dev/hunk/packages/hunk/skills/hunk-review`](https://github.com/modem-dev/hunk/tree/main/packages/hunk/skills/hunk-review) | [`hunk-review`](https://github.com/modem-dev/hunk/blob/main/packages/hunk/skills/hunk-review/SKILL.md)                                                                                                                                                                                                                                                                                                                                                                                          |
 | [`github/gh-stack/skills/gh-stack`](https://github.com/github/gh-stack/tree/main/skills/gh-stack)                                 | [`gh-stack`](https://github.com/github/gh-stack/blob/main/skills/gh-stack/SKILL.md)                                                                                                                                                                                                                                                                                                                                                                                                             |
 | [`jupyter-ai-contrib/nb-cli/skills/notebook-cli`](https://github.com/jupyter-ai-contrib/nb-cli/tree/main/skills/notebook-cli)     | [`notebook-cli`](https://github.com/jupyter-ai-contrib/nb-cli/blob/main/skills/notebook-cli/SKILL.md)                                                                                                                                                                                                                                                                                                                                                                                           |
+| [`nanaism/yomiyasu/skills/yomiyasu`](https://github.com/nanaism/yomiyasu/tree/main/skills/yomiyasu)                               | [`yomiyasu`](https://github.com/nanaism/yomiyasu/blob/main/skills/yomiyasu/SKILL.md)                                                                                                                                                                                                                                                                                                                                                                                                            |
+
+`yomiyasu`はバージョンを固定せず、`apm update -g -y`で上流の既定ブランチの最新版を取得します。
 
 ### Agents
 
@@ -104,6 +107,7 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`の�
 | [`cognitive-rhythm-writing`](https://github.com/mjun0812/skills/blob/main/skills/writing/cognitive-rhythm-writing/SKILL.md) | 日本語の説明文で認知モードの切り替え、文の拍、段落の密度によって緩急を設計し、平坦な文章を診断して修正する |
 | [`japanese-tech-writing`](https://github.com/mjun0812/skills/blob/main/skills/writing/japanese-tech-writing/SKILL.md)       | 日本語の技術文書・書籍原稿を書く／推敲するときの文章規範(整形、パラグラフライティング、LLM 臭の排除など)   |
 | [`stop-ai-slop-jp`](https://github.com/mjun0812/skills/blob/main/skills/writing/stop-ai-slop-jp/SKILL.md)                   | AIで書いた日本語を人間が書いた文章に戻す編集規範(主体の不在、命題型H2、両論併記、リズムの均一さなどを直す) |
+| [`yomiyasu`](https://github.com/nanaism/yomiyasu/blob/main/skills/yomiyasu/SKILL.md)                                        | 意味と条件を保ち、AIが生成した日本語の不自然な比喩、曖昧な主述関係、不要な装飾を直す。                     |
 
 出典:
 
@@ -186,6 +190,8 @@ graph LR
 以下のskillは他のskillへ委譲しません。
 
 `chat-note`, `claude`, `codex`, `cognitive-rhythm-writing`, `deep-research`, `doc-sync`, `duckdb`, `exhtml`, `exmd`, `experiment-plan`, `git-commit`, `git-fix-conflict`, `git-squash`, `github-fix-ci`, `github-issue-create`, `github-issue-update`, `github-pr-review`, `github-resolve-pr-comment`, `japanese-tech-writing`, `mjun-grilling`, `mjun-rule-lint`, `mjun-spec-review`, `mjun-steering`, `mjun-to-tasks`, `resume-other-agent`, `self-review`, `skill-review`, `stop-ai-slop-jp`, `test-prune`, `wezterm-control`, `writing-skills`.
+
+`yomiyasu`も他のskillへ委譲しません。
 
 ## Conventions
 

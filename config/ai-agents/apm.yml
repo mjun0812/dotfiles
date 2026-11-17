@@ -51,6 +51,7 @@ dependencies:
     - modem-dev/hunk/packages/hunk/skills/hunk-review#>=0.24.0
     - github/gh-stack/skills/gh-stack#>=0.1.0
     - jupyter-ai-contrib/nb-cli/skills/notebook-cli#>=0.0.10
+    - nanaism/yomiyasu/skills/yomiyasu
   # Written into each target's own MCP config (~/.claude.json, ~/.codex/config.toml,
   # ~/.gemini/config/mcp_config.json). startup_timeout_sec is a Codex key passed
   # through to every target; bunx's first download exceeds Codex's 10s default.
