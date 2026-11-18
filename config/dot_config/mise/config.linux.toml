@@ -11,7 +11,8 @@
 "github:router-for-me/CLIProxyAPI" = { version = "latest", minimum_release_age = "0s", postinstall = '''
     systemctl --user restart dev.mise.cli-proxy-api.service 2>/dev/null || true
 ''' }
-"aqua:imagemagick" = "latest"
+# 7.1.2-36 dropped the gcc suffix that Aqua expects in the Linux AppImage name.
+"aqua:imagemagick" = "7.1.2-35"
 
 # Playwriterの拡張機能入りブラウザを~/.playwriter/browser-profileで常駐させる。
 # 画面が無ければheadlessで起動する
