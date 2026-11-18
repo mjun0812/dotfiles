@@ -15,7 +15,7 @@ if [ "$(uname -s)" = "Darwin" ]; then
         cp "$HOME/Library/Application Support/Mozc/config1.db" "$DOTPATH/config/mac/mozkey/config1.db" || exit 1
     fi
 
-    log_section "Drift from [bootstrap.macos.defaults] (update conf.d/macos-defaults.macos.toml by hand):"
+    log_section "Drift from [bootstrap.settings.macos.defaults] (update conf.d/macos-defaults.macos.toml by hand):"
     python3 "$DOTPATH/script/tools/mac_defaults.py"
 fi
 

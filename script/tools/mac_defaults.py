@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""miseの[bootstrap.macos.defaults]と、UIで変えた設定を突き合わせる。
+"""miseの[bootstrap.settings.macos.defaults]と、UIで変えた設定を突き合わせる。
 
 report (既定): 宣言とのずれを報告する。[differs]などは宣言したキーの値が違うもの、
     [undeclared]は宣言していないキーを表す。macOS自身のdomainは状態のキーが多いため、[undeclared]を報告しない
@@ -154,7 +154,7 @@ def changes() -> None:
             else:
                 lines.append(f"{toml_key(key)} = {toml_value(value)}")
         if lines:
-            print(f'[bootstrap.macos.defaults."{domain}"]', *lines, "", sep="\n")
+            print(f'[bootstrap.settings.macos.defaults."{domain}"]', *lines, "", sep="\n")
 
 
 def report() -> None:
