@@ -3,7 +3,7 @@ set -euo pipefail
 
 # setup_herdr.sh
 #
-# herdrのagent-state hookスクリプトをClaude Code / Codexに設置し、
+# Claude Code / Codexのagent-state hookとOpenCodeの連携pluginを設置し、
 # dotfiles管理のherdr pluginをlinkし、GitHubで配布されているpluginを入れる。
 # miseのpostinstall (config/dot_config/mise/config.toml) からherdrの
 # install / upgrade時に呼ばれる。手動で再実行してもよい。
@@ -62,6 +62,12 @@ normalize() {
 # set -eで終了するため、integration installの後始末である正規化を先に行う。
 normalize "$HOME/.claude/settings.json" 'bash ~/.claude/hooks/herdr-agent-state.sh '
 normalize "$HOME/.codex/hooks.json" 'bash ~/.codex/herdr-agent-state.sh '
+
+if [ -d "${XDG_CONFIG_HOME:-$HOME/.config}/opencode" ]; then
+    herdr integration install opencode
+else
+    echo "skip herdr integration install opencode: config directory not found"
+fi
 
 # dotfiles管理のherdr pluginをすべてlinkする (linkは冪等)。
 # 実体はconfig/dot_config/herdr/plugins/にあり、編集はそのまま反映される。
