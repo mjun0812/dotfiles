@@ -22,6 +22,8 @@ zoxide = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:sharkdp/bat" = "latest"
 "aqua:sharkdp/fd" = "latest"
+"github:RivoLink/leaf" = { version = "latest", bin = "leaf" }
+"github:borghei/ink" = { version = "latest", bin = "ink" }
 
 # Git
 delta = "latest"
