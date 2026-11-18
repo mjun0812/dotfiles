@@ -6,26 +6,27 @@ This document describes the Neovim configuration and keyboard shortcuts.
 
 The configuration uses [lazy.nvim](https://github.com/folke/lazy.nvim) as the plugin manager.
 
-| Plugin                                                                                        | Description                                         |
-| --------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| [tokyonight.nvim](https://github.com/folke/tokyonight.nvim)                                   | Color scheme                                        |
-| [snacks.nvim](https://github.com/folke/snacks.nvim)                                           | Terminal, indent guides, window zoom, file explorer |
-| [blink.cmp](https://github.com/saghen/blink.cmp)                                              | Completion engine                                   |
-| [nvim-autopairs](https://github.com/windwp/nvim-autopairs)                                    | Auto pairs (incl. `"""` and ` ``` `)                |
-| [rainbow-delimiters.nvim](https://github.com/HiPhish/rainbow-delimiters.nvim)                 | Rainbow delimiters                                  |
-| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)                            | Fuzzy finder                                        |
-| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)                                   | Git signs in gutter                                 |
-| [trouble.nvim](https://github.com/folke/trouble.nvim)                                         | Diagnostics and quickfix list                       |
-| [which-key.nvim](https://github.com/folke/which-key.nvim)                                     | Keybinding help                                     |
-| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)                                    | LSP server configuration                            |
-| [conform.nvim](https://github.com/stevearc/conform.nvim)                                      | Formatter                                           |
-| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)                         | Syntax highlighting                                 |
-| [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) | Treesitter text objects                             |
-| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)                                  | Status line                                         |
-| [colorful-winsep.nvim](https://github.com/nvim-zh/colorful-winsep.nvim)                       | Highlight the borders of the active window          |
-| [vimade](https://github.com/tadaa/vimade)                                                     | Fade inactive windows                               |
-| [image.nvim](https://github.com/3rd/image.nvim)                                               | Inline images in Markdown                           |
-| [diagram.nvim](https://github.com/3rd/diagram.nvim)                                           | Render Mermaid diagrams in Markdown                 |
+| Plugin                                                                                        | Description                                              |
+| --------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| [tokyonight.nvim](https://github.com/folke/tokyonight.nvim)                                   | Color scheme                                             |
+| [snacks.nvim](https://github.com/folke/snacks.nvim)                                           | Terminal, indent guides, window zoom, file explorer      |
+| [blink.cmp](https://github.com/saghen/blink.cmp)                                              | Completion engine                                        |
+| [nvim-autopairs](https://github.com/windwp/nvim-autopairs)                                    | Auto pairs (incl. `"""` and ` ``` `)                     |
+| [rainbow-delimiters.nvim](https://github.com/HiPhish/rainbow-delimiters.nvim)                 | Rainbow delimiters                                       |
+| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)                            | Fuzzy finder                                             |
+| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)                                   | Git signs in gutter                                      |
+| [trouble.nvim](https://github.com/folke/trouble.nvim)                                         | Diagnostics and quickfix list                            |
+| [which-key.nvim](https://github.com/folke/which-key.nvim)                                     | Keybinding help                                          |
+| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)                                    | LSP server configuration                                 |
+| [conform.nvim](https://github.com/stevearc/conform.nvim)                                      | Formatter                                                |
+| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)                         | Syntax highlighting                                      |
+| [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) | Treesitter text objects                                  |
+| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)                                  | Status line                                              |
+| [colorful-winsep.nvim](https://github.com/nvim-zh/colorful-winsep.nvim)                       | Highlight the borders of the active window               |
+| [vimade](https://github.com/tadaa/vimade)                                                     | Fade inactive windows                                    |
+| [image.nvim](https://github.com/3rd/image.nvim)                                               | Inline images in Markdown                                |
+| [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim)          | Render Markdown in the buffer (`:RenderMarkdown toggle`) |
+| [diagram.nvim](https://github.com/3rd/diagram.nvim)                                           | Render Mermaid diagrams in Markdown                      |
 
 ## Keyboard Shortcuts
 

@@ -32,6 +32,7 @@ require("lazy").setup({
     { import = "plugins.lualine" },
     { import = "plugins.lsp" },
     { import = "plugins.rainbow-delimiters" },
+    { import = "plugins.render-markdown" },
     { import = "plugins.snacks" },
     { import = "plugins.snacks-explorer" },
     { import = "plugins.telescope" },
