@@ -37,9 +37,9 @@ toolとパッケージは `config/dot_config/mise/` に宣言する。共通の�
 
 ## AI agentの設定
 
-Claude Code・Codex・Geminiの設定は `config/ai-agents/` にまとめている。
+Claude Code・Codex・Gemini・OpenCodeの設定は `config/ai-agents/` にまとめている。
 
-- global指示は、Claude Code用の `claude/CLAUDE.md` と、CodexとGemini用の `AGENTS_global.md` に分かれている。
+- global指示は、Claude Code用の `claude/CLAUDE.md` と、Codex・Gemini・OpenCode用の `AGENTS_global.md` に分かれている。
 - 共有skillとcode-reviewer agentは [mjun0812/skills](https://github.com/mjun0812/skills) にあり、`apm.yml` で購読して `apm update -g -y` で展開する。このリポジトリの `config/ai-agents/skills/` には私用skill(`mjun-*`)だけを置き、`mise dot apply` が展開する。私用skillを追加したら `conf.d/dotfiles.toml` の3つの展開先にも宣言する。skillを追加・変更したら `doc/skills.md` と `doc/skills_ja.md` も更新する。
 - このリポジトリ専用のskillは `.agents/skills/` に置き、`.claude/skills/` からsymlinkする。
 - MCPサーバーは `apm.yml` の `dependencies.mcp` で管理し、apmが各agentの設定へ書き込む。agentごとの設定ファイルには直接書かない。

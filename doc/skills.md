@@ -15,7 +15,7 @@ APM-managed skills and agents are declared in [`config/ai-agents/apm.yml`](../co
 
 ## APM-managed Primitives
 
-APM deploys these packages to the `agent-skills`, `antigravity`, `claude`, and `codex` targets.
+APM deploys these packages to the `agent-skills` / `antigravity` / `claude` / `codex` / `opencode` targets.
 
 ### Skills
 

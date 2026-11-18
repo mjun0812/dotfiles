@@ -95,7 +95,7 @@ cd ~/.dotfiles
 | Pi               | Minimal terminal coding harness        |
 | DeepSeek Harness | Plugin-based agent harness by DeepSeek |
 
-Agent skills (shared across Claude Code / Codex / Gemini / Antigravity) are documented in [doc/skills.md](doc/skills.md).
+For logins, API keys, and OpenCode integration checks, see [AI agent setup (日本語)](doc/ai-agents.md). The [skill catalog](doc/skills.md) lists shared skills and their deployment targets.
 
 ### CLI
 
