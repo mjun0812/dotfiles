@@ -26,7 +26,6 @@
 | Karabiner-Elements | Keyboard customization                    |
 | KeyCastr           | Keystroke visualizer                      |
 | MacTeX (no GUI)    | LaTeX distribution                        |
-| Miraktest          | Mirakurun TV client                       |
 | Notion             | Notes and knowledge base                  |
 | Obsidian           | Markdown knowledge base                   |
 | Ollama             | Local LLM runtime                         |
