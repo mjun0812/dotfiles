@@ -101,3 +101,5 @@ $RECYCLE.BIN/
 .claude/plans
 .ai-handoff/
 .mjun
+
+**/.claude/settings.local.json
