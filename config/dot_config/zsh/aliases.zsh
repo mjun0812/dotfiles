@@ -56,7 +56,9 @@ diff() {
 
 # Claude Code
 CLAUDE_COMMIT_MODEL="sonnet"
-alias claude="claude --allow-dangerously-skip-permissions"
+# Claude Codeは起動元のPATHをsnapshotして使い回す。mise activateが入れる実体のpathはtoolの更新で
+# 消えるので、versionを都度解決するshimsを先頭に置いて起動する
+alias claude='PATH="$HOME/.local/share/mise/shims:$PATH" claude --allow-dangerously-skip-permissions'
 alias commit-cc='command \claude \
     --model="${CLAUDE_COMMIT_MODEL}" \
     --dangerously-skip-permissions \
