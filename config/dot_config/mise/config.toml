@@ -60,6 +60,7 @@ ty = "latest"
 # npm packages
 "npm:@github/copilot-language-server" = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
+"npm:ccusage" = "latest"
 "npm:neovim" = "latest"
 "npm:oxfmt" = "latest"
 "npm:textlint" = { version = "latest", bun_args = """

@@ -99,6 +99,9 @@ agentsview() {
     command agentsview "$@"
 }
 
+# ローカルのログに、AgentsViewの同期済みセッションを加えて集計する。
+alias ccusage-all='python3 ~/.dotfiles/script/tools/ccusage_all.py'
+
 # Codex
 # USE_MISE_SHIMSは、Codexがsnapshotを作るshellでzshrcにmiseのshimsを使わせる
 alias codex='USE_MISE_SHIMS=1 codex'
