@@ -25,7 +25,10 @@ import shutil
 import subprocess
 import sys
 import tomllib
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from threading import Event
+from unicodedata import normalize
 
 TEMPLATE = Path(__file__).resolve().parents[2] / "templates" / "agentsview_remotes.toml"
 
@@ -76,6 +79,8 @@ REMOTE_SOURCES: dict[str, tuple[str, list[str]]] = {
     "pi": (".pi/agent/sessions/", []),
 }
 
+SyncTarget = tuple[str, str, Path]
+
 
 def main() -> None:
     """remotes.tomlのホストからsessionをrsyncで取得し、config.tomlへ取得先を登録する。"""
@@ -97,8 +102,8 @@ def main() -> None:
         (s["agent"], s.get("machine")): Path(s["dir"]).expanduser() for s in sources
     }
 
-    targets: list[tuple[str, str, Path]] = []
-    new_sources: list[tuple[str, str, Path]] = []
+    targets: list[SyncTarget] = []
+    new_sources: list[SyncTarget] = []
     for host, remote in remotes.items():
         for agent in remote.get("agents", []):
             if agent not in REMOTE_SOURCES:
@@ -126,7 +131,58 @@ def main() -> None:
                     f"agentsview: added session_sources for {agent} on {host} to {config}"
                 )
 
+    groups = _group_targets(targets)
+    interrupted = Event()
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        try:
+            futures = [
+                executor.submit(_pull_targets, group, interrupted) for group in groups
+            ]
+            for future in futures:
+                future.result()
+        except KeyboardInterrupt:
+            interrupted.set()
+            raise
+
+
+def _group_targets(targets: list[SyncTarget]) -> list[list[SyncTarget]]:
+    resolved_targets = [
+        (_destination_key(dest), (host, agent, dest)) for host, agent, dest in targets
+    ]
+    roots = {dest: dest for dest, _ in resolved_targets}
+    for dest, (_, _, original) in resolved_targets:
+        root = _group_root(roots, dest)
+        ancestors = set(dest.parents)
+        # rsync --deleteは同期先へたどり着く途中のsymlinkも消しうる。
+        for parent in original.absolute().parents:
+            resolved_parent = _destination_key(parent)
+            ancestors.add(resolved_parent)
+            ancestors.update(resolved_parent.parents)
+        for ancestor in ancestors.intersection(roots):
+            roots[_group_root(roots, ancestor)] = root
+
+    groups: dict[Path, list[SyncTarget]] = {}
+    for dest, target in resolved_targets:
+        groups.setdefault(_group_root(roots, dest), []).append(target)
+    return list(groups.values())
+
+
+def _group_root(roots: dict[Path, Path], dest: Path) -> Path:
+    while roots[dest] != dest:
+        dest = roots[dest]
+    return dest
+
+
+def _destination_key(dest: Path) -> Path:
+    # 大小文字やUnicodeの正規形が異なる名前も、同じディレクトリを指すことがある。
+    resolved = normalize("NFD", str(dest.resolve()))
+    return Path(normalize("NFD", resolved.casefold()))
+
+
+def _pull_targets(targets: list[SyncTarget], interrupted: Event) -> None:
     for host, agent, dest in targets:
+        if interrupted.is_set():
+            return
         remote_path, rsync_filter = REMOTE_SOURCES[agent]
         dest.mkdir(parents=True, exist_ok=True)
         print(f"agentsview: {host}:~/{remote_path} -> {dest}")
