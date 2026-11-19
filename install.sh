@@ -50,6 +50,7 @@ log_section "Applying mise bootstrap..."
 if [ "$(uname -s)" = "Darwin" ]; then
     if [ "${DOTFILES_SKIP_BOOTSTRAP_PACKAGES:-0}" != "1" ]; then
         mise bootstrap packages apply --yes
+        mise bootstrap packages upgrade --yes
     fi
     # defaultsが指すディレクトリを先に作る
     mise bootstrap files apply --yes
