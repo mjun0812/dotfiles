@@ -17,7 +17,6 @@ dependencies:
       skills:
         - claude
         - codex
-        - cognitive-rhythm-writing
         - deep-research
         - doc-sync
         - duckdb
@@ -34,12 +33,11 @@ dependencies:
         - github-pr-fix
         - github-pr-review
         - github-resolve-pr-comment
-        - japanese-tech-writing
+        - japanese-writing
         - chat-note
         - resume-other-agent
         - self-review
         - skill-review
-        - stop-ai-slop-jp
         - test-prune
         - wezterm-control
         - writing-skills
