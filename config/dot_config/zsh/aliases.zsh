@@ -100,12 +100,14 @@ agentsview() {
 }
 
 # Codex
-alias codex-full='command \codex \
+# USE_MISE_SHIMSは、Codexがsnapshotを作るshellでzshrcにmiseのshimsを使わせる
+alias codex='USE_MISE_SHIMS=1 codex'
+alias codex-full='USE_MISE_SHIMS=1 command \codex \
     --yolo \
     --dangerously-bypass-hook-trust'
 # headroomはapp-serverを経由しないようにする
 codex-headroom() {
-    command \codex \
+    USE_MISE_SHIMS=1 command \codex \
         -c model_provider=headroom \
         -c 'model_providers.headroom.name="headroom"' \
         -c 'model_providers.headroom.base_url="http://127.0.0.1:8787/v1"' \
@@ -118,7 +120,7 @@ codex-headroom-full() {
 # 初回は`codex-bare login`でログインし、TUIの/hooksで通知のhookを承認する
 codex-bare() (
     export CODEX_HOME="$HOME/.codex-bare"
-    command \codex "$@"
+    USE_MISE_SHIMS=1 command \codex "$@"
 )
 CODEX_COMMIT_MODEL="gpt-6-luna"
 alias commit-codex='command \codex exec \

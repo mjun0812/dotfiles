@@ -3,7 +3,13 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
+# Codexはこのshellが計算したPATHをsnapshotして使い回す。mise activateが入れる実体のpathはtoolの更新で
+# 消えるので、USE_MISE_SHIMSを付けて起動されたshellでは、versionを都度解決するshimsにする
+if [[ -n "$USE_MISE_SHIMS" ]]; then
+    command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh --shims)"
+else
+    command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
+fi
 command -v sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 export PATH="$HOME/.venv/bin:$PATH"
 
