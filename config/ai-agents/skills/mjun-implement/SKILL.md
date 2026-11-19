@@ -52,7 +52,7 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
 実装に入ってよいかを確かめ、taskキューとgroupを組み、どこまで進めるか (PR作成 / commit / base branchへのmerge) を決める。
 
 1. 状況を集める
-   - リポジトリ情報: `gh repo view --json defaultBranchRef,nameWithOwner`。ghが使えなければ `git symbolic-ref --short refs/remotes/origin/HEAD`、それも失敗したら現在のbranchをbaseとする
+   - リポジトリ情報: `gh repo view --json defaultBranchRef,nameWithOwner`。ghが使えなければ `git symbolic-ref --short refs/remotes/origin/HEAD`、それも失敗したら現在のbranchをbaseとする。呼び出し元の依頼が、未mergeのbranchへ積んだworktreeであることを伝えていれば、そのbranchをbaseにする。default branchを基準にすると、積んだ先の変更まで自分の差分に数えるためである
    - source本文、現在のbranch、`git worktree list --porcelain`
    - メインrepositoryのroot (`<repo-root>`): `git rev-parse --path-format=absolute --git-common-dir` の親ディレクトリ。起動場所がworktreeでもメインのcheckoutを指す
 2. 出力言語は、repositoryの既存のPR・commit message・READMEに合わせる (判別できなければ英語)。specや依頼の言語には合わせない。コメント、commit、PRに使う

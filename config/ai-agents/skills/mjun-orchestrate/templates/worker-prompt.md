@@ -20,6 +20,12 @@ orchestratorが下表のplaceholderを埋め、本文をquoted heredocでshell�
 | `worktree` | `You are in a git worktree created for this task at <checkout_path> on branch <branch>. Work and commit here. Do not create another worktree and do not remove this one; the orchestrator removes it.` |
 | `tab`      | `Other agents are working in this repository in parallel. If you change files and neither you nor the skill you run creates a git worktree, create one and work there instead of the main checkout.`   |
 
+kind `worktree` で、boardの `Base` が依存先のbranchなら、上の文面の後ろへ、空白1つを挟んで次の文を続ける。`<base>` はそのbranch名である。workerとskillはdefault branchを比較の基準にするので、伝えないと依存先の変更まで自分の差分に数え、PRもdefault branchへ向ける。
+
+```text
+This branch is stacked on <base>, the branch of an earlier task that is not merged yet. Treat <base> as the base branch: compare your changes against it, and if you open a pull request, target <base> instead of the default branch.
+```
+
 ## 本文
 
 ```text
