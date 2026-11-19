@@ -21,10 +21,11 @@ tree-sitter = "latest"
     yobirin install --profile codex --icon ~/.dotfiles/assets/notify-codex.png
 ''' }
 # IMEはPKGのインストーラーで/Library/Input Methodsへ配置する必要がある
-"github:koyasi777/mozkey" = { version = "latest", asset_pattern = "Mozkey_v*_macos_universal.pkg", format = "raw", bin = "mozkey.pkg", postinstall = '''
-    chmod -x "$MISE_TOOL_INSTALL_PATH/mozkey.pkg"
-    sudo /usr/sbin/installer -pkg "$MISE_TOOL_INSTALL_PATH/mozkey.pkg" -target /
-''' }
+# mise installが失敗するため一時的に無効化する
+# "github:koyasi777/mozkey" = { version = "latest", asset_pattern = "Mozkey_v*_macos_universal.pkg", format = "raw", bin = "mozkey.pkg", postinstall = '''
+#     chmod -x "$MISE_TOOL_INSTALL_PATH/mozkey.pkg"
+#     sudo /usr/sbin/installer -pkg "$MISE_TOOL_INSTALL_PATH/mozkey.pkg" -target /
+# ''' }
 
 [bootstrap.packages]
 # For macOS
