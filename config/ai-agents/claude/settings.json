@@ -101,7 +101,7 @@
       "/private/tmp"
     ]
   },
-  "model": "claude-fable-5-2",
+  "model": "claude-mythos-5-2",
   "hooks": {
     "PreToolUse": [
       {
@@ -158,6 +158,15 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/herdr-agent-state.sh session",
             "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/sh -c 'rex __internal session-start --agent claude --feature-session-naming=false 2>/dev/null || true'",
+            "timeout": 5
           }
         ]
       }

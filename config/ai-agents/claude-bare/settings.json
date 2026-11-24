@@ -175,6 +175,7 @@
   "timeFormat": "auto",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
+  "theme": "dark",
   "autoCompactEnabled": true,
   "idleCompaction": false,
   "autoContinueAtUsageLimit": true,
@@ -182,5 +183,9 @@
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "theme": "dark"
+  "modelSettings": {
+    "claude-mythos-5-2": {
+      "effortLevel": "high"
+    }
+  }
 }
