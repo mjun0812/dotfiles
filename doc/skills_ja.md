@@ -35,13 +35,13 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`、`
 
 ### Agents
 
-3つのagentはすべて[`mjun0812/skills`](https://github.com/mjun0812/skills/tree/main/agents)から取得します。
+3つのagentはすべて[`mjun0812/skills`](https://github.com/mjun0812/skills/tree/main/agents/.apm/agents)から取得します。
 
-| Agent                                                                                                     | 用途                                                                                           |
-| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [`code-reviewer-contract`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-contract.md) | spec contractに明記されたrequirements、boundaries、acceptance criteriaとの整合だけを検査する。 |
-| [`code-reviewer-finder`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-finder.md)     | 変更が導入または露出した、対応すべき動作不良やregressionを発見する。                           |
-| [`code-reviewer-verifier`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-verifier.md) | review候補1件の反証を試み、confirmed、refuted、uncertainのverdictを返す。                      |
+| Agent                                                                                                                 | 用途                                                                                           |
+| --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [`code-reviewer-contract`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-contract.md) | spec contractに明記されたrequirements、boundaries、acceptance criteriaとの整合だけを検査する。 |
+| [`code-reviewer-finder`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-finder.md)     | 変更が導入または露出した、対応すべき動作不良やregressionを発見する。                           |
+| [`code-reviewer-verifier`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-verifier.md) | review候補1件の反証を試み、confirmed、refuted、uncertainのverdictを返す。                      |
 
 ## Skill一覧
 

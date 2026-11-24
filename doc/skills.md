@@ -34,13 +34,13 @@ APM deploys these packages to the `agent-skills` / `antigravity` / `claude` / `c
 
 ### Agents
 
-All three agents come from [`mjun0812/skills`](https://github.com/mjun0812/skills/tree/main/agents).
+All three agents come from [`mjun0812/skills`](https://github.com/mjun0812/skills/tree/main/agents/.apm/agents).
 
-| Agent                                                                                                     | Purpose                                                                                                 |
-| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| [`code-reviewer-contract`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-contract.md) | Check a change only against the requirements, boundaries, and acceptance criteria in its spec contract. |
-| [`code-reviewer-finder`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-finder.md)     | Find actionable behavioral defects and regressions introduced or exposed by a change.                   |
-| [`code-reviewer-verifier`](https://github.com/mjun0812/skills/blob/main/agents/code-reviewer-verifier.md) | Try to refute one review candidate and return a confirmed, refuted, or uncertain verdict.               |
+| Agent                                                                                                                 | Purpose                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| [`code-reviewer-contract`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-contract.md) | Check a change only against the requirements, boundaries, and acceptance criteria in its spec contract. |
+| [`code-reviewer-finder`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-finder.md)     | Find actionable behavioral defects and regressions introduced or exposed by a change.                   |
+| [`code-reviewer-verifier`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-verifier.md) | Try to refute one review candidate and return a confirmed, refuted, or uncertain verdict.               |
 
 ## Skill List
 

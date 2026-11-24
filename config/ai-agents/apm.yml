@@ -13,38 +13,37 @@ targets:
   - opencode
 dependencies:
   apm:
-    - git: mjun0812/skills
-      skills:
-        - claude
-        - codex
-        - deep-research
-        - doc-sync
-        - duckdb
-        - exhtml
-        - exmd
-        - experiment-plan
-        - git-commit
-        - git-fix-conflict
-        - git-squash
-        - github-fix-ci
-        - github-issue-create
-        - github-issue-update
-        - github-pr-create
-        - github-pr-fix
-        - github-pr-review
-        - github-resolve-pr-comment
-        - japanese-writing
-        - chat-note
-        - resume-other-agent
-        - self-review
-        - skill-review
-        - test-prune
-        - wezterm-control
-        - writing-skills
-    - git: vercel-labs/agent-browser
-      ref: ">=0.36.0"
-      skills:
-        - agent-browser
+    # Each skill is listed by subpath: a whole-package entry with a skills: selection
+    # is parked for Claude, which only loads a package with .claude-plugin as a whole plugin.
+    - mjun0812/skills/skills/delegation/claude
+    - mjun0812/skills/skills/delegation/codex
+    - mjun0812/skills/skills/research/deep-research
+    - mjun0812/skills/skills/docs/doc-sync
+    - mjun0812/skills/skills/tools/duckdb
+    - mjun0812/skills/skills/docs/exhtml
+    - mjun0812/skills/skills/docs/exmd
+    - mjun0812/skills/skills/planning/experiment-plan
+    - mjun0812/skills/skills/git/git-commit
+    - mjun0812/skills/skills/git/git-fix-conflict
+    - mjun0812/skills/skills/git/git-squash
+    - mjun0812/skills/skills/github/github-fix-ci
+    - mjun0812/skills/skills/github/github-issue-create
+    - mjun0812/skills/skills/github/github-issue-update
+    - mjun0812/skills/skills/github/github-pr-create
+    - mjun0812/skills/skills/github/github-pr-fix
+    - mjun0812/skills/skills/github/github-pr-review
+    - mjun0812/skills/skills/github/github-resolve-pr-comment
+    - mjun0812/skills/skills/writing/japanese-writing
+    - mjun0812/skills/skills/docs/chat-note
+    - mjun0812/skills/skills/delegation/resume-other-agent
+    - mjun0812/skills/skills/review/self-review
+    - mjun0812/skills/skills/agent-skill/skill-review
+    - mjun0812/skills/skills/review/test-prune
+    - mjun0812/skills/skills/tools/wezterm-control
+    - mjun0812/skills/skills/agent-skill/writing-skills
+    # A subpath entry carries one skill only, so the reviewer agents come from their own package.
+    - mjun0812/skills/agents
+    - vercel-labs/agent-browser/skills/agent-browser#>=0.36.0
     - remorses/playwriter/skills/playwriter
     - herdrdev/herdr/skills/herdr#>=0.8.0
     - modem-dev/hunk/packages/hunk/skills/hunk-review#>=0.24.0
