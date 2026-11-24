@@ -19,7 +19,8 @@ lintを実行するのはmjun系skillである。mjun-implementの検証コマ�
 .mjun/lint/
 ├── sgconfig.yml      # ast-grepの設定 (ruleDirs: [rules])
 ├── rules/<id>.yml    # ast-grepのrule。1 rule 1ファイル
-└── scripts/<id>.sh   # ast-grepで書けないlint。`zsh <script> <file>...` で呼ばれる
+├── scripts/<id>.sh   # ast-grepで書けないlint。`zsh <script> <file>...` で呼ばれる
+└── backlog.tsv       # レビューで出た書き方の指摘。mjun-implementが貯め、`scripts/backlog.sh` が読み書きする
 ```
 
 - `.mjun/` はglobal gitignoreでGit管理外にしてあるので、repositoryの `.gitignore` は変えない
@@ -29,7 +30,7 @@ lintを実行するのはmjun系skillである。mjun-implementの検証コマ�
 
 ## 手順
 
-1. **規約を集める**: 依頼に出典があればそれを、無ければ `CLAUDE.md`、`AGENTS.md`、`.mjun/steering/`、ADR (`docs/adr/` と `.mjun/steering/adr/`)、READMEの規約節を読む。レビュー指摘からは、2回以上出たものだけを対象にする。1回の指摘をlintにすると、例外の多いlintが増えるからである
+1. **規約を集める**: 依頼に出典があればそれを、無ければ `CLAUDE.md`、`AGENTS.md`、`.mjun/steering/`、ADR (`docs/adr/` と `.mjun/steering/adr/`)、READMEの規約節を読む。レビュー指摘からは、2回以上出たものだけを対象にする。1回の指摘をlintにすると、例外の多いlintが増えるからである。mjun-implementが貯めた指摘は、`zsh <skill-dir>/scripts/backlog.sh list <repo-root> 2` で、2回以上出たものを種類ごとに読める
 2. **規約ごとに判定する**
    - 完全: 規約の文面が対象とする書き方を、lintがすべて判定できる
    - 部分: 一部の書き方しか判定できない (名前による近似など)
@@ -40,6 +41,7 @@ lintを実行するのはmjun系skillである。mjun-implementの検証コマ�
 5. **確かめる**: 違反を含む例と正しい例を一時ファイルに書き、lintが前者だけを検出することを実行して確かめ、一時ファイルを消す。次にrepository全体へ1回実行し、既存の違反の件数を数える。既存の違反があれば、触ったファイルで直すことになるので、`severity: error` のままにするか、`warning` (報告だけで止めない) にするかをユーザーに選んでもらう
 6. **文書を更新する**: repositoryの文書 (`CLAUDE.md`、`AGENTS.md`、README、Git管理のADR) は変えない。localのlintは他の人には見えず、`.mjun/` のパスを書くと開けない参照が残るからである。localの文書 (`.mjun/steering/`、ローカルのADR) は、規約の文章を残したまま、lintの場所を添える。ローカルのADRには `Enforced by: .mjun/lint/rules/<id>.yml` の行を足す
 7. **報告する**: 規約ごとの表で示す。列は判定、lintのファイル、確かめた結果 (違反例を検出し、正しい例を検出しなかったか)、既存の違反の件数、選んだseverityである。部分の規約が拾わない範囲と、不可の規約とその理由も書く
+8. **候補を閉じる**: 貯めた指摘からlintを作ったとき、または作らないと決めたときは、`zsh <skill-dir>/scripts/backlog.sh close <repo-root> <key> <理由>` で閉じる。閉じないと、mjun-implementが完了のたびに同じ候補を知らせ続ける
 
 ## 作成済みのlintを直す・消す
 
