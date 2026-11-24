@@ -106,6 +106,15 @@ jobs:
             if [[ "$name" = "hunk" ]]; then
               target="$target/config.toml"
             fi
+            if [[ "$name" = "gh" ]]; then
+              target="$target/config.yml"
+            fi
+            if [[ "$name" = "git" ]]; then
+              target="$target/ignore"
+            fi
+            if [[ "$name" = "rex" ]]; then
+              target="$target/init.lua"
+            fi
             if [[ -L "$target" ]]; then
               echo "✓ .config/$name is a symlink"
             else
