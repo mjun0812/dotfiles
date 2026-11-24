@@ -20,12 +20,15 @@ set -euo pipefail
 # 応答がこの秒数未満で終わったターンではstopの通知を出さない。
 MIN_ELAPSED_SEC=300
 
-# mjun-orchestrateのworkerは、orchestratorがpaneにこの変数を付けて起動する。
-# workerの状態はorchestratorが受け取ってユーザーへ伝えるので、ここでは通知しない。
-[[ -n ${MJUN_ORCH_WORKER:-} ]] && exit 0
-
 EVENT="${1:-stop}"
 INPUT="$(cat || true)"
+
+# mjun-orchestrateのworkerの状態は、orchestratorが受け取ってユーザーへ伝えるので、ここでは通知しない。
+# workerかどうかはorch-worker-report.shが依頼の本文から見分け、止まったときは報告の要点をorchestratorへ送る。
+# Codexは共有のdaemonでhookを動かすので、orchestratorがpaneに付けるMJUN_ORCH_WORKERはここに届かない。
+if printf '%s' "$INPUT" | "${BASH_SOURCE[0]%/*}/orch-worker-report.sh" "$EVENT"; then
+    exit 0
+fi
 
 jq_get() {
     printf '%s' "$INPUT" | jq -r "($1) // \"\"" 2>/dev/null || printf ''

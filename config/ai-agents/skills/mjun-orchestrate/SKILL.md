@@ -45,12 +45,20 @@ agent種別はAskUserQuestionで選んでもらい、モデルはその後にユ
 
 起動に失敗したとき (usage limitや認証切れを含む) は、選択したagent種別 → `claude` → `codex` → `opencode` の順に失敗した種別を飛ばして起動し直す。切り替え先ではモデルの指定を省き、CLIの既定モデルで起動したことをユーザーに伝える。3種類とも失敗したら中止して報告する。モデル名が存在しない場合だけは切り替えず、ユーザーにモデル名を入力し直してもらう。
 
+## 仕上げ方
+
+ファイルを変更するtaskをどこまで進めて終えるか(commitまで、PRの作成まで、mergeまで)を、boardの `Finish` に持つ。最初は `任せる` で、依頼文には何も足さず、workerとskillの既定に任せる。
+
+ユーザーが仕上げ方を指示したら、そのtaskに限ると言われない限り `Finish` を書き換え、以後のtaskにも使う。同じ指示を毎回言い直させないためである。書き換えたら、以後のtaskにも使うことを1行で伝える。mergeとpushは取り消せないので、`Finish` に書くのはユーザーが言った範囲までとし、orchestratorが広げない。
+
+`Finish` が `任せる` 以外なら、ファイルを変更するtaskの依頼文に仕上げ方を含める。skillに対応する引数があればそれを使い(例: `/mjun-implement #12 --pr`)、無ければ文で書く(例: 「終わったらPRを作成し、CIが通ったらmergeしてください」)。作業したworkerが仕上げまで行えば、PRやmergeのためだけに、経緯を知らないworkerを起動し直さずに済む。
+
 ## 名前とlabel
 
 - orchestratorの名前: `orch` (tab labelが `orch` のtabがすでにあれば `orch-2`, `orch-3`)。worker名の接頭辞とrun dirに使い、tab labelにもする。元のtab labelはPhase 8で戻すためにboardへ記録する
 - orchestrator自身のHerdrのagent名は変えない。サイドバーのagent欄に出るagentの種類(claude・codexなど)が名前で隠れるためである。workerからの報告の宛先には、agent名の代わりに自分のpane ID (`$HERDR_PANE_ID`)を使う
 - worker tab (kind `tab` のtask): `workers` のpaneを分割してworkerを増やす。1 tabのpaneは8つまでとし、空きが無ければ `workers 2`, `workers 3` と新しいtabを作る。同時に動かすworker数に上限は設けない
-- worktree workspace (kind `worktree` のtask): taskごとに1つ。Herdrがorchestratorのworkspaceの子としてbranch名で表示する
+- worktree workspace (kind `worktree` のtask): taskごとに1つ。Herdrがbranch名で表示する
 - workerのagent名: `<orch名>-<slug>`。32文字以内、`[a-z][a-z0-9_-]*`
 - pane label: 作業中は `<slug>` だけにする。ユーザーの判断待ちか止まっているときは、`! <slug> <次の行動>` にする。作業中かどうかはHerdrのサイドバーがagentの状態として表示するが、ユーザーの判断が要るかはHerdrには分からないので、そこにだけ印を付けて画面で見つけられるようにする
 
@@ -67,15 +75,39 @@ paneを閉じる前に、workerのagentを自分の終了コマンドで終わ�
 
 ## 報告ファイル
 
-workerは結果を `<run-dir>/<slug>.md` に書く。`<run-dir>` はPhase 1で作る `<repo-root>/.mjun/orchestrate/<orch名>-<開始時刻>/`。paneを閉じた後もorchestratorがcontextを失った後も結果が残るよう、transcriptではなくファイルを正にしている。書式 (`Status:` / `PR:` / `Branch:` / `## Result` / `## Verification` / `## Next`) と完了時の `DONE` 報告は [templates/worker-prompt.md](templates/worker-prompt.md) で指定する。
+workerは結果を `<run-dir>/<slug>.md` に書く。`<run-dir>` はPhase 1で作る `<repo-root>/.mjun/orchestrate/<orch名>-<開始時刻>/`。paneを閉じた後もorchestratorがcontextを失った後も結果が残るよう、transcriptではなくファイルを正にしている。書式(`Status:` / `PR:` / `Branch:` / `## Result` / `## Verification` / `## Next`)は [templates/worker-prompt.md](templates/worker-prompt.md) で指定する。
+
+workerが止まると、報告ファイルの `Status:` の値、worker名、`## Result` の最初の行が、1行のmessageとしてorchestratorのpaneへ届く(例: `DONE orch-english-docs: READMEを英語にした`)。claudeとcodexでは、workerのStop hook(`hooks/orch-worker-report.sh`)が、報告ファイルの変わったStopのたびに送る。workerに送らせると、turnの途中で届き、送り忘れも起きるためである。hookは、依頼の本文にある報告ファイルのパスの文でworkerのsessionを見分ける。そのため、`dispatch.sh` を通さずに送った依頼では報告が届かない。Stop hookを持たないagent種別では、完了したときだけ、worker自身が `DONE` で始まる行を送る。
 
 `Status:` は、workerが終えたか止まったかとその理由を4つの値で示し、orchestratorが次の行動を報告ファイルから決められるようにする。`## Verification` には、workerが結果を確かめたコマンドとその出力を書かせる。完了を主張ではなく証拠で受け取り、確かめていない部分をユーザーが判断できるようにするためである。
+
+## memory
+
+workerは、後のworkerへ引き継ぐことを `<run-dir>/memory.md` に書き足し、起動したらまずこれを読む。完了したworkerはpaneごと閉じるので、続きの依頼は経緯を知らない新しいworkerに渡る。起動したままにしたprocess、repositoryの外に作ったbuildやworktree、依頼に無くworkerが決めたこと、環境の癖は、repositoryと履歴のどちらを見ても分からない。memoryが無いと、orchestratorが依頼文へ書き写すか、後のworkerが調べ直すことになる。
+
+読み書きの手順は [templates/worker-prompt.md](templates/worker-prompt.md) で指定する。orchestratorは書かず、依頼文へ写すためにも読まない。報告ファイルはユーザーが判断するためのもので、memoryは後のworkerが作業を続けるためのものである。
 
 ## board
 
 計画と進捗は `<run-dir>/board.md` に書き、会話には持たない。会話にしか無い記録は、contextの圧縮で消える。未着手のtaskの依頼文と依存、ユーザーへ伝えたかどうか、元のtab labelは、Herdrのstateと報告ファイルのどちらにも残らないので、消えると作り直せない。
 
 boardはorchestratorだけが書く。taskの状態が変わったら、ユーザーへ何か出力するより先にboardを更新する。workerの今の状態はHerdrのstateと報告ファイルが正で、boardの値はorchestratorが最後に確かめたものである。食い違えば、Herdrのstateと報告ファイルに合わせてboardを直す。
+
+boardの書き換えは `scripts/board.sh` で行う。書き換えのたびにその場でscriptを書くと、出力が増え、`status.sh` が読む書式も揺れる。`<skill-dir>` は、このSKILL.mdのあるディレクトリである。
+
+```sh
+# taskを足す。依頼文はstdinから読む。Status: pending、Told: yes、Blocked by: none、Stops: 0を既定で書く
+zsh <skill-dir>/scripts/board.sh add <run-dir> <slug> 'Agent=<agent種別>:<モデル>' Kind=worktree Branch=<branch> <<'EOF'
+<依頼文>
+EOF
+
+# フィールドを書き換える。無ければ足す。値が now なら今の時刻になる。slugを - にするとboardの先頭を書き換える
+zsh <skill-dir>/scripts/board.sh set <run-dir> <slug> Status=done Told=no Finished=now 'Result=<1行の結果>'
+zsh <skill-dir>/scripts/board.sh set <run-dir> - 'Finish=<仕上げ方>'
+
+# Told: noをすべてyesにし、Last tableを今の時刻にする
+zsh <skill-dir>/scripts/board.sh told <run-dir>
+```
 
 contextを失ったら、まずboardを読む。run dirのパスも失っていれば、`<repo-root>/.mjun/orchestrate/` のうち `<orch名>-` で始まる最新のdirがそれである。続けて `herdr agent list`、`herdr workspace list`、`herdr pane list` と報告ファイルで、boardの値を確かめる。
 
@@ -86,6 +118,7 @@ contextを失ったら、まずboardを読む。run dirのパスも失ってい�
 - Original tab label: <Phase 1で取得したlabel>
 - Repository: <repo-root> (default branch <default branch>)
 - Workers: <agent種別> / <モデル。省略したら既定>
+- Finish: <仕上げ方。指示が無ければ「任せる」>
 - Last table: <最後に状態の表をユーザーへ出した時刻>
 
 ## <slug>
@@ -114,7 +147,7 @@ Request:
   - `needs-user`: ユーザーの判断か対応を待っている。pane labelの先頭は `!`
   - `done`: 結果を記録してpaneを閉じた
 - `Told`: 今の `Status` と `Result` をユーザーへ伝えたか。`done` か `needs-user` へ変わったら `no` とし、伝えたら `yes` とする
-- `Branch` と `Base` はkind `worktree` のときだけ書く。`Worker` は起動してから書く
+- `Branch` と `Base` はkind `worktree` のときだけ書く。`Worker` と `Started` は、依頼を送る `dispatch.sh` が書く
 - 時刻は `date '+%Y-%m-%d %H:%M'` の出力を書く
 
 `## <slug>` の見出しと `- <名前>: <値>` の行は、状態の表を作る `scripts/status.sh` が読む。この形を変えず、値は1行に収め、依頼文は字下げして書く。
@@ -126,10 +159,10 @@ Phase 1を終えるとmodeに入り、ユーザーが終了を指示するまで
 - 作業依頼 (実装、修正、文書作成、調査、比較検討、既存コードのレビューなど): Phase 2から流す。編集を伴わない作業も、subagentに任せたくなる規模の作業も、subagentではなくtaskとしてworkerへ流す。ユーザーがpaneで経過を見られ、orchestratorのcontextを調整に使い続けられるためである
 - 質問や状況確認: workerには何も送らずに答える。状況確認には、「ユーザーへの報告」の状態の表を出す
 - 実行中のworkerへの追加指示: 対象のworkerへそのまま送る。全員に関わる指示は、影響するworker全員へ同じ文面で送る
-- 設定の変更 (agent種別、モデル): boardの `Workers` を書き換え、以後に起動するworkerから適用する
+- 設定の変更(agent種別、モデル、仕上げ方): boardの `Workers` か `Finish` を書き換え、以後に起動するworkerから適用する
 - 終了の指示 (「orchestration終了」など): Phase 7とPhase 8を行い、modeを抜ける
 
-`DONE` で始まるmessageはworkerからの報告であり、ユーザーの依頼ではない。Phase 5で扱う。
+報告ファイルの `Status:` の値(`DONE`、`DONE_WITH_CONCERNS`、`NEEDS_CONTEXT`、`BLOCKED`)で始まるmessageは、workerからの報告であり、ユーザーの依頼ではない。Phase 5で扱う。
 
 ### ユーザーへの報告
 
@@ -145,7 +178,7 @@ Phase 1を終えるとmodeに入り、ユーザーが終了を指示するまで
 
 表は、boardを更新してから `zsh <skill-dir>/scripts/status.sh <run-dir>` を実行し、出力をそのまま貼る。`<skill-dir>` は、このSKILL.mdのあるディレクトリである。scriptは、boardと `herdr agent list` と報告ファイルを合わせて、taskごとの状態と経過時間を出す。orchestratorが自分で表を組むと、workerが増えるほど転記でcontextを使い、boardとHerdrの食い違いにも気付けない。
 
-表を出したら `Last table` を今の時刻へ書き換え、要点を伝えたtaskの `Told` を `yes` にする。`Told` の書き換えは、表を作った後で行う。scriptは伝え終えた完了taskを表から外し、件数だけを出す。先に書き換えると、完了したばかりのtaskが表から消える。`Told: no` のtaskが残っていたら、次に表を出すときに要点もあわせて伝える。
+表を出したら `board.sh told <run-dir>` を実行し、`Last table` を今の時刻に、`Told: no` のtaskをすべて `yes` にする。実行するのは表を作った後にする。`status.sh` は伝え終えた完了taskを表から外し、件数だけを出す。先に書き換えると、完了したばかりのtaskが表から消える。表を出すときは、`Told: no` のtaskの要点をすべて伝える。伝えていないtaskまで `yes` になるのを防ぐためである。
 
 ## Task
 
@@ -172,32 +205,34 @@ Phase 1を終えるとmodeに入り、ユーザーが終了を指示するまで
 - branch名 (kind `worktree` のみ): `<type>/<slug>`。依頼にIssue番号 `#N` があれば `<type>/<N>-<slug>`。`<type>` はConventional Commitsの種別。`git rev-parse --verify --quiet refs/heads/<branch>` で既存branchと衝突したら末尾に `-2`, `-3` を付ける
   - 例外として、`/mjun-implement` の対象spec (引数のslugの `.mjun/specs/<slug>/`、`#N` なら `spec.md` に `Source: #N` を持つspec) の `tasks.md` に `Implementation Branch: <branch>` があれば、そのbranch名を使う。Herdrが既存branchをcheckoutし、skillがresumeとして採用する。そのbranchが別のworktreeにcheckout済みのため `herdr worktree create` が失敗したら、kindを `tab` に変えてskillに任せる
 - 依頼文: 人間がworkerのpaneに打つのと同じ文面。skillを使う作業ならskillの呼び出しと引数を書く (例: `/mjun-implement #12 --pr`)。ユーザーが指定したオプションはそのまま含め、ユーザーが決めていないことは補わない
+  - boardの `Finish` が `任せる` 以外なら、「仕上げ方」に従って含める
+  - 終わったtaskの続きなら、どのtaskの続きかをslugで添える(例: 「task `run-local` の続き」)。経緯や今の状態は書き写さなくてよい。workerがmemoryとそのtaskの報告ファイルで読めるうえ、orchestratorが書き写した値は古くなっていることがある
 - 依存 (Blocked by): 依存先が終わるまで起動しない。依存は、先のtaskの成果を使うかと、変更するファイルが重なるかで決める
   - ファイルを変更しないtask (調査、レビュー、質問) は、他のtaskの成果を読む場合を除いて依存を付けず、並列に流す。読むだけなら衝突しないためである
   - ファイルを変更するtask同士は、変更しそうなファイルが重なれば、実行中のtaskも含めて依存で直列にする。並列に変更すると、衝突を解く作業がユーザーに残るためである
   - 多くの変更が一緒に書き換えるファイル (hot spot) も重なりとして数える。一覧や登録表 (skill・command・routeの一覧など)、共有の設定とlockfile、repositoryの規約 (CLAUDE.md、AGENTS.mdなど) が「〜を変えたら更新する」と定めるファイルがそれに当たる。主に触るファイルが別でも、同じhot spotを更新しそうなtaskは直列にする。gitが衝突と見なさない書き換え (片方のrenameが、もう片方の追加した参照を壊すなど) は、merge後のtestでしか見つからない
   - 後続のworktreeは、依存先のbranchをbaseにしてPhase 3で作る。baseにできるbranchは1つなので、ファイルを変更する依存先が2つ以上あるtaskでは、その依存先同士にも依存を付けて1列に並べる。列の最後のbranchには、列にあるすべての変更が入る
 
-計画をboardに書き (`Status: pending`、`Told: yes`)、task、agent種別、kind、branch、依頼文、依存を簡潔に示して、確認は取らずPhase 3へ進む。
+計画を `board.sh add` でboardに書き、task、agent種別、kind、branch、依頼文、依存を簡潔に示して、確認は取らずPhase 3へ進む。
 
 ### Phase 3: worker paneの作成
 
 起動できるtask (依存なし、または依存先が終わっている) すべてにpaneを用意する。
 
-- kind `worktree`: 最初の1回だけ `git fetch origin <default branchのbranch部分>` を実行し、taskごとに `herdr worktree create --workspace "$HERDR_WORKSPACE_ID" --branch <branch> --base <base> --no-focus` を実行する。baseは、ファイルを変更した依存先があればそのbranchで、無ければdefault branchである。依存先が複数あれば、Phase 2で並べた列の最後のbranchを使う。依存先のbranchは、boardの `Branch` か、依存先の報告ファイルの `Branch:` で分かる。依存先の成果は、PRがmergeされるまでdefault branchに入らない。default branchから作ると、後続は依存先の成果を使えず、同じファイルの変更も衝突する。決めたbaseはboardの `Base` に書く。応答の `.result.workspace.workspace_id`、`.result.root_pane.pane_id`、`.result.workspace.worktree.checkout_path` を記録し、root paneをworkerに使う。`herdr worktree create` には `--env` が無いので、root paneで `herdr pane run <pane-id> 'export MJUN_ORCH_WORKER=1'` を実行する
+- kind `worktree`: worktreeを作る前に1回 `git fetch origin <default branchのbranch部分>` を実行し、taskごとに `herdr worktree create --cwd <repo-root> --branch <branch> --base <base> --no-focus` を実行する。repositoryは `--cwd` で指定する。`--workspace` で自分のworkspaceを渡すと、Herdrはそのworkspaceのrepositoryにworktreeを作るので、orchestratorのpaneが別のrepositoryのworkspaceにあると、そちらにbranchごと作られる。baseは、ファイルを変更した依存先があればそのbranchで、無ければdefault branchである。依存先のbranchがdefault branchへmerge済みなら、default branchをbaseにする。merge済みかは依存先の報告で分かる。依存先が複数あれば、Phase 2で並べた列の最後のbranchを使う。依存先のbranchは、boardの `Branch` か、依存先の報告ファイルの `Branch:` で分かる。依存先の成果は、PRがmergeされるまでdefault branchに入らない。default branchから作ると、後続は依存先の成果を使えず、同じファイルの変更も衝突する。決めたbaseはboardの `Base` に書く。応答の `.result.workspace.workspace_id`、`.result.root_pane.pane_id`、`.result.workspace.worktree.checkout_path` を記録し、root paneをworkerに使う。`herdr worktree create` には `--env` が無いので、root paneで `herdr pane run <pane-id> 'export MJUN_ORCH_WORKER=1'` を実行する
 - kind `tab`: paneが8つ未満のworker tabがあれば再利用する。無ければ `herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd <repo-root> --label "<label>" --no-focus --env MJUN_ORCH_WORKER=1` で作り、応答の `.result.tab.tab_id` と `.result.root_pane.pane_id` を記録して、root paneを1つ目のworkerに使う。2つ目以降は `herdr pane split <同じtabのpane-id> --direction right --cwd <repo-root> --no-focus --env MJUN_ORCH_WORKER=1` で分割し、応答の `.result.pane.pane_id` を記録する。分割の向きは `right` と `down` を交互に使う
 
 各paneを `herdr pane rename <pane-id> "<slug>"` にする。
 
-`MJUN_ORCH_WORKER` は、workerのclaude・codexのhookが通知を出さないようにする目印である。`notify-claude-hook.sh`・`notify-codex-hook.sh` がこの変数を見る。workerの状態はorchestratorが受け取ってユーザーへ伝えるので、workerごとに通知が出ると同じことが何重にも届く。ユーザーへの通知は、orchestrator自身のhookに任せる。
+`MJUN_ORCH_WORKER` は、依頼を受ける前のworkerのclaudeのhookが通知を出さないようにする目印である。`notify-claude-hook.sh` がこの変数を見る。workerの状態はorchestratorが受け取ってユーザーへ伝えるので、workerごとに通知が出ると同じことが何重にも届く。ユーザーへの通知は、orchestrator自身のhookに任せる。依頼を受けた後のworkerは、claudeとcodexのどちらでも、hookが依頼の本文から見分ける。Codexは共有のdaemonでhookを動かすので、paneに付けた変数はhookに届かない。
 
 ### Phase 4: workerの起動とdispatch
 
 起動するworkerが複数あれば、次の手順を1つずつ、全員分まとめて進める。全員分のコマンドを1回の応答で並列に出し、結果がそろってから次の手順へ進む。並列に出せない環境では、手順ごとに順に実行する。1体ずつ最後の手順まで進めると、起動と受領確認の待ち時間がworkerの数だけ積み重なる。途中で失敗したworkerには、その場で各手順の対処をする。ほかのworkerの手順は止めない。
 
 1. **起動する**: `herdr agent start <worker> --kind <agent種別> --pane <pane-id> --timeout 60000 -- <argv>`。`agent_not_ready` が返ったら `herdr agent read <worker> --source visible --lines 40` で画面を読む。自動応答してよいdialogなら答えて `herdr agent wait <worker> --until idle --timeout 60000` で待ち、それ以外はユーザーに確認する。usage limit、認証、model不在の文言が見えたら `herdr agent send-keys <worker> ctrl+c ctrl+c` で終了し、`herdr pane read` でshellに戻ったことを確かめてから、「workerのagent種別とモデル」に従って起動し直す
-2. **dispatchする**: `herdr agent get <worker>` の `state_change_seq` を記録してから、[templates/worker-prompt.md](templates/worker-prompt.md) を埋めた本文をquoted heredocでshell変数に入れ、`herdr agent prompt <worker> "$task_prompt"` と1引数で送る。依頼文には `$` やbacktickが入りうるので、shellに展開させると文面が変わる。`--wait` は付けない (1つ目のworkerで待ち続けてしまう)
-3. **受領を確認する**: `agent_prompted` は送信できたことしか示さないので、受領はstateで判定する。`herdr agent wait <worker> --until working --timeout 15000` が返り、`state_change_seq` が記録した値より進んでいれば受領とみなす。そうでなければ画面を読み、dialogなら答え、usage limitや認証ならagent種別を切り替えて同じ本文を再送し、変化が無ければ同じ本文を1回だけ再送する。受領したらboardを `Status: running` にして、`Worker` と `Started` を書く。再送後も受領しなければpaneを `! <slug> 応答なし` にし、boardを `needs-user` にする
+2. **dispatchする**: `zsh <skill-dir>/scripts/dispatch.sh <run-dir> <slug>` を実行する。scriptは、boardの依頼文と [templates/worker-prompt.md](templates/worker-prompt.md) から本文を組み立ててworkerへ送り、`state_change_seq` が進んだかで受領を確かめる。受領したら、scriptがboardを `Status: running` にして `Worker` と `Started` を書き、`received` を出力する。orchestratorが書き足すものは無い。本文をorchestratorが書き出すと、出力が増え、写し間違いも起きる
+3. **受領しなかったときに対処する**: scriptが `not-received` を出力したら、画面を読む。dialogなら答え、usage limitや認証ならagent種別を切り替えてから、scriptをもう一度実行する。画面に変化が無ければ、そのまま1回だけ実行し直す。それでも受領しなければpaneを `! <slug> 応答なし` にし、boardを `needs-user` にする
 4. **waitを張る**: 受領したworkerごとに `herdr agent wait <worker> --timeout 1800000` (`--until` なし) をbackgroundで1本実行する。`agent get` を短い間隔で繰り返すとcontextとturnを浪費するので、stateの変化はwaitで受け取る。backgroundで実行できない環境では、起動済みのworkerを順に待つ
 
 全員にwaitを張ったら、「ユーザーへの報告」に従って状態の表を出す。
@@ -217,8 +252,8 @@ workerに何か送ったらwaitを張り直す。
 
 完了と停止の判定では、次の点を誤りやすい。
 
-- workerの `DONE` 報告は `herdr agent prompt <orchestratorのpane ID>` 経由でuser messageとして届く。`DONE` が届き、stateが `idle` / `done` になっていれば完了としてPhase 6へ進む。stateが `working` のままなら、まだ終わっていない
-- `idle` / `done` なのに `DONE` が無ければ、報告ファイルの `Status:` で止まった理由を判断する。報告ファイルか `Status:` が無ければ、transcriptの最後を読んで同じように判断する
+- workerの報告は、「報告ファイル」に書いた1行のuser messageとして届く。`NEEDS_CONTEXT` か `BLOCKED` で始まるものは、下の同じ値の項に従う。`DONE` か `DONE_WITH_CONCERNS` で始まるものは、届いた時点でworkerのstateがまだ `working` のことがある。Stop hookはHerdrがstateを更新するより先に送ることがあり、hookを持たないagent種別のworkerはturnの途中で送るためである。そのため、まず `herdr agent wait <worker> --until idle --until done --timeout 120000` で止まるのを待ち、止まったら完了としてPhase 6へ進む。待っていることはユーザーに伝えない。数秒で終わる待ちを知らせても、ユーザーの判断には使えないためである。timeoutしても `working` のままなら、workerは報告の後も作業を続けているので、まだ終わっていないものとして扱う。Phase 4で張ったwaitも同じ完了で返るが、すでに扱ったものなので何もしない
+- `idle` / `done` なのに報告が届いていなければ、報告ファイルの `Status:` で止まった理由を判断する。報告ファイルか `Status:` が無ければ、transcriptの最後を読んで同じように判断する
   - `DONE` か `DONE_WITH_CONCERNS`: 完了としてPhase 6へ進む。orchestratorがAskUserQuestionでユーザーの回答を待つ間は、orchestrator自身が `blocked` なので、workerの `DONE` 報告も `agent_blocked` で拒否されて届かない
   - `NEEDS_CONTEXT`: workerは、自分では得られない情報か判断を待っている。ユーザーの依頼と会話から答えが決まるなら、その情報を添えて続きを頼む。決まらなければ `needs-user` にする
   - `BLOCKED`: workerは自力では進めない。元の依頼文や「続けて」は送らず、`needs-user` として報告に書かれた原因を伝える。同じ指示では同じところで止まるためである。ユーザーが原因を取り除いたら、そのことを添えて続きを頼む
