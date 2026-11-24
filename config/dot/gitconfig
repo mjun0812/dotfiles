@@ -7,7 +7,6 @@
   pager = delta
   editor=vim
   ignorecase=false
-  excludesfile = ~/.gitignore
   quotepath = false
 
 [branch]

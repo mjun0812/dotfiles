@@ -65,6 +65,9 @@ normalize "$HOME/.codex/hooks.json" 'bash ~/.codex/herdr-agent-state.sh '
 
 if [ -d "${XDG_CONFIG_HOME:-$HOME/.config}/opencode" ]; then
     herdr integration install opencode
+    # herdrはOpenCode v1用のtui.jsoncも毎回書くが、v2が読むのはcli.jsonのpluginsだけなので消す。
+    # 消すとherdr integration statusはneeds repairと表示するが、v2の連携は動く。
+    rm -f "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/tui.jsonc"
 else
     echo "skip herdr integration install opencode: config directory not found"
 fi

@@ -2,10 +2,13 @@
 
 # config/dotとconfig/dot_configにファイルを足したら、ここにもエントリを足す
 [dotfiles]
+
+# ------------------------------------------------------------------------------
+# ホーム直下: config/dot/<name> -> ~/.<name>
+# ------------------------------------------------------------------------------
 "~/.editorconfig" = "~/.dotfiles/config/dot/editorconfig"
 "~/.emacs" = "~/.dotfiles/config/dot/emacs"
 "~/.gitconfig" = "~/.dotfiles/config/dot/gitconfig"
-"~/.gitignore" = "~/.dotfiles/config/dot/gitignore"
 "~/.hammerspoon" = "~/.dotfiles/config/dot/hammerspoon"
 "~/.npmrc" = "~/.dotfiles/config/dot/npmrc"
 "~/.p10k.zsh" = "~/.dotfiles/config/dot/p10k.zsh"
@@ -18,6 +21,9 @@
 "~/.zshenv" = "~/.dotfiles/config/dot/zshenv"
 "~/.zshrc" = "~/.dotfiles/config/dot/zshrc"
 
+# ------------------------------------------------------------------------------
+# ~/.config (ディレクトリごと): config/dot_config/<name> -> ~/.config/<name>
+# ------------------------------------------------------------------------------
 "~/.config/aerospace" = "~/.dotfiles/config/dot_config/aerospace"
 "~/.config/bat" = "~/.dotfiles/config/dot_config/bat"
 "~/.config/bun" = "~/.dotfiles/config/dot_config/bun"
@@ -32,36 +38,64 @@
 "~/.config/starship.toml" = "~/.dotfiles/config/dot_config/starship.toml"
 "~/.config/uv" = "~/.dotfiles/config/dot_config/uv"
 "~/.config/zsh" = "~/.dotfiles/config/dot_config/zsh"
+
+# ------------------------------------------------------------------------------
+# ~/.config (設定ファイルだけ)
 # アプリが同じディレクトリに状態を書くので、ディレクトリは実体にしてファイルだけをlinkする
+# ------------------------------------------------------------------------------
 "~/.config/cli-proxy-api/config.yaml" = "~/.dotfiles/config/dot_config/cli-proxy-api/config.yaml"
+"~/.config/gh/config.yml" = "~/.dotfiles/config/dot_config/gh/config.yml"
+"~/.config/git/ignore" = "~/.dotfiles/config/dot_config/git/ignore"
 "~/.config/herdr/config.toml" = "~/.dotfiles/config/dot_config/herdr/config.toml"
 "~/.config/hunk/config.toml" = "~/.dotfiles/config/dot_config/hunk/config.toml"
+"~/.config/rex/init.lua" = "~/.dotfiles/config/dot_config/rex/init.lua"
 
-# Codexが書き足すローカル状態 ([projects.*]や[hooks.state]) を残し、テンプレートのキーだけを書き込む
-"~/.codex/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex/config.toml", merge = true }
-"~/.codex-bare/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex-bare/config.toml", merge = true }
-# Antigravity CLIは起動のたびにファイルを書き直し、trustedWorkspacesを書き足すので、symlinkにできない
-"~/.gemini/antigravity-cli/settings.json/dotfiles" = { source = "~/.dotfiles/config/ai-agents/gemini/antigravity-cli/settings.json", merge = true }
-
-# agent向け。AGENTS_global.mdはCodex・Gemini・OpenCodeが同じファイルを読む
+# ------------------------------------------------------------------------------
+# AI agent: 設定ファイル
+# AGENTS_global.mdはCodex・Gemini・OpenCodeが同じファイルを読む
+# ------------------------------------------------------------------------------
+# 共通
 "~/.apm/apm.yml" = "~/.dotfiles/config/ai-agents/apm.yml"
-"~/.claude-bare/settings.json" = "~/.dotfiles/config/ai-agents/claude-bare/settings.json"
+
+# Claude Code
 "~/.claude/CLAUDE.md" = "~/.dotfiles/config/ai-agents/claude/CLAUDE.md"
 "~/.claude/rules" = "~/.dotfiles/config/ai-agents/rules"
 "~/.claude/settings.json" = "~/.dotfiles/config/ai-agents/claude/settings.json"
 "~/.claude/statusline.py" = "~/.dotfiles/config/ai-agents/claude/statusline.py"
 "~/.claude/subagent_statusline.py" = "~/.dotfiles/config/ai-agents/claude/subagent_statusline.py"
-"~/.codex-bare/hooks.json" = "~/.dotfiles/config/ai-agents/codex-bare/hooks.json"
-"~/.codex-bare/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
+"~/.claude-bare/settings.json" = "~/.dotfiles/config/ai-agents/claude-bare/settings.json"
+
+# Codex
 "~/.codex/AGENTS.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
 "~/.codex/hooks.json" = "~/.dotfiles/config/ai-agents/codex/hooks.json"
 "~/.codex/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
+"~/.codex-bare/hooks.json" = "~/.dotfiles/config/ai-agents/codex-bare/hooks.json"
+"~/.codex-bare/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
+
+# Gemini
 "~/.gemini/GEMINI.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
+
+# OpenCode
 "~/.config/opencode/AGENTS.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
 "~/.config/opencode/opencode.jsonc" = "~/.dotfiles/config/ai-agents/opencode/opencode.jsonc"
-"~/.textlintrc.js" = "~/.dotfiles/config/textlint/textlintrc.js"
 
+# ------------------------------------------------------------------------------
+# AI agent: マージ
+# アプリが書き込むファイルなのでsymlinkにせず、テンプレートのキーだけを書き込む
+# ------------------------------------------------------------------------------
+# Codexが書き足すローカル状態 ([projects.*]や[hooks.state]) を残す
+"~/.codex/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex/config.toml", merge = true }
+"~/.codex-bare/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex-bare/config.toml", merge = true }
+# Antigravity CLIは起動のたびにファイルを書き直し、trustedWorkspacesを書き足す
+"~/.gemini/antigravity-cli/settings.json/dotfiles" = { source = "~/.dotfiles/config/ai-agents/gemini/antigravity-cli/settings.json", merge = true }
+# OpenCodeはTUIで設定を変えるたびにファイルをrenameで置き換え、herdrがpluginsを書き足す
+"~/.config/opencode/cli.json/dotfiles" = { source = "~/.dotfiles/config/ai-agents/opencode/cli.json", merge = true }
+
+# ------------------------------------------------------------------------------
+# AI agent: 私用skill
 # APMと展開先を共有するため、私用skillのディレクトリだけをlinkする
+# ------------------------------------------------------------------------------
+# ~/.agents/skills
 "~/.agents/skills/mjun-grilling" = "~/.dotfiles/config/ai-agents/skills/mjun-grilling"
 "~/.agents/skills/mjun-implement" = "~/.dotfiles/config/ai-agents/skills/mjun-implement"
 "~/.agents/skills/mjun-orchestrate" = "~/.dotfiles/config/ai-agents/skills/mjun-orchestrate"
@@ -72,6 +106,7 @@
 "~/.agents/skills/mjun-steering" = "~/.dotfiles/config/ai-agents/skills/mjun-steering"
 "~/.agents/skills/mjun-to-tasks" = "~/.dotfiles/config/ai-agents/skills/mjun-to-tasks"
 
+# ~/.claude/skills
 "~/.claude/skills/mjun-grilling" = "~/.dotfiles/config/ai-agents/skills/mjun-grilling"
 "~/.claude/skills/mjun-implement" = "~/.dotfiles/config/ai-agents/skills/mjun-implement"
 "~/.claude/skills/mjun-orchestrate" = "~/.dotfiles/config/ai-agents/skills/mjun-orchestrate"
@@ -82,6 +117,7 @@
 "~/.claude/skills/mjun-steering" = "~/.dotfiles/config/ai-agents/skills/mjun-steering"
 "~/.claude/skills/mjun-to-tasks" = "~/.dotfiles/config/ai-agents/skills/mjun-to-tasks"
 
+# ~/.gemini/antigravity-cli/skills
 "~/.gemini/antigravity-cli/skills/mjun-grilling" = "~/.dotfiles/config/ai-agents/skills/mjun-grilling"
 "~/.gemini/antigravity-cli/skills/mjun-implement" = "~/.dotfiles/config/ai-agents/skills/mjun-implement"
 "~/.gemini/antigravity-cli/skills/mjun-orchestrate" = "~/.dotfiles/config/ai-agents/skills/mjun-orchestrate"
@@ -92,6 +128,14 @@
 "~/.gemini/antigravity-cli/skills/mjun-steering" = "~/.dotfiles/config/ai-agents/skills/mjun-steering"
 "~/.gemini/antigravity-cli/skills/mjun-to-tasks" = "~/.dotfiles/config/ai-agents/skills/mjun-to-tasks"
 
+# ------------------------------------------------------------------------------
+# その他のツール
+# ------------------------------------------------------------------------------
+"~/.textlintrc.js" = "~/.dotfiles/config/textlint/textlintrc.js"
+
+# ------------------------------------------------------------------------------
+# OSで展開先が変わるもの (variants)
+# ------------------------------------------------------------------------------
 [dotfiles.vscode-settings]
 source = "~/.dotfiles/config/vscode/settings.json"
 variants = [
