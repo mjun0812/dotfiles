@@ -4,7 +4,7 @@ export type RowSource = Pick<
   AgentInfo,
   | "id"
   | "name"
-  | "kind"
+  | "type"
   | "description"
   | "label"
   | "taskStatus"
@@ -51,7 +51,7 @@ export function renderBodies(agents: RowSource[], now: number, home: string): Ma
     // effortはlevel文字列か数値のトークン予算で、未指定なら項目自体が無い
     const effort = typeof agent.effort === "number" ? humanizeTokens(agent.effort) : agent.effort;
     const modelLabel = effort ? `${shorten(model)} ${effort}` : shorten(model);
-    const head = `${STATUS_GLYPHS[agent.taskStatus] ?? " "} ${agent.name || agent.kind} ${DIM}[${modelLabel}]${R}`;
+    const head = `${STATUS_GLYPHS[agent.taskStatus] ?? " "} ${agent.name || agent.type} ${DIM}[${modelLabel}]${R}`;
     const description = truncate(agent.description || agent.label || "", DESC_MAX_WIDTH);
 
     const window = agent.contextWindowSize;
