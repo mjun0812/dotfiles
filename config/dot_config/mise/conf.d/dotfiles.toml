@@ -62,8 +62,10 @@
 "~/.claude/rules" = "~/.dotfiles/config/ai-agents/rules"
 "~/.claude/settings.json" = "~/.dotfiles/config/ai-agents/claude/settings.json"
 "~/.claude/statusline.py" = "~/.dotfiles/config/ai-agents/claude/statusline.py"
-"~/.claude/subagent_statusline.py" = "~/.dotfiles/config/ai-agents/claude/subagent_statusline.py"
+# modは~/.claude/skills/<name>/にあるとplugin (<name>@skills-dir) として読み込まれる
+"~/.claude/skills/agent-row" = "~/.dotfiles/config/ai-agents/claude/mods/agent-row"
 "~/.claude-bare/settings.json" = "~/.dotfiles/config/ai-agents/claude-bare/settings.json"
+"~/.claude-bare/skills/agent-row" = "~/.dotfiles/config/ai-agents/claude/mods/agent-row"
 
 # Codex
 "~/.codex/AGENTS.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"

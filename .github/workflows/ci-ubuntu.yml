@@ -145,9 +145,10 @@ jobs:
               exit 1
             fi
           }
-          for f in CLAUDE.md settings.json statusline.py subagent_statusline.py; do
+          for f in CLAUDE.md settings.json statusline.py; do
             check_link "$home/.claude/$f"
           done
+          check_link "$home/.claude/skills/agent-row"
           check_link "$home/.codex/AGENTS.md"
           check_link "$home/.codex/hooks.json"
           check_link "$home/.gemini/GEMINI.md"

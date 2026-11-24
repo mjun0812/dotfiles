@@ -163,10 +163,6 @@
     "command": "~/.claude/statusline.py",
     "padding": 0
   },
-  "subagentStatusLine": {
-    "type": "command",
-    "command": "~/.claude/subagent_statusline.py"
-  },
   "language": "japanese",
   "feedbackDrafts": "off",
   "askUserQuestionTimeout": "never",
