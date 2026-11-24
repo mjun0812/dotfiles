@@ -6,6 +6,7 @@
 #   - .ipynbを書き換えるpatchを拒否する。Claude CodeではdenyのEdit(//**/*.ipynb)、NotebookEditが同じ制限をかけている
 #   - shellのheredocで実行するapply_patchコマンドを拒否し、apply_patchツールを使わせる。
 #     shell経由のpatchではPostToolUseが発火せず、format-hook.shが動かないため
+#   - Bash コマンドには、Claude Codeと共通のzsh向け検査と修正をかける。
 # shell経由のpatchはBashとして届き、tool_input.commandにpatch本文を含むコマンドが入る。
 
 set -u
@@ -24,7 +25,12 @@ elif grep -qE '^\*\*\* (Add File|Update File|Move to): .*\.ipynb$' <<<"$cmd"; th
 elif [[ $tool_name == Bash ]] && grep -qE '(^|[;&|])[[:space:]]*(apply_patch|applypatch)([[:space:]]|$)' <<<"$cmd"; then
     reason="shellのapply_patchコマンドではなく、apply_patchツールを直接使うこと。shell経由のpatchにはformat hookが動かないため。"
 fi
-[[ -n $reason ]] || exit 0
+if [[ -z $reason ]]; then
+    if [[ $tool_name == Bash ]]; then
+        exec "${0:A:h}/shell-path-guard-hook.sh" codex <<<"$input"
+    fi
+    exit 0
+fi
 
 jq -n --arg reason "$reason" '{
     hookSpecificOutput: {
