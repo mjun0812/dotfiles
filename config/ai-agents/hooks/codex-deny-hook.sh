@@ -5,7 +5,7 @@
 #     apply_patchはpatch本文がこの名前を含む文書の編集まで止めてしまうので対象にしない
 #   - .ipynbを書き換えるpatchを拒否する。Claude CodeではdenyのEdit(//**/*.ipynb)、NotebookEditが同じ制限をかけている
 #   - shellのheredocで実行するapply_patchコマンドを拒否し、apply_patchツールを使わせる。
-#     shell経由のpatchではPostToolUseが発火せず、format-hook.shが動かないため
+#     編集対象に応じたルールを渡すcodex-rules-hook.shはapply_patchにだけ登録しているため
 #   - Bash コマンドには、Claude Codeと共通のzsh向け検査と修正をかける。
 # shell経由のpatchはBashとして届き、tool_input.commandにpatch本文を含むコマンドが入る。
 
@@ -23,7 +23,7 @@ if [[ $tool_name == Bash && $cmd == *zshrc.local* ]]; then
 elif grep -qE '^\*\*\* (Add File|Update File|Move to): .*\.ipynb$' <<<"$cmd"; then
     reason=".ipynbはraw JSONとして編集しないこと。nb-cli (nbコマンド) で編集し、nb-cliで行えない操作にだけJupytextを使うこと。"
 elif [[ $tool_name == Bash ]] && grep -qE '(^|[;&|])[[:space:]]*(apply_patch|applypatch)([[:space:]]|$)' <<<"$cmd"; then
-    reason="shellのapply_patchコマンドではなく、apply_patchツールを直接使うこと。shell経由のpatchにはformat hookが動かないため。"
+    reason="編集対象に応じたルールを受け取るため、apply_patchツールを直接使うこと。"
 fi
 if [[ -z $reason ]]; then
     if [[ $tool_name == Bash ]]; then

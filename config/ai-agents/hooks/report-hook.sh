@@ -3,8 +3,6 @@
 #   - Markdown: textlintの指摘 (AIっぽい語、日本語の文章規則、空白など。ルールはconfig/textlint/textlintrc.report.json)
 #   - シェルスクリプト: shellcheckの指摘と、Pythonなど他の言語のコードを`-c` / `-e`やheredocでべた書きした行。
 #     zshのscriptはshellcheckの対象外 (shellcheckはzshに対応しておらず、bashとして読ませると誤った指摘が出る)
-# 自動修正できるものはformat-hook.shが直す。
-#
 # 変わった行: gitで追跡中のファイルはHEADとの差分で追加・変更された行。追跡外・git管理外のファイルは全行。
 # 既存のファイルにある古い書き方まで返すと、頼んでいない書き換えや直し続けるループが起きるため、変わった行に絞る。
 #
