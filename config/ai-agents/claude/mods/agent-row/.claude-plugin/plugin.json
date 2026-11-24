@@ -1,0 +1,5 @@
+{
+  "name": "agent-row",
+  "version": "0.1.0",
+  "description": "SubAgentの行をメインのstatus lineと同じ表記で描画する"
+}

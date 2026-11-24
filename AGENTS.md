@@ -42,6 +42,7 @@ Claude Code・Codex・Gemini・OpenCodeの設定は `config/ai-agents/` にま�
 - global指示は、Claude Code用の `claude/CLAUDE.md` と、Codex・Gemini・OpenCode用の `AGENTS_global.md` に分かれている。
 - 共有skillとcode-reviewer agentは [mjun0812/skills](https://github.com/mjun0812/skills) にあり、`apm.yml` で購読して `apm update -g -y` で展開する。このリポジトリの `config/ai-agents/skills/` には私用skill(`mjun-*`)だけを置き、`mise dot apply` が展開する。私用skillを追加したら `conf.d/dotfiles.toml` の3つの展開先にも宣言する。skillを追加・変更したら `doc/skills.md` と `doc/skills_ja.md` も更新する。
 - このリポジトリ専用のskillは `.agents/skills/` に置き、`.claude/skills/` からsymlinkする。
+- Claude Codeのmodは `claude/mods/<name>/` に置き、`~/.claude/skills/<name>` と `~/.claude-bare/skills/<name>` へフォルダごとlinkする(skillsフォルダにあるpluginは自動で読み込まれる)。
 - MCPサーバーは `apm.yml` の `dependencies.mcp` で管理し、apmが各agentの設定へ書き込む。agentごとの設定ファイルには直接書かない。
 - `rules/*.md` はClaude CodeとCodexが共有するので、frontmatterは両方が読める書式に限る。書式は `script/tools/rule-paths.sh` が定義し、prekが確かめる。
 - hookのscriptは `hooks/` に置き、`claude/settings.json` と `codex/hooks.json` から呼ぶ。Codexのhook定義を変えると、TUIの `/hooks` で再承認が必要になる。
