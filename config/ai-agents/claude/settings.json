@@ -109,6 +109,16 @@
         "hooks": [
           {
             "type": "command",
+            "command": "~/.dotfiles/config/ai-agents/hooks/shell-path-guard-hook.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
             "command": "rtk hook claude"
           }
         ]
