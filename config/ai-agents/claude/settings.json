@@ -130,11 +130,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/config/ai-agents/hooks/format-hook.sh",
-            "timeout": 30
-          },
-          {
-            "type": "command",
             "command": "~/.dotfiles/config/ai-agents/hooks/report-hook.sh",
             "timeout": 30
           }
