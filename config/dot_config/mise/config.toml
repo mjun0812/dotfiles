@@ -77,6 +77,8 @@ textlint-rule-prh@6.1.0
 # AI coding agents
 "aqua:anomalyco/opencode" = "latest"
 "npm:agent-browser" = { version = "latest", postinstall = "agent-browser install || echo 'agent-browser browser install skipped'" }
+# bunがpackageのinstall scriptを止めるので、native binaryへのlinkをここで行う。止まったままだと毎回Node launcher経由で起動する
+"npm:agent-desktop" = { version = "latest", postinstall = 'node "$MISE_TOOL_INSTALL_PATH/node_modules/agent-desktop/scripts/postinstall.js"' }
 "npm:playwriter" = { version = "latest", postinstall = '''
 # agent-browser installが入れたChrome for Testingを共有する
 mkdir -p ~/.playwriter

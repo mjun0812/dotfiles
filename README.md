@@ -102,6 +102,7 @@ For logins, API keys, and OpenCode integration checks, see [AI agent setup (æ—¥æ
 | Name            | Description                                           |
 | --------------- | ----------------------------------------------------- |
 | agent-browser   | Browser automation CLI for AI agents                  |
+| agent-desktop   | Desktop automation CLI for AI agents                  |
 | agentsview      | Session browser and usage analytics for AI agents     |
 | apm             | Agent package manager                                 |
 | ast-grep        | Structural code search and lint                       |

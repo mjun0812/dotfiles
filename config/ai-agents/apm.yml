@@ -44,6 +44,7 @@ dependencies:
     # A subpath entry carries one skill only, so the reviewer agents come from their own package.
     - mjun0812/skills/agents
     - vercel-labs/agent-browser/skills/agent-browser#>=0.36.0
+    - vercel-labs/agent-desktop/skills/agent-desktop#>=1.3.0
     - remorses/playwriter/skills/playwriter
     - herdrdev/herdr/skills/herdr#>=0.8.0
     - modem-dev/hunk/packages/hunk/skills/hunk-review#>=0.24.0
