@@ -80,6 +80,7 @@
 # OpenCode
 "~/.config/opencode/AGENTS.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
 "~/.config/opencode/opencode.jsonc" = "~/.dotfiles/config/ai-agents/opencode/opencode.jsonc"
+"~/.config/opencode/plugins/yobirin-notify" = "~/.dotfiles/config/ai-agents/opencode/plugins/yobirin-notify"
 
 # ------------------------------------------------------------------------------
 # AI agent: マージ

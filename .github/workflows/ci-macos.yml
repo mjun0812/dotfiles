@@ -167,8 +167,8 @@ jobs:
           echo "=== Checking yobirin profiles ==="
           source "$HOME/.zshrc"
           yobirin list
-          yobirin list --json | jq -e '.bundles | map(.profile) | (index("claude") != null) and (index("codex") != null)' >/dev/null
-          echo "✓ yobirin default + claude/codex profiles are installed"
+          yobirin list --json | jq -e '.bundles | map(.profile) | (index("claude") != null) and (index("codex") != null) and (index("opencode") != null)' >/dev/null
+          echo "✓ yobirin default + claude/codex/opencode profiles are installed"
 
       - name: Verify uv installation
         run: |
