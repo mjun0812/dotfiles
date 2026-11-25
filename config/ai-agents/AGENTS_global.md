@@ -60,7 +60,8 @@
 
 ## Tool
 
-- 選択肢付きの質問には `request_user_input` を使用すること。skillや指示に登場する `AskUserQuestion` もこれに読み替える。
+- 選択肢付きの質問は、確認や許可を求めるものも含めて `request_user_input` で出し、回答を待つこと。skillや指示に登場する `AskUserQuestion` もこれに読み替える。
+- ユーザーの返信を `sleep` や `wait` で待たない。`request_user_input` を使えないときは、質問と選択肢を最終メッセージに書いてターンを終える。
 - ブラウザ操作では、ログイン状態が必要な操作とユーザーのChromeでの操作には `playwriter` skillを、ログインが不要な操作には `agent-browser` skillを使うこと。
 - データファイルの集計・変換・調査には `duckdb` skillを使うこと。プロジェクトのコードに組み込むデータ処理は、そのプロジェクトの既存の依存に従うこと。
 

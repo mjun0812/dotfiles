@@ -42,6 +42,16 @@
           }
         ],
         "matcher": "^(apply_patch|Bash)$"
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.dotfiles/config/ai-agents/hooks/codex-user-input-timeout-hook.sh",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "^request_user_input$"
       }
     ],
     "PreToolUse": [
@@ -89,12 +99,12 @@
       {
         "hooks": [
           {
-            "command": "echo 'request_user_input_asyncは使わないこと。同じ質問をrequest_user_inputで出し直し、回答を待つこと。' >&2; exit 2",
+            "command": "echo 'request_user_input_asyncとsend_message_to_user_asyncは使わないこと。質問や確認はrequest_user_inputで出して回答を待ち、sleepやwaitで返信を待たないこと。' >&2; exit 2",
             "timeout": 10,
             "type": "command"
           }
         ],
-        "matcher": "^request_user_input_async$"
+        "matcher": "^(request_user_input_async|send_message_to_user_async)$"
       },
       {
         "hooks": [
