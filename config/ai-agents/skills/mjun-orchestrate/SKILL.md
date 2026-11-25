@@ -224,7 +224,7 @@ Phase 1を終えるとmodeに入り、ユーザーが終了を指示するまで
 
 各paneを `herdr pane rename <pane-id> "<slug>"` にする。
 
-`MJUN_ORCH_WORKER` は、依頼を受ける前のworkerのclaudeのhookが通知を出さないようにする目印である。`notify-claude-hook.sh` がこの変数を見る。workerの状態はorchestratorが受け取ってユーザーへ伝えるので、workerごとに通知が出ると同じことが何重にも届く。ユーザーへの通知は、orchestrator自身のhookに任せる。依頼を受けた後のworkerは、claudeとcodexのどちらでも、hookが依頼の本文から見分ける。Codexは共有のdaemonでhookを動かすので、paneに付けた変数はhookに届かない。
+`MJUN_ORCH_WORKER` は、依頼を受ける前のworkerのclaudeのhookが通知を出さないようにする目印である。`notify-claude-hook.sh` がこの変数を見る。OpenCodeのworkerでは、通知のplugin (`opencode/plugins/yobirin-notify`) がこの変数を見て、依頼の前後を問わず通知を止める。workerの状態はorchestratorが受け取ってユーザーへ伝えるので、workerごとに通知が出ると同じことが何重にも届く。ユーザーへの通知は、orchestrator自身のhookに任せる。依頼を受けた後のworkerは、claudeとcodexのどちらでも、hookが依頼の本文から見分ける。Codexは共有のdaemonでhookを動かすので、paneに付けた変数はhookに届かない。
 
 ### Phase 4: workerの起動とdispatch
 

@@ -19,6 +19,7 @@ tree-sitter = "latest"
     yobirin install
     yobirin install --profile claude --icon ~/.dotfiles/assets/notify-claude.png
     yobirin install --profile codex --icon ~/.dotfiles/assets/notify-codex.png
+    yobirin install --profile opencode --icon ~/.dotfiles/assets/notify-opencode.png
 ''' }
 # IMEはPKGのインストーラーで/Library/Input Methodsへ配置する必要がある
 # mise installが失敗するため一時的に無効化する
