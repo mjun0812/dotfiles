@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-MISE_VERSION="2026.11.10"
+MISE_VERSION="2026.11.14"
 
 if ! command -v mise >/dev/null 2>&1; then
     curl https://mise.run | MISE_VERSION="$MISE_VERSION" sh
