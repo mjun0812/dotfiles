@@ -8,6 +8,9 @@ preset-ai-words-ja = true
 # 箇条書きの「**見出し**: 説明」の形と、コロンで終わる文の後のリストやコードは使う
 no-ai-list-formatting = false
 no-ai-colon-continuation = false
+# 執筆時の指示やチャット応答の定型句が、本文に残っていないかを見る
+yomiyasu-instruction-residue = true
+yomiyasu-chat-response = true
 
 # 日本語の技術文書の規則
 preset-ja-technical-writing = true
@@ -15,3 +18,8 @@ preset-ja-technical-writing = true
 sentence-length = false
 # 文体は文書ごとに決めるので、見出し・本文・箇条書きのそれぞれで多いほうに合わせる
 no-mix-dearu-desumasu = { preferInHeader = "", preferInBody = "", preferInList = "", strict = false }
+# さ入れ言葉とさ抜き言葉
+"@textlint-ja/no-insert-dropping-sa" = true
+# 全角の数字とアルファベットを半角にする
+"2.1.8.算用数字" = true
+"2.1.9.アルファベット" = true
