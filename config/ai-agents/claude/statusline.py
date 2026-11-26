@@ -47,6 +47,17 @@ def fmt(label, pct):
     return f"{DIM}{label}{R} {gradient(pct)}{braille_bar(pct)}{R} {p}%"
 
 
+def _format_token_count(tokens: int) -> str:
+    # Promote values that would round to 1000.0 in the smaller unit.
+    if tokens >= 999_950_000:
+        return f"{tokens / 1_000_000_000:.1f}b"
+    if tokens >= 999_950:
+        return f"{tokens / 1_000_000:.1f}m"
+    if tokens >= 1_000:
+        return f"{tokens / 1_000:.1f}k"
+    return str(tokens)
+
+
 def short_path(path, max_len=30):
     home = os.path.expanduser("~")
     if path == home:
@@ -121,8 +132,19 @@ if os.environ.get("HERDR_ENV") == "1" and herdr_pane and model_name:
         pass
 parts = [f"{model} {effort}" if effort else model]
 
-ctx = (data.get("context_window") or {}).get("used_percentage") or 0
-parts.append(fmt("ctx", ctx))
+context = data.get("context_window") or {}
+ctx = fmt("ctx", context.get("used_percentage") or 0)
+usage = context.get("current_usage") or {}
+# The reported context percentage counts cached and uncached input only.
+used_tokens = sum(
+    usage.get(field, 0)
+    for field in (
+        "input_tokens",
+        "cache_creation_input_tokens",
+        "cache_read_input_tokens",
+    )
+)
+parts.append(f"{ctx} {_format_token_count(used_tokens)}")
 
 rate_limits = data.get("rate_limits") or {}
 five = (rate_limits.get("five_hour") or {}).get("used_percentage")

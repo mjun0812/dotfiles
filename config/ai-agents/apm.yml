@@ -68,5 +68,11 @@ dependencies:
       command: bunx
       args: ["@drawio/mcp@latest"]
       startup_timeout_sec: 120
+    - name: dotfiles-statusline
+      targets: [codex]
+      registry: false
+      transport: stdio
+      command: zsh
+      args: ["-c", "exec python3 -u ~/.dotfiles/config/ai-agents/codex/statusline.py"]
 includes: auto
 scripts: {}

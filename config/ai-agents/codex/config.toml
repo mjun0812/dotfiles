@@ -13,6 +13,7 @@ multi_agent = true
 hooks = true
 default_mode_request_user_input = true
 daemon_auto_start = true
+tui_extensions_statusline = true
 
 [features.multi_agent_v2]
 enabled = true
@@ -35,6 +36,7 @@ resume_cwd = "session"
 terminal_title = ["spinner", "project"]
 notifications = false
 auto_recap = true
+status_line_provider = { server = "dotfiles-statusline", tool = "statusline" }
 status_line = [
   "model-with-reasoning",
   "used-tokens",
