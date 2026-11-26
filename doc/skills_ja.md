@@ -158,7 +158,6 @@ graph LR
     mjun-implement --> git-commit
     mjun-implement --> github-pr-create
     mjun-implement --> mjun-to-tasks
-    mjun-implement -. 後続Issueの起票 .-> github-issue-create
     mjun-implement -. spec・briefの無い依頼 .-> mjun-start
 
     mjun-orchestrate --> herdr
@@ -182,7 +181,6 @@ graph LR
 | `mjun-specify`     | `mjun-to-tasks`                                                    | 承認前に `--draft` でtask planのdraftを作り (判断シートのtask件数と、未カバーとして見つかるspecの欠落を直すため)、承認後にそのdraftからtasks.mdを確定する (単一task規模を含む。既存tasks.mdがあれば再分解する) |
 | `mjun-specify`     | `exhtml`                                                           | Phase 5で「HTMLで内容を確認する」が選ばれた場合 (設計を図解する解説ページ)。skillが無ければその場でHTMLを書く                                                                                                  |
 | `mjun-specify`     | `github-issue-create`                                              | Phase 7で `Source:` の無いspecに投影先Issueを作る場合。templateとラベルの選択、関連Issueの検索、作成前の確認はこのskillが行い、その後に判断シートとACを区切り行の下へ投影する                                  |
-| `mjun-implement`   | `github-issue-create`                                              | Phase 5で、人間が選んだFollow-ups (後で取り組むOut of Scope、範囲外のCONCERNS) を1件ずつ起票する                                                                                                               |
 | `mjun-implement`   | `git-commit`, `github-pr-create`, `mjun-to-tasks`, `mjun-start`    | Phase 4でworktreeの変更をcommitし、`--pr` 時にPRを作成。taskが大きすぎる、または切り方が誤っていた場合にtasks.mdを再分解。spec・brief・設計docの無い依頼 (specの無いIssue番号を含む) はmjun-startへ渡す        |
 | `mjun-orchestrate` | `herdr`                                                            | Herdr CLIの構文・ID・lifecycle stateの正として最初に読む。skill側はworker protocolだけを追加                                                                                                                   |
 | `mjun-verify`      | `agent-browser`                                                    | webやElectronの画面を操作して検証手順を確かめる場合                                                                                                                                                            |

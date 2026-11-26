@@ -81,10 +81,7 @@ Run Logの `feature:` 行に `validation=<GO | MANUAL_VERIFY_REQUIRED | NO-GO>` 
 - Lint candidates: `zsh <skill-dir>/../mjun-rule-lint/scripts/backlog.sh list <repo-root> 2` の出力。レビューで2回以上出た書き方の指摘で、まだlintにしていないものである。1行ずつ並べ、`mjun-rule-lint` でlintにできることを添える。ここではlintを作らず、作るかも聞かない。作るには、既存の違反の扱いと除く範囲をユーザーに決めてもらう必要がある。ここで聞くと、届けるまでの流れが止まる。出力が無ければ「なし」
 - modelやeffortを指定できなかった場合は、その旨
 
-結果を示したら、次を1回の確認にまとめて聞く。どちらも無ければ聞かずに終える。
-
-- Follow-upsがあり、GitHub remoteがあれば、Issueにするものを選んでもらう (AskUserQuestionの複数選択)。選ばれたものは、1件ずつ `github-issue-create` skillで起票する。specやbriefはこの後で使い捨てになり、ここで拾わないと失われるからである
-- 書かなかったADRの案があれば、置き場所 (Git管理 / ローカル) を聞き、選ばれた場所に書く。Git管理を選ばれたら、作業branchとは別のcommitになるので、その届け方も同じ確認で聞く
+結果を示した後、書かなかったADRの案があれば、置き場所をGit管理かローカルから選んでもらい、選ばれた場所に書く。Git管理を選ばれたら、作業branchとは別のcommitになるので、その届け方も同じ確認で聞く。案が無ければ、聞かずに終える。Follow-upsは報告に並べるだけにし、Issueにするかは聞かない。
 
 ## Phase 6: worktreeクリーンアップ
 

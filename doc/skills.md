@@ -157,7 +157,6 @@ graph LR
     mjun-implement --> git-commit
     mjun-implement --> github-pr-create
     mjun-implement --> mjun-to-tasks
-    mjun-implement -. follow-up issues .-> github-issue-create
     mjun-implement -. no spec or brief .-> mjun-start
 
     mjun-orchestrate --> herdr
@@ -181,7 +180,6 @@ graph LR
 | `mjun-specify`     | `mjun-to-tasks`                                                    | Drafts the task plan with `--draft` before approval (for the task count on the approval sheet and to fix uncovered spec gaps), then finalizes tasks.md from that draft after approval (including single-task specs; an existing tasks.md is re-decomposed) |
 | `mjun-specify`     | `exhtml`                                                           | Phase 5 when the human picks "review as HTML" (a diagrammed design explainer); without the skill, written ad hoc                                                                                                                                           |
 | `mjun-specify`     | `github-issue-create`                                              | Phase 7 when a spec without `Source:` gets a projection-target issue: the skill picks the template and labels, searches related issues, and confirms before creating; the judgment sheet and acceptance criteria are then projected below the marker line  |
-| `mjun-implement`   | `github-issue-create`                                              | Phase 5 files the follow-ups the human picks (out-of-scope items meant for later and out-of-range concerns) one issue at a time                                                                                                                            |
 | `mjun-implement`   | `git-commit`, `github-pr-create`, `mjun-to-tasks`, `mjun-start`    | Phase 4 commits the worktree changes; PR only with `--pr`. Re-decomposes tasks.md when tasks prove oversized or mis-split. Requests with no spec, brief, or design doc (including issue numbers without a spec) go to mjun-start                           |
 | `mjun-orchestrate` | `herdr`                                                            | Read first for Herdr CLI syntax, IDs, and lifecycle states; the skill adds only the worker protocol on top                                                                                                                                                 |
 | `mjun-verify`      | `agent-browser`                                                    | When the procedure is proved by driving a web or Electron UI                                                                                                                                                                                               |

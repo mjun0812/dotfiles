@@ -6,7 +6,7 @@ description: >-
   specの作成・磨き上げ・承認や、未取り込みIssueの取り込みには使わない。
   spec・brief・設計docのどれも無い作業の依頼にも使わない (mjun-startが作業の種類を振り分ける)。
   呼び出し元から作業指示を渡された実装担当 (SubAgentやorchestratorのworker) は、指示がこのSkillの実行を明示しているときだけ使い、それ以外はその指示に従う。
-allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), Bash(zsh:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(github-issue-create), Skill(mjun-to-tasks), Skill(mjun-start)
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(jq:*), Bash(cd:*), Bash(cat:*), Bash(ls:*), Bash(shasum:*), Bash(zsh:*), AskUserQuestion, Skill(git-commit), Skill(github-pr-create), Skill(mjun-to-tasks), Skill(mjun-start)
 ---
 
 # mjun-implement
