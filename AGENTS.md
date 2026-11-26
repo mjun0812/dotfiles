@@ -26,6 +26,7 @@ python3 script/tools/doctor.py   # local環境がdotfilesの更新に追従し�
 - `config/dot` や `config/dot_config` にファイルを足したら、`dotfiles.toml` にもエントリを足す。ファイルかディレクトリ1つにつき1エントリで並べ、`dot_prefix` は使わない。足し忘れはprekが検出する。
 - OSで展開先が変わるものは `variants` で分ける。
 - appが状態を書き込むディレクトリは、ディレクトリごとではなく設定ファイルだけをlinkする。
+- appが書き込む設定ファイルはlinkせず、`merge = true` でテンプレートのキーだけを書き込む(例: `cli-proxy-api/config.yaml`)。appが足したキーは、展開先にだけ残る。
 - 展開先にあった実ファイルは `.backup/` へ退避される。
 
 ## パッケージ管理

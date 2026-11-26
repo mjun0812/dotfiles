@@ -44,12 +44,18 @@
 # ~/.config (設定ファイルだけ)
 # アプリが同じディレクトリに状態を書くので、ディレクトリは実体にしてファイルだけをlinkする
 # ------------------------------------------------------------------------------
-"~/.config/cli-proxy-api/config.yaml" = "~/.dotfiles/config/dot_config/cli-proxy-api/config.yaml"
 "~/.config/gh/config.yml" = "~/.dotfiles/config/dot_config/gh/config.yml"
 "~/.config/git/ignore" = "~/.dotfiles/config/dot_config/git/ignore"
 "~/.config/herdr/config.toml" = "~/.dotfiles/config/dot_config/herdr/config.toml"
 "~/.config/hunk/config.toml" = "~/.dotfiles/config/dot_config/hunk/config.toml"
 "~/.config/rex/init.lua" = "~/.dotfiles/config/dot_config/rex/init.lua"
+
+# ------------------------------------------------------------------------------
+# ~/.config (マージ)
+# アプリが書き込むファイルなのでsymlinkにせず、テンプレートのキーだけを書き込む
+# ------------------------------------------------------------------------------
+# CLIProxyAPIは起動時に、マシンごとのIDであるserver.server-idを書き足す
+"~/.config/cli-proxy-api/config.yaml/dotfiles" = { source = "~/.dotfiles/config/dot_config/cli-proxy-api/config.yaml", merge = true }
 
 # ------------------------------------------------------------------------------
 # AI agent: 設定ファイル

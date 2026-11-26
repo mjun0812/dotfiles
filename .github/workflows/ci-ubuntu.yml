@@ -109,7 +109,13 @@ jobs:
               target="$target/config.toml"
             fi
             if [[ "$name" = "cli-proxy-api" ]]; then
-              target="$target/config.yaml"
+              # アプリが書き込む設定なので、symlinkではなくテンプレートのキーをマージした実ファイルになる
+              if [[ -f "$target/config.yaml" && ! -L "$target/config.yaml" ]]; then
+                echo "✓ .config/$name/config.yaml is merged"
+                continue
+              fi
+              echo "✗ .config/$name/config.yaml is NOT merged"
+              exit 1
             fi
             if [[ "$name" = "hunk" ]]; then
               target="$target/config.toml"

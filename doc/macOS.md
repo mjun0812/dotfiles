@@ -136,9 +136,9 @@ The generated plists are `~/Library/LaunchAgents/<label>.plist`.
 
 ### CLIProxyAPI configuration
 
-The config is tracked at `config/dot_config/cli-proxy-api/config.yaml` and linked to `~/.config/cli-proxy-api/config.yaml` by `mise dot apply` (declared in `config/dot_config/mise/conf.d/dotfiles.toml`). Only the file is linked (like herdr) because the app downloads runtime assets (`static/`) next to it; the directory itself stays real.
+The template is tracked at `config/dot_config/cli-proxy-api/config.yaml`. `mise dot apply` merges its keys into `~/.config/cli-proxy-api/config.yaml` (declared with `merge = true` in `config/dot_config/mise/conf.d/dotfiles.toml`). The file is not symlinked because the app writes to it: on startup CLIProxyAPI saves a per-machine `server.server-id`, and the management API rewrites the config in place. Keys that only the local file has are left alone, so they never reach the repo.
 
-Tracking it is safe only while the config holds no secrets: credentials live in `auth-dir` (`~/.cli-proxy-api/`, outside the repo). Keep it that way — do not add client `api-keys` values or a `remote-management.secret-key` (the management API rewrites the config in place, which would dirty the repo through the symlink). If either becomes necessary, move the config out of the repo first.
+Keep secrets out of the template: credentials live in `auth-dir` (`~/.cli-proxy-api/`, outside the repo). Every apply resets the keys in the template to the template's values. The template sets `api-keys: []`, so client keys added to the local file are cleared by the next `mise dot apply`; remove `api-keys` from the template first if a machine needs them. A local `remote-management.secret-key` survives, because tables are merged key by key.
 
 The full option reference is `~/.local/share/mise/installs/github-router-for-me-cli-proxy-api/latest/config.example.yaml`.
 
@@ -149,7 +149,7 @@ cli-proxy-api -config ~/.config/cli-proxy-api/config.yaml -codex-login
 launchctl kickstart -k gui/$(id -u)/dev.mise.cli-proxy-api # reload the agent after logging in
 ```
 
-Note: the config symlink must exist before `mise bootstrap services apply`; without a config the binary exits immediately and `KeepAlive` respawns it in a loop. `install.sh` runs the steps in that order.
+Note: the config file must exist before `mise bootstrap services apply`; without a config the binary exits immediately and `KeepAlive` respawns it in a loop. `install.sh` runs the steps in that order.
 
 ### Manual Operations
 
