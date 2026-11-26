@@ -16,7 +16,7 @@ allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash(gh:*), Bash(git:*), Bas
 
 全Phaseを通して、次のことを守る。
 
-- SubAgentの完了主張を検証の代わりにしない。判定は、親が `run_checks.sh` で実行した検査、reviewerの判定、親自身の照合の結果だけで行う。報告をそのまま信じると、検証を経ていない変更がcommitされる
+- SubAgentの完了主張を検証の代わりにしない。判定は、親が `run_checks.sh` で実行した検査、reviewerとverifierの判定、親自身の照合の結果だけで行う。報告をそのまま信じると、検証を経ていない変更がcommitされる
 - repositoryに残るもの (コード、コメント、テスト名、ファイル名) とGitHubへ出すもの (commit message、PRのタイトルと本文) に、spec内部の識別子 (task ID、AC番号、Requirement番号、`.mjun/` のパス、`spec.md` / `tasks.md`) を書かない。specはrepositoryに無い内部文書で、番号は再分解で変わる。`zsh <skill-dir>/scripts/check_internal_ids.sh` (以下、ID検査) で機械的に確かめ、検出されたら振る舞いや目的を表す言葉に書き換える
 - 実装をcontractのBoundariesとOut of Scopeの外へ広げない。contractに無い追加要求を受けても `spec.md` を書き換えて実装に入らず、現在のgroupを終えた時点で止めて、specの磨き直し (承認を含む) が先に必要であることを案内する。contractは人間が承認した範囲であり、実装側で広げると、承認を経ていない変更が入る
 - task計画の作り直しは `mjun-to-tasks` に任せる。分解規則はこのskillに持たない
@@ -69,7 +69,7 @@ Local specの参照と更新は、メインrepositoryの絶対パスで行う。
    - 全taskが `done` でも終了しない。記録済みbranchからresumeし、Phase 3.3とPhase 4をやり直す
    - doc modeでは [mjun-to-tasks の分解規則](../mjun-to-tasks/SKILL.md#分解規則) とTask形式で会話内のキューを作る。`tasks.md` は作らない
    - 依存順 (Blocked by) に並べる。実行できるのは、`Blocked by` の全taskが `done` か、同じgroupで先に並ぶtaskだけである。blocked taskに依存するtaskは依存待ちに残す
-   - groupに区切る。groupごとにverifier・implementer・reviewer・検査・commitの固定コストがかかるので、上限まで詰める。上限はtask 8件、Acceptance Criteria合計24件 (implementerが1つのfresh contextで扱える大きさ) とし、キューの先頭から加えて上限を超えるときだけ次のgroupを始める。BoundaryやModuleの違いは区切る理由にしない
+   - groupに区切る。groupごとにimplementer・reviewer・検査・commitの固定コストがかかるので、上限まで詰める。上限はtask 8件、Acceptance Criteria合計24件とし、これはimplementerが1つのfresh contextで扱える大きさである。キューの先頭から加えて上限を超えるときだけ次のgroupを始める。BoundaryやModuleの違いは区切る理由にしない
 5. どこまで進めるかが未指定なら、AskUserQuestion (使えなければテキストの選択肢) で確認する。GitHub remoteが無ければ `--no-pr` と `--merge` の2択にする。`## Decisions` に `ADR: 要作成` があり、ADRの置き場所が未決定 ([置き場所の決め方](../mjun-steering/references/glossary_and_adr.md#置き場所の決め方)) なら、置き場所も同じ確認で聞く。自律実行の途中で確認待ちにしないためである
 6. 実装方針とgroup区切り付きのtask一覧を簡潔に示し、確認を取らずにPhase 2へ進む
 
@@ -103,7 +103,7 @@ role:
 
 - implementer ([templates/implementer-prompt.md](templates/implementer-prompt.md)): groupの全taskを実装し、必要な検査を作って実行し、`## Status Report` を返す。TDDは強制しない。バグ修正だけは、修正前後の証拠 (再現テスト、届かなければ実物での観察か計測) を取る
 - reviewer ([templates/reviewer-prompt.md](templates/reviewer-prompt.md)): 親の検査結果、親の機械的な確認の結果、実際のコードで、全Acceptance Criterion、実在性、Boundaryを敵対的に確かめ、`## Review Verdict` を返す
-- verifier ([templates/verifier-prompt.md](templates/verifier-prompt.md)): 検査を実装より先に、独立して設計する必要があるtaskだけを担当し、`## Check Report` を返す。使うのは、ユーザーかspecが独立した事前検査を指定しているときか、期待値や検証手段を実装から独立に確定すべき具体的な理由を親が示せるときである。「バグ修正」「複雑なロジック」という分類だけでは使わない
+- verifier ([templates/verifier-prompt.md](templates/verifier-prompt.md)): 全taskがdoneになった後、実装に関わっていないfresh contextで、完了条件を1件ずつ実物の操作で確かめ、`## Verification Report` を返す。implementerの検査は、implementerが作るつもりだったものを確かめる。verifierは、実物がユーザーから見て完了条件どおりに動くかを、その検査とは別に確かめる
 - debugger ([templates/debugger-prompt.md](templates/debugger-prompt.md)): 差し戻しが収束しないとき、またはBLOCKEDのときに、root causeを分類して `## Debug Report` を返す
 - refactorer ([templates/refactorer-prompt.md](templates/refactorer-prompt.md)): 全task完了後、reviewerのNOTESとtask間の重複を、全検査greenのまま整理して `## Refactor Report` を返す
 
@@ -121,7 +121,7 @@ SubAgentへの文脈は、親が書いたファイルのパスで渡す。LLMは
   - spec modeでは `design.md`。親が `design.md` を更新したら置き直す
   - コードの書き方の原則 `<skill-dir>/principles/*.md` を `<run-dir>/principles/` に。どのroleにどの原則を渡すかは [references/subagent.md](references/subagent.md) の表で決まり、起動promptで渡す
   - briefなら、`kind` に対応する観点 `<skill-dir>/templates/kind-<kind>.md`。spec modeでも、バグ修正のtaskを含むgroupでは `kind-bug.md` を置く。種類ごとに重視する確かめ方 (バグ修正の再現と原因、refactoringの振る舞い不変、性能改善の計測) を、implementerとreviewerにそろえて渡すためである
-- groupごとに `<run-dir>/<group>/brief.md` を書く。中身は、groupの各task (ID、説明、Boundary、Done when、Seam、Blocked by、Acceptance Criteria)、Phase 1の実装方針、`TASK_BRIEF`、採用済みの `CHECK_FILES` / `CHECK_COMMANDS`、`PROTECTED_CHECK_FILES` とハッシュ、事前検査の `CHECK_BASELINES`、review-onlyのtask、関係するdecisionと有効なADR、`design.md` で読むべきセクション名、groupに関係する検証コマンド、Implementation Notes (既知のflakyテストを含む)。検査の一覧などが変わったら、次のSubAgentを起動する前に書き直す
+- groupごとに `<run-dir>/<group>/brief.md` を書く。中身は、groupの各task (ID、説明、Boundary、Done when、Seam、Blocked by、Acceptance Criteria)、Phase 1の実装方針、`TASK_BRIEF`、採用済みの `CHECK_FILES` / `CHECK_COMMANDS`、review-onlyのtask、関係するdecisionと有効なADR、`design.md` で読むべきセクション名、groupに関係する検証コマンド、Implementation Notes (既知のflakyテストを含む)。検査の一覧などが変わったら、次のSubAgentを起動する前に書き直す
 - `design.md` で読むべきセクションは、groupのtaskのBoundaryに対応するModules、Seamに対応するInterfaces & Seams、それらを通るData Flow、Test Strategy、Change Outlineの全体とする。対応を判断できないセクションは含める
 - 起動promptは次の形にする。ファイルの内容は書き写さず、本文にはそのroleだけに渡すものを書く
 
@@ -140,7 +140,7 @@ SubAgentへの文脈は、親が書いたファイルのパスで渡す。LLMは
 
 #### 検証コマンドと検査
 
-実装を始める前に、repositoryの正規の検証コマンドを `TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` / `SMOKE_COMMANDS` として洗い出す。`.mjun/steering/`、manifest、タスクランナー、CI設定、READMEを見て、repositoryの自動化が既に使っているものを優先する。`SMOKE_COMMANDS` (起動して最初の利用可能な状態に達することを確かめるもの) は宣言されているものだけを使い、無ければ空にする。メインrepositoryに `.mjun/lint/` があれば、`zsh <skill-dir>/../mjun-rule-lint/scripts/run_local_lint.sh <worktree> <base-branch>` を `LINT_COMMANDS` に加える。repositoryに含めないlocalのlint (mjun-rule-lintが作る) で、base branchから追加・変更したファイルだけを見る。
+実装を始める前に、repositoryの正規の検証コマンドを `TEST_COMMANDS` / `LINT_COMMANDS` / `BUILD_COMMANDS` / `SMOKE_COMMANDS` として洗い出す。`.mjun/steering/`、manifest、タスクランナー、CI設定、READMEを見て、repositoryの自動化が既に使っているものを優先する。`SMOKE_COMMANDS` は、起動して最初の利用可能な状態に達することを確かめるコマンドで、宣言されているものだけを使い、無ければ空にする。メインrepositoryに `.mjun/verify/README.md` があれば、そのパスを覚えておき、Phase 3.3でverifierに渡す。mjun-verifyが作る検証手順で、アプリの起動、操作、証拠の取り方が書いてある。メインrepositoryに `.mjun/lint/` があれば、`zsh <skill-dir>/../mjun-rule-lint/scripts/run_local_lint.sh <worktree> <base-branch>` を `LINT_COMMANDS` に加える。mjun-rule-lintが作る、repositoryに含めないlocalのlintで、base branchから追加・変更したファイルだけを見る。
 
 親が実行する検査は、すべて `zsh <skill-dir>/scripts/run_checks.sh <worktree> <run-dir> <name> <commands-file>` で行う (`<name>` は `G2-r1` のような実行ごとの名前、`<commands-file>` は1行1コマンドのファイル)。
 
@@ -149,18 +149,17 @@ SubAgentへの文脈は、親が書いたファイルのパスで渡す。LLMは
 - `FAIL (worktreeを書き換えた)` は、formatterの自動修正やlockfileの更新などで内容が変わったことを示す。失敗と同じに扱う
 - toolのtimeoutに収まらない見込みのコマンドは、commands-fileを分けて実行する
 
-判断の要らない確認は、親が `zsh <skill-dir>/scripts/check_mechanical.sh <worktree> <base> [--design <run-dir>/design.md] [--exclude <検査ファイルの一覧>] [--protected <run-dir>/protected.sha256] [--final] --out <結果のファイル>` でまとめて行う。見るのは、保護された検査ファイルのハッシュ、Change Outlineの外のパス、足した行のTODO類、spec内部の識別子、secrets、骨組みの未実装の残りである。reviewerが同じ確認を自分で回すと、手順と結果が毎回揺れ、判断が要る項目に使う時間も減る。だからreviewerには結果のファイルを渡し、写させるだけにする。`<base>` は、groupの未commitの変更を見るときは `HEAD`、branch全体を見るときはbase branchにする。`--exclude` には、`CHECK_FILES` を1行1パスで書いたファイルを渡す。
+判断の要らない確認は、親が `zsh <skill-dir>/scripts/check_mechanical.sh <worktree> <base> [--design <run-dir>/design.md] [--exclude <検査ファイルの一覧>] [--protected <ハッシュのファイル>] [--final] --out <結果のファイル>` でまとめて行う。見るのは、Change Outlineの外のパス、足した行のTODO類、spec内部の識別子、secrets、骨組みの未実装の残りである。`--protected` は、検査ファイルを変更禁止にするPhase 3.2の整理でだけ使い、検査ファイルのハッシュが変わっていないことを確かめる。reviewerが同じ確認を自分で回すと、手順と結果が毎回揺れ、判断が要る項目に使う時間も減る。だからreviewerには結果のファイルを渡し、写させるだけにする。`<base>` は、groupの未commitの変更を見るときは `HEAD`、branch全体を見るときはbase branchにする。`--exclude` には、`CHECK_FILES` を1行1パスで書いたファイルを渡す。
 
 検査ファイルは次のように扱う。
 
-- `CHECK_FILES` は採用した検査ファイル全体、`CHECK_COMMANDS` はAcceptance Criterionごとの検証コマンドを指す
-- verifierが書いたファイルだけを `PROTECTED_CHECK_FILES` とし、verifier以外には変更させない。親は作成直後に、worktreeのrootで全 `PROTECTED_CHECK_FILES` の `shasum -a 256` を `<run-dir>/protected.sha256` へ書き出し、`check_mechanical.sh` で照らし合わせる。実装から独立に決めた期待値を、実装側の都合で書き換えさせないためである
-- それ以外の検査はimplementerが作成・修正してよく、妥当性はreviewerがAcceptance Criteriaから判定する
-- 後続groupで検査を直すときも同じで、保護対象はverifier経由で直してハッシュを記録し直す。期待値を実装に合わせて弱めず、変えたファイル・コマンドと理由をRun Logに残す
+- `CHECK_FILES` はimplementerが作成・変更した検査ファイル全体、`CHECK_COMMANDS` はAcceptance Criterionごとの検証コマンドを指す
+- 検査はimplementerが作成・修正し、妥当性はreviewerがAcceptance Criteriaから判定する
+- 後続groupで採用済みの検査を直すときは、期待値を実装に合わせて弱めず、変えたファイル・コマンドと理由をRun Logに残す
 
 #### 骨組み
 
-spec modeで `<spec-dir>/skeleton.patch` があれば、最初のgroupの前に一度だけworktreeへ当てる。mjun-specifyが、型・署名・moduleの配置をコードで書き、buildと型検査を通したものである。実装はこの中身を埋める形で進み、verifierの検査も最初から本物の署名を呼べる。resumeで、作業branchに骨組みのcommitが既にあれば省く。
+spec modeで `<spec-dir>/skeleton.patch` があれば、最初のgroupの前に一度だけworktreeへ当てる。mjun-specifyが、型・署名・moduleの配置をコードで書き、buildと型検査を通したものである。実装はこの中身を埋める形で進む。resumeで、作業branchに骨組みのcommitが既にあれば省く。
 
 1. `<run-dir>` を作り、worktreeで `git apply --3way --index <spec-dir>/skeleton.patch` を実行する
 2. 当たったら、`LINT_COMMANDS` / `BUILD_COMMANDS` / `TEST_COMMANDS` を `run_checks.sh` (`<name>` は `skeleton`) で実行する。通れば、型と署名を足したことを表すConventional Commits形式のmessageで1つのcommitにし、ID検査を `log HEAD~1..HEAD` で実行する。Run Logに `- skeleton: APPLIED` を残す
@@ -171,7 +170,7 @@ spec modeで `<spec-dir>/skeleton.patch` があれば、最初のgroupの前に�
 - SubAgent共通の約束 (再委譲しない、途中経過を送らない、検証コマンドを前面で実行する、commitしないなど) は [templates/common.md](templates/common.md) にある。追加の委譲は親だけが判断する
 - commitはgroupの承認ごとに親が行う (Phase 3.1)。pushとPR作成はPhase 4まで行わない
 - `git reset --hard` などの破壊的リセットをしない。未commitの成果や他のgroupの変更を失うからである。例外は、Phase 3.2で整理の変更だけを戻す場合と、当たらなかった骨組みを戻す場合である
-- 複数groupを同じworktreeで並列に実装しない。どのgroupの未commit変更かを区別できず、保護された検査ファイルのハッシュ照合も成り立たない
+- 複数groupを同じworktreeで並列に実装しない。どのgroupの未commit変更かを区別できなくなる
 - 構造化値が無い、または曖昧なときは、作業したSubAgentを継続して1回だけ再要求する。継続できない環境では、そのroleを最初からやり直す (作業していないagentにブロックだけを書かせると捏造になる)
 - SubAgentの報告で `NOT_RUN` の項目は、親が該当コマンドを実行して埋める。推測で埋めない
 - ユーザーの指示で手順の一部を変えるときも、role、テンプレート、構造化ブロック、回数の上限はそのまま使う。親が構造化ブロックをパースして動くので、独自の役割名や報告形式を作ると、親が結果を読み取れない
@@ -182,8 +181,8 @@ spec modeで `<spec-dir>/skeleton.patch` があれば、最初のgroupの前に�
 必要になった時点で次を読む。読んでいない手順を記憶で補わない。
 
 - [references/subagent.md](references/subagent.md): roleごとのmodelとeffort、implementerの昇格条件。最初のSubAgentを起動する前に読む
-- [references/group-loop.md](references/group-loop.md): Phase 3.0 (実装準備と必要な事前検査)、Phase 3.1 (実装とレビュー)、Run Logの形式。最初のgroupを始める前に読む
+- [references/group-loop.md](references/group-loop.md): Phase 3.0 (実装準備)、Phase 3.1 (実装とレビュー)、Run Logの形式。最初のgroupを始める前に読む
 - [references/recovery.md](references/recovery.md): taskの隔離とblocked、Phase 3.1' (debuggerによる原因調査)。次のどれかのときに読む: implementerが `BLOCKED` を返した / 差し戻しが2周に達した / taskをblockedへ移す / task計画を直す
-- [references/validation-and-delivery.md](references/validation-and-delivery.md): Phase 3.2 (ADRと整理)、Phase 3.3 (feature単位の検証)、Phase 4 (commitとPR作成・merge)、Phase 5 (結果の表示)、Phase 6 (worktreeクリーンアップ)。実行可能なtaskが尽きたときに読む
+- [references/validation-and-delivery.md](references/validation-and-delivery.md): Phase 3.2 (ADRと整理)、Phase 3.3 (feature単位の検証とverifierによる実物の確認)、Phase 4 (commitとPR作成・merge)、Phase 5 (結果の表示)、Phase 6 (worktreeクリーンアップ)。実行可能なtaskが尽きたときに読む
 
 完了 (`COMPLETE`) は、全taskが `done` で、Phase 3.3の判定が `GO` または `MANUAL_VERIFY_REQUIRED` である状態を指す。そのうえで選ばれたところまで進め、Phase 5の結果を示し、Phase 6で片付ける。doneでないtaskが残るときは `PARTIAL` として、Phase 5とPhase 6だけを行う。エラーやユーザーの中止で途中終了するときも、Phase 6は必ず行う。

@@ -6,7 +6,7 @@
 
 fresh contextで動く原因調査SubAgent。それまでの試行の経緯は知らされない。経緯から離れてroot causeを見直すためである。仕事は3つある。root causeの特定と最小の修正計画、そして「このtaskを続けるか、上流 (task計画やspec) へ戻すか」の判断である。コードの修正は仕事に含まれず、コードは変更しない。
 
-入力は起動promptのファイルにある。groupの `brief.md` に `TASK_BRIEF`、採用済みの `CHECK_COMMANDS`、`PROTECTED_CHECK_FILES`、Implementation Notesがあり、`contract.md` にcontractがある。起動promptの本文には、失敗の内容 (implementerの `BLOCKER`、または最後のreviewerの `FINDINGS` / `REMEDIATION`) がある。失敗したコマンドのログのパスもそこにある。未commitの試行の実物は、worktreeで `git diff` を読む。同じgroupで2回目の起動なら、1回目の `## Debug Report` も受け取る。1回目の後に得た新しい証拠も使って判断し、同じ診断を繰り返さない。
+入力は起動promptのファイルにある。groupの `brief.md` に `TASK_BRIEF`、採用済みの `CHECK_COMMANDS`、Implementation Notesがあり、`contract.md` にcontractがある。起動promptの本文には、失敗の内容(implementerの `BLOCKER`、または最後のreviewerの `FINDINGS` / `REMEDIATION`)がある。失敗したコマンドのログのパスもそこにある。未commitの試行の実物は、worktreeで `git diff` を読む。同じgroupで2回目の起動なら、1回目の `## Debug Report` も受け取る。1回目の後に得た新しい証拠も使って判断し、同じ診断を繰り返さない。
 
 ## 進め方
 
