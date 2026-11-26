@@ -16,7 +16,6 @@ import os
 import re
 import subprocess
 import sys
-import tempfile
 import tomllib
 from collections.abc import Iterator
 from pathlib import Path
@@ -66,7 +65,7 @@ def main() -> int:
         *check_expected_links(),
         *check_dangling_links(),
         *check_mise(),
-        *check_textlint(),
+        *check_jafix(),
         *check_apm(),
         *check_codex_hooks(),
         *check_codex_stale_keys(),
@@ -162,29 +161,16 @@ def check_mise() -> Iterator[str]:
         yield f"[mise-version] mise {current} が install_mise.sh の固定版 {pinned[1]} と違う"
 
 
-def check_textlint() -> Iterator[str]:
-    """設定が読めないとexit 2になる。exit 1は文章への指摘なので問題ない。"""
-    samples = {".md": "# 確認\n\n本文です。\n", ".html": "<p>本文です。</p>\n"}
-    with tempfile.TemporaryDirectory() as tmp:
-        for mode in ("fix", "report"):
-            for suffix, text in samples.items():
-                if mode == "fix" and suffix == ".html":
-                    continue
-                sample = Path(tmp, f"sample{suffix}")
-                sample.write_text(text)
-                result = subprocess.run(
-                    [
-                        "zsh",
-                        str(DOTPATH / "script/tools/textlint.sh"),
-                        mode,
-                        str(sample),
-                    ],
-                    capture_output=True,
-                    text=True,
-                )
-                if result.returncode >= 2:
-                    error = (result.stderr or result.stdout).strip().splitlines()
-                    yield f"[textlint] {mode} の設定で {suffix} を検査できない: {error[1] if len(error) > 1 else error}"
+def check_jafix() -> Iterator[str]:
+    """共通設定かこのリポジトリの設定が不正だと、jafixはexit 2になる。未導入はcheck_miseが報告する。"""
+    try:
+        result = subprocess.run(
+            ["jafix", "rules"], cwd=DOTPATH, capture_output=True, text=True
+        )
+    except FileNotFoundError:
+        return
+    if result.returncode != 0:
+        yield f"[jafix] 設定を読めない: {result.stderr.strip()}"
 
 
 def check_apm() -> Iterator[str]:

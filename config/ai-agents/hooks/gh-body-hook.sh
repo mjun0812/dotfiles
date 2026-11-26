@@ -3,16 +3,15 @@
 #   1. 他人が作成したIssueの本文を`gh issue edit --body / --body-file`で書き換える呼び出しを拒否する。
 #      本文は作成者の言葉なので、追記や提案はコメントで行わせる。題名・label・assigneeなどの変更と、
 #      bot (Renovateのdashboardなど) が作成したIssueは通す。作成者を確かめられないときは止めない。
-#   2. 本文にtextlintをかけ、指摘があれば一度だけ止めて書き直させる。同じ本文で再実行したら通すので、誤検知でも先へ進める。
+#   2. 本文にjafixをかけ、指摘があれば一度だけ止めて書き直させる。同じ本文で再実行したら通すので、誤検知でも先へ進める。
 #      本文の展開結果はhookから見えないため、`$(...)`や`--body-file -`で渡す本文は、ファイルに書いて--body-fileで渡させる。
-#      commitメッセージやひと言のコメントのような短い本文は検査しない。textlintが失敗したときは止めない。
+#      commitメッセージやひと言のコメントのような短い本文は検査しない。jafixが無い・失敗したときは止めない。
 
 set -u
 
 command -v jq >/dev/null 2>&1 || exit 0
 
-DOTPATH=${0:A:h:h:h:h}
-# この長さ未満の本文はtextlintにかけない (日本語でおよそ100文字)
+# この長さ未満の本文はjafixにかけない (日本語でおよそ100文字)
 min_bytes=300
 
 input=$(cat)
@@ -110,19 +109,19 @@ for target in $targets; do
     label=${target%%$'\t'*} file=${target#*$'\t'}
     (($(wc -c <"$file") >= min_bytes)) || continue
     bodies+=("$(<"$file")")
-    # 拡張子に関わらずMarkdownとして検査する
+    # 本文のファイルがあるリポジトリのプロジェクト設定を使わず、共通設定だけで検査する
     cp "$file" "$tmp/body.md"
-    out=$("$DOTPATH/script/tools/textlint.sh" report --format json "$tmp/body.md" 2>/dev/null)
-    findings+=("${(@f)$(jq -r --arg label "$label" '.[0].messages[] | "\($label):\(.line):\(.column): \(.message | gsub("\n"; " ")) [\(.ruleId)]"' <<<"$out" 2>/dev/null)}")
+    out=$(jafix check --output-format json "$tmp/body.md" 2>/dev/null)
+    findings+=("${(@f)$(jq -r --arg label "$label" '.findings[] | "\($label):\(.line):\(.column): [\(.rule_id)] \(.message | gsub("\n"; " "))"' <<<"$out" 2>/dev/null)}")
 done
 findings=(${findings:#})
 ((${#findings})) || exit 0
 
 # 同じ本文で再実行されたら、指摘を承知のうえで送るものとして通す
-state="${TMPDIR:-/tmp}/gh-body-textlint"
+state="${TMPDIR:-/tmp}/gh-body-jafix"
 mkdir -p "$state"
 key=$(print -rl -- $bodies | cksum | tr ' ' '-')
 [[ -e $state/$key ]] && exit 0
 : >"$state/$key"
 
-deny "本文にtextlintの指摘がある。指摘箇所を文意を保ったまま書き直してから再実行すること。指摘が誤りなら、同じ本文のまま再実行すれば通る。"$'\n'"${(F)findings}"
+deny "本文にjafixの指摘がある。指摘箇所を文意を保ったまま書き直してから再実行すること。指摘が誤りなら、同じ本文のまま再実行すれば通る。"$'\n'"${(F)findings}"
