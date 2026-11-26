@@ -52,7 +52,7 @@
 
 # ------------------------------------------------------------------------------
 # AI agent: 設定ファイル
-# AGENTS_global.mdはCodex・Gemini・OpenCodeが同じファイルを読む
+# AGENTS_global.mdはCodexとGeminiが同じファイルを読む。Claude CodeとOpenCodeは専用のファイルを読む
 # ------------------------------------------------------------------------------
 # 共通
 "~/.apm/apm.yml" = "~/.dotfiles/config/ai-agents/apm.yml"
@@ -78,7 +78,7 @@
 "~/.gemini/GEMINI.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
 
 # OpenCode
-"~/.config/opencode/AGENTS.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
+"~/.config/opencode/AGENTS.md" = "~/.dotfiles/config/ai-agents/opencode/AGENTS.md"
 "~/.config/opencode/opencode.jsonc" = "~/.dotfiles/config/ai-agents/opencode/opencode.jsonc"
 "~/.config/opencode/plugins/yobirin-notify" = "~/.dotfiles/config/ai-agents/opencode/plugins/yobirin-notify"
 "~/.config/opencode/plugins/shared-hooks" = "~/.dotfiles/config/ai-agents/opencode/plugins/shared-hooks"

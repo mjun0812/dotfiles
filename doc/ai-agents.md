@@ -1,6 +1,6 @@
 # AI agentの初期設定
 
-dotfilesを展開した後、使うagentの認証を端末ごとに済ませる。OpenCode 2の設定と共通指示は `mise dot apply` が配置し、共有skillとMCPサーバーはAPMが配置する。APIキーは利用するproviderの分だけ用意する。
+dotfilesを展開した後、使うagentの認証を端末ごとに済ませる。OpenCode 2の設定、専用のglobal指示、hookを呼ぶplugin `shared-hooks` は `mise dot apply` が配置し、rtkのplugin `rtk.ts` は `script/setup/setup_rtk.sh` が置く。共有skillとMCPサーバーはAPMが配置する。APIキーは利用するproviderの分だけ用意する。
 
 ## ログイン
 
@@ -35,4 +35,6 @@ export CLIPROXY_API_KEY='ローカルプロキシのクライアントキー'
 
 - `opencode models` でモデル一覧を確認する。利用を許可するproviderとシェル権限は[opencode.jsonc](../config/ai-agents/opencode/opencode.jsonc)にある。
 - 共有skillやMCPを更新するには `apm update -g -y` を実行する。配布対象は[共有skill一覧](skills_ja.md)を参照する。
+- `opencode plugin list` で `mjun.shared-hooks` が出ることを確認する。出なければ `mise dot apply` を実行してOpenCodeを再起動する。
+- `rtk init -g --show` で `OpenCode` の行が `[ok]` になっていることを確認する。`[--]` なら `~/.dotfiles/script/setup/setup_rtk.sh` を実行してOpenCodeを再起動する。
 - `herdr integration status` で `opencode: current` を確認する。未導入なら `herdr integration install opencode` を実行してOpenCodeを再起動する。

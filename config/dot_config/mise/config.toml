@@ -52,7 +52,7 @@ ty = "latest"
 "aqua:aws/aws-cli" = "latest"
 "aqua:neovim/neovim" = "latest"
 "github:duckdb/duckdb" = "latest"
-"github:rtk-ai/rtk" = { version = "latest", minimum_release_age = "0s" }
+"github:rtk-ai/rtk" = { version = "latest", minimum_release_age = "0s", postinstall = '"$HOME"/.dotfiles/script/setup/setup_rtk.sh' }
 "github:runpod/runpodctl" = "latest"
 "github:WGUNDERWOOD/tex-fmt" = "latest"
 "github:jupyter-ai-contrib/nb-cli" = { version = "latest", bin = "nb" }

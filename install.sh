@@ -142,3 +142,7 @@ bash "$DOTPATH/script/setup/setup_herdr.sh"
 ################ [hunk] ################
 log_section "Setting up hunk..."
 bash "$DOTPATH/script/setup/setup_hunk.sh"
+
+################ [rtk] ################
+log_section "Setting up rtk..."
+zsh "$DOTPATH/script/setup/setup_rtk.sh"

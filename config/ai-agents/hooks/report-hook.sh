@@ -7,6 +7,7 @@
 # 既存のファイルにある古い書き方まで返すと、頼んでいない書き換えや直し続けるループが起きるため、変わった行に絞る。
 #
 # 指摘があるときはstderrに書いてexit 2で終える (Claude Code・Codexともにagentへのフィードバックになる)。
+# OpenCodeのplugin (config/ai-agents/opencode/plugins/shared-hooks) もedit・write・patchの成功後に呼び、stderrをtoolの結果へ足す。
 # textlint・shellcheckが無い・失敗した場合は、その検査だけ飛ばしてagentを止めない。
 
 set -u

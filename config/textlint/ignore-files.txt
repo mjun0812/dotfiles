@@ -3,3 +3,4 @@
 # 例としてわざと規則に反する文を含むため、自動修正と指摘の対象にしない。
 config/ai-agents/claude/CLAUDE.md
 config/ai-agents/AGENTS_global.md
+config/ai-agents/opencode/AGENTS.md
