@@ -8,6 +8,8 @@ preset-ai-words-ja = true
 # 箇条書きの「**見出し**: 説明」の形と、コロンで終わる文の後のリストやコードは使う
 no-ai-list-formatting = false
 no-ai-colon-continuation = false
+# preset-ai-words-jaが有効にしない、短い主題を示す「は」の直後の読点も指摘する
+no-short-topic-comma = true
 
 # 日本語の技術文書の規則
 preset-ja-technical-writing = true
