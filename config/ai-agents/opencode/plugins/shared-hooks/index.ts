@@ -1,6 +1,7 @@
 // Claude Code・Codexと共有するhookスクリプト (config/ai-agents/hooks/) を、OpenCodeのtool hookから呼ぶ。
 // OpenCodeには設定ファイルにコマンドを書く種類のhookが無いので、サーバー側のpluginがその役目を持つ。
 import { Plugin } from "@opencode/plugin";
+import { spawn } from "node:child_process";
 import { homedir } from "node:os";
 import { createHooks, type ScriptResult } from "./hooks.ts";
 
@@ -21,5 +22,17 @@ export default Plugin.define({
 });
 
 function run(path: string, payload: unknown, timeoutMs: number): Promise<ScriptResult> {
-  throw new Error("skeleton: not implemented");
+  return new Promise((resolve, reject) => {
+    const child = spawn(path, [], { timeout: timeoutMs });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.setEncoding("utf8").on("data", (chunk) => (stdout += chunk));
+    child.stderr.setEncoding("utf8").on("data", (chunk) => (stderr += chunk));
+    child.on("error", reject);
+    // 時間切れでkillされると、codeがnullでsignalが入る
+    child.on("close", (code, signal) =>
+      code === null ? reject(new Error(`${path}: ${signal}`)) : resolve({ code, stdout, stderr }),
+    );
+    child.stdin.end(JSON.stringify(payload));
+  });
 }
