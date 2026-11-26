@@ -74,10 +74,20 @@ export function createHooks(ports: Ports): Hooks {
     }
   };
 
+  // sessionを参照できないときも、検査を飛ばしてtoolを止めない
+  const directoryOf = async (sessionID: string) => {
+    try {
+      return await ports.directory(sessionID);
+    } catch {
+      return undefined;
+    }
+  };
+
   return {
     async before(event) {
       if (event.tool !== "shell") return;
-      const directory = await ports.directory(event.sessionID);
+      const directory = await directoryOf(event.sessionID);
+      if (directory === undefined) return;
       const cwd = event.input.workdir ? resolve(directory, event.input.workdir) : directory;
       const payload = (command: string) => ({
         session_id: event.sessionID,
@@ -108,7 +118,9 @@ export function createHooks(ports: Ports): Hooks {
       }
       if (!EDIT_TOOLS.has(event.tool) || event.status !== "completed") return;
 
-      const base = { session_id: event.sessionID, cwd: await ports.directory(event.sessionID) };
+      const cwd = await directoryOf(event.sessionID);
+      if (cwd === undefined) return;
+      const base = { session_id: event.sessionID, cwd };
       // edited-files.shは、file_pathかpatch本文 (command) のどちらかから編集したファイルを読む
       const patch: string | undefined = event.tool === "patch" ? event.input.patchText : undefined;
 
