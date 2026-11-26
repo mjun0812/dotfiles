@@ -37,4 +37,4 @@ export CLIPROXY_API_KEY='ローカルプロキシのクライアントキー'
 - 共有skillやMCPを更新するには `apm update -g -y` を実行する。配布対象は[共有skill一覧](skills_ja.md)を参照する。
 - `opencode plugin list` で `mjun.shared-hooks` が出ることを確認する。出なければ `mise dot apply` を実行してOpenCodeを再起動する。
 - `rtk init -g --show` で `OpenCode` の行が `[ok]` になっていることを確認する。`[--]` なら `~/.dotfiles/script/setup/setup_rtk.sh` を実行してOpenCodeを再起動する。
-- `herdr integration status` で `opencode: current` を確認する。未導入なら `herdr integration install opencode` を実行してOpenCodeを再起動する。
+- `herdr integration status` で `opencode` の行を確認する。`needs repair` と表示されるのは、OpenCode 1用の `tui.jsonc` を `script/setup/setup_herdr.sh` が消しているためで、OpenCode 2の連携は動く。`not installed` なら `~/.dotfiles/script/setup/setup_herdr.sh` を実行してOpenCodeを再起動する。
