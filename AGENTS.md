@@ -39,14 +39,14 @@ toolとパッケージは `config/dot_config/mise/` に宣言する。共通の�
 
 Claude Code・Codex・Gemini・OpenCodeの設定は `config/ai-agents/` にまとめている。
 
-- global指示は、Claude Code用の `claude/CLAUDE.md` と、Codex・Gemini・OpenCode用の `AGENTS_global.md` に分かれている。
+- global指示は、Claude Code用の `claude/CLAUDE.md`、OpenCode用の `opencode/AGENTS.md`、Codex・Gemini用の `AGENTS_global.md` に分かれている。`opencode/AGENTS.md` は `AGENTS_global.md` を写したものなので、共通の節を変えたら両方を直す。
 - 共有skillとcode-reviewer agentは [mjun0812/skills](https://github.com/mjun0812/skills) にあり、`apm.yml` で購読して `apm update -g -y` で展開する。このリポジトリの `config/ai-agents/skills/` には私用skill(`mjun-*`)だけを置き、`mise dot apply` が展開する。私用skillを追加したら `conf.d/dotfiles.toml` の3つの展開先にも宣言する。skillを追加・変更したら `doc/skills.md` と `doc/skills_ja.md` も更新する。
 - このリポジトリ専用のskillは `.agents/skills/` に置き、`.claude/skills/` からsymlinkする。
 - Claude Codeのmodは `claude/mods/<name>/` に置き、`~/.claude/skills/<name>` と `~/.claude-bare/skills/<name>` へフォルダごとlinkする(skillsフォルダにあるpluginは自動で読み込まれる)。
-- OpenCodeのTUI pluginは `opencode/plugins/<name>/` に置き、`~/.config/opencode/plugins/<name>` へフォルダごとlinkする(そこにあるpluginは設定に書かなくても読み込まれる)。
+- OpenCodeのpluginは `opencode/plugins/<name>/` に置き、`~/.config/opencode/plugins/<name>` へフォルダごとlinkする(そこにあるpluginは設定に書かなくても読み込まれる)。rtkのplugin `rtk.ts` はgit管理せず、`script/setup/setup_rtk.sh` が生成する。
 - MCPサーバーは `apm.yml` の `dependencies.mcp` で管理し、apmが各agentの設定へ書き込む。agentごとの設定ファイルには直接書かない。
-- `rules/*.md` はClaude CodeとCodexが共有するので、frontmatterは両方が読める書式に限る。書式は `script/tools/rule-paths.sh` が定義し、prekが確かめる。
-- hookのscriptは `hooks/` に置き、`claude/settings.json` と `codex/hooks.json` から呼ぶ。Codexのhook定義を変えると、TUIの `/hooks` で再承認が必要になる。
+- `rules/*.md` はClaude Code・Codex・OpenCodeが共有するので、frontmatterはClaude Codeと `hooks/codex-rules-hook.sh` の両方が読める書式に限る。書式は `script/tools/rule-paths.sh` が定義し、prekが確かめる。
+- hookのscriptは `hooks/` に置き、`claude/settings.json`、`codex/hooks.json`、OpenCodeのplugin `opencode/plugins/shared-hooks/` から呼ぶ。Codexのhook定義を変えると、TUIの `/hooks` で再承認が必要になる。
 - `codex/config.toml` はsymlinkせず、テンプレートにあるキーだけを `~/.codex/config.toml` へマージする。Codexが書き込むローカル状態を残すためである。キーの削除はできない。`[projects]` のようなローカル状態のテーブルと、apmが書き込む `[mcp_servers.*]` はテンプレートに書かない。
 - `gemini/antigravity-cli/settings.json` も同じ方式でマージする。Antigravity CLIが起動のたびにファイルを書き直すためである。CLIが書き足す `trustedWorkspaces` はテンプレートに書かない。
 - `opencode/cli.json` も同じ方式でマージする。OpenCodeがTUIで設定を変えるたびにファイルを置き換えるためである。herdrが書き足す `plugins` はテンプレートに書かない。

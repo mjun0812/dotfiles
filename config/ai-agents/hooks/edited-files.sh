@@ -5,6 +5,7 @@
 #   Claude Code (Edit|Write): tool_input.file_path
 #   Codex (apply_patch|Bash): tool_input.commandのpatch本文にある"*** Update File: <path>"などの行
 #                             (shellのheredocでapply_patchを実行するとBashとして届き、commandにpatch本文が含まれる)
+#   OpenCode: config/ai-agents/opencode/plugins/shared-hooksが、edit・writeはClaude Code、patchはCodexと同じ形にして渡す
 
 set -u
 

@@ -3,6 +3,7 @@
 #   PreToolUse (apply_patch): ruleを渡す。編集は止めないので、ruleが届くのはその編集の後になる
 #   PostCompact: 渡した記録を消す。compactionで渡したruleがcontextから消えるため
 # Claude Codeはruleのfrontmatterのpathsを見て自分で読み込む。Codexには同じ機能が無いので、このhookが同じファイルを読んで渡す。
+# OpenCodeのplugin (config/ai-agents/opencode/plugins/shared-hooks) も、edit・write・patchの成功後に同じ形のJSONで呼び、返ったruleをsessionの指示へ入れる。
 # 同じsessionで同じruleは1回だけ渡す。ruleの本文が変わったら渡し直す。
 # globは、ファイルのあるgit repositoryのtop level (git管理外ならsessionのcwd) からの相対パスと照合する。
 
