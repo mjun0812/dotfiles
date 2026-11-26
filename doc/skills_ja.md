@@ -38,11 +38,11 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`、`
 
 3つのagentはすべて[`mjun0812/skills`](https://github.com/mjun0812/skills/tree/main/agents/.apm/agents)から取得します。
 
-| Agent                                                                                                                 | 用途                                                                                           |
-| --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [`code-reviewer-contract`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-contract.md) | spec contractに明記されたrequirements、boundaries、acceptance criteriaとの整合だけを検査する。 |
-| [`code-reviewer-finder`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-finder.md)     | 変更が導入または露出した、対応すべき動作不良やregressionを発見する。                           |
-| [`code-reviewer-verifier`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-verifier.md) | review候補1件の反証を試み、confirmed、refuted、uncertainのverdictを返す。                      |
+| Agent                                                                                                                 | 用途                                                                                             |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| [`code-reviewer-claim`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-claim.md)       | PR本文が述べる検証の結果、範囲、影響範囲を実コードで確かめ、説明と実際の結果との食い違いを探す。 |
+| [`code-reviewer-finder`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-finder.md)     | 変更が導入または露出した、対応すべき動作不良やregressionを発見する。                             |
+| [`code-reviewer-verifier`](https://github.com/mjun0812/skills/blob/main/agents/.apm/agents/code-reviewer-verifier.md) | review候補1件の反証を試み、confirmed、refuted、uncertainのverdictを返す。                        |
 
 ## Skill一覧
 
@@ -67,12 +67,12 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`、`
 
 ### Git
 
-| Skill                                                                                                   | 用途                                                                                                                                    |
-| ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [`git-commit`](https://github.com/mjun0812/skills/blob/main/skills/git/git-commit/SKILL.md)             | 現在の変更を適切な単位でstaging・commitする                                                                                             |
-| [`git-squash`](https://github.com/mjun0812/skills/blob/main/skills/git/git-squash/SKILL.md)             | 現在のbranchのcommitをsquash・整理し、必要なら force-with-lease でpushする                                                              |
-| [`git-fix-conflict`](https://github.com/mjun0812/skills/blob/main/skills/git/git-fix-conflict/SKILL.md) | merge、rebase、cherry-pick、revert、apply、PR などで発生したコンフリクトを検出して解消する                                              |
-| [`self-review`](https://github.com/mjun0812/skills/blob/main/skills/review/self-review/SKILL.md)        | 未commit変更または指定commitをsnapshot化し、独立した2つのFinderで敵対的にreviewする (`--spec` でspecとの整合を検証するContract軸を追加) |
+| Skill                                                                                                   | 用途                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`git-commit`](https://github.com/mjun0812/skills/blob/main/skills/git/git-commit/SKILL.md)             | 現在の変更を適切な単位でstaging・commitする                                                                                                                                 |
+| [`git-squash`](https://github.com/mjun0812/skills/blob/main/skills/git/git-squash/SKILL.md)             | 現在のbranchのcommitをsquash・整理し、必要なら force-with-lease でpushする                                                                                                  |
+| [`git-fix-conflict`](https://github.com/mjun0812/skills/blob/main/skills/git/git-fix-conflict/SKILL.md) | merge、rebase、cherry-pick、revert、apply、PR などで発生したコンフリクトを検出して解消する                                                                                  |
+| [`self-review`](https://github.com/mjun0812/skills/blob/main/skills/review/self-review/SKILL.md)        | branchの変更または指定commitをsnapshot化し、独立した2つのFinderで敵対的にreviewする。指摘は実コードを実行して確かめ、再現できたものを要修正、できないものを未証明として返す |
 
 ### GitHub
 
@@ -81,7 +81,7 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`、`
 | [`github-issue-create`](https://github.com/mjun0812/skills/blob/main/skills/github/github-issue-create/SKILL.md)             | Todo・メモ・バグ報告を、主張の裏取り (repo、必要なら公式ドキュメント) と関連Issue検索をしてからGitHub Issueとして1件起票する (テンプレ・ラベル自動判定、承認後に作成) |
 | [`github-issue-update`](https://github.com/mjun0812/skills/blob/main/skills/github/github-issue-update/SKILL.md)             | open issueを横断的に点検してclose (解決済み・重複・stale)・コメント追記・ラベル変更の候補を提示し、承認後に一括反映する                                               |
 | [`github-pr-create`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-create/SKILL.md)                   | 現在のbranchからPull Requestを作成し、概要・背景、関連Issue、実装方針、変更内容、影響範囲、検証結果の6項目で本文を記述する                                            |
-| [`github-pr-review`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-review/SKILL.md)                   | 並列reviewerで要修正の指摘・specとの不整合 (`--spec` または関連Issueから解決できる場合) を発見・検証し、以前のレビューを最新スナップショットへ置き換える              |
+| [`github-pr-review`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-review/SKILL.md)                   | 並列reviewerで要修正の指摘と、PR本文の主張と実際の結果との食い違いを発見し、実コードを実行して検証する。以前のレビューは最新スナップショットへ置き換える              |
 | [`github-pr-fix`](https://github.com/mjun0812/skills/blob/main/skills/github/github-pr-fix/SKILL.md)                         | PRの全問題(コンフリクト、CI失敗、レビューコメント)を専用worktree内で検出・修正する                                                                                    |
 | [`github-fix-ci`](https://github.com/mjun0812/skills/blob/main/skills/github/github-fix-ci/SKILL.md)                         | CIのステータスを確認し、失敗を分析して修正を適用する                                                                                                                  |
 | [`github-resolve-pr-comment`](https://github.com/mjun0812/skills/blob/main/skills/github/github-resolve-pr-comment/SKILL.md) | PRのレビューコメントを確認し、対応・返信する                                                                                                                          |
