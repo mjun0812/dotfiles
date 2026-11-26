@@ -66,10 +66,6 @@ fi
 mise bootstrap services apply --yes
 zsh "$DOTPATH/script/setup/setup_codex_daemon.sh" pin
 
-################ [textlint] ################
-log_section "Setting up textlint..."
-zsh "$DOTPATH/script/setup/setup_textlint.sh" || exit 1
-
 ################ [bat] ################
 log_section "Setting up bat themes..."
 bat cache --build

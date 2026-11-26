@@ -52,6 +52,7 @@ ty = "latest"
 "aqua:aws/aws-cli" = "latest"
 "aqua:neovim/neovim" = "latest"
 "github:duckdb/duckdb" = "latest"
+"github:mjun0812/jafix" = { version = "latest", minimum_release_age = "0s" }
 "github:rtk-ai/rtk" = { version = "latest", minimum_release_age = "0s", postinstall = '"$HOME"/.dotfiles/script/setup/setup_rtk.sh' }
 "github:runpod/runpodctl" = "latest"
 "github:WGUNDERWOOD/tex-fmt" = "latest"
@@ -63,16 +64,6 @@ ty = "latest"
 "npm:ccusage" = "latest"
 "npm:neovim" = "latest"
 "npm:oxfmt" = "latest"
-"npm:textlint" = { version = "latest", bun_args = """
-@textlint-ja/textlint-rule-preset-ai-writing@1.7.0
-@textlint-rule/textlint-rule-pattern@2.0.2
-textlint-plugin-html@1.0.1
-textlint-rule-ja-space-between-half-and-full-width@3.0.3
-textlint-rule-no-kangxi-radicals@0.2.2
-textlint-rule-preset-ai-words-ja@1.2.1
-textlint-rule-preset-ja-technical-writing@12.0.2
-textlint-rule-prh@6.1.0
-""" }
 
 # AI coding agents
 "aqua:anomalyco/opencode" = "latest"

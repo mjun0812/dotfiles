@@ -1,0 +1,17 @@
+# jafixの共通設定。agent用のhook (config/ai-agents/hooks) と、手元での `jafix check` / `jafix fix` が使う。
+# 設定を書かなくても有効なルール (全角括弧、日本語と英数字・半角括弧の間の空白、康熙部首など) はそのまま使う。
+
+[builtin]
+# AIが多用する語と書き方
+preset-ai-words-ja = true
+"@textlint-ja/preset-ai-writing" = true
+# 箇条書きの「**見出し**: 説明」の形と、コロンで終わる文の後のリストやコードは使う
+no-ai-list-formatting = false
+no-ai-colon-continuation = false
+
+# 日本語の技術文書の規則
+preset-ja-technical-writing = true
+# PRの表や箇条書きでは1文が長くなるので、長さでは指摘しない
+sentence-length = false
+# 文体は文書ごとに決めるので、見出し・本文・箇条書きのそれぞれで多いほうに合わせる
+no-mix-dearu-desumasu = { preferInHeader = "", preferInBody = "", preferInList = "", strict = false }

@@ -29,6 +29,7 @@
 "~/.config/bun" = "~/.dotfiles/config/dot_config/bun"
 "~/.config/eza" = "~/.dotfiles/config/dot_config/eza"
 "~/.config/ghostty" = "~/.dotfiles/config/dot_config/ghostty"
+"~/.config/jafix" = "~/.dotfiles/config/dot_config/jafix"
 "~/.config/mise" = "~/.dotfiles/config/dot_config/mise"
 "~/.config/nvim" = "~/.dotfiles/config/dot_config/nvim"
 "~/.config/pnpm" = "~/.dotfiles/config/dot_config/pnpm"
@@ -134,11 +135,6 @@
 "~/.gemini/antigravity-cli/skills/mjun-steering" = "~/.dotfiles/config/ai-agents/skills/mjun-steering"
 "~/.gemini/antigravity-cli/skills/mjun-to-tasks" = "~/.dotfiles/config/ai-agents/skills/mjun-to-tasks"
 "~/.gemini/antigravity-cli/skills/mjun-verify" = "~/.dotfiles/config/ai-agents/skills/mjun-verify"
-
-# ------------------------------------------------------------------------------
-# その他のツール
-# ------------------------------------------------------------------------------
-"~/.textlintrc.js" = "~/.dotfiles/config/textlint/textlintrc.js"
 
 # ------------------------------------------------------------------------------
 # OSで展開先が変わるもの (variants)

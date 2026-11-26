@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # agentが編集したファイルのうち、今回変わった行にある、自動では直さない指摘をagentへ返すPostToolUse hook。
-#   - Markdown: textlintの指摘 (AIっぽい語、日本語の文章規則、空白など。ルールはconfig/textlint/textlintrc.report.json)
+#   - Markdown: jafixの指摘 (AIっぽい語、日本語の文章規則、空白など。ルールはconfig/dot_config/jafix/config.toml)
 #   - シェルスクリプト: shellcheckの指摘と、Pythonなど他の言語のコードを`-c` / `-e`やheredocでべた書きした行。
 #     zshのscriptはshellcheckの対象外 (shellcheckはzshに対応しておらず、bashとして読ませると誤った指摘が出る)
 # 変わった行: gitで追跡中のファイルはHEADとの差分で追加・変更された行。追跡外・git管理外のファイルは全行。
@@ -8,7 +8,7 @@
 #
 # 指摘があるときはstderrに書いてexit 2で終える (Claude Code・Codexともにagentへのフィードバックになる)。
 # OpenCodeのplugin (config/ai-agents/opencode/plugins/shared-hooks) もedit・write・patchの成功後に呼び、stderrをtoolの結果へ足す。
-# textlint・shellcheckが無い・失敗した場合は、その検査だけ飛ばしてagentを止めない。
+# jafix・shellcheckが無い・失敗した場合は、その検査だけ飛ばしてagentを止めない。
 
 set -u
 
@@ -30,8 +30,8 @@ for file in "${(@f)$("$DOTPATH/config/ai-agents/hooks/edited-files.sh")}"; do
         # .mjun/はmjun系skillのagent向けのLocal文書 (spec、tasks、brief)。tasksはspecのAcceptance Criteriaを文言のまま写し、
         # Boundaryのような決まった書式の行もあるので、言い換えを促す指摘を返さない。人が読む文章は判断シートやPRで別に見る
         [[ $file == */.mjun/* || ${file:A} == */.mjun/* ]] && continue
-        findings=("${(@f)$("$DOTPATH/script/tools/textlint.sh" report --format json "$file" 2>/dev/null |
-            jq -r --arg file "$file" '.[0].messages[] | "\(.line)\t\($file):\(.line):\(.column): \(.message | gsub("\n"; " ")) [\(.ruleId)]"' 2>/dev/null)}")
+        findings=("${(@f)$(jafix check --output-format json "$file" 2>/dev/null |
+            jq -r --arg file "$file" '.findings[] | "\(.line)\t\($file):\(.line):\(.column): [\(.rule_id)] \(.message | gsub("\n"; " "))"' 2>/dev/null)}")
         ;;
     *.sh | *.bash | *.zsh)
         read -r shebang <"$file"

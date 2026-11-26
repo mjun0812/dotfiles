@@ -1,0 +1,7 @@
+# このリポジトリでjafixの修正と指摘の対象にしないファイル。
+# 例としてわざと規則に反する文を含む。symlinkを解決した実体のパスで比べるので、~/.claude/CLAUDE.mdなどのsymlink経由で渡しても外れる。
+exclude = [
+    "config/ai-agents/claude/CLAUDE.md",
+    "config/ai-agents/AGENTS_global.md",
+    "config/ai-agents/opencode/AGENTS.md",
+]
