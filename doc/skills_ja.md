@@ -59,10 +59,11 @@ APMは以下のpackageを`agent-skills`、`antigravity`、`claude`、`codex`、`
 | [`mjun-grilling`](../config/ai-agents/skills/mjun-grilling/SKILL.md)       | 計画・設計・specに残る判断を、推奨の答えを添えた質問で何回かに分けてユーザーに確認し、解決する。設計全体を対象にするか、呼び出し元skillから渡された判断だけを扱う。                                                                                                                                                                                           |
 | [`mjun-spec-review`](../config/ai-agents/skills/mjun-spec-review/SKILL.md) | specを、source・steering・ADR・用語集・他のactiveなspec・既存のコードと照らし合わせて敵対的にレビューし、verifierが確かめた指摘だけを返す。指摘にはspecの外にある根拠を求め、ファイルは編集しない。                                                                                                                                                           |
 | [`mjun-to-tasks`](../config/ai-agents/skills/mjun-to-tasks/SKILL.md)       | specを単独で検証できるvertical sliceのtaskに分け、`tasks.md` に保存する。taskを分けるのは1人の実装者のcontextに収まらないとき(acceptance criteriaが24を超えるとき)だけで、同梱の `check_spec_format.sh` はspecの書式を確かめ、`mjun-specify` と `mjun-implement` からも呼ばれる。                                                                             |
-| [`mjun-implement`](../config/ai-agents/skills/mjun-implement/SKILL.md)     | 承認済みのspecか `mjun-start` のbriefを起点に、worktreeでimplementerとreviewerのsubagentを使ってtask groupごとに実装し、acceptance criteriaを満たすかを確かめる。commitし、PRかfast-forward merge(`--merge`)で届ける。                                                                                                                                        |
+| [`mjun-implement`](../config/ai-agents/skills/mjun-implement/SKILL.md)     | 承認済みのspecか `mjun-start` のbriefを起点に、worktreeでimplementerとreviewerのsubagentを使ってtask groupごとに実装する。最後に、実装に関わっていないverifierのsubagentが、acceptance criteriaを1件ずつ実物の操作で確かめる。commitし、PRかfast-forward merge(`--merge`)で届ける。                                                                           |
 | [`mjun-orchestrate`](../config/ai-agents/skills/mjun-orchestrate/SKILL.md) | 呼び出したセッションをorchestration modeへ切り替え、Herdrのpaneで動く複数のworker agentへ人間と同じ依頼文を送り、質問に答えて操作する。ユーザーが明示的に呼んだときだけ使う。計画と進捗は `.mjun/orchestrate/<run>/board.md` に置き、節目ごとにworkerの状態を表で伝える。                                                                                     |
 | [`mjun-steering`](../config/ai-agents/skills/mjun-steering/SKILL.md)       | `.mjun/steering/` のプロジェクトメモリ、用語集 `CONTEXT.md`、ADRを、コードベースと履歴(mergeしたPR、closeしたIssue、文書)から作成・更新する。Syncはメモリとコードのずれを報告する。                                                                                                                                                                           |
 | [`mjun-rule-lint`](../config/ai-agents/skills/mjun-rule-lint/SKILL.md)     | 文章で書かれたコード規約(CLAUDE.md、steering、ADR、繰り返したレビュー指摘)を、`.mjun/lint/` のlocalなast-grep ruleとscriptに変換する。repositoryのlinter設定・git hook・CIは変えず、`mjun-implement` と `mjun-start` は今回変えたファイルにだけこのlintをかける。`mjun-implement` はレビューで出た書き方の指摘を貯め、2回出たものをlintの候補として知らせる。 |
+| [`mjun-verify`](../config/ai-agents/skills/mjun-verify/SKILL.md)           | repositoryのアプリをユーザーと同じように起動・操作して確かめる検証手順と機能マップを、`.mjun/verify/` に作成・更新する。書いた手順は通しで1回実行して確かめる。`mjun-implement` のverifierが、この手順でアプリを動かす。                                                                                                                                      |
 
 ### Git
 
@@ -162,6 +163,8 @@ graph LR
 
     mjun-orchestrate --> herdr
 
+    mjun-verify -. webの操作 .-> agent-browser
+
     github-pr-fix --> git-fix-conflict
     github-pr-fix --> github-fix-ci
     github-pr-fix --> github-resolve-pr-comment
@@ -182,6 +185,7 @@ graph LR
 | `mjun-implement`   | `github-issue-create`                                              | Phase 5で、人間が選んだFollow-ups (後で取り組むOut of Scope、範囲外のCONCERNS) を1件ずつ起票する                                                                                                               |
 | `mjun-implement`   | `git-commit`, `github-pr-create`, `mjun-to-tasks`, `mjun-start`    | Phase 4でworktreeの変更をcommitし、`--pr` 時にPRを作成。taskが大きすぎる、または切り方が誤っていた場合にtasks.mdを再分解。spec・brief・設計docの無い依頼 (specの無いIssue番号を含む) はmjun-startへ渡す        |
 | `mjun-orchestrate` | `herdr`                                                            | Herdr CLIの構文・ID・lifecycle stateの正として最初に読む。skill側はworker protocolだけを追加                                                                                                                   |
+| `mjun-verify`      | `agent-browser`                                                    | webやElectronの画面を操作して検証手順を確かめる場合                                                                                                                                                            |
 | `github-pr-fix`    | `git-fix-conflict`, `github-fix-ci`, `github-resolve-pr-comment`   | 対応する問題が検出された場合のみ各calleeを実行                                                                                                                                                                 |
 
 ### Standalone skills

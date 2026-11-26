@@ -1,6 +1,6 @@
 # Validation and Delivery
 
-実行可能なtaskが尽きた後の手順: Phase 3.2 (ADRと整理)、Phase 3.3 (feature単位の検証)、Phase 4 (commitとPR作成・merge)、Phase 5 (結果の表示)、Phase 6 (worktreeクリーンアップ)。
+実行可能なtaskが尽きた後の手順: Phase 3.2 (ADRと整理)、Phase 3.3 (feature単位の検証とverifierによる実物の確認)、Phase 4 (commitとPR作成・merge)、Phase 5 (結果の表示)、Phase 6 (worktreeクリーンアップ)。
 
 全taskがdoneのときだけPhase 3.2〜4を行う。doneでないtaskが残るなら、specをactiveのまま `PARTIAL` としてPhase 5へ進む。
 
@@ -16,20 +16,29 @@
 
 ## Phase 3.3: feature単位の検証
 
-groupごとのレビューでは見えない、feature全体としての充足と整合を確かめる。検証コマンドの実行 (手順1) と機械的な確認 (手順5) は親が自分で行う。手順2〜4はSubAgentに調べさせてよいが、判定は親が結果に基づいて行う。
+groupごとのレビューでは見えない、feature全体としての充足と整合を確かめる。検証コマンドの実行(手順1)と機械的な確認(手順5)は親が自分で行う。完了条件を実物で確かめる仕事(手順2)はverifierに任せる。手順3と4はSubAgentに調べさせてよいが、判定は親が結果に基づいて行う。
 
-1. TEST / LINT / BUILD全体と `SMOKE_COMMANDS`、全taskの `CHECK_COMMANDS` を `run_checks.sh` (`<name>` は `feature`) で実行する。`SMOKE_COMMANDS` が無ければ、各taskの `CHECK_COMMANDS` のうちend-to-endに最も近いものを代わりに使い、それも無ければ「実行時検証: 未実施」とする。`design.md` のTest Strategyに実機の操作シナリオがあれば、親が実行できる手段 (UIなら `agent-browser` skill) で実行して結果を残し、実行できなかったものはPhase 5で手動確認の手順として示す。UIのシナリオでは、操作後の状態をスクリーンショットで、動きを確かめるものは動画で撮り、`<repo-root>/.mjun/evidence/<branch-name>/` に保存する。`<run-dir>` と違って片付けで消さないのは、人間がPR作成などの後にこの画像で目視するためである。`(目視)` のシナリオは、見本 (試作で選んだ案の画像) があれば並べて撮る
-2. specのAcceptance Criteriaを1件ずつ、それを証明する検査と実装に対応づける。証明する検査が無いcriterionは実装と検証結果から判定し、判定できなければ未充足とする。doc modeでも、taskキューのAcceptance Criteriaは照合する
+1. TEST / LINT / BUILD全体と `SMOKE_COMMANDS`、全taskの `CHECK_COMMANDS` を `run_checks.sh` (`<name>` は `feature`)で実行する
+2. verifierを新しく起動し、完了条件を1件ずつ実物の操作で確かめさせる。implementerとして起動したSubAgentは使い回さない。実装した本人は、自分が作るつもりだったものを確かめるからである。`<run-dir>/feature/verify.md` に次を書いて渡す
+   - 完了条件の一覧。spec modeではspecのAcceptance Criteria、doc modeではtaskキューのAcceptance Criteriaで、briefなら `完了条件` である
+   - `design.md` のTest Strategyにある実機の操作シナリオ。`(目視)` の印と、見本の画像のパスを含める
+   - メインrepositoryに `.mjun/verify/README.md` があれば、そのパス。無ければ、無いことを書く
+   - 証拠の置き場所 `<repo-root>/.mjun/evidence/<branch-name>/`。`<run-dir>` と違って片付けで消さないのは、人間がPR作成などの後にこの証拠で確かめるためである
+   - 全taskの `CHECK_COMMANDS`。確かめ方の手がかりとして渡すもので、これが通ることは証明として扱わせない
+
+   `## Verification Report` の `RESULTS` をパースする。構造化値が無い、または曖昧なら1回だけ再要求する。親は、`RESULTS` が完了条件と操作シナリオをすべて覆っていることと、`PASS` の証拠に挙げられたファイルが実在することを確かめる。`RESULTS` に無い完了条件と、証拠のファイルが無い `PASS` は、`INCONCLUSIVE` として扱う。最後に `git status --porcelain` が空であることを確かめ、空でなければ同じverifierを継続して、検証で生じたファイルを片付けさせる
+
 3. task同士が共有するinterface、データ形、エラー形式、設定が一致しているかをコードで確かめる
 4. branch全体の変更 (`git diff <base>..HEAD`) が、specのBoundaries (Owns / Does Not Own) とOut of Scopeに収まるかを照合する。BoundariesとOut of Scopeがどちらも無ければ省く
 5. `check_mechanical.sh <worktree> <base-branch> --final` を実行する。spec modeでは `--design` と、全taskの `CHECK_FILES` を書いた `--exclude` を付ける。`Change Outline` の `OUTSIDE` はboundary違反、骨組みの未実装 (`Skeleton stubs`) の残りはcriterionの未充足として扱う
 
 判定は次のとおり。
 
-- 検証コマンドがすべて成功し、全criterionが充足し、task間が整合し、boundary違反が無い → `GO`。Phase 4へ進む
-- 他はすべて成功だが、実行時検証が未実施、実行できなかった操作シナリオがある、`(目視)` のシナリオがある、またはreview-onlyのtaskがある → `MANUAL_VERIFY_REQUIRED`。`(目視)` のシナリオは、実行して画像を撮れても合否を人間が決めるので、これに当たる。止まらずにPhase 4へ進み、Phase 5の報告とPR本文の検証結果に、人間が確かめることと画像を示す
-- 検証コマンドの失敗、criterionの未充足、task間の不整合、boundary違反のどれかがある → 差し戻す。該当criterionを持つtaskの文脈と問題の内容、全taskの `CHECK_COMMANDS` / `CHECK_FILES`、`PROTECTED_CHECK_FILES` のハッシュを `<run-dir>/feature/brief.md` に書き、implementerを新しく起動して渡す (合わせて2周まで。2周目は同じimplementerを継続する)。検査を直すときはPhase 3の保護対象の規則に従う。修正後の報告は、Phase 3.1の手順2〜4 (親の検査とreviewer) を通してから、この検証を手順1からやり直す。最終検証の後の変更だけがboundaryの照合などを迂回しないようにするためである。収束しなければ中止し、未充足のcriterionを示す
+- 検証コマンドがすべて成功し、verifierの判定が全完了条件で `PASS` で、task間が整合し、boundary違反が無い → `GO`。Phase 4へ進む
+- 他はすべて成功だが、`INCONCLUSIVE` の完了条件か操作シナリオがある、`(目視)` のシナリオがある、またはreview-onlyのtaskがある → `MANUAL_VERIFY_REQUIRED`。`INCONCLUSIVE` は、verifierが実物で確かめられなかったことを表し、通ったことを表さない。`(目視)` のシナリオは、実行して画像を撮れても合否を人間が決めるので、これに当たる。止まらずにPhase 4へ進み、Phase 5の報告とPR本文の検証結果に、人間が確かめることと証拠を示す
+- 検証コマンドの失敗、verifierの `FAIL`、task間の不整合、boundary違反のどれかがある → 差し戻す。該当する完了条件を持つtaskの文脈と問題の内容、verifierの `FAIL` のコマンドと出力、全taskの `CHECK_COMMANDS` / `CHECK_FILES` を `<run-dir>/feature/brief.md` に書き、implementerを新しく起動して渡す(合わせて2周まで。2周目は同じimplementerを継続する)。検査を直すときは、期待値を実装に合わせて弱めない。修正後の報告は、Phase 3.1の手順2〜4 (親の検査とreviewer)を通してから、この検証を手順1からやり直す。verifierも新しく起動し直す。最終検証の後の変更だけが、実物での確認やboundaryの照合を迂回しないようにするためである。収束しなければ中止し、`FAIL` の完了条件を示す
 
+Run Logの `feature:` 行に、verifierの判定ごとの件数を `verify=PASS <n>, FAIL <n>, INCONCLUSIVE <n>` として残す。
 Run Logの `feature:` 行に `validation=<GO | MANUAL_VERIFY_REQUIRED | NO-GO>` を残す。
 
 ## Phase 4: commitとPR作成・merge (git-commit / github-pr-create に連結)
@@ -47,8 +56,8 @@ Run Logの `feature:` 行に `validation=<GO | MANUAL_VERIFY_REQUIRED | NO-GO>` 
 5. `--merge`: メインrepositoryのworking treeが `<base-branch>` をcheckoutしていて未commit変更が無いことを確かめ、そこで `git merge --ff-only <branch-name>` を実行する。条件を満たさない、またはfast-forwardできなければmergeせず、worktreeとbranchを残して報告する。pushはしない。Phase 5へ進む
 6. `--pr`: `github-pr-create` skillでPRを作る。push、PRのタイトルと本文、PR作成は連結先skillが行うので、手順を再実装しない
    - Phase 1で決めた出力言語を `language` として渡す
-   - Phase 3.3で撮った画像があれば、パスと、画像ごとのシナリオ (`(目視)` なら人間の確かめる点) を渡し、検証結果の節に添付させる
-   - specかbriefが `Source: #N` を持つなら、そのIssue番号を `spec` として渡す (PR本文の `Closes #N` になる)。純Local specでは渡さない。specは内部文書なので、PR本文では触れない。PRレビューでcontractとの整合を確かめるときは、Local specのパスを `--spec` で直接渡す
+   - verifierが `.mjun/evidence/<branch-name>/` に残した画像があれば、パスと、画像ごとのシナリオ(`(目視)` なら人間の確かめる点)を渡し、検証結果の節に添付させる。verifierの `PASS` のコマンドと出力は、PR本文の検証の根拠として渡す
+   - specかbriefが `Source: #N` を持つなら、そのIssue番号を `spec` として渡す(PR本文の `Closes #N` になる)。純Local specでは渡さない。specは内部文書なので、PR本文では触れない
 7. `--pr` の結果を確かめる。`gh pr view <url> --json url,state` でURLと状態を見る。`Source: #N` を持つspecやbriefでは本文に `Closes #N` があることを確かめ、無ければ `gh pr edit --body-file` で足す。PRのタイトルと本文 (`gh pr view <url> --json title,body`) にID検査を `text` で実行し、検出されたら `gh pr edit` で直す。PR作成に失敗したら、worktreeを片付けずにエラーを伝えて中止する
 8. 選ばれたところまで進め終えたら (`--pr` はPR作成の成功後、`--no-pr` はcommitの完了後、`--merge` はmergeの成功後)、specのfrontmatterを `status: done` にする。briefを起点にした場合は、briefの `status` を `done` にする。それ以外のdoc modeでは省く。以降、このspecやbriefは逆引きや一覧の対象から外れる
 
@@ -61,8 +70,8 @@ Run Logの `feature:` 行に `validation=<GO | MANUAL_VERIFY_REQUIRED | NO-GO>` 
 - 変更概要: ファイル数、追加/削除行数 (`git diff --stat <base>..HEAD`)
 - task進捗: 完了task数と、resumeで飛ばした完了済みtask数
 - Checks: groupごとの検査数 (task別の内訳付き) と結果。review-onlyのtaskがあれば、そのtask IDと自動検査で覆えなかった理由
-- AC coverage: 充足数 / 総数と、criterionごとの判定と証明した検査
-- Validation: Phase 3.3の判定 (GO / MANUAL_VERIFY_REQUIRED。`PARTIAL` では「未実施」)。実行時検証が未実施なら、その旨と手動で確かめる操作シナリオ。`(目視)` のシナリオとreview-onlyのtaskは、人間が確かめることを1行ずつ、画像のパスと一緒に示す
+- AC coverage: verifierの判定ごとの件数(PASS / FAIL / INCONCLUSIVE)と、完了条件ごとの判定と証拠(コマンドと出力、または証拠のファイル)
+- Validation: Phase 3.3の判定(GO / MANUAL_VERIFY_REQUIRED。`PARTIAL` では「未実施」)。`INCONCLUSIVE` の完了条件は、verifierが確かめられなかった理由と、手動で確かめる手順を示す。`(目視)` のシナリオとreview-onlyのtaskは、人間が確かめることを1行ずつ、画像のパスと一緒に示す。`.mjun/verify/` が無かったrepositoryでは、`mjun-verify` で検証手順を作ると次回からverifierがそれを使えることを1行で知らせる
 - Base sync: CLEAN / FIXED (修正内容) / CONFLICT (衝突ファイル) (`PARTIAL` では「未実施」)
 - Refactor: DONE / SKIPPED / REJECTED (`PARTIAL` では「未実施」) と、見送ったNOTES
 - Run Log: 周回数と差し戻しの要約 (`tasks.md` の `## Run Log` から)

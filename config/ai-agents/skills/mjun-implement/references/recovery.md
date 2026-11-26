@@ -17,7 +17,7 @@ taskをblockedへ移すときの隔離と、差し戻しが収束しないとき
 1. debuggerを起動する。起動promptには、失敗の内容 (`BLOCKER`、または最後のreviewerの `FINDINGS` / `REMEDIATION`) と、失敗したコマンドのログのパスを書く。`TASK_BRIEF`、採用済みの検査、Implementation Notesはgroupの `brief.md` にあり、`git diff` はdebuggerが自分で読む
 2. `## Debug Report` の `- NEXT_ACTION:` をパースする
    - `RETRY_TASK`: `FIX_PLAN` と `NOTES` を渡して新しいimplementerを起動する。Phase 3.1の手順2で報告を採用してから、レビューを1周だけ行う
-   - `FIX_CHECK`: 検査自体の誤り。対象が `PROTECTED_CHECK_FILES` か事前検査のコマンドなら、`ROOT_CAUSE` を渡してverifierに作り直させ、Phase 3.0と同じ採用確認とハッシュの記録をする。それ以外は、implementerに `ROOT_CAUSE` と `FIX_PLAN` を渡して直させる。どちらも、更新後の検査でimplementerが検証し、Phase 3.1の手順2で採用してからレビューを1周だけ行う
+   - `FIX_CHECK`: 検査自体の誤り。implementerに `ROOT_CAUSE` と `FIX_PLAN` を渡して検査を直させる。更新後の検査でimplementerが検証し、Phase 3.1の手順2で採用してからレビューを1周だけ行う。reviewerには、検査の変更前後と理由を渡す
    - `RETURN_TO_TASKS`: `TASKS_CHANGE` が、contractの意味を変えずに、taskの分割・統合・順序・依存の変更か、contractやdesignが既に求めている前提taskの追加で済むかを確かめる。済むなら現在のgroupの変更を隔離の規則で戻し、上の規則で反映する (spec modeでは `mjun-to-tasks` に `TASKS_CHANGE` と `ROOT_CAUSE` を渡す)。その後Phase 1の手順4からキューとgroupを組み直し、Phase 3.0から続ける。ACの追加・削除・再解釈、BoundaryやOut of Scopeの変更、外から観察できる振る舞いの変更が要るなら、`RETURN_TO_SPEC` として中止する
    - `RETURN_TO_SPEC`: 中止し、contractと現実の矛盾箇所を示して、specの磨き直しが要ると案内する。specは変更しない
    - `STOP_FOR_HUMAN`: 中止し、`ROOT_CAUSE` と `HUMAN_QUESTION` (1問、選択肢付き) を示す

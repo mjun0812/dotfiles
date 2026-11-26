@@ -40,7 +40,7 @@ reviewerとverifierは、implementerより上位のmodelにする。implementer�
 | `make-operations-idempotent.md`               | ○           | ○        |            |          |          |
 | `separate-before-serializing-shared-state.md` | ○           | ○        |            |          |          |
 | `migrate-callers-then-delete-legacy-apis.md`  | ○           | ○        | ○          |          |          |
-| `test-behavior-not-implementation.md`         | ○           | ○        |            | ○        |          |
+| `test-behavior-not-implementation.md`         | ○           | ○        |            |          |          |
 | `fix-root-causes.md`                          | ○           | ○        |            |          | ○        |
 | `comments-explain-why.md`                     | ○           | ○        | ○          |          |          |
 

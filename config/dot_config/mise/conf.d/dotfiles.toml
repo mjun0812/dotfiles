@@ -108,6 +108,7 @@
 "~/.agents/skills/mjun-start" = "~/.dotfiles/config/ai-agents/skills/mjun-start"
 "~/.agents/skills/mjun-steering" = "~/.dotfiles/config/ai-agents/skills/mjun-steering"
 "~/.agents/skills/mjun-to-tasks" = "~/.dotfiles/config/ai-agents/skills/mjun-to-tasks"
+"~/.agents/skills/mjun-verify" = "~/.dotfiles/config/ai-agents/skills/mjun-verify"
 
 # ~/.claude/skills
 "~/.claude/skills/mjun-grilling" = "~/.dotfiles/config/ai-agents/skills/mjun-grilling"
@@ -119,6 +120,7 @@
 "~/.claude/skills/mjun-start" = "~/.dotfiles/config/ai-agents/skills/mjun-start"
 "~/.claude/skills/mjun-steering" = "~/.dotfiles/config/ai-agents/skills/mjun-steering"
 "~/.claude/skills/mjun-to-tasks" = "~/.dotfiles/config/ai-agents/skills/mjun-to-tasks"
+"~/.claude/skills/mjun-verify" = "~/.dotfiles/config/ai-agents/skills/mjun-verify"
 
 # ~/.gemini/antigravity-cli/skills
 "~/.gemini/antigravity-cli/skills/mjun-grilling" = "~/.dotfiles/config/ai-agents/skills/mjun-grilling"
@@ -130,6 +132,7 @@
 "~/.gemini/antigravity-cli/skills/mjun-start" = "~/.dotfiles/config/ai-agents/skills/mjun-start"
 "~/.gemini/antigravity-cli/skills/mjun-steering" = "~/.dotfiles/config/ai-agents/skills/mjun-steering"
 "~/.gemini/antigravity-cli/skills/mjun-to-tasks" = "~/.dotfiles/config/ai-agents/skills/mjun-to-tasks"
+"~/.gemini/antigravity-cli/skills/mjun-verify" = "~/.dotfiles/config/ai-agents/skills/mjun-verify"
 
 # ------------------------------------------------------------------------------
 # その他のツール
