@@ -108,13 +108,18 @@ uv pip install -U \
 
 cd "$DOTPATH"
 
-################ [Neovim] ################
-log_section "Setting up Neovim plugins..."
-# parserは明示的なinstallで1回だけ入れる。起動時の自動installと重なると、同じparserを二重にcompileする
-export NVIM_TS_AUTO_INSTALL=0
-nvim --headless "+Lazy! restore" +qa
-nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa
-unset NVIM_TS_AUTO_INSTALL
+################ [Neovim (background)] ################
+log_section "Starting Neovim setup in the background..."
+# 全処理でいちばん長いので、裏で走らせる。CPUを使うzsh pluginの取得やPythonの準備と重ねると、
+# 3コアのmacOSのrunnerでそれらが進まなくなるので、それらが終わった後に始める。後続のAPMなども重なる間は遅くなるが、合計の時間は縮む
+nvim_log=$(mktemp)
+(
+    # parserは明示的なinstallで1回だけ入れる。起動時の自動installと重なると、同じparserを二重にcompileする
+    export NVIM_TS_AUTO_INSTALL=0
+    nvim --headless "+Lazy! restore" +qa
+    nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa
+) >"$nvim_log" 2>&1 &
+nvim_pid=$!
 
 ################ [Node] ################
 # macOS installs vp with mise bootstrap (brew:vite-plus)
@@ -142,3 +147,18 @@ bash "$DOTPATH/script/setup/setup_hunk.sh"
 ################ [rtk] ################
 log_section "Setting up rtk..."
 zsh "$DOTPATH/script/setup/setup_rtk.sh"
+
+################ [Neovim (wait)] ################
+log_section "Setting up Neovim plugins..."
+wait $nvim_pid && nvim_status=0 || nvim_status=$?
+if [ "$nvim_status" -eq 0 ]; then
+    rm -f "$nvim_log"
+else
+    # 出力を全量は出さない。CIでは標準出力がnon-blockingのpipeになっていることがあり、
+    # 約9,000行を一度に書くとEAGAINで失敗する
+    tail -n 200 "$nvim_log"
+    echo "Neovim setup failed (exit $nvim_status). Full log: $nvim_log"
+fi
+# 失敗は出力を表示した後に伝える。(exit)なら、zsh -eのときはここでscriptが止まり、
+# -eなしでも、この行が最後なのでinstall.shの終了コードがNeovimの準備の終了状態になる
+(exit $nvim_status)
