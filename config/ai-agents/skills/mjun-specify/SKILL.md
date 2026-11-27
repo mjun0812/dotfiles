@@ -141,11 +141,11 @@ specを、source・steering・ADR・用語集・他のactiveなspec・既存の�
 
 ### Phase 7: Issueへの投影
 
-`Source:` の無いspecでは投影先Issueを作るかを確認し、作らない場合とGitHub remoteが無い場合は純LocalのままこのPhaseを終える。Issueを作る場合は、起票を `github-issue-create` に任せる。それ以外は [references/issue-projection.md](references/issue-projection.md) に従ってIssueを作成・投影する。作成者が認証ユーザーでないIssueは、本文を書き換えず、投影コメントへ投影する。投影直前の確認でLocal specに無い内容を取り込むなら、承認していない内容になるので `approval: pending` へ戻してPhase 3へ戻る。
+`Source:` の無いspecで投影先Issueを作るかは、ユーザーへ質問せずに決める。作るのは、ユーザーが依頼や会話でIssueを求めたときと、複数人がIssueで作業を追っているrepositoryのときである。後者は、直近のIssueとPRに、認証ユーザーとbotを除いた作成者や担当者がいるかで見分ける。Issueは作業の経緯をほかの人が辿るための場所なので、読む相手のいないrepositoryで作っても使われないからである。どちらでもない場合とGitHub remoteが無い場合は、純LocalのままこのPhaseを終え、作らなかったことをPhase 8で伝える。Issueを作る場合は、起票を `github-issue-create` に任せる。それ以外は [references/issue-projection.md](references/issue-projection.md) に従ってIssueを作成・投影する。作成者が認証ユーザーでないIssueは、本文を書き換えず、投影コメントへ投影する。投影直前の確認でLocal specに無い内容を取り込むなら、承認していない内容になるので `approval: pending` へ戻してPhase 3へ戻る。
 
 ### Phase 8: 結果報告
 
-- **Spec**: Local specのパス (`Source:` があればIssue番号とURLも)
+- **Spec**: Local specのパス。`Source:` があればIssue番号とURLも書く。Phase 7でIssueを作らないと決めたなら、その旨と理由を1行添える
 - **変更点サマリ**: 追加または変更したセクション
 - **Review**: spec reviewのVERDICTと、反映した指摘の件数 (決め直したdecisionがあればその見出し)。省いた場合はその旨と、当てはまった条件
 - **Decisions**: 4-1で解消したtentative (見出しと、証拠で昇格 / 人間の決定の別) と、`ADR: 要作成` のdecision。無ければ「なし」
