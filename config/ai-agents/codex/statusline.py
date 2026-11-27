@@ -18,10 +18,8 @@ TOOL = {
 }
 # Codex softens the built-in footer's Catppuccin Mocha colors; MCP theme roles use raw colors.
 MODEL_COLOR = "#f6e2b7"
-USAGE_COLOR = "#f2b590"
-LIMIT_COLOR = "#e990a9"
-PATH_COLOR = "#abdfa7"
-BRANCH_COLOR = "#8fb3ef"
+MUTED_COLOR = "#a6a6a6"
+FIVE_HOUR_COLOR = "#e990a9"
 MODE_COLOR = "#c8a9ee"
 # Codex trims ordinary spaces at the edges of text nodes, including bar padding.
 BRAILLE = "\N{BRAILLE PATTERN BLANK}⣀⣄⣤⣦⣶⣷⣿"
@@ -100,7 +98,6 @@ def _render(state: dict[str, Any]) -> dict[str, object]:
         _usage(
             "ctx",
             context.get("used_percentage", 0),
-            USAGE_COLOR,
             context.get("used_tokens", 0),
         ),
     ]
@@ -111,14 +108,17 @@ def _render(state: dict[str, Any]) -> dict[str, object]:
             for window in (limits[0]["primary_limit"], limits[0]["secondary_limit"])
             if window is not None
         }
-        for minutes, label in ((5 * 60, "5h"), (7 * 24 * 60, "7d")):
+        for minutes, label, text_color in (
+            (5 * 60, "5h", FIVE_HOUR_COLOR),
+            (7 * 24 * 60, "7d", MUTED_COLOR),
+        ):
             if minutes in windows:
-                groups.append(_usage(label, windows[minutes], LIMIT_COLOR))
+                groups.append(_usage(label, windows[minutes], text_color=text_color))
 
     if cwd := thread.get("workspace", {}).get("cwd"):
-        groups.append(_colored(f" {_short_path(cwd)}", PATH_COLOR))
+        groups.append(_colored(f" {_short_path(cwd)}", MUTED_COLOR))
         if branch := _git_branch(cwd):
-            groups.append(_colored(f" {branch}", BRANCH_COLOR))
+            groups.append(_colored(f" {branch}", MUTED_COLOR))
 
     if permissions := thread.get("permissions"):
         permission_label = permissions["display_name"]
@@ -131,13 +131,17 @@ def _render(state: dict[str, Any]) -> dict[str, object]:
 
     children = [groups[0]]
     for group in groups[1:]:
-        children.append("│")
+        children.append(_colored("│", MUTED_COLOR))
         children.append(group)
     return _row(children)
 
 
 def _usage(
-    label: str, pct: float, text_color: str, used_tokens: int | None = None
+    label: str,
+    pct: float,
+    used_tokens: int | None = None,
+    *,
+    text_color: str = MUTED_COLOR,
 ) -> dict[str, object]:
     bounded = min(max(pct, 0), 100)
     if bounded < 50:
