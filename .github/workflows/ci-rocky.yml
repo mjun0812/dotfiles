@@ -129,6 +129,19 @@ jobs:
             fi
           done
 
+      # 展開先がOSで変わるので、config/dot_config/*のloopとは別に確かめる
+      - name: Verify merged config (rtk)
+        shell: zsh {0}
+        run: |
+          echo "=== Checking rtk config ==="
+          target="/home/testuser/.config/rtk/config.toml"
+          if [[ -f "$target" && ! -L "$target" ]]; then
+            echo "✓ rtk config.toml is merged"
+          else
+            echo "✗ rtk config.toml is NOT merged"
+            exit 1
+          fi
+
       - name: Verify symlinks (AI agents)
         shell: zsh {0}
         run: |

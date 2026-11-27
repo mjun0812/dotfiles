@@ -27,6 +27,7 @@ python3 script/tools/doctor.py   # local環境がdotfilesの更新に追従し�
 - OSで展開先が変わるものは `variants` で分ける。
 - appが状態を書き込むディレクトリは、ディレクトリごとではなく設定ファイルだけをlinkする。
 - appが書き込む設定ファイルはlinkせず、`merge = true` でテンプレートのキーだけを書き込む(例: `cli-proxy-api/config.yaml`)。appが足したキーは、展開先にだけ残る。
+- `merge = true` のエントリは `variants` を使えない。展開先がOSで変わるものは、`conf.d/dotfiles.macos.toml` と `conf.d/dotfiles.linux.toml` に分けて宣言する(例: `config/rtk/config.toml`)。
 - 展開先にあった実ファイルは `.backup/` へ退避される。
 
 ## パッケージ管理

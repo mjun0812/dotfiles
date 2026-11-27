@@ -1,0 +1,14 @@
+# rtkの設定のうち、dotfilesで決めるキー。mise dot applyが、このキーだけをrtkのconfig.tomlへ書き込む
+
+# colors、emoji、max_widthはrtkの既定値のまま。rtkは[display]にこの3つが無いconfigを読めないので、
+# config.tomlがまだ無い環境のために書いておく
+[display]
+colors = true
+emoji = true
+max_width = 120
+pro_hint = false
+
+# consent_givenが未記録だと、rtk initが端末で同意を尋ねて入力待ちになる
+[telemetry]
+enabled = false
+consent_given = false

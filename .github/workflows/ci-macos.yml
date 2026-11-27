@@ -93,6 +93,18 @@ jobs:
             fi
           done
 
+      # 展開先がOSで変わるので、config/dot_config/*のloopとは別に確かめる
+      - name: Verify merged config (rtk)
+        run: |
+          echo "=== Checking rtk config ==="
+          target="$HOME/Library/Application Support/rtk/config.toml"
+          if [[ -f "$target" && ! -L "$target" ]]; then
+            echo "✓ rtk config.toml is merged"
+          else
+            echo "✗ rtk config.toml is NOT merged"
+            exit 1
+          fi
+
       - name: Verify macOS app settings
         run: |
           echo "=== Checking macOS app settings ==="

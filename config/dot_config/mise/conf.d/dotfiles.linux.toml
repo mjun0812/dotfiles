@@ -1,0 +1,7 @@
+#:schema https://mise.en.dev/schema/mise.json
+
+# マージで書き込むファイルのうち、展開先がOSで変わるもの
+# マージのエントリはvariantsを使えないので、OSごとのファイルに分けて宣言する
+[dotfiles]
+# rtkは、telemetryの同意の日時などを書き足す
+"~/.config/rtk/config.toml/dotfiles" = { source = "~/.dotfiles/config/rtk/config.toml", merge = true }
