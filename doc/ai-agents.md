@@ -41,7 +41,7 @@ export CLIPROXY_API_KEY='ローカルプロキシのクライアントキー'
 
 ## pstackだけを入れた設定
 
-`claude-pstack`・`codex-pstack` は、`claude-bare`・`codex-bare` の設定にpstack (cursor/pluginsが配布するplugin)だけを足した設定ディレクトリ(`~/.claude-pstack`・`~/.codex-pstack`)で起動する。本体のskillやglobal指示を読み込まずにpstackを使うためのもので、`/pstack:poteto-mode` から使い始める。pstackは `install.sh` が入れる。入っていなければ `~/.dotfiles/script/setup/setup_pstack.sh` を実行する。
+`claude-pstack`・`codex-pstack` は、`claude-bare`・`codex-bare` の設定にpstack(cursor/pluginsが配布するplugin)だけを足した設定ディレクトリ(`~/.claude-pstack`・`~/.codex-pstack`)で起動する。本体のskillやglobal指示を読み込まずにpstackを使うためのもので、`/pstack:poteto-mode` から使い始める。pstackは `install.sh` が入れる。入っていなければ `~/.dotfiles/script/setup/setup_pstack.sh` を実行する。
 
 ### Codexでの制限
 
@@ -53,7 +53,7 @@ pstackが役割ごとに使うモデルは、`config/ai-agents/claude-pstack/pst
 
 ### 更新
 
-pstackは自動では更新されず、入れた版のまま使う。更新するときは、Claude Code・Codexのそれぞれで、marketplaceを取得し直してからpluginを入れ直す。
+pstackは自動では更新されず、入れた版のまま使う。更新するときは、Claude Code・Codexのそれぞれで、marketplaceを取得し直してからpluginを更新する。
 
 ```sh
 claude-pstack plugin marketplace update cursor-plugins
@@ -63,7 +63,7 @@ codex-pstack plugin marketplace upgrade
 codex-pstack plugin add pstack@cursor-plugins
 ```
 
-更新した後は、`pstack-models.md` を新しい版の既定へ合わせ直す。上流では `/setup-pstack` の再実行が古い既定を置き換えるが、この設定では使わないので手で直す。見比べる先は、`~/.claude-pstack/plugins/cache/cursor-plugins/pstack/<version>/` にある `skills/setup-pstack/SKILL.md` (手順5の既定値)と `docs/harness/claude-code.md` (Claude Code向けのモデル名の読み替え)である。
+更新した後は、`pstack-models.md` を新しい版の既定へ合わせ直す。上流では `/setup-pstack` の再実行が古い既定を置き換えるが、この設定では使わないので手で直す。見比べる先は、`~/.claude-pstack/plugins/cache/cursor-plugins/pstack/<version>/` にある `skills/setup-pstack/SKILL.md`(手順5の既定値)と `docs/harness/claude-code.md`(Claude Code向けのモデル名の読み替え)である。
 
 ### 本体の `~/.claude/` を読み書きするskill
 

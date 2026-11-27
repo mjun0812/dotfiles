@@ -169,8 +169,8 @@ jobs:
             echo "✗ .codex/config.toml is missing"
             exit 1
           fi
-          # pstack is installed by setup_pstack.sh (not symlinked)
           check_link "$home/.claude-pstack/rules/pstack-models.md"
+          # pstack is installed by setup_pstack.sh (not symlinked)
           for d in "$home/.claude-pstack/plugins/cache/cursor-plugins/pstack" "$home/.codex-pstack/plugins/cache/cursor-plugins/pstack"; do
             if [[ -d "$d" ]]; then
               echo "✓ $d exists"
