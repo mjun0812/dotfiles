@@ -34,7 +34,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion, Bash(git:*), Bash
 
 1. 依頼を読む。Issue番号なら `gh issue view <N> --json number,state,title,body,labels,comments,url` で取得し、closedなら中止して報告する。`.mjun/specs/` に `Source: #N` を持つactiveなspecがあれば、そのspecの作業である。`approval: approved` ならmjun-implementへ、そうでなければmjun-specifyへ渡す
 2. 種類を決める。判断に要る範囲だけコードを読み、調べれば分かることは人間に聞かない
-3. 新規機能 (広範囲のrefactoringを含む) になるときと、種類の判断に迷うときだけ、理由を添えてAskUserQuestionで確認する。新規機能はspec作りと承認で人間の時間を使うので、入る前に確かめる価値がある。それ以外は、選んだ種類と理由を1行で伝えて進む
+3. 選んだ種類と理由を1行で伝えて進む。新規機能(広範囲のrefactoringを含む)でも、確認を取らずにmjun-specifyへ渡す。specを作らずに済ませたい、今回は範囲を絞りたいといった意向は、その1行を見たユーザーが伝えられ、specifyの質問と承認の場面でも反映できるからである。種類の判断に迷うときだけ、理由を添えてAskUserQuestionで確認する
 4. 新規機能以外は、どこまで進めるか (PRまでか、commitまでか) をここで1回だけ聞く。軽微なら「PRを作る / commitまで」、それ以外はmjun-implementの `--pr` / `--no-pr` / `--merge` から選んでもらう。`gh repo view` が失敗する (GitHub remoteが無い) ならPRの選択肢を出さない。最初にまとめて聞けば、以降は止まらずに最後まで進められる。新規機能でどこまで進めるかは、spec承認後にmjun-implementが聞く
 5. 種類ごとのreferenceを読んで進める
 6. 結果を報告する。選んだ種類と理由、途中で種類を切り替えた場合はその経緯、成果 (PRのURLやcommit)、briefのパスを含める
@@ -55,4 +55,4 @@ mjun-implementは、Skill toolで `mjun-implement .mjun/briefs/<slug>.md <どこ
 - refactoringが1つのtaskに収まらないと分かった → 新規機能 (mjun-specifyでtaskに分ける)
 - mjun-implementが、contractと現実の矛盾 (debuggerの `RETURN_TO_SPEC`) やbriefの不足で止まった → 新規機能。briefと止まった理由を素材として渡す
 
-新規機能へ切り替えるときは、手順3の確認をせずにmjun-specifyへ渡す。人間が決めるべき点は、specifyが聞く。
+新規機能へ切り替えるときも、確認を取らずにmjun-specifyへ渡す。人間が決めるべき点は、specifyが聞く。
