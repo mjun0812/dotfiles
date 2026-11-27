@@ -37,11 +37,8 @@ jobs:
         run: |
           ln -s "$GITHUB_WORKSPACE" "$HOME/.dotfiles"
 
+      # 2回目の実行による冪等性の確認は、待ち時間を縮めるためmacOSでは行わない。UbuntuとRocky Linuxのworkflowで確かめる
       - name: Run install script
-        run: |
-          zsh -e ./install.sh
-
-      - name: Re-run install script (idempotency)
         run: |
           zsh -e ./install.sh
 
