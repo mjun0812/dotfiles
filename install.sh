@@ -66,6 +66,19 @@ fi
 mise bootstrap services apply --yes
 zsh "$DOTPATH/script/setup/setup_codex_daemon.sh" pin
 
+################ [Neovim (background)] ################
+log_section "Starting Neovim setup in the background..."
+# 全処理でいちばん長いので、裏で走らせる。nvimとtree-sitterはmise toolで入り、
+# brewのgitやcurlはbootstrapが更新しうるので、bootstrapが終わった後に始める
+nvim_log=$(mktemp)
+(
+    # parserは明示的なinstallで1回だけ入れる。起動時の自動installと重なると、同じparserを二重にcompileする
+    export NVIM_TS_AUTO_INSTALL=0
+    nvim --headless "+Lazy! restore" +qa
+    nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa
+) >"$nvim_log" 2>&1 &
+nvim_pid=$!
+
 ################ [bat] ################
 log_section "Setting up bat themes..."
 bat cache --build
@@ -108,14 +121,6 @@ uv pip install -U \
 
 cd "$DOTPATH"
 
-################ [Neovim] ################
-log_section "Setting up Neovim plugins..."
-# parserは明示的なinstallで1回だけ入れる。起動時の自動installと重なると、同じparserを二重にcompileする
-export NVIM_TS_AUTO_INSTALL=0
-nvim --headless "+Lazy! restore" +qa
-nvim --headless -c "lua require('nvim-treesitter').install(require('config.treesitter-langs'), { summary = true }):wait(600000)" +qa
-unset NVIM_TS_AUTO_INSTALL
-
 ################ [Node] ################
 # macOS installs vp with mise bootstrap (brew:vite-plus)
 if [ "$(uname -s)" != "Darwin" ]; then
@@ -142,3 +147,12 @@ bash "$DOTPATH/script/setup/setup_hunk.sh"
 ################ [rtk] ################
 log_section "Setting up rtk..."
 zsh "$DOTPATH/script/setup/setup_rtk.sh"
+
+################ [Neovim (wait)] ################
+log_section "Setting up Neovim plugins..."
+wait $nvim_pid && nvim_status=0 || nvim_status=$?
+cat "$nvim_log"
+rm -f "$nvim_log"
+# 失敗は出力を表示した後に伝える。(exit)なら、zsh -eのときはここでscriptが止まり、
+# -eなしでも、この行が最後なのでinstall.shの終了コードがNeovimの準備の終了状態になる
+(exit $nvim_status)
