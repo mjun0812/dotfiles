@@ -136,6 +136,10 @@ apm update -g -y
 log_section "Setting up Claude Code..."
 zsh "$DOTPATH/script/setup/setup_claude_code.sh"
 
+################ [pstack] ################
+log_section "Setting up pstack..."
+zsh "$DOTPATH/script/setup/setup_pstack.sh"
+
 ################ [herdr] ################
 log_section "Setting up herdr..."
 bash "$DOTPATH/script/setup/setup_herdr.sh"
