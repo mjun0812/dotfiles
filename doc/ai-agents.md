@@ -41,11 +41,13 @@ export CLIPROXY_API_KEY='ローカルプロキシのクライアントキー'
 
 ## pstackだけを入れた設定
 
-`claude-pstack`・`codex-pstack` は、`claude-bare`・`codex-bare` の設定にpstack(cursor/pluginsが配布するplugin)だけを足した設定ディレクトリ(`~/.claude-pstack`・`~/.codex-pstack`)で起動する。本体のskillやglobal指示を読み込まずにpstackを使うためのもので、`/pstack:poteto-mode` から使い始める。pstackは `install.sh` が入れる。入っていなければ `~/.dotfiles/script/setup/setup_pstack.sh` を実行する。
+`claude-pstack`・`codex-pstack` は、`claude-bare`・`codex-bare` の設定にpstack(cursor/pluginsが配布するplugin)だけを足した設定ディレクトリ(`~/.claude-pstack`・`~/.codex-pstack`)で起動する。Claude Codeでは、本体のskillやglobal指示を読み込まずにpstackを使える。Codexで読み込まれるskillは「Codexでの制限」に書く。`/pstack:poteto-mode` から使い始める。pstackは `install.sh` が入れる。入っていなければ `~/.dotfiles/script/setup/setup_pstack.sh` を実行する。
 
 ### Codexでの制限
 
 Codexでは、pstackを公式の対応なしで使う。Claude Code向けのpluginをそのまま読み込むので、skillは `pstack:<name>` として読まれるが、subagentの `poteto-agent` と `comment-sicko` は使えない。
+
+Codexは `CODEX_HOME` に関係なく、ホームの `~/.agents/skills` にあるskillを読み込む。そのため `codex-pstack` では、pstackのskillのほかに、`~/.agents/skills` へ展開された共有skillとmjun系のskillも読み込まれる。`codex-bare` でも同じである。
 
 ### モデル設定
 
