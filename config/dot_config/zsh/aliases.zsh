@@ -89,6 +89,12 @@ claude-bare() (
     export CLAUDE_CONFIG_DIR="$HOME/.claude-bare"
     command \claude --allow-dangerously-skip-permissions "$@"
 )
+# claude-bareの設定に、pstack (cursor/pluginsのplugin) とそのモデル設定だけを足した設定ディレクトリで起動する。
+# 初回は`claude-pstack auth login`でログインする
+claude-pstack() (
+    export CLAUDE_CONFIG_DIR="$HOME/.claude-pstack"
+    command \claude --allow-dangerously-skip-permissions "$@"
+)
 
 # agentsview
 # serveの前に、~/.agentsview/remotes.tomlに書いたリモートのsessionを取得する
@@ -123,6 +129,12 @@ codex-headroom-full() {
 # 初回は`codex-bare login`でログインし、TUIの/hooksで通知のhookを承認する
 codex-bare() (
     export CODEX_HOME="$HOME/.codex-bare"
+    USE_MISE_SHIMS=1 command \codex "$@"
+)
+# codex-bareの設定に、pstackだけを足した設定ディレクトリで起動する。Codex向けの公式対応は無く、subagentは使えない。
+# 初回は`codex-pstack login`でログインし、TUIの/hooksで通知のhookを承認する
+codex-pstack() (
+    export CODEX_HOME="$HOME/.codex-pstack"
     USE_MISE_SHIMS=1 command \codex "$@"
 )
 CODEX_COMMIT_MODEL="gpt-6-luna"

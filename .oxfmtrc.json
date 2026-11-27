@@ -1,6 +1,7 @@
 {
   "ignorePatterns": [
     "config/ai-agents/claude/settings.json",
+    "config/ai-agents/claude-pstack/pstack-models.md",
     "config/dot_config/gh/config.yml",
     "config/dot_config/nvim/lazy-lock.json",
     "config/vscode/settings.json",
