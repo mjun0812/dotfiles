@@ -1,23 +1,16 @@
 name: CI macOS Packages
 
+# このworkflowが落ちる原因は、caskの削除や配布サーバーの不調など、変更の差分と関係のない外部の変化がほとんどである。
+# そのためPRやpushでは動かさず、定期実行で確かめる。
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  schedule:
+    # 毎週月曜 06:17 JST
+    - cron: "17 21 * * 0"
   workflow_dispatch:
 
 jobs:
-  changes:
-    uses: ./.github/workflows/changes.yml
-    with:
-      paths: ^config/dot_config/mise/|^\.github/workflows/(ci-macos-packages|changes)\.yml$
-
   test-macos-brew-packages:
     name: Test macOS packages
-    needs: changes
-    # 判定のjobが失敗したとき (outputが空) は、skipせずに実行する
-    if: ${{ !cancelled() && needs.changes.outputs.run != 'false' }}
     runs-on: macos-latest
     timeout-minutes: 45
     env:
@@ -51,9 +44,6 @@ jobs:
 
   test-macos-brew-cask-packages:
     name: Test macOS packages
-    needs: changes
-    # 判定のjobが失敗したとき (outputが空) は、skipせずに実行する
-    if: ${{ !cancelled() && needs.changes.outputs.run != 'false' }}
     runs-on: macos-latest
     timeout-minutes: 45
     env:

@@ -4,11 +4,6 @@ name: Detect changes
 # 判定するのはpull_requestだけで、mainへのpushとworkflow_dispatchでは常に実行する。
 on:
   workflow_call:
-    inputs:
-      paths:
-        description: 変更されたパスがこのEREに1つでも一致したときだけ実行する。省略時は、既存のMarkdownとdoc/の編集だけの変更をskipする
-        type: string
-        default: ""
     outputs:
       run:
         description: 後続のjobを実行するなら "true"、skipするなら "false"
@@ -33,7 +28,6 @@ jobs:
         id: detect
         env:
           EVENT_NAME: ${{ github.event_name }}
-          PATHS: ${{ inputs.paths }}
         run: |
           run=true
           if [[ $EVENT_NAME == pull_request ]]; then
@@ -41,11 +35,7 @@ jobs:
             changes=$(git diff --name-status --no-renames HEAD^1 HEAD)
             echo "$changes"
             run=false
-            if [[ -n $PATHS ]]; then
-              grep -qE "$PATHS" <<<"$(cut -f2 <<<"$changes")" && run=true
-            else
-              # ファイルの追加・削除はsymlinkの対象を変えうるので、既存ファイルの編集だけをskipする
-              grep -qvE $'^M\t(.*\\.md|doc/.*)$' <<<"$changes" && run=true
-            fi
+            # ファイルの追加・削除はsymlinkの対象を変えうるので、既存ファイルの編集だけをskipする
+            grep -qvE $'^M\t(.*\\.md|doc/.*)$' <<<"$changes" && run=true
           fi
           echo "run=$run" | tee -a "$GITHUB_OUTPUT"
