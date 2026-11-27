@@ -44,7 +44,7 @@ Claude Code・Codex・Gemini・OpenCodeの設定は `config/ai-agents/` にま�
 - global指示は、Claude Code用の `claude/CLAUDE.md`、OpenCode用の `opencode/AGENTS.md`、Codex・Gemini用の `AGENTS_global.md` に分かれている。`opencode/AGENTS.md` は `AGENTS_global.md` を写したものなので、共通の節を変えたら両方を直す。
 - 共有skillとcode-reviewer agentは [mjun0812/skills](https://github.com/mjun0812/skills) にあり、`apm.yml` で購読して `apm update -g -y` で展開する。このリポジトリの `config/ai-agents/skills/` には私用skill(`mjun-*`)だけを置き、`mise dot apply` が展開する。私用skillを追加したら `conf.d/dotfiles.toml` の3つの展開先にも宣言する。skillを追加・変更したら `doc/skills.md` と `doc/skills_ja.md` も更新する。
 - このリポジトリ専用のskillは `.agents/skills/` に置き、`.claude/skills/` からsymlinkする。
-- Claude Codeのmodは `claude/mods/<name>/` に置き、`~/.claude/skills/<name>` と `~/.claude-bare/skills/<name>` へフォルダごとlinkする(skillsフォルダにあるpluginは自動で読み込まれる)。
+- Claude Codeのmodは `claude/mods/<name>/` に置き、`~/.claude/skills/<name>`、`~/.claude-bare/skills/<name>`、`~/.claude-pstack/skills/<name>` へフォルダごとlinkする(skillsフォルダにあるpluginは自動で読み込まれる)。
 - OpenCodeのpluginは `opencode/plugins/<name>/` に置き、`~/.config/opencode/plugins/<name>` へフォルダごとlinkする(そこにあるpluginは設定に書かなくても読み込まれる)。rtkのplugin `rtk.ts` はgit管理せず、`script/setup/setup_rtk.sh` が生成する。
 - MCPサーバーは `apm.yml` の `dependencies.mcp` で管理し、apmが各agentの設定へ書き込む。agentごとの設定ファイルには直接書かない。
 - `rules/*.md` はClaude Code・Codex・OpenCodeが共有するので、frontmatterはClaude Codeと `hooks/codex-rules-hook.sh` の両方が読める書式に限る。書式は `script/tools/rule-paths.sh` が定義し、prekが確かめる。
@@ -53,6 +53,7 @@ Claude Code・Codex・Gemini・OpenCodeの設定は `config/ai-agents/` にま�
 - `gemini/antigravity-cli/settings.json` も同じ方式でマージする。Antigravity CLIが起動のたびにファイルを書き直すためである。CLIが書き足す `trustedWorkspaces` はテンプレートに書かない。
 - `opencode/cli.json` も同じ方式でマージする。OpenCodeがTUIで設定を変えるたびにファイルを置き換えるためである。herdrが書き足す `plugins` はテンプレートに書かない。
 - `claude-bare/` と `codex-bare/` は、`claude-bare`・`codex-bare` 関数が使う別の設定ディレクトリ(`~/.claude-bare`・`~/.codex-bare`)の設定である。global指示、rule、skill、MCPと、整形や指摘のようにagentの動作を変えるhookは置かない。通知やstatuslineのように動作を変えない設定と、権限、承認、言語、機能の設定だけを置く。本体の設定やhookを変えたら、bare側にも反映するかをこの基準で決める。
+- `claude-pstack`・`codex-pstack` 関数が使う設定ディレクトリ(`~/.claude-pstack`・`~/.codex-pstack`)は、bareのテンプレートをマージして作り、pstackのモデル設定 `claude-pstack/pstack-models.md` だけを足す。pstack本体は `script/setup/setup_pstack.sh` が入れる。専用のテンプレートは置かないので、bareを変えれば追従する。使い方と制限は `doc/ai-agents.md` にある。
 
 ## zsh
 

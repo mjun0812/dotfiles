@@ -73,6 +73,8 @@
 "~/.claude/skills/agent-row" = "~/.dotfiles/config/ai-agents/claude/mods/agent-row"
 "~/.claude-bare/settings.json" = "~/.dotfiles/config/ai-agents/claude-bare/settings.json"
 "~/.claude-bare/skills/agent-row" = "~/.dotfiles/config/ai-agents/claude/mods/agent-row"
+"~/.claude-pstack/skills/agent-row" = "~/.dotfiles/config/ai-agents/claude/mods/agent-row"
+"~/.claude-pstack/rules/pstack-models.md" = "~/.dotfiles/config/ai-agents/claude-pstack/pstack-models.md"
 
 # Codex
 "~/.codex/AGENTS.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
@@ -80,6 +82,8 @@
 "~/.codex/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
 "~/.codex-bare/hooks.json" = "~/.dotfiles/config/ai-agents/codex-bare/hooks.json"
 "~/.codex-bare/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
+"~/.codex-pstack/hooks.json" = "~/.dotfiles/config/ai-agents/codex-bare/hooks.json"
+"~/.codex-pstack/rules/manual-approval.rules" = "~/.dotfiles/config/ai-agents/codex/rules/manual-approval.rules"
 
 # Gemini
 "~/.gemini/GEMINI.md" = "~/.dotfiles/config/ai-agents/AGENTS_global.md"
@@ -97,6 +101,9 @@
 # Codexが書き足すローカル状態 ([projects.*]や[hooks.state]) を残す
 "~/.codex/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex/config.toml", merge = true }
 "~/.codex-bare/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex-bare/config.toml", merge = true }
+# pstack用の設定は、bareのテンプレートを土台にする。pluginの登録はCLIが展開先へ書き足す
+"~/.claude-pstack/settings.json/dotfiles" = { source = "~/.dotfiles/config/ai-agents/claude-bare/settings.json", merge = true }
+"~/.codex-pstack/config.toml/dotfiles" = { source = "~/.dotfiles/config/ai-agents/codex-bare/config.toml", merge = true }
 # Antigravity CLIは起動のたびにファイルを書き直し、trustedWorkspacesを書き足す
 "~/.gemini/antigravity-cli/settings.json/dotfiles" = { source = "~/.dotfiles/config/ai-agents/gemini/antigravity-cli/settings.json", merge = true }
 # OpenCodeはTUIで設定を変えるたびにファイルをrenameで置き換え、herdrがpluginsを書き足す
