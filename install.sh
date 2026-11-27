@@ -111,7 +111,7 @@ cd "$DOTPATH"
 ################ [Neovim (background)] ################
 log_section "Starting Neovim setup in the background..."
 # 全処理でいちばん長いので、裏で走らせる。CPUを使うzsh pluginの取得やPythonの準備と重ねると、
-# 3コアのmacOSのrunnerでそれらが進まなくなるので、それらが終わった後に始める。重ねるのは、通信待ちが中心の後続の処理だけにする
+# 3コアのmacOSのrunnerでそれらが進まなくなるので、それらが終わった後に始める。後続のAPMなども重なる間は遅くなるが、合計の時間は縮む
 nvim_log=$(mktemp)
 (
     # parserは明示的なinstallで1回だけ入れる。起動時の自動installと重なると、同じparserを二重にcompileする
