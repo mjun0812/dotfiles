@@ -127,15 +127,28 @@ codex-headroom-full() {
 }
 # 動作を変える設定 (AGENTS.md、skill、MCP、整形などのhook) を読まない設定ディレクトリで起動する。
 # 初回は`codex-bare login`でログインし、TUIの/hooksで通知のhookを承認する
+# Codexは`CODEX_HOME`に関係なく`~/.agents/skills`を読むので、そこのskillを起動のたびに無効にする。
+# 無効の指定はディレクトリでは効かず、SKILL.mdのパスごとに要る
 codex-bare() (
     export CODEX_HOME="$HOME/.codex-bare"
-    USE_MISE_SHIMS=1 command \codex "$@"
+    local -a disabled=()
+    local skill
+    for skill in $HOME/.agents/skills/*/SKILL.md(N); do
+        disabled+=("{path=\"$skill\",enabled=false}")
+    done
+    USE_MISE_SHIMS=1 command \codex -c "skills.config=[${(j:,:)disabled}]" "$@"
 )
 # codex-bareの設定に、pstackだけを足した設定ディレクトリで起動する。Codex向けの公式対応は無く、subagentは使えない。
 # 初回は`codex-pstack login`でログインし、TUIの/hooksで通知のhookを承認する
+# `~/.agents/skills`のskillは、codex-bareと同じく無効にする
 codex-pstack() (
     export CODEX_HOME="$HOME/.codex-pstack"
-    USE_MISE_SHIMS=1 command \codex "$@"
+    local -a disabled=()
+    local skill
+    for skill in $HOME/.agents/skills/*/SKILL.md(N); do
+        disabled+=("{path=\"$skill\",enabled=false}")
+    done
+    USE_MISE_SHIMS=1 command \codex -c "skills.config=[${(j:,:)disabled}]" "$@"
 )
 CODEX_COMMIT_MODEL="gpt-6-luna"
 alias commit-codex='command \codex exec \
