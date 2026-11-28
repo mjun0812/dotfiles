@@ -41,13 +41,15 @@ export CLIPROXY_API_KEY='ローカルプロキシのクライアントキー'
 
 ## pstackだけを入れた設定
 
-`claude-pstack`・`codex-pstack` は、`claude-bare`・`codex-bare` の設定にpstack(cursor/pluginsが配布するplugin)だけを足した設定ディレクトリ(`~/.claude-pstack`・`~/.codex-pstack`)で起動する。Claude Codeでは、本体のskillやglobal指示を読み込まずにpstackを使える。Codexで読み込まれるskillは「Codexでの制限」に書く。`/pstack:poteto-mode` から使い始める。pstackは `install.sh` が入れる。入っていなければ `~/.dotfiles/script/setup/setup_pstack.sh` を実行する。
+`claude-pstack`・`codex-pstack` は、`claude-bare`・`codex-bare` の設定にpstack(cursor/pluginsが配布するplugin)だけを足した設定ディレクトリ(`~/.claude-pstack`・`~/.codex-pstack`)で起動する。どちらも、本体のskillやglobal指示を読み込まずにpstackを使える。Codexで残るskillと、ホームのskillを無効にできる条件は「Codexでの制限」に書く。`/pstack:poteto-mode` から使い始める。pstackは `install.sh` が入れる。入っていなければ `~/.dotfiles/script/setup/setup_pstack.sh` を実行する。
 
 ### Codexでの制限
 
 Codexでは、pstackを公式の対応なしで使う。Claude Code向けのpluginをそのまま読み込むので、skillは `pstack:<name>` として読まれるが、subagentの `poteto-agent` と `comment-sicko` は使えない。
 
-Codexは `CODEX_HOME` に関係なく、ホームの `~/.agents/skills` にあるskillを読み込む。そのため `codex-pstack` では、pstackのskillのほかに、`~/.agents/skills` へ展開された共有skillとmjun系のskillも読み込まれる。`codex-bare` でも同じである。
+Codexは `CODEX_HOME` に関係なく、ホームの `~/.agents/skills` にあるskillを読み込む。そこで `codex-bare`・`codex-pstack` 関数は、起動のたびに `~/.agents/skills/*/SKILL.md` を列挙し、`-c 'skills.config=[{path="<SKILL.mdのパス>",enabled=false},...]'` で1件ずつ無効にしてCodexへ渡す。起動時に列挙するので、共有skillやmjun系のskillが増減しても追従する。Codexの組み込みskill、pluginのskill、作業中のrepositoryの `.agents/skills` は読み込まれたままである。
+
+この指定は関数が付けるので、`CODEX_HOME=~/.codex-pstack codex` のように関数を通さずに起動すると付かず、`~/.agents/skills` のskillも読み込まれる。また、無効になることを確かめたのは `codex debug prompt-input` が出すpromptまでである。TUIで起動した実際のsessionと、常駐プロセス(`daemon_auto_start`)が先に動いている場合でも無効になるかは確かめていない。
 
 ### モデル設定
 
